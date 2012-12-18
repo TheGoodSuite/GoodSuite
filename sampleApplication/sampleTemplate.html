@@ -86,7 +86,7 @@ I haven't made the menu file yet, so it is commented out -- fictional :P
 		<td><:article['name']:></td>
 		<td><:article['date']; ' - '; article['time']:></td>
 		<:- and we're gonna cheat a little :D -:>
-		<td>views: <:article['viewCount'] + 10:></td>
+		<td>views: <: 10 + article['viewCount']:></td>
 		
 		<td>
 		<:foreach (review in article['reviews']):>
@@ -126,7 +126,7 @@ I haven't made the menu file yet, so it is commented out -- fictional :P
 	</table>
 <:end foreach:>
 
-<:for(0 --> ourFriendsCount) :>
+<:for(1 --> ourFriendsCount) :>
 	<img src='friend.jpg' />
 <:end for:>
 
@@ -134,4 +134,3 @@ I haven't made the menu file yet, so it is commented out -- fictional :P
 	<:<:- functions are not supported right now include(-:>'footer.html'<:-)-:>:>
 <:end if:>
 
-</html>
