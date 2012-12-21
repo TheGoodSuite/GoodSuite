@@ -43,6 +43,8 @@ class GoodRolemodelDataModel implements GoodRolemodelVisitable
 		{
 			$dataType->accept($visitor);
 		}
+		
+		$visitor->visitEnd();
 	}
 }
 

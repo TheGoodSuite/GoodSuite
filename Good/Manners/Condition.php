@@ -2,11 +2,11 @@
 
 abstract class GoodMannersCondition
 {
-	protected function doProcess();
+	abstract protected function doProcess();
 	
 	private $store;
 
-	protected function __construct(Store $store)
+	protected function __construct(GoodMannersStore $store)
 	{
 		$this->store = $store;
 	}
@@ -19,7 +19,7 @@ abstract class GoodMannersCondition
 			die("Store/Condition mismatch: You can only use Conditions created at a Store with that same Store.");
 		}
 		
-		doProcess();
+		$this->doProcess();
 	}
 }
 

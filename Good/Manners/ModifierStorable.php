@@ -8,24 +8,15 @@ class GoodMannersModifierStorable implements GoodServiceModifier
 	private $classMembers;
 	private $classVariable;
 	private $classVariableIsReference;
-	private $report;
-	private $classes;
+	private $acceptStore;
 	
 	public function __construct()
 	{
-		$this->classes = array();
 	}
 	
 	public function baseClassTopOfFile()
 	{
-		// TODO: make ESPECIALLY this include location independent
-		$res  = "include_once '../../../Manners/Storable.php';\n";
-		$res .= "include_once '../../../Manners/Store.php';\n";
-		$res .= "include_once '../../../Manners/Report/ReferenceValue.php';\n";
-		$res .= "include_once '../../../Manners/Report/TextValue.php';\n";
-		$res .= "include_once '../../../Manners/Report/IntValue.php';\n";
-		$res .= "include_once '../../../Manners/Report/FloatValue.php';\n";
-		$res .= "include_once 'Reparser.php';\n";
+		$res  = 'include_once $good->getGoodPath() . "/Manners/Storable.php";' . "\n";
 		$res .= "\n";
 		
 		return $res;
@@ -33,7 +24,7 @@ class GoodMannersModifierStorable implements GoodServiceModifier
 	
 	public function implementingInterfaces()
 	{
-		return array('GoodServiceMannersStorable');
+		return array('GoodMannersStorable');
 	}
 	
 	public function baseClassConstructor()
@@ -53,11 +44,13 @@ class GoodMannersModifierStorable implements GoodServiceModifier
 		$res  = "	// Storable\n";
 		$res .= '	private $deleted;' . "\n";
 		$res .= '	private $isNew;' . "\n";
-		$res .= '	private $store;' . "\n";
+		$res .= '	protected $store;' . "\n";
 		$res .= '	private $validationToken;' . "\n";
 		$res .= '	private $blank;' . "\n";
-		$res .= '	private $id;' . "\n";
+		$res .= '	private $id = -1;' . "\n";
 		$res .= '	private $dirty;' . "\n";
+		$res .= "	\n";
+		$res .= '	abstract protected function dirty();' . "\n";
 		$res .= "	\n";
 		$res .= '	public function isDeleted()'. "\n";
 		$res .= "	{\n";
@@ -72,7 +65,7 @@ class GoodMannersModifierStorable implements GoodServiceModifier
 		$res .= "	\n";
 		$res .= '	public function isNew()'. "\n";
 		$res .= "	{\n";
-		$res .= '		return $this->deleted;' . "\n";
+		$res .= '		return $this->isNew;' . "\n";
 		$res .= "	}\n";
 		$res .= "	\n";
 		$res .= '	public function setNew($value)'. "\n";
@@ -80,12 +73,26 @@ class GoodMannersModifierStorable implements GoodServiceModifier
 		$res .= '		$this->isNew = $value;' . "\n";
 		$res .= "	}\n";
 		$res .= "	\n";
-		$res .= '	public function setStore(Store $store)' . "\n";
+		$res .= '	public function setStore(GoodMannersStore $store)' . "\n";
 		$res .= "	{\n";
 		$res .= '		$this->store = $store;' . "\n";
 		$res .= '		if ($this->isNew)' . "\n";
 		$res .= "		{\n";
-		$res .= '			$this->store->setNew($this);' . "\n";
+						// Just comented it out, as it looks like it's not in line with
+						//  the currently planned API.
+		$res .= '			//$this->store->setNew($this);' . "\n";
+		$res .= "		}\n";
+		$res .= "	}\n";
+		$res .= "	\n";
+		$res .= '	public function storeMatches(GoodMannersStore $store)' . "\n";
+		$res .= "	{\n";
+		$res .= '		if ($store == $this->store)' . "\n";
+		$res .= "		{\n";
+		$res .= '			return true;' . "\n";
+		$res .= "		}\n";
+		$res .= '		else' . "\n";
+		$res .= "		{\n";
+		$res .= '			return false;' . "\n";
 		$res .= "		}\n";
 		$res .= "	}\n";
 		$res .= "	\n";
@@ -98,31 +105,27 @@ class GoodMannersModifierStorable implements GoodServiceModifier
 		$res .= '		return $this->blank;' . "\n";
 		$res .= "	}\n";
 		$res .= "	\n";
-		$res .= '	public function setValidationToken(Store $store)' . "\n";
+		$res .= '	public function setValidationToken(GoodMannersValidationToken $token)' . "\n";
 		$res .= "	{\n";
-		$res .= '		$this->validationToken = $store->getValidationToken()' . "\n";
+		$res .= '		$this->validationToken = $token;' . "\n";
 		$res .= "	}\n";
 		$res .= "	\n";
-		$res .= '	protected function dirty()' . "\n";
-		$res .= "	{\n";
-		$res .= '		if (!$this->isDirty())' . "\n";
-		$res .= "		{\n";
-		$res .= '			$this->dirty = true;' . "\n";
-		$res .= '			$this->store->dirty($this);' . "\n";
-		$res .= "		}\n";
-		$res .= "	}\n";
 		$res .= '	public function isDirty()' . "\n";
 		$res .= "	{\n";
 		$res .= '		return $this->dirty;' . "\n";
 		$res .= "	}\n";
+		$res .= '	public function makeDirty($value = true)' . "\n";
+		$res .= "	{\n";
+		$res .= '		return $this->dirty = $value;' . "\n";
+		$res .= "	}\n";
 		$res .= "	\n";
 		$res .= '	protected function checkValidationToken()' . "\n";
 		$res .= "	{\n";
-		$res .= '		if (!$this->validationToken->value())' . "\n";
+		$res .= '		if ($this->validationToken != null &&!$this->validationToken->value())' . "\n";
 		$res .= "		{\n";
 						// TODO: turn this into decent error handling
 		$res .= '			die("Tried to acces an invalid Storable. It was probably made invalid by actions" .' . "\n";
-		$res .= '		 	    " on its store (like doing a modify, which invalidates all its Storables).")' . "\n";
+		$res .= '		 	    " on its store (like doing a modify, which invalidates all its Storables).");' . "\n";
 		$res .= "		}\n";
 		$res .= "	}\n";
 		$res .= "	\n";
@@ -136,6 +139,12 @@ class GoodMannersModifierStorable implements GoodServiceModifier
 		$res .= '		$this->id = $value;' . "\n";
 		$res .= "	}\n";
 		$res .= "	\n";
+		$res .= '	public static function helpCreatingExisting(GoodMannersStorable $value, $id)' . "\n";
+		$res .= "	{\n";
+		$res .= '		$value->id = $id;' . "\n";
+		$res .= '		$value->isNew = false;' . "\n";
+		$res .= "	}\n";
+		$res .= "	\n";
 		
 		return $res;
 	}
@@ -145,18 +154,17 @@ class GoodMannersModifierStorable implements GoodServiceModifier
 	public function visitDataType($dataType)
 	{
 		$this->className = $dataType->getName();
-		$this->classes[] = $this->className;
 		$this->classMembers = array();
 		
-		$this->report  = '	public function report()' . "\n";
-		$this->report .= "	{\n";
-		$this->report .= '		return doReport('');' . "\n";
-		$this->report .= "	}\n";
-		$this->report .= "	\n";
-		$this->report  = '	public function doReport($name)' . "\n";
-		$this->report .= "	{\n";
-		$this->report .= '		$members = array();' . "\n";
-		$this->report .= "		\n";
+		$this->acceptStore  = '	public function acceptStore(GoodMannersStore $store)' . "\n";
+		$this->acceptStore .= "	{\n";
+		$this->acceptStore .= '		if (!$this->storeMatches($store) && !$this->isNew())' . "\n";
+		$this->acceptStore .= "		{\n";
+		// TODO: turn this into real error handling
+		$this->acceptStore .= '			die("Error: Attempted to use Storable with Store that" . ' . "\n";
+		$this->acceptStore .= '				  " is not its own.");' . "\n";
+		$this->acceptStore .= "		}\n";
+		$this->acceptStore .= "		\n";
 	}
 	
 	public function visitDataMember($dataMember)
@@ -168,51 +176,47 @@ class GoodMannersModifierStorable implements GoodServiceModifier
 	{
 		$this->classVariableIsReference = true;
 		
-		// ucfirst: upper case first letter (it's a php built-in)
-		$this->report .= '		if ($this->isResolved' ucfirst($this->classVariable) . ' && ' .
-									'!$this->isNull' .  ucfirst($this->classVariable) . ')' . "\n";
-		$this->report .= "		{\n";
-		$this->report .= '			$members[] = $this->' . $this->classVariable . '->doReport("' . $this->classVariable . '");' . "\n";
-		$this->report .= "		}\n";
-		$this->report .= "		else\n";
-		$this->report .= "		{\n";
-		$this->report .= '			$members[] = new GoodMannersReferenceValue(true, $this->isDirty' . 
-										ucfirst($this->classVariable) ', '', false, null, ' . $type->getReferencedType() . ', array())' . "\n";
-		$this->report .= "		}\n";
+		$this->acceptStore .= '		$store->visitReferenceProperty("' . $this->classVariable . '", ' .
+											'"' . $type->getReferencedType() . '", ' . 
+											'$this->isDirty' . ucfirst($this->classVariable) . '(), ' .
+											'$this->isNull' . ucfirst($this->classVariable) . '(), ' .
+											'$this->get' . ucfirst($this->classVariable) . '());' . "\n";
 	}
 	public function visitTypePrimitiveText($type) 
 	{
 		$this->classVariableIsReference = false;
 		
-		// ucfirst: upper case first letter (it's a php built-in)
-		$this->report .= '		$members[] = new GoodMannersTextValue($this->isNull' . ucfirst($this->classVariable) . 
-									',$this->isDirty' . ucfirst($this->classVariable) . ', "' . $this->classVariable . '"' .
-									 ', $this->' . $this->classVariable . ');' . "\n";
+		$this->acceptStore .= '		$store->visitTextProperty("' . $this->classVariable . '", ' .
+											'$this->isDirty' . ucfirst($this->classVariable) . '(), ' . 
+											'$this->isNull' . ucfirst($this->classVariable) . '(), ' .
+											'$this->get' . ucfirst($this->classVariable) . '());' . "\n";
 	}
 	public function visitTypePrimitiveInt($type) 
 	{
 		$this->classVariableIsReference = false;
 		
-		// ucfirst: upper case first letter (it's a php built-in)
-		$this->report .= '		$members[] = new GoodMannersIntValue($this->isNull' . ucfirst($this->classVariable) . 
-									',$this->isDirty' . ucfirst($this->classVariable) . ', "' . $this->classVariable . '"' .
-							', $this->' . $this->classVariable . ');' . "\n";
+		$this->acceptStore .= '		$store->visitIntProperty("' . $this->classVariable . '", ' .
+											'$this->isDirty' . ucfirst($this->classVariable) . '(), ' . 
+											'$this->isNull' . ucfirst($this->classVariable) . '(), ' .
+											'$this->get' . ucfirst($this->classVariable) . '());' . "\n";
 	}
 	public function visitTypePrimitiveFloat($type) 
 	{
 		$this->classVariableIsReference = false;
 		
-		// ucfirst: upper case first letter (it's a php built-in)
-		$this->report .= '		$members[] = new GoodMannersFloatValue($this->isNull' . ucfirst($this->classVariable) . 
-									',$this->isDirty' . ucfirst($this->classVariable) . ', "' . $this->classVariable . '"' .
-							', $this->' . $this->classVariable . ');' . "\n";
+		$this->acceptStore .= '		$store->visitFloatProperty("' . $this->classVariable . '", ' .
+											'$this->isDirty' . ucfirst($this->classVariable) . '(), ' . 
+											'$this->isNull' . ucfirst($this->classVariable) . '(), ' .
+											'$this->get' . ucfirst($this->classVariable) . '());' . "\n";
 	}
+	
+	public function visitEnd() {}
 	
 	public function varDefinitionBefore() {return '';}
 	public function varDefinitionAfter() 
 	{
 		// ucfirst: upper case first letter (it's a php built-in)
-		$res  = '	private isDirty' . ucfirst($this->classVariable) . ';' . "\n";
+		$res  = '	private $isDirty' . ucfirst($this->classVariable) . ';' . "\n";
 		$res .= "	\n";
 		$res .= '	public function isDirty' . ucfirst($this->classVariable) . '()' . "\n";
 		$res .= "	{\n";
@@ -224,40 +228,44 @@ class GoodMannersModifierStorable implements GoodServiceModifier
 		$res .= '		$this->isDirty' . ucfirst($this->classVariable) . ' = $value;' . "\n";
 		$res .= "	}\n";
 		$res .= "	\n";
-		if ($this->classVariableIsReference)
-		{
-			$res .= '	private $resolved' . ucfirst($this->varName) . " = false;\n";
-			$res .= "	\n";
-			$res .= '	public function isResolved' . ucfirst($this->varName) . '()' . ";\n";
-			$res .= "	{\n";
-			$res .= '		return $this->resolved' . ucfirst($this->varName) . ";\n";
-			$res .= "	}\n";
-			$res .= "	\n";
-		}
+		// This did nothing but get in the way, so I commented it out for now
+		// (I should really clean up this whole thing)
+		//if ($this->classVariableIsReference)
+		//{
+			//$res .= '	private $resolved' . ucfirst($this->classVariable) . " = false;\n";
+			//$res .= "	\n";
+			//$res .= '	public function isResolved' . ucfirst($this->classVariable) . '()' . "\n";
+			//$res .= "	{\n";
+			//$res .= '		return $this->resolved' . ucfirst($this->classVariable) . ";\n";
+			//$res .= "	}\n";
+			//$res .= "	\n";
+		//}
 		
 		return $res;
 	}
 	public function getterBegin()
 	{
-		$res  = "		checkValidationToken();\n";
+		$res  = '		$this->checkValidationToken();' . "\n";
 		$res .= "		\n";
 		
-		if ($this->classVariableIsReference)
-		{
-			$res  .= '		if (!this->isResolved' . ucfirst($this->varName) . '())' . ";\n";
-			$res  .= "		{\n";
-						// TODO: Make this into a real error
-			$res  .= '			die("Tried to access nonresolved property.")' . ";\n";
-			$res  .= "		}\n";
-			$res  .= "		\n";
-		}
+		// This did nothing but get in the way, so I commented it out for now
+		// (I should really clean up this whole thing)
+		//if ($this->classVariableIsReference)
+		//{
+			//$res  .= '		if (!$this->isResolved' . ucfirst($this->classVariable) . '())' . ";\n";
+			//$res  .= "		{\n";
+					// TODO: Make this into a real error
+			//$res  .= '			die("Tried to access nonresolved property.")' . ";\n";
+			//$res  .= "		}\n";
+			//$res  .= "		\n";
+		//}
 		
 		return $res;
 	}
 	public function setterBegin()
 	{
-		$res .= "		checkValidationToken();\n";
-		$res  = "		\n";
+		$res  = '		$this->checkValidationToken();' . "\n";
+		$res .= "		\n";
 		
 		return $res;
 	}
@@ -266,7 +274,7 @@ class GoodMannersModifierStorable implements GoodServiceModifier
 		$res  = "		\n";
 		// ucfirst: upper case first letter (it's a php built-in)
 		$res .= '		$this->makeDirty' . ucfirst($this->classVariable) . '();' . "\n";
-		$res .= '		dirty();' . "\n";
+		$res .= '		$this->dirty();' . "\n";
 		if ($this->classVariableIsReference)
 		{
 			$res .= '		if ($value != null || $this->isNull' . ucfirst($this->classVariable) . ')' . "\n";
@@ -293,7 +301,15 @@ class GoodMannersModifierStorable implements GoodServiceModifier
 	public function topOfFile() {return '';}
 	public function classBody() 
 	{
-		$res  = '	public static function getBlank()' . "\n";
+		$res  = '	protected function dirty()' . "\n";
+		$res .= "	{\n";
+		$res .= '		if (!$this->isDirty() && $this->store != null)' . "\n";
+		$res .= "		{\n";
+		$res .= '			$this->makeDirty(true);' . "\n";
+		$res .= '			$this->store->dirty' . ucfirst($this->className) . '($this);' . "\n";
+		$res .= "		}\n";
+		$res .= "	}\n";
+		$res .= '	public static function getBlank()' . "\n";
 		$res .= "	{\n";
 		$res .= '		$ret = new ' . $this->className . '();' . "\n";
 		$res .= "		\n";
@@ -312,40 +328,44 @@ class GoodMannersModifierStorable implements GoodServiceModifier
 		$res .= "	}\n";
 		$res .= "	\n";
 		
-		$res .= '	public function reparse(Reparser $reparser)' . "\n";
+		$res  .= '	public static function createExisting($store, $id';
+		foreach ($this->classMembers as $member)
+		{
+			$res .= ', ';
+			// ucfirst: upper case first letter (it's a php built-in)
+			$res .= '$' . $member;
+		}
+		$res .= ')' . "\n";
 		$res .= "	{\n";
-		$res .= '		$reparser->reparse' . ucfirst($this->className) . '($this);' . "\n";
+		$res .= '		$ret = new ' . $this->className . '();' . "\n";
+		$res .= '		GeneratedBaseClass::helpCreatingExisting($ret, $id);' . "\n";;
+		$res .= "		\n";
+		foreach ($this->classMembers as $member)
+		{
+			// ucfirst: upper case first letter (it's a php built-in)
+			$res .= '		$ret->' . $member . ' = $' . $member . ';' . "\n";
+			$res .= '		$ret->isDirty' . ucfirst($member) . ' = false;' . "\n";
+			// TODO: make this typesafe (currently, primitives can be NULL)
+			$res .= '		$ret->isNull' . ucfirst($member) . ' = $' . $member . ' === NULL;' . "\n";
+		}
+		
+		$res .= '		$ret->blank = false;' . "\n";
+		$res .= '		$ret->setStore($store);' . "\n";
+		$res .= "		\n";
+		$res .= '		return $ret;' . "\n";
 		$res .= "	}\n";
 		$res .= "	\n";
 		
-		$this->report .= "		\n";
-		$this->report .= ' 		return new GoodMannersReferenceValue(false, true, $this, $name "' . $this->className . '", $members)' . "\n";
-		$this->report .= "	}\n";
-		$this->report .= "	\n";
+		$this->acceptStore .= "	}\n";
+		$this->acceptStore .= "	\n";
 		
-		$res .= $this->report;
+		$res .= $this->acceptStore;
 		
 		return $res;
 	}
 	public function bottomOfFile() {return '';}
 	
-	public function extraFiles()
-	{
-		$res  = '<?php' . "\n";
-		$res .= "\n";
-		$res .= 'interface GoodMannersReparser' . "\n";
-		$res .= "{\n";
-		foreach ($this->classes as $aClass)
-		{
-			// ucfirst: upper case first letter (php builtin)
-			$res .= '	public function reparse' . ucfirst($aClass) . '(' . $aClass . ' $storable);' . "\n";
-		}
-		$res .= "}\n";
-		$res .= "\n";
-		$res .= "?>";
-		
-		return array('Reparser.php' => $res);
-	}
+	public function extraFiles() {return array();}
 }
 
 ?>

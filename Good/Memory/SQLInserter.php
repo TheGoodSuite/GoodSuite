@@ -1,8 +1,9 @@
 <?php
 
-require_once dirname(__FILE__) . '/../Manners/Report/ValueVisitor.php';
+require_once dirname(__FILE__) . '/PropertyVisitor.php';
+require_once dirname(__FILE__) . '/SQLPostponedForeignKey.php';
 
-class GoodMemorySQLInserter implements GoodMannersValueVisitor
+class GoodMemorySQLInserter implements GoodMemoryPropertyVisitor
 {
 	private $db;
 	private $store;
@@ -11,26 +12,36 @@ class GoodMemorySQLInserter implements GoodMannersValueVisitor
 	private $values;
 	private $first;
 	
-	public function __construct(SQLStore $store, GoodMemoryDatabase $db)
+	private $inserting;
+	private $postponed;
+	
+	public function __construct(GoodMemorySQLStore $store, GoodMemoryDatabase $db)
 	{
 		$this->db = $db;
+		$this->store = $store;
+		$this->postponed = array();
 	}
 	
 	
-	public function insert(GoodMannersReferenceValue $value)
+	public function insert($datatypeName, GoodMannersStorable $value)
 	{
-		$this->sql = 'INSERT INTO ' . $this->store->tableNamify($value->getClassName()) . ' (';
+		$this->sql = 'INSERT INTO ' . $this->store->tableNamify($datatypeName) . ' (';
 		$this->values = 'VALUES (';
-		$first = true;
+		$this->first = true;
 		
-		$value->visitMembers($this);
+		$this->inserting = $value;
+		
+		$value->setNew(false);
+		$value->setStore($this->store);
+		
+		$this->store->setCurrentPropertyVisitor($this);
+		$value->acceptStore($this->store);
 		
 		$this->sql .= ') ';
 		$this->sql .= $this->values . ')';
 		
 		$this->db->query($this->sql);
-		$value->getOriginal()->setId($this->db->getLastInsertedId());
-		$value->getOriginal()->setNew(false);
+		$value->setId($this->db->getLastInsertedId());
 	}
 
 	private function comma()
@@ -41,60 +52,113 @@ class GoodMemorySQLInserter implements GoodMannersValueVisitor
 		}
 		else
 		{
-			$sql .= ', ';
-			$values .= ', ';
+			$this->sql .= ', ';
+			$this->values .= ', ';
 		}
 	}
 	
-	public function visitReferenceValue(GoodMannersReferenceValue $value)
+	public function getPostponed()
 	{
-		$this->comma();
-		
-		$this->sql .= $this->store->fieldNamify($value->getName());
+		return $this->postponed;
+	}
 	
-		if ($value->isNull())
+	public function visitReferenceProperty($name, $datatypeName, $dirty, $null, 
+														GoodMannersStorable $value = null)
+	{
+		// If not dirty, do not include field and use default value
+		if ($dirty)
 		{
-			$this->values .= 'NULL'
-		}
-		else
-		{
-			$original =& $value->getOriginal();
+			$this->comma();
 			
-			if ($original->isNew())
+			$this->sql .= $this->store->fieldNamify($name);
+		
+			if ($null)
 			{
-				$inserter = new GoodMemorySQLInserter($this->store, $this->db);
-				$inserter->insert($value);
+				$this->values .= 'NULL';
 			}
-			
-			$this->values .= intval($original->getId());
+			else
+			{
+				if ($value->isNew())
+				{
+					$inserter = new GoodMemorySQLInserter($this->store, $this->db);
+					$inserter->insert($datatypeName, $value);
+					$this->postponed = array_merge($this->postponed, $inserter->getPostponed());
+					$this->store->setCurrentPropertyVisitor($this);
+				}
+				
+				if ($value->isNew() && $value->getId() == -1)
+				// $value is actually new, but not marked as such to prevent infinite recursion
+				{
+					$this->postponed[] = new GoodMemorySQLPostponedForeignKey($this->inserting,
+																			  $name,
+																			  $value);
+				}
+				else
+				{
+					$this->values .= intval($value->getId());
+				}
+			}
 		}
 	}
 	
-	public function visitTextValue(GoodMannersTextValue $value)
+	public function visitTextProperty($name, $dirty, $null, $value)
 	{
-		$this->comma();
-		
-		$this->sql .= $this->store->fieldNamify($value->getName());
-		
-		$this->values .= $this->store->parseText($value);
+		// If not dirty, do not include field and use default value
+		if ($dirty)
+		{
+			$this->comma();
+			
+			$this->sql .= $this->store->fieldNamify($name);
+			
+			if ($null)
+			{
+				$this->sql .= 'NULL';
+			}
+			else
+			{
+				$this->values .= $this->store->parseText($value);
+			}
+		}
 	}
 	
-	public function visitIntValue(GoodMannersIntValue $value)
+	public function visitIntProperty($name, $dirty, $null, $value)
 	{
-		$this->comma();
-		
-		$this->sql .= $this->store->fieldNamify($value->getName());
-		
-		$this->values .= $this->store->parseInt($value);
+		// If not dirty, do not include field and use default value
+		if ($dirty)
+		{
+			$this->comma();
+			
+			$this->sql .= $this->store->fieldNamify($name);
+			
+			if ($null)
+			{
+				$this->sql .= 'NULL';
+			}
+			else
+			{
+				$this->values .= $this->store->parseInt($value);
+			}
+		}
 	}
 	
-	public function visitFloatValue(GoodMannerwsFloatValue $value)
+	public function visitFloatProperty($name, $dirty, $null, $value)
 	{
-		$this->comma();
+		// If not dirty, do not include field and use default value
+		if ($dirty)
+		{
+			$this->comma();
+			
+			$this->sql .= $this->store->fieldNamify($name);
 		
-		$this->sql .= $this->store->fieldNamify($value->getName());
-	
-		$this->values .= $this->store->parseFloat($value);
+			if ($null)
+			{
+				$this->sql .= 'NULL';
+			}
+			else
+			{
+				$this->values .= $this->store->parseFloat($value);
+			}
+		}
 	}
 }
 

@@ -1,0 +1,5 @@
+<?php
+
+$GoodInstalled = true;
+
+?>

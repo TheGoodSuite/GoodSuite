@@ -1,6 +1,6 @@
 <?php
 
-class GoodMemorySQLJoinDiscoverer implements GoodMannersValueVisitor
+class GoodMemorySQLJoinDiscoverer implements GoodMemoryPropertyVisitor
 {
 	private $store;
 	
@@ -13,34 +13,39 @@ class GoodMemorySQLJoinDiscoverer implements GoodMannersValueVisitor
 		$this->currentTable = $currentTable;
 	}
 	
-	public function discoverJoins(GoodMannersReferenceValue $value)
+	public function discoverJoins(GoodMannersStorable $value)
 	{
-		$currentReference = 0;
+		$this->currentReference = 0;
 		
-		$value->visitMembers($this);
+		$this->store->setCurrentPropertyVisitor($this);
+		$value->acceptStore($this->store);
 	}
 	
-	public function visitReferenceValue(GoodMannersReferenceValue $value)
+	public function visitReferenceProperty($name, $datatypeName, $dirty, $null, 
+														GoodMannersStorable $value = null)
 	{	
-		if (!$value->isNull() && $value->isDirty() && $value->getOriginal()->isBlank())
+		if (!$null && $dirty && $value->isNew())
 		{
 			$join = $this->store->getJoin($this->currentTable, $this->currentReference);
 			
 			if ($join == -1)
 			{
-				$join = $this->store->createJoin($this->currentTable, $value->getName(), $this->currentReference, $value->getClassName());
+				$join = $this->store->createJoin($this->currentTable, 
+												 $name,
+												 $this->currentReference,
+												 $datatypeName);
 			}
 			
 			$recursionDiscoverer = new GoodMemorySQLJoinDiscoverer($this->store, $join);
 			$recursionDiscoverer->discoverJoins($value);
 		}
 		
-		$currentReference++;
+		$this->currentReference++;
 	}
 	
-	public function visitTextValue(GoodMannersTextValue $value) {}
-	public function visitIntValue(GoodMannersIntValue $value) {}
-	public function visitFloatValue(GoodMannerwsFloatValue $value) {}
+	public function visitTextProperty($name, $dirty, $null, $value) {}
+	public function visitIntProperty($name, $dirty, $null, $value) {}
+	public function visitFloatProperty($name, $dirty, $null, $value) {}
 }
 
 ?>

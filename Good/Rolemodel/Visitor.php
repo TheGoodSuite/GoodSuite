@@ -9,6 +9,7 @@ interface GoodRolemodelVisitor
 	public function visitTypePrimitiveText($type);
 	public function visitTypePrimitiveInt($type);
 	public function visitTypePrimitiveFloat($type);
+	public function visitEnd();
 }
 
 ?>

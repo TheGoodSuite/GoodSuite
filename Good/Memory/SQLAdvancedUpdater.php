@@ -1,8 +1,10 @@
 <?php
 
-require_once dirname(__FILE__) . '/../Manners/Report/ValueVisitor.php';
+require_once dirname(__FILE__) . '/PropertyVisitor.php';
+require_once dirname(__FILE__) . '/SQLJoinDiscoverer.php';
+require_once dirname(__FILE__) . '/SQLUpdateConditionWriter.php';
 
-class GoodMemorySQLAdvancedUpdater implements GoodMannersValueVisitor
+class GoodMemorySQLAdvancedUpdater implements GoodMemoryPropertyVisitor
 {
 	private $db;
 	private $store;
@@ -14,42 +16,49 @@ class GoodMemorySQLAdvancedUpdater implements GoodMannersValueVisitor
 	private $currentTable;
 	private $currentReference;
 	
-	public function __construct(SQLStore $store, GoodMemoryDatabase $db, $currentTable)
+	private $condition;
+	private $rootTableName;
+	
+	public function __construct(GoodMemorySQLStore $store, GoodMemoryDatabase $db, $currentTable)
 	{
 		$this->db = $db;
 		$this->store = $store;
 		$this->currentTable = $currentTable;
 	}
 	
-	
-	public function update(GoodMannersCondition $condition, GoodMannersReferenceValue $value)
+	public function update($datatypeName, GoodMannersCondition $condition, 
+							GoodMannersStorable $value)
 	{
+		$this->updateWithRootTableName($datatypeName, $condition, $value, $datatypeName);
+	}
+	
+	public function updateWithRootTableName($datatypeName, GoodMannersCondition $condition, 
+													GoodMannersStorable $value, $rootTableName)
+	{
+		$this->condition = $condition;
+		$this->rootTableName = $rootTableName;
+	
 		$joinDiscoverer = new GoodMemorySQLJoinDiscoverer($this->store, 0);
 		$joinDiscoverer->discoverJoins($value);
 		
-		$selecter = new GoodMemorySQLSelecter($this->store, $this->db);
-		$subquery = $selecter->writeQueryWithoutSelect($condition);
-		
-		$this->updateWithSubquery($subquery, $value);
-	}
-	
-	public function updateWithSubquery($subquery, GoodMannersReferenceValue $value)
-	{
-		$this->subquery = $subquery;
-		
-		$this->sql = 'UPDATE ' . $this->store->tableNamify($value->getClassName());
+		$this->sql = 'UPDATE ' . $this->store->tableNamify($datatypeName);
 		$this->sql .= ' SET ';
 		
 		$this->first = true;
 		$this->currentReference = 0;
-		$value->visitMembers($this);
+		$this->store->setCurrentPropertyVisitor($this);
+		$value->acceptStore($this->store);
 		
-		// if we haven't a single entry to update, we don't do anything
+		// if we haven't got a single entry to update, we don't do anything
 		// (there is no reason for alarm, though, it may just be that this
-		//  table is only used in the WHERE or ON clause)
+		//  table is only used in the ON clause)
 		if (!$this->first)
 		{
-			$this->sql .= ' WHERE id IN (SELECT t' . $this->currentTable  . '.id '. $this->subquery . ')';
+			$conditionWriter = new GoodMemorySQLUpdateConditionWriter($this->store, 0);
+			$conditionWriter->writeCondition($condition, $rootTableName, $this->currentTable, $datatypeName);
+			
+			$this->sql .= ' WHERE ' . $conditionWriter->getCondition();
+			
 			
 			$this->db->query($this->sql);
 		}
@@ -67,16 +76,19 @@ class GoodMemorySQLAdvancedUpdater implements GoodMannersValueVisitor
 		}
 	}
 	
-	public function visitReferenceValue(GoodMannersReferenceValue $value)
+	public function visitReferenceProperty($name, $datatypeName, $dirty, $null, 
+														GoodMannersStorable $value = null)
 	{
-		if ($value->isDirty())
+		if ($dirty)
 		{
-			if (!$value->isNull() && $value->getOriginal()->isBlank())
+			if (!$null && $value->isNew())
 			{
 				$join = $this->store->getJoin($this->currentTable, $this->currentReference);
 				
 				$updater = new GoodMemorySQLAdvancedUpdater($this->store, $this->db, $join);
-				$updater->updateWithSubquery($this->subquery, $value);
+				$updater->updateWithRootTableName($datatypeName, $this->condition, 
+																$value, $this->rootTableName);
+				$this->store->setCurrentPropertyVisitor($this);
 			}
 			else
 			{
@@ -87,7 +99,7 @@ class GoodMemorySQLAdvancedUpdater implements GoodMannersValueVisitor
 			
 				if ($value->isNull())
 				{
-					$this->sql .= 'NULL'
+					$this->sql .= 'NULL';
 				}
 				else
 				{
@@ -96,43 +108,67 @@ class GoodMemorySQLAdvancedUpdater implements GoodMannersValueVisitor
 			}
 		}
 		
-		$currentReference++;
+		$this->currentReference++;
 	}
 	
-	public function visitTextValue(GoodMannersTextValue $value)
+	public function visitTextProperty($name, $dirty, $null, $value)
 	{
-		if ($value->isDirty())
+		if ($dirty)
 		{
 			$this->comma();
 			
-			$this->sql .= $this->store->fieldNamify($value->getName());
+			$this->sql .= $this->store->fieldNamify($name);
 			$this->sql .= ' = ';
-			$this->sql .= $this->store->parseText($value);
+			
+			if ($null)
+			{
+				$this->sql .= 'NULL';
+			}
+			else
+			{
+				$this->sql .= $this->store->parseText($value);
+			}
 		}
 	}
 	
-	public function visitIntValue(GoodMannersIntValue $value)
+	public function visitIntProperty($name, $dirty, $null, $value)
 	{
-		if ($value->isDirty())
+		if ($dirty)
 		{
 			$this->comma();
 			
-			$this->sql .= fieldNamify($value->getName());
+			$this->sql .= fieldNamify($name);
 			$this->sql .= ' = ';
-			$this->sql .= $this->store->parseInt($value);
+			
+			if ($null)
+			{
+				$this->sql .= 'NULL';
+			}
+			else
+			{
+				$this->sql .= $this->store->parseInt($value);
+			}
 		}
 	}
 	
-	public function visitFloatValue(GoodMannerwsFloatValue $value)
+	public function visitFloatProperty($name, $dirty, $null, $value)
 	{
 		
-		if ($value->isDirty())
+		if ($dirty)
 		{
 			$this->comma();
 			
-			$this->sql .= fieldNamify($value->getName());
+			$this->sql .= fieldNamify($name);
 			$this->sql .= ' = ';
-			$this->sql .= $this->store->parseFloat($value);
+			
+			if ($null)
+			{
+				$this->sql .= 'NULL';
+			}
+			else
+			{
+				$this->sql .= $this->store->parseFloat($value);
+			}
 		}
 	}
 }

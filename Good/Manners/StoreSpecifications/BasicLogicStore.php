@@ -1,8 +1,10 @@
 <?php
 
 require_once dirname(__FILE__) . '/../Condition.php';
+require_once dirname(__FILE__) . '/AndCondition.php';
+require_once dirname(__FILE__) . '/OrCondition.php';
 
-interface GoodMannersBasicfLogicStore
+interface GoodMannersBasicLogicStore
 {
 	public function createAndCondition(GoodMannersCondition $condition1, GoodMannersCondition $condition2);
 	public function createOrCondition(GoodMannersCondition $condition1, GoodMannersCondition $condition2);

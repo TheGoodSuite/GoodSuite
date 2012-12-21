@@ -1,8 +1,10 @@
 <?php
 
-require_once dirname(__FILE__) . '/../Manners/Report/ValueVisitor.php';
+require_once dirname(__FILE__) . '/PropertyVisitor.php';
 
-class GoodMemorySQLSelecter implements GoodMannersValueVisitor
+require_once dirname(__FILE__) . '/SQLConditionWriter.php';
+
+class GoodMemorySQLSelecter implements GoodMemoryPropertyVisitor
 {
 	private $db;
 	private $store;
@@ -13,7 +15,7 @@ class GoodMemorySQLSelecter implements GoodMannersValueVisitor
 	private $currentTable;
 	private $currentReference;
 	
-	public function __construct(SQLStore $store, GoodMemoryDatabase $db, $currentTable)
+	public function __construct(GoodMemorySQLStore $store, GoodMemoryDatabase $db, $currentTable)
 	{
 		$this->db = $db;
 		$this->store = $store;
@@ -21,98 +23,102 @@ class GoodMemorySQLSelecter implements GoodMannersValueVisitor
 	}
 	
 	
-	public function select(GoodMannersCondition $condition, GoodMannersReferenceValue $value)
+	public function select($datatypeName, GoodMannersCondition $condition, GoodMannersStorable $value)
 	{
-		$this->sql = "SELECT t0.id";
+		$this->sql = "SELECT t0.id AS t0_id";
 		
 		$this->currentReference = 0;
-		$value->visitMembers($this);
+		$this->store->setCurrentPropertyVisitor($this);
+		$value->acceptStore($this->store);
 		
-		$this->sql .= " FROM " . $this->store->tableNamify($value->getClassName()) " AS t0";
+		$this->sql .= $this->writeQueryWithoutSelect($datatypeName, $condition);
+		
+		$this->db->query($this->sql);
+		
+		return $this->db->getResult();
+	}
+	
+	public function writeQueryWithoutSelect($datatypeName, 
+											GoodMannersCondition $condition)
+	{
+		$sql  = " FROM " . $this->store->tableNamify($datatypeName) . " AS t0";
 		
 		$conditionWriter = new GoodMemorySQLConditionWriter($this->store, 0);
 		$conditionWriter->writeCondition($condition);
-		
-		$classMap = array();
-		$classMap[0] = $value->getClassName()
 		
 		foreach ($this->store->getJoins() as $somejoins)
 		{
 			foreach ($somejoins as $join)
 			{
-				$this->sql .= ' JOIN ' . $this->store->tableNamify($join->tableNameDestination . ' AS t' . $join->tableNumberDestination;
-				$this->sql .= ' ON t' . $join->tableNumberOrigin . '.' . $this->store->fieldNamify($join->fieldNameOrigin);
-				$this->sql .= ' = t' . $join->tableNumberDestination . '.id';
-				
-				$classMap[$join->tableNumberDestination] = $join->tableNameDestination;
+				$sql .= ' JOIN ' . $this->store->tableNamify($join->tableNameDestination) . 
+															' AS t' . $join->tableNumberDestination;
+				$sql .= ' ON t' . $join->tableNumberOrigin . '.' . 
+											$this->store->fieldNamify($join->fieldNameOrigin);
+				$sql .= ' = t' . $join->tableNumberDestination . '.id';
 			}
 		}
 		
-		$this->sql .= ' WHERE ' . $conditionWriter->getCondition();
+		$sql .= ' WHERE ' . $conditionWriter->getCondition();
 		
-		$this->db->query($this->sql);
-		
-		// TODO: parse results
+		return $sql;
 	}
 	
-	public function visitReferenceValue(GoodMannersReferenceValue $value)
+	public function visitReferenceProperty($name, $datatypeName, $dirty, $null, 
+													GoodMannersStorable $value = null)
 	{
-		if ($value->isDirty())
+		if ($dirty)
 		{
-			if (!$value->isNull() && $value->getOriginal()->isBlank())
+			$this->sql .= ', ';
+			$this->sql .= 't' . $this->currentTable . '.' . $name;
+			$this->sql .= ' AS t' . $this->currentTable . '_' . $name;
+		
+			if (!$null)
 			{
 				$join = $this->store->getJoin($this->currentTable, $this->currentReference);
+				
+				if ($join == -1)
+				{
+					$join = $this->store->createJoin($this->currentTable,
+													 $name, 
+													 $this->currentReference, 
+													 $datatypeName);
+				}
 						
+				$this->sql .= ', ';
 				$this->sql .= 't' . $join . '.id AS t' . $join . '_id';
 				
 				$currentTable = $this->currentTable;
 				$this->currentTable = $join;
-				$value->visitMembers($this);
+				$value->acceptStore($this->store);
 				$this->currentTable = $currentTable;
-			}
-			else
-			{
-				$sql .= ', ';
-				
-				$this->sql .= $this->store->fieldNamify($value->getName());
-				$this->sql .= ' = ';
-			
-				if ($value->isNull())
-				{
-					$this->sql .= 'NULL'
-				}
-				else
-				{
-					$this->sql .= intval($value->getOriginal()->getId());
-				}
 			}
 		}
 		
-		$currentReference++;
+		$this->currentReference++;
 	}
 	
-	public function visitTextValue(GoodMannersTextValue $value)
+	private function visitAnything($name)
 	{
-		$sql .= ', ';
+		$this->sql .= ', ';
 		
-		$this->sql .= 't' . $this->currentTable . '.' $this->store->fieldNamify($value->getName());
-		$this->sql .= ' AS t' . $this->currentTable . '_' . $this->store->fieldNamify($value->getName());
+		$this->sql .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($name);
+		$this->sql .= ' AS t' . $this->currentTable . '_' . $this->store->fieldNamify($name);
+
 	}
 	
-	public function visitIntValue(GoodMannersIntValue $value)
+	public function visitTextProperty($name, $dirty, $null, $value)
 	{
-		$sql .= ', ';
-		
-		$this->sql .= 't' . $this->currentTable . '.' $this->store->fieldNamify($value->getName());
-		$this->sql .= ' AS t' . $this->currentTable . '_' . $this->store->fieldNamify($value->getName());
+		$this->visitAnything($name);
 	}
 	
-	public function visitFloatValue(GoodMannerwsFloatValue $value)
+	public function visitIntProperty($name, $dirty, $null, $value)
 	{
-		$sql .= ', ';
-		
-		$this->sql .= 't' . $this->currentTable . '.' $this->store->fieldNamify($value->getName());
-		$this->sql .= ' AS t' . $this->currentTable . '_' . $this->store->fieldNamify($value->getName());
+		$this->visitAnything($name);
+	}
+	
+	public function visitFloatProperty($name, $dirty, $null, $value)
+	{
+		$this->visitAnything($name);
 	}
 }
 

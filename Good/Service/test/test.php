@@ -1,5 +1,0 @@
-<?php
-
-include '../test.php';
-
-?>

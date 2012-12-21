@@ -1,7 +1,6 @@
 <?php
 
-// TODO: fix include (currently dependent on location of current script)
-include_once '../../Rolemodel/Visitor.php';
+include_once dirname(__FILE__) . '/../Rolemodel/Visitor.php';
 
 interface GoodServiceModifier extends GoodRolemodelVisitor
 {

@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Store.php';
 require_once 'ValidationToken.php';
 
 //
@@ -16,10 +15,9 @@ interface GoodMannersStorable
 	public function isDeleted();
 	public function setNew($value);
 	public function isNew();
-	public function setStore(GoodMannersStore &$store);
-	public function setValidationToken(GoodMannersValidationToken &$token)
+	public function setStore(GoodMannersStore $store);
+	public function setValidationToken(GoodMannersValidationToken $token);
 	public function isBlank();
-	public function report();
 	public function getId();
 	public function isDirty();
 	

@@ -3,11 +3,13 @@
 class Good
 {
 	private $installed;
-	private $path = dir(__FILE__);
+	private $path;
 	private $modules;
 	
 	function __construct($config = 'config/Good.php')
 	{
+		$this->path = dirname(__FILE__) . '/';
+		
 		if (!file_exists($this->path . $config))
 		{
 			$this->installed = false;
@@ -44,7 +46,13 @@ class Good
 			die();
 		}
 	}
-		
+	
+	function getGoodPath()
+	{
+		return dirname(__FILE__);
+	}
 }
+
+$good = new Good();
 
 ?>

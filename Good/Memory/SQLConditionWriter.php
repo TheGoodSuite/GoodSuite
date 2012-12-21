@@ -1,10 +1,11 @@
 <?php
 
-require_once dirname(__FILE__) . '/../Manners/Report/ValueVisitor.php';
+require_once dirname(__FILE__) . '/PropertyVisitor.php';
 require_once dirname(__FILE__) . '/../Manners/Condition.php';
-require_once dirname(__FILE__) . '/SQLStore.php';
+require_once dirname(__FILE__) . '/ConditionProcessor.php';
 
-class GoodMemorySQLConditionWriter implements ValueVisitor
+class GoodMemorySQLConditionWriter implements GoodMemoryPropertyVisitor,
+											  GoodMemoryConditionProcessor
 {
 	private $store;
 	private $comparison;
@@ -13,7 +14,6 @@ class GoodMemorySQLConditionWriter implements ValueVisitor
 	
 	private $currentTable;
 	private $currentReference;
-	private $lastTo;
 	
 	public function __construct(GoodMemorySQLStore $store, $currentTable)
 	{	
@@ -28,21 +28,26 @@ class GoodMemorySQLConditionWriter implements ValueVisitor
 	
 	public function writeCondition(GoodMannersCondition $condition)
 	{
-		$store->setCurrentConditionWriter($this);
+		$this->store->setCurrentConditionProcessor($this);
 		
-		$condition->process($this);
+		$condition->process($this->store);
 	}
 	
 	public function writeComparisonCondition(GoodMannersStorable $to, $comparison)
 	{
-		$store->setCurrentConditionWriter($this);
+		$this->store->setCurrentConditionProcessor($this);
 		
-		$this->lastTo = $to;
 		$this->comparison = $comparison;
 		$this->first = true;
 		$this->condition = '';
 		
-		$to->acceptMembers($this);
+		$this->store->setCurrentPropertyVisitor($this);
+		$to->acceptStore($this->store);
+		
+		if ($this->first)
+		{
+			$this->condition = '1 = 1';
+		}
 	}
 	
 	public function processEqualityCondition(GoodMannersStorable $to)
@@ -91,21 +96,22 @@ class GoodMemorySQLConditionWriter implements ValueVisitor
 		$this->condition = '(' . $sqlCondition1 . ' OR ' . $sqlCondition2 . ')';
 	}
 	
-	public function visitReferenceValue(GoodMannersReferenceValue $value)
+	public function visitReferenceProperty($name, $datatypeName, $dirty, $null, 
+															GoodMannersStorable $value = null)
 	{
-		if ($typeisDirty())
+		if ($dirty)
 		{
 			$this->writeBracketOrAnd();
 			
-			if($type->isNull())
+			if($null)
 			{
-				$this->condition .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($value->getName()) . 
+				$this->condition .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($name) . 
 											$this->comparison . ' NULL';
 			}
-			else if (!$type->getOriginal()->isBlank())
+			else if (!$value->isNew())
 			{
-				$this->condition .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($value->getName()) . 
-											$this->comparison . ' ' . intval($value->getOriginal()->getId());
+				$this->condition .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($name) . 
+											$this->comparison . ' ' . intval($value->getId());
 			}
 			else
 			{
@@ -113,48 +119,83 @@ class GoodMemorySQLConditionWriter implements ValueVisitor
 				
 				if ($join == -1)
 				{
-					$join = $this->store->createJoin($this->currentTable, $value->getName(), $this->currentReference, $value->getClassName());
+					$join = $this->store->createJoin($this->currentTable, $name, $this->currentReference, $datatypeName);
 				}
 				
 				$subWriter = new GoodMemorySQLConditionWriter($this->store, $join);
-				$subWriter->writeComparisonCondition($this->lastTo, $this->comparison);
+				$subWriter->writeComparisonCondition($value, $this->comparison);
 				
-				$this->store->setCurrentConditionWriter($this);
-				
-				$this->condition .= '(' . $subWriter->getCondition() . ')';
+				$this->store->setCurrentConditionProcessor($this);
+				$this->condition .= $subWriter->getCondition();
 			}
 		}
 		
 		$this->currentReference++;
 	}
 	
-	public function visitTextValue(GoodMannersTextValue $value)
+	public function visitTextProperty($name, $dirty, $null, $value)
 	{
-		$this->writeBracketOrAnd();
+		if($dirty)
+		{
+			$this->writeBracketOrAnd();
 		
-		$this->condition .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($value->getName()) . 
-								$this->comparison . ' ' . $this->store->parseText($value);
+			$this->condition .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($name) .
+									' ' . $this->comparison . ' ';
+									' ' . $this->comparison . ' ';
+			if ($null)
+			{
+				$this->condition .= ' NULL';
+			}
+			else
+			{
+				$this->condition .= ' ' . $this->store->parseText($value);
+			}
+			
+		}
 	}
-	public function visitIntValue(GoodMannersIntValue $value)
+	public function visitIntProperty($name, $dirty, $null, $value)
 	{
-		$this->writeBracketOrAnd();
+		if($dirty)
+		{
+			$this->writeBracketOrAnd();
 		
-		$this->condition .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($value->getName()) .
-								$this->comparison . ' ' . $this->store->parseInt($value);
+			$this->condition .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($name) .
+									' ' . $this->comparison;
+			if ($null)
+			{
+				$this->condition .= ' NULL';
+			}
+			else
+			{
+				$this->condition .= ' ' . $this->store->parseInt($value);
+			}
+		}
 	}
-	public function visitFloatValue(GoodMannerwsFloatValue $value)
+	public function visitFloatProperty($name, $dirty, $null, $value)
 	{
-		$this->writeBracketOrAnd();
-		
-		$this->condition .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($value->getName()) .
-								$this->comparison . ' ' . $this->store->parseFloat($value);
+		if($dirty)
+		{
+			$this->writeBracketOrAnd();
+			
+			$this->condition .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($name) .
+									' ' . $this->comparison;
+			if ($null)
+			{
+				$this->condition .= ' NULL';
+			}
+			else
+			{
+				$this->condition .= ' ' . $this->store->parseFloat($value);
+			}
+		}
 	}
 	
 	private function writeBracketOrAnd()
 	{
 		if ($this->first)
 		{
-			$this->condition = '(';
+			// removed brackets change name of function?
+			//$this->condition = '(';
 			$this->first = false;
 		}
 		else

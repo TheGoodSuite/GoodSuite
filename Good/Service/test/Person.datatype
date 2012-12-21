@@ -1,8 +1,0 @@
-[]                     text      username
-                       text      firstName
-[public]               text      lastName
-[private, server_only] text      password
-                       int       age
-[server_only]		   float     grade
-                       "Person"  relation
-					   "Address" home

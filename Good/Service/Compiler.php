@@ -1,7 +1,6 @@
 <?php
 
-// TODO: fix include (currently dependent on location of current script)
-include_once './../../Rolemodel/Visitor.php';
+include_once dirname(__FILE__) . '/../Rolemodel/Visitor.php';
 include_once 'Modifier.php';
 
 class GoodServiceCompiler implements GoodRolemodelVisitor
@@ -18,6 +17,7 @@ class GoodServiceCompiler implements GoodRolemodelVisitor
 	private $outputFile = null;
 	private $output = null;
 	private $includes = null;
+	private $className = null;
 	
 	// variable level data
 	private $varName = null;
@@ -63,7 +63,7 @@ class GoodServiceCompiler implements GoodRolemodelVisitor
 			}
 		}
 		
-		$ouptut .= "\n";
+		$output .= "\n";
 		
 		$output .= "{\n";
 		$output .= "	public function __construct()\n";
@@ -87,25 +87,31 @@ class GoodServiceCompiler implements GoodRolemodelVisitor
 	
 	public function visitDataType($dataType)
 	{
-		foreach ($this->modifiers as $modifier)
-		{
-			$modifier->visitDataType($dataType);
-		}
-		
 		if ($this->output != null)
 		{
 			$this->saveOutput();
 		}
 		
+		foreach ($this->modifiers as $modifier)
+		{
+			$modifier->visitDataType($dataType);
+		}
+		
+		$this->className = $dataType->getName();
+		
 		$this->includes = array();
 		
-		$this->output = 'class ' . $dataType->getName() . " extends GeneratedBaseClass\n";
+		// ucfirst: make first letter upper case
+		$this->output = 'abstract class Base' . ucfirst($dataType->getName())
+													. " extends GeneratedBaseClass\n";
 		
 		$this->output .= "{\n";
 		$this->inputFile = $dataType->getSourceFileName();
 		// TODO: make following line independant of execution path at any time
 		//       and escape some stuff
-		$this->outputFile = $this->outputDir . $this->inputFile . '.php';
+		// Note: This was previously based on the input file namespace
+		//       But I changed it to dataType name instead
+		$this->outputFile = $this->outputDir . 'Base' . ucfirst($dataType->getName()) . '.datatype.php';
 	}
 	
 	private function saveOutput()
@@ -121,7 +127,7 @@ class GoodServiceCompiler implements GoodRolemodelVisitor
 		$top  = "<?php\n";
 		$top .= "\n";
 		
-		$top .= "include_once './GeneratedBaseClass.php'\n";
+		$top .= "include_once 'GeneratedBaseClass.php';\n";
 		$top .= "\n";
 		
 		// TODO: fix includes
@@ -149,7 +155,21 @@ class GoodServiceCompiler implements GoodRolemodelVisitor
 		$this->output .= "\n";
 		$this->output .= "?>";
 		
+		
+		$contents  = '<?php' . "\n";
+		$contents .= "\n";
+		$contents .= 'class ' . $this->className . ' extends Base' . ucfirst($this->className) . "\n";
+		$contents .= "{\n";
+		$contents .= "}\n";
+		$contents .= "\n";
+		$contents .= '?>' . "\n";
+		
 		file_put_contents($this->outputFile, $this->output);
+		
+		// TODO: make following line independant of execution path at any time
+		//       and escape some stuff
+		$file = $this->outputDir . $this->className . '.datatype.php';
+		file_put_contents($file, $contents);
 	}
 	
 	public function visitDataMember($dataMember)
@@ -309,7 +329,7 @@ class GoodServiceCompiler implements GoodRolemodelVisitor
 		
 		// null getter
 		// ucfirst: uper case first letter (php builtin)
-		$this->output .= '	' . $this->access . ' function isNull ' . ucfirst($this->varName) . '()' . "\n";
+		$this->output .= '	' . $this->access . ' function isNull' . ucfirst($this->varName) . '()' . "\n";
 		$this->output .= "	{\n";
 		
 		foreach ($this->modifiers as $modifier)
@@ -344,7 +364,7 @@ class GoodServiceCompiler implements GoodRolemodelVisitor
 	}
 	
 	
-	public function finish()
+	public function visitEnd()
 	{
 		if ($this->output != null)
 		{
@@ -359,6 +379,11 @@ class GoodServiceCompiler implements GoodRolemodelVisitor
 			{
 				file_put_contents($this->outputDir . $filename, $contents);
 			}
+		}
+		
+		foreach ($this->modifiers as $modifier)
+		{
+			$modifier->visitEnd();
 		}
 	}
 }

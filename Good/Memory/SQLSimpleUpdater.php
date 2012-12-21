@@ -1,8 +1,8 @@
 <?php
 
-require_once dirname(__FILE__) . '/../Manners/Report/ValueVisitor.php';
+require_once dirname(__FILE__) . '/PropertyVisitor.php';
 
-class GoodMemorySQLSimpleUpdater implements GoodMannersValueVisitor
+class GoodMemorySQLSimpleUpdater implements GoodMemoryPropertyVisitor
 {
 	private $db;
 	private $store;
@@ -10,21 +10,23 @@ class GoodMemorySQLSimpleUpdater implements GoodMannersValueVisitor
 	private $sql;
 	private $first;
 	
-	public function __construct(SQLStore $store, GoodMemoryDatabase $db)
+	public function __construct(GoodMemorySQLStore $store, GoodMemoryDatabase $db)
 	{
 		$this->db = $db;
 		$this->store = $store;
 	}
 	
 	
-	public function update(GoodMannersReferenceValue $value)
+	public function update($datatypeName, GoodMannersStorable $value)
 	{
-		$this->sql = 'UPDATE ' . $this->store->tableNamify($value->getClassName());
+		$this->sql = 'UPDATE ' . $this->store->tableNamify($datatypeName);
 		$this->sql .= ' SET ';
 		
-		$value->visitMembers($this);
+		$this->first = true;
+		$this->store->setCurrentPropertyVisitor($this);
+		$value->acceptStore($this->store);
 		
-		$this->sql .= " WHERE id = " . intval($value->getOriginal()->getId()) . "";
+		$this->sql .= " WHERE id = " . intval($value->getId()) . "";
 		
 		$this->db->query($this->sql);
 	}
@@ -37,66 +39,90 @@ class GoodMemorySQLSimpleUpdater implements GoodMannersValueVisitor
 		}
 		else
 		{
-			$sql .= ', ';
+			$this->sql .= ', ';
 		}
 	}
 	
-	public function visitReferenceValue(GoodMannersReferenceValue $value)
+	public function visitReferenceProperty($name, $datatypeName, $dirty, $null, 
+															GoodMannersStorable $value = null)
 	{
 		// We don't need to recurse, because if the value is dirty as well,
 		// the store knows it and will get to updating it by itself
-		if ($value->isDirty())
+		if ($dirty)
 		{
 			$this->comma();
 			
-			$this->sql .= $this->store->fieldNamify($value->getName());
+			$this->sql .= $this->store->fieldNamify($name);
 			$this->sql .= ' = ';
 		
-			if ($value->isNull())
+			if ($null)
 			{
-				$this->sql .= 'NULL'
+				$this->sql .= 'NULL';
 			}
 			else
 			{
-				$this->sql .= intval($value->getOriginal()->getId());
+				$this->sql .= intval($value->getId());
 			}
 		}
 	}
 	
-	public function visitTextValue(GoodMannersTextValue $value)
+	public function visitTextProperty($name, $dirty, $null, $value)
 	{
-		if ($value->isDirty())
+		if ($dirty)
 		{
 			$this->comma();
 			
-			$this->sql .= $this->store->fieldNamify($value->getName());
+			$this->sql .= $this->store->fieldNamify($name);
 			$this->sql .= ' = ';
-			$this->sql .= $this->store->parseText($value);
+			
+			if ($null)
+			{
+				$this->sql .= 'NULL';
+			}
+			else
+			{
+				$this->sql .= $this->store->parseText($value);
+			}
 		}
 	}
 	
-	public function visitIntValue(GoodMannersIntValue $value)
+	public function visitIntProperty($name, $dirty, $null, $value)
 	{
-		if ($value->isDirty())
+		if ($dirty)
 		{
 			$this->comma();
 			
-			$this->sql .= fieldNamify($value->getName());
+			$this->sql .= $this->store->fieldNamify($name);
 			$this->sql .= ' = ';
-			$this->sql .= $this->store->parseInt($value);
+			
+			if ($null)
+			{
+				$this->sql .= 'NULL';
+			}
+			else
+			{
+				$this->sql .= $this->store->parseInt($value);
+			}
 		}
 	}
 	
-	public function visitFloatValue(GoodMannerwsFloatValue $value)
+	public function visitFloatProperty($name, $dirty, $null, $value)
 	{
-		
-		if ($value->isDirty())
+		if ($dirty)
 		{
 			$this->comma();
 			
-			$this->sql .= fieldNamify($value->getName());
+			$this->sql .= $this->store->fieldNamify($name);
 			$this->sql .= ' = ';
-			$this->sql .= $this->store->parseFloat($value);
+			
+			if ($null)
+			{
+				$this->sql .= 'NULL';
+			}
+			else
+			{
+				$this->sql .= $this->store->parseFloat($value);
+			}
 		}
 	}
 }

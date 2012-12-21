@@ -1,8 +1,9 @@
 <?php
 
 require_once 'Database.php';
+require_once 'DbMySQLResult.php';
 
-class GoodMemeoryDbMySQL implements GoodMemoryDatabase
+class GoodMemoryDbMySQL implements GoodMemoryDatabase
 {
 	private $databaseName;  	// string
 	private $host;				// string
@@ -12,8 +13,7 @@ class GoodMemeoryDbMySQL implements GoodMemoryDatabase
 	private $prefix;
     
 	private $db;
-	
-	private $result;			// mysqli_result object
+	private $result;
 	
 	public function __construct($dbname, $dbhost, $dbport, $dbuser, $dbpass, $dbprefix)
 	{
@@ -24,20 +24,18 @@ class GoodMemeoryDbMySQL implements GoodMemoryDatabase
 		$this->pass = $dbpass;
 		$this->prefix = $dbprefix;
 		
-		$this->database = null;
+		$this->db = null;
         $this->result = null;
 	}
 	
 	private function isConnected()
 	{
-		return ($this->database != null);
+		return ($this->db != null);
 	}
 	
 	private function connect()
 	{
-        $url = $this->host;
-        
-        if ($this->port !== null)
+        if ($this->port == null)
         {
             $this->port = ini_get("mysqli.default_port");
         }
@@ -53,9 +51,13 @@ class GoodMemeoryDbMySQL implements GoodMemoryDatabase
 			$this->connect();
 		}
 		
-		$this->result = $this->db->query($query);
-		if ($_GET['showquery'] == 'true')
+		if (isset($_GET['showquery']) && $_GET['showquery'] == 'true')
 			echo $query . "; <br /> \n";
+		
+		if (isset($_GET['doquery']) && $_GET['doquery'] == 'no')
+			return;
+			
+		$this->result = $this->db->query($query);
 	}
 	
 	public function escapeText($string)
@@ -65,7 +67,7 @@ class GoodMemeoryDbMySQL implements GoodMemoryDatabase
 			$this->connect();
 		}
 		
-		$this->db->escape_string($string);
+		return $this->db->real_escape_string($string);
 	}
     
     public function getLastInsertedId()
@@ -73,9 +75,9 @@ class GoodMemeoryDbMySQL implements GoodMemoryDatabase
         return $this->db->insert_id;
     }
 	
-	public function getNextResult()
+	public function getResult()
 	{
-		return $this->result->fetch_assoc();
+		return new GoodMemoryDbMySQLResult($this->result);
 	}
 	
 	/*

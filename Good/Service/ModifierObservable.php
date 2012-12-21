@@ -10,9 +10,8 @@ class GoodServiceModifierObservable implements GoodServiceModifier
 	
 	public function baseClassTopOfFile()
 	{
-		// TODO: make ESPECIALLY this include location independent
-		$res  = "include_once '../../../Service/Observer.php';\n";
-		$res  = "include_once '../../../Service/Observable.php';\n";
+		$res  = 'include_once $good->getGoodPath() . "/Service/Observer.php";' . "\n";
+		$res  = 'include_once $good->getGoodPath() . "/Service/Observable.php";' . "\n";
 		$res .= "\n";
 		
 		return $res;
@@ -26,7 +25,7 @@ class GoodServiceModifierObservable implements GoodServiceModifier
 	public function baseClassConstructor()
 	{
 		$res = "\n";
-		$res = '		$this->observers = array()' . "\n";
+		$res = '		$this->observers = array();' . "\n";
 		
 		return $res;
 	}
@@ -70,6 +69,7 @@ class GoodServiceModifierObservable implements GoodServiceModifier
 	public function visitTypePrimitiveText($type) {}
 	public function visitTypePrimitiveInt($type) {}
 	public function visitTypePrimitiveFloat($type) {}
+	public function visitEnd() {}
 	
 	public function varDefinitionBefore() {return '';}
 	public function varDefinitionAfter() {return '';}
@@ -78,7 +78,7 @@ class GoodServiceModifierObservable implements GoodServiceModifier
 	public function setterEnd()
 	{
 		$res  = "		\n";
-		$res .= "		notifyObservers();\n";
+		$res .= '		$this->notifyObservers();' . "\n";
 		
 		return $res;
 	}
@@ -92,7 +92,7 @@ class GoodServiceModifierObservable implements GoodServiceModifier
 	public function topOfFile() {return '';}
 	public function classBody() {return '';}
 	public function bottomOfFile() {return '';}
-	public function extraFiles() {return array()}
+	public function extraFiles() {return array();}
 }
 
 ?>
