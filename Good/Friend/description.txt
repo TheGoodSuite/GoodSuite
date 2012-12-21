@@ -1,0 +1,21 @@
+
+
+GoodFriend is the component installer of the Good Suite.
+If it finds itself and/or the base system not installed, it installs those.
+After that, you can use it to install components present but not installed.
+
+As soon as The Good Suite came into being - which was after GoodLooking had
+already come its second version (INT02) - it became clear that there was going
+to be quite the number of components. As such, an installer for them quickly
+sprang to mind.
+The name GoodFriend was also decided on fairly quickly. I don't know which name
+was first of GoodManners, GoodFriend and GoodSport, but GoodSport is no longer
+called that (it's Good... now), so I guess it only has to share the title of 
+first to be named with GoodManners now.
+However, the actual making of GoodFriend wasn't something that happened so soon.
+In the early stages of the Suite, I kept pushing it off and off until I actually
+needed it and until things were actually comnig together a bit.
+One advantage this gave was that I spent a lot of time - while developing other
+components - thinking about how GoodFriend should work (both interface and
+internally) before even starting on it. This included the dependency system, which
+went through several versions in myhead before making anything.

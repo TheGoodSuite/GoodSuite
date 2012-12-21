@@ -5,11 +5,13 @@ include_once 'DataMember.php';
 
 class GoodRolemodelDataType implements GoodRolemodelVisitable
 {
+	private $sourceFileName;
 	private $name;
 	private $dataMembers;
 	
-	public function __construct($name, $dataMembers)
+	public function __construct($sourceFileName, $name, $dataMembers)
 	{
+		$this->sourceFileName = $sourceFileName;
 		// TODO: make sure name is valid
 		$this->name = $name;
 		$this->dataMembers = $dataMembers;
@@ -25,6 +27,11 @@ class GoodRolemodelDataType implements GoodRolemodelVisitable
 		{
 			$this->dataMembers[$i]->accept($visitor);
 		}
+	}
+	
+	public function getSourceFileName()
+	{
+		return $this->sourceFileName;
 	}
 	
 	public function getName()

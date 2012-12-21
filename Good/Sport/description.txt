@@ -1,0 +1,31 @@
+
+Good... makes it possible to use any `store` as it were the file system.
+It can be used by different components that compile to files, to make sure the
+compiled files aren't stored on the file system (but for example, in the 
+database).
+In this usage it doesn't really have a place in MVC, but rather it is a tool
+for use by other components that live just about anywhere else.
+Of course, it can also be used by a user of The Good Suite rather than other
+components, in which it will be able to make systems that aren't too flexible
+more flexible. Or one may find a completely different use for it...
+Used this way I suppose it makes most sense to use it in the Model of MVC, but
+I guess that it actually still lives somewhat outside of MVC.
+
+Good... was the second component of The Good Suite to be concepted. At that
+time, though, it was known as GoodSport. As I didn't think this name had
+enough of a connection to what it did, it was changed.
+The idea was that after spewing out the earliest versions of GoodLooking,
+I decided that the next feature to be added was the ability to compile
+templates to the database as it could be hard to make the system have
+access to the file system at times (it shouldn't be, but sometimes it is).
+I investigated the different ways of making this possible, and a very first
+prototype of what you now know as Good... was made.
+It won out over other ways, and I suppose this was really when The Good Suite
+was born, as I decided that this wasn't going to be a new feature of
+GoodLooking, but rather a different component in the same big picture.
+Before building a real version of Good..., though, I decided that it would
+use other components (well, actually just one at first, but this changed
+along the way) to access the database. This lead to GoodRolemodel, GoodService,
+GoodManners and GoodMemory being created before any real work was done on
+Good...
+Man, the changes to a system that a single new feature can cause...

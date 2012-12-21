@@ -1,0 +1,18 @@
+
+GoodLooking is the template engine of The Good Suite.
+It allows you to use templates which define the looks of your website completely
+seperate from the bussiness logic.
+This way, it takes the role of the View (server-side) in MVC.
+
+GoodLooking is basically where this all started, it is the origin of the entire
+Good Suite. Basically, it started off with me just wanting a templating engine
+and not getting stuck to an entire framework. Ironically, it spawned just that:
+an entire framework.
+It should be said that some of that original sentiment has been kept, though.
+Even as the features of the system grow, everything is still made with a very
+modular approack. This means that if you want nothing but a template engine,
+you can use GoodLooking and just not install any other part of the Good Suite. 
+This also means that instead of a template engine, you want only a way to make
+your database access easier, you can just install only the components for that.
+Of course, the richest experience will be when you use the entire system, but
+the system recognizes that that isn't the right experience for everyone.

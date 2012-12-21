@@ -1,0 +1,22 @@
+
+GoodRolemodel reads datamodel files and makes an abstract model tree out of it
+for use by other components of The Good Suite. Basically, this allows you to
+make language independent models and use them wherever (as the database
+structure, as the model server-side and as the model client-side, for example).
+As you may have notices, it often takes an important place in the Model
+part of MVC, though it will often do its work mostly behind the scenes.
+
+Surprising as it may be, this is actually the second component of The Good
+Suite to have been written.
+The second component work was done on was GoodManners, but at the time it was
+atill something different than it is now. Basically, I tried some different
+ways of making the GoodManners, until I finally got stuck on what could be
+described as "The Expression Problem".
+The project went on a hiatus. When I returned, I didn't solve the problem
+(instead, I decided the dependency system would just have to take care of it), 
+but one thing I did do was cut up what was then supposed to become GoodManners
+into what is now GoodRolemodel, GoodService, what is left in GoodManners and
+perhaps even Good... (though this way of handling it was planned already, I
+don't remember if it was planned all inside GoodManners or already as different
+components).
+Of those, GoodRolemodel was the first to be built.	

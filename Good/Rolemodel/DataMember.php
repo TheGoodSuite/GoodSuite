@@ -10,7 +10,7 @@ class GoodRolemodelDataMember implements GoodRolemodelVisitable
 	private $type;
 	private $name;
 	
-	private static $knownAttributes = array('server_only', 'private', 'public');
+	private static $knownAttributes = array('server_only', 'private', 'protected', 'public');
 	
 	public function __construct($attributes, $type, $name)
 	{
@@ -51,6 +51,16 @@ class GoodRolemodelDataMember implements GoodRolemodelVisitable
 		
 		// move the visitor to your child
 		$this->type->accept($visitor);
+	}
+	
+	public function getAttributes()
+	{
+		return $this->attributes;
+	}
+	
+	public function getName()
+	{
+		return $this->name;
 	}
 	
 	public function getReferencedTypeIfAny()

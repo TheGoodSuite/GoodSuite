@@ -80,7 +80,7 @@ class GoodRolemodel
 			}
 		}
 		
-		return new GoodRolemodelDataType($name, $members);
+		return new GoodRolemodelDataType($file, $name, $members);
 	}
 }
 

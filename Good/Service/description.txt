@@ -1,0 +1,23 @@
+
+GoodService is the component that takes an abstract model tree created by
+GoodRolemodel and turns it into a php class for you.
+In terms of usage, this means it makes server side model classes for you out of
+the datamodel files you made yourself.
+That's also where it names comes from - it's SERVER-side making of model
+classes.
+It provides hooks for other components to modify the result classes. Typical
+uses of this system include GoodManners hooking into this to turn the result
+into a `Store` (thus letting you store the data in it in - for example - your
+database) and Good... hooking into this system to add a function that
+instantiates a javscript version of the class (one created from the same
+datamodel files) with the current data of the class.
+
+GoodService is the second component to spring out of the cutting up of 
+GoodManners into the different components you need right now to access a
+database. As such, it is the third component of which a complete version was
+made.
+I know it's name isn't too good, and I think that thinking of a name actually
+did hold up the making of the component (by half a day or so). It took me quite
+some time to come up with even this, as it's just a hard thing to name.
+I think it is also the first name you shouldn't precede with "you are/have (a)"
+(instead, it should be preceded with "you provide").

@@ -1,0 +1,26 @@
+
+
+GoodMemory is the component that allows you to use GoodManners as an interface
+to a database.
+The system being as modular as it is, GoodManners can't really do anything on
+its own. It's basically nothing but an interface - without an implementation.
+So you will need to have an implementation there, and as databases are by far
+the most common form of persistent storage on the web (and because GoodManners
+is modelled to work naturally with databases) GoodMemory is the obvious choice.
+
+I know Memory on a hardware level is about ram, and this is actually a
+component that is about persistent storage (databases in this case, though it's
+possible ot have a database in RAM, it isn't a very common thing). However, that
+is just not the kind of memory that this name is about.
+Think about it. The RAM is the short-term memory. The persistent storage is the
+long-term memory. If someone were to compliment you on your good memory, he or
+she probably wouldn't be talking about your short-term memory. That's what this
+is about.
+It is interesting to note that this was the last component to be made before any
+components other than GoodLooking had version numbers. The idea here is that
+what was once GoodManners, was now split up into GoodRolemodel, GoodService,
+GoodManners and GoodMemory. Together, they were still the abstraction between
+your code and the database, but everything was much more modular now. However,
+they were still made in succession and the real test for the entire system was
+all those parts working together.
+It was only after that test that they all got promoted to INT01 status.

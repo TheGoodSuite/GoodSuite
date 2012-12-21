@@ -17,6 +17,11 @@ class GoodRolemodelTypeReference extends GoodRolemodelType
 		$visitor->visitTypeReference($this);
 	}
 	
+	public function getReferencedType()
+	{
+		return $this->value;
+	}
+	
 	public function getReferencedTypeIfAny()
 	{
 		return $this->value;

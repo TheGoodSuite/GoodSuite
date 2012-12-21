@@ -1,0 +1,33 @@
+
+GoodManners defines what a `Store` is and gives you tools to interact with one. 
+In this, it also provides a mechanism that can be given to GoodService when
+creating its classes, which will turn those into `Stores`.
+The most obvious way to use GoodManners is with Good... and use them together
+as an interface to your database. However, the idea is that you can use another
+way of storing the store without any changes to your production code.
+The goal of GoodManners is to make the layer between the model and the persistent
+storage. This clearly places it in the realm of the Model in MVC.
+
+GoodManners was the first model work was done on after GoodLooking. However, this
+code all got rewritten at least twice before any version of GoodManners was actually
+made. Good... had received its first prototype, but before doing any work on it, I 
+decided I wanted to make the real version work with the Database abstraction provided 
+by The Good Suite.
+At first, that was actually what GoodManners was, a database abstraction layer. Over
+time, though, I made diffferent things out of it. One of the versions was built on
+joins and specified a syntax for working with joined tables.
+A major change came when I made GoodManners more abstract, meaning it could now not
+just be used to store things in databases, but in anything you wrote another storing
+class for. Basically, the changes started with me getting stuck.
+I wanted a system that was both extensible itself (think about adding a new datatype)
+and new Storing classes could be written for, while sticking to the Open/Closed
+principle. This can be classified as "The Extension Problem". The project went on a
+long hiatus because I got stuck.
+When I got back to the project, I didn't solve the problem. Instead, I just gave up
+the Open/Closed principle and decided the dependency system would have to handle it.
+What I did do, though, was cut what was then GoodManners up in the different pieces
+you know it as now: GoodRolemodel, GoodService, the current GoodManners and Good...
+This way, it didn't get to be the first component (after GoodLooking, of course) to
+get a version made. That honor went to GoodRolemodel instead. I do feel I should add
+that it wasn't any more than an unnamed version sitting on my computer until after
+GoodManners was also done, though.
