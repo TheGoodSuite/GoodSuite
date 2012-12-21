@@ -49,7 +49,8 @@ class GoodMemorySQLStoreCompiler implements GoodRolemodelVisitor
 		$this->output .= "	}\n";
 		$this->output .= "	\n";
 		$this->output .= '	protected function doGet' . ucfirst($name) .
-							'Collection(GoodMannersCondition $condition, ' . $name . ' $resolver)' . "\n";
+							'Collection(GoodMannersCondition $condition, ' . $name . 
+																	'Resolver $resolver)' . "\n";
 		$this->output .= "	{\n";
 		$this->output .= '		$res = $this->doAnyGet("' . $name . '", $condition, $resolver);' . "\n";
 		$this->output .= '		return new ' . $name . 'Collection($this, $res);' . "\n";

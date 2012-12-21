@@ -3,6 +3,8 @@
 require_once dirname(__FILE__) . '/../Manners/StoreSpecifications/ComparingStore.php';
 require_once dirname(__FILE__) . '/../Manners/StoreSpecifications/BasicLogicStore.php';
 
+require_once dirname(__FILE__) . '/../Manners/Resolver.php';
+
 require_once dirname(__FILE__) . '/SQLSimpleUpdater.php';
 require_once dirname(__FILE__) . '/SQLAdvancedUpdater.php';
 require_once dirname(__FILE__) . '/SQLInserter.php';
@@ -103,7 +105,7 @@ abstract class GoodMemoryBaseSQLStore extends GoodMannersStore
 	
 	protected function doAnyGet($datatypeName, 
 								GoodMannersCondition $condition, 
-								GoodMannersStorable $resolver)
+								GoodMannersResolver $resolver)
 	{
 		$this->joins = array(0 => array());
 		$this->numberOfJoins = 0;

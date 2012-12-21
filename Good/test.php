@@ -1,16 +1,13 @@
 <?php
 
-ini_set('allow_call_time_pass_reference', 'Off');
+$test = array();
 
-class Person{
-    public $Name;
-}
-function Something(Person $Person){
-    $Person->Name = 'Jimbob';
-}
-$A = new Person();
-$A->Name = 'James';
-Something($A);
-echo $A->Name; //Jimbob  
+$test[4] = 'test 4';
+$test[5] = 'test 5';
+$test[3] = 'test 3';
+$test[1] = 'test 1';
+$test[2] = 'test 2';
+
+echo implode(', ', $test);
 
 ?>

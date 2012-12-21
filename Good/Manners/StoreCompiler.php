@@ -14,6 +14,9 @@ class GoodMannersStoreCompiler implements GoodRolemodelVisitor
 	private $firstDateType = true;
 	private $dataType = null;
 	
+	private $resolver = null;
+	private $resolverVisit = null;
+	
 	public function __construct($outputDir)
 	{
 		$this->outputDir = $outputDir;
@@ -71,7 +74,8 @@ class GoodMannersStoreCompiler implements GoodRolemodelVisitor
 		$this->output .= '	abstract protected function doModifyAny' . ucfirst($name) . 
 							'(GoodMannersCondition $condition, ' . $name . ' $modifications);' . "\n";
 		$this->output .= '	abstract protected function doGet' . ucfirst($name) .
-							'Collection(GoodMannersCondition $condition, ' . $name . ' $resolver);' . "\n";
+							'Collection(GoodMannersCondition $condition, ' . $name . 
+															'Resolver $resolver);' . "\n";
 		$this->output .= "	\n";
 		$this->output .= '	abstract protected function saveNew' . ucfirst($name) . 
 																's(array $entries);' . "\n";
@@ -110,7 +114,7 @@ class GoodMannersStoreCompiler implements GoodRolemodelVisitor
 		$this->output .= "	}\n";
 		$this->output .= "	\n";
 		$this->output .= '	public function get' . ucfirst($name) . 'Collection(GoodMannersCondition ' .
-													 '$condition, ' . $name . ' $resolver)' . "\n";
+													 '$condition, ' . $name . 'Resolver $resolver)' . "\n";
 		$this->output .= "	{\n";
 		$this->output .= '		return $this->doGet' . ucfirst($name) . 
 													'Collection($condition, $resolver);' . "\n";
@@ -132,6 +136,17 @@ class GoodMannersStoreCompiler implements GoodRolemodelVisitor
 		$this->create .= "		}";
 		$this->create .= "		\n";
 		$this->create .= '		$ret = ' . $name . '::createExisting($this, $array[$table . "_id"]';
+		
+		$this->resolver  = "<?php\n";
+		$this->resolver .= "\n";
+		$this->resolver .= 'require_once $good->getGoodPath() . "/Manners/AbstractResolver.php";' . "\n";
+		$this->resolver .= "\n";
+		$this->resolver .= 'class ' . $name . 'Resolver extends GoodMannersAbstractResolver' . "\n";
+		$this->resolver .= "{\n";
+		
+		$this->resolverVisit  = '	public function resolverAccept' . 
+												'(GoodMannersResolverVisitor $visitor)' . "\n";
+		$this->resolverVisit .= "	{\n";
 	}
 	
 	public function visitEnd()
@@ -217,6 +232,7 @@ class GoodMannersStoreCompiler implements GoodRolemodelVisitor
 		
 		$top .= 'require_once $good->getGoodPath() . "/Manners/Condition.php";' . "\n";
 		$top .= 'require_once $good->getGoodPath() . "/Manners/ValidationToken.php";' . "\n";
+		$top .= 'require_once $good->getGoodPath() . "/Manners/Resolver.php";' . "\n";
 		$top .= "\n";
 		foreach ($this->dataTypes as $className)
 		{
@@ -248,6 +264,36 @@ class GoodMannersStoreCompiler implements GoodRolemodelVisitor
 		$this->create .= '					$array) && $array[$table . "_" . $this->fieldNamify("' . $this->varName . "\")]\n";
 		$this->create .= '					 !== null ? $this->create' . ucfirst($type->getReferencedType()) . 
 											'($array, "t" . $nextTable, $nextTable) : null';
+		
+		$this->resolver .= '	private $resolved' . ucfirst($this->varName) . ' = null;' . "\n"; 
+		$this->resolver .= "	\n";
+		$this->resolver .= '	public function resolve' . ucfirst($this->varName) . '()' . "\n"; 
+		$this->resolver .= "	{\n";
+		$this->resolver .= '		$this->resolved' . ucfirst($this->varName) . ' = ' .
+										'new ' . $type->getReferencedType() . 
+																'Resolver($this->root);' . "\n";
+		$this->resolver .= "		\n";
+		$this->resolver .= '		return $this->resolved' . ucfirst($this->varName) . ';' . "\n"; 
+		$this->resolver .= "	}\n";
+		$this->resolver .= "	\n";
+		$this->resolver .= '	public function get' . ucfirst($this->varName) . '()' . "\n"; 
+		$this->resolver .= "	{\n";
+		$this->resolver .= '		return $this->resolved' . ucfirst($this->varName) . ';' . "\n"; 
+		$this->resolver .= "	}\n";
+		$this->resolver .= "	\n";
+		
+		$this->resolverVisit .= '		if ($this->resolved' . ucfirst($this->varName) . ' != null)' . "\n";
+		$this->resolverVisit .= "		{\n";
+		$this->resolverVisit .= '			$visitor->resolverVisitResolvedReferenceProperty("' .
+											$this->varName . '", "' . $type->getReferencedType() . 
+											'", ' . '$this->resolved' . ucfirst($this->varName) . 
+											');' . "\n";
+		$this->resolverVisit .= "		}\n";
+		$this->resolverVisit .= '		else' . "\n";
+		$this->resolverVisit .= "		{\n";
+		$this->resolverVisit .= '			$visitor->resolverVisitUnresolvedReferenceProperty(' . 
+											'"' . $this->varName . '");' . "\n";
+		$this->resolverVisit .= "		}\n";
 	}
 	public function visitTypePrimitiveText($type)
 	{
@@ -266,6 +312,45 @@ class GoodMannersStoreCompiler implements GoodRolemodelVisitor
 	{
 		$this->create .= ",\n";
 		$this->create .= '			$array[$table . "_" . $this->fieldNamify("' . $this->varName . '")]';
+		
+		$this->resolver .= '	private $orderNumber' . ucfirst($this->varName) . ' = -1;' . "\n";
+		$this->resolver .= '	private $orderDirection' . ucfirst($this->varName) . ' = -1;' . "\n";
+		$this->resolver .= "	\n";
+		$this->resolver .= '	public function order' . ucfirst($this->varName) . 'Asc()' . "\n";
+		$this->resolver .= "	{\n";
+		$this->resolver .= '		$this->orderNumber' . ucfirst($this->varName) .
+														' = $this->drawOrderTicket();' . "\n";
+		$this->resolver .= '		$this->orderDirection' . ucfirst($this->varName) . 
+														' = self::ORDER_DIRECTION_ASC;' . "\n";
+		$this->resolver .= "	}\n";
+		$this->resolver .= "	\n";
+		$this->resolver .= '	public function order' . ucfirst($this->varName) . 'Desc()' . "\n";
+		$this->resolver .= "	{\n";
+		$this->resolver .= '		$this->orderNumber' . ucfirst($this->varName) .
+														' = $this->drawOrderTicket();' . "\n";
+		$this->resolver .= '		$this->orderDirection' . ucfirst($this->varName) . 
+														' = self::ORDER_DIRECTION_DESC;' . "\n";
+		$this->resolver .= "	}\n";
+		$this->resolver .= "	\n";
+		
+		$this->resolverVisit .= '		$visitor->resolverVisitNonReferenceProperty("' .
+															$this->varName . '");' . "\n";
+		$this->resolverVisit .= '		if ($this->orderNumber' . ucfirst($this->varName) . ' != -1)' . "\n";
+		$this->resolverVisit .= "		{\n";
+		$this->resolverVisit .= '			if ($this->orderDirection' . ucfirst($this->varName) . 
+														'== self::ORDER_DIRECTION_ASC)' . "\n";
+		$this->resolverVisit .= "			{\n";
+		$this->resolverVisit .= '				$visitor->resolverVisitOrderAsc($this->orderNumber' 
+													. ucfirst($this->varName) . ', "'
+													. $this->varName . '");' . "\n";
+		$this->resolverVisit .= "			}\n";
+		$this->resolverVisit .= '			else' . "\n";
+		$this->resolverVisit .= "			{\n";
+		$this->resolverVisit .= '				$visitor->resolverVisitOrderDesc($this->orderNumber' 
+													. ucfirst($this->varName) . ', "'
+													. $this->varName . '");' . "\n";
+		$this->resolverVisit .= "			}\n";
+		$this->resolverVisit .= "		}\n";
 	}
 	
 	private function finishDataType()
@@ -279,6 +364,17 @@ class GoodMannersStoreCompiler implements GoodRolemodelVisitor
 		$this->create .= "	\n";
 		
 		$this->output .= $this->create;
+		
+		$this->resolverVisit .= "	}\n";
+		$this->resolverVisit .= "	\n";
+		
+		$this->resolver .= $this->resolverVisit;
+		
+		$this->resolver .= "}\n";
+		$this->resolver .= "\n";
+		$this->resolver .= "?>";
+		
+		file_put_contents($this->outputDir . $this->dataType . 'Resolver.php', $this->resolver);
 	}
 }
 

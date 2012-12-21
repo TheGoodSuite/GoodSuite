@@ -16,7 +16,7 @@ class GoodMannersModifierStorable implements GoodServiceModifier
 	
 	public function baseClassTopOfFile()
 	{
-		$res  = 'include_once $good->getGoodPath() . "/Manners/Storable.php";' . "\n";
+		$res  = 'require_once $good->getGoodPath() . "/Manners/Storable.php";' . "\n";
 		$res .= "\n";
 		
 		return $res;
@@ -298,7 +298,14 @@ class GoodMannersModifierStorable implements GoodServiceModifier
 		return $this->setterEnd();
 	}
 	
-	public function topOfFile() {return '';}
+	public function topOfFile()
+	{
+		$res  = 'require_once "' . $this->className . 'Resolver.php";' . "\n";
+		$res .= "\n";
+		
+		return $res;
+	}
+	
 	public function classBody() 
 	{
 		$res  = '	protected function dirty()' . "\n";
