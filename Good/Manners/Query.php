@@ -2,7 +2,7 @@
 
 interface GoodMannersQuery
 {
-    public function getSQL();
+    public function execute();
 }
 
 ?>
