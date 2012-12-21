@@ -281,7 +281,7 @@ class GoodServiceCompiler implements GoodRolemodelVisitor
 		
 		$this->output .= '	private $' . $this->varName . ";\n";
 		// ucfirst: uper case first letter (php builtin)
-		$this->output .= '	private $isNull' . ucfirst($this->varName) . ";\n";
+		$this->output .= '	private $is' . ucfirst($this->varName) . "Null;\n";
 		$this->output .= "	\n";
 		
 		foreach ($this->modifiers as $modifier)
@@ -329,7 +329,7 @@ class GoodServiceCompiler implements GoodRolemodelVisitor
 		
 		// null getter
 		// ucfirst: uper case first letter (php builtin)
-		$this->output .= '	' . $this->access . ' function isNull' . ucfirst($this->varName) . '()' . "\n";
+		$this->output .= '	' . $this->access . ' function is' . ucfirst($this->varName) . 'Null()' . "\n";
 		$this->output .= "	{\n";
 		
 		foreach ($this->modifiers as $modifier)
@@ -337,13 +337,13 @@ class GoodServiceCompiler implements GoodRolemodelVisitor
 			$this->output .= $modifier->nullGetterBegin();
 		}
 		
-		$this->output .= '		return $this->isNull' . ucfirst($this->varName) . ';' . "\n";
+		$this->output .= '		return $this->is' . ucfirst($this->varName) . 'Null;' . "\n";
 		$this->output .= "	}\n";
 		$this->output .= "	\n";
 		
 		// null setter
 		// ucfirst: uper case first letter (php builtin)
-		$this->output .= '	' . $this->access . ' function makeNull' . ucfirst($this->varName) . '($value = true)' . "\n";
+		$this->output .= '	' . $this->access . ' function make' . ucfirst($this->varName) . 'Null($value = true)' . "\n";
 		$this->output .= "	{\n";
 		
 		foreach ($this->modifiers as $modifier)
@@ -351,7 +351,7 @@ class GoodServiceCompiler implements GoodRolemodelVisitor
 			$this->output .= $modifier->nullSetterBegin();
 		}
 		
-		$this->output .= '		$this->isNull' . ucfirst($this->varName) . ' = $value;' . "\n";
+		$this->output .= '		$this->is' . ucfirst($this->varName) . 'Null = $value;' . "\n";
 		
 		foreach ($this->modifiers as $modifier)
 		{

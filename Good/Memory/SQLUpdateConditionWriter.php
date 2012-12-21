@@ -214,15 +214,17 @@ class GoodMemorySQLUpdateConditionWriter implements GoodMemoryPropertyVisitor,
 	{
 		if ($dirty)
 		{
-			$this->writeBracketOrAnd();
-			
 			if($null)
 			{
+				$this->writeBracketOrAnd();
+				
 				$this->writeTableName();
 				$this->condition .= '.' . $this->store->fieldNamify($name) . $this->comparison . ' NULL';
 			}
 			else if (!$value->isNew())
 			{
+				$this->writeBracketOrAnd();
+				
 				$this->writeTableName();
 				$this->condition .= '.' . $this->store->fieldNamify($name) . 
 											$this->comparison . ' ' . intval($value->getId());
@@ -270,7 +272,7 @@ class GoodMemorySQLUpdateConditionWriter implements GoodMemoryPropertyVisitor,
 																	' AS t' . $join;
 								
 						$this->condition .= $subWriter->getJoining();
-						$this->condition .= ' WHERE ' . $subWriter->getCondition;
+						$this->condition .= ' WHERE ' . $subWriter->getCondition();
 						$this->condition .= ')';
 					}
 				}

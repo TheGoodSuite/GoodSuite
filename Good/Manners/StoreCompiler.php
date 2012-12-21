@@ -9,7 +9,6 @@ class GoodMannersStoreCompiler implements GoodRolemodelVisitor
 	private $outputDir;
 	private $dataTypes = array();
 	private $output = null;
-	private $create = null;
 	private $varName = null;
 	private $firstDateType = true;
 	private $dataType = null;
@@ -90,10 +89,7 @@ class GoodMannersStoreCompiler implements GoodRolemodelVisitor
 		$this->output .= '	public function dirty' . ucfirst($name) . 
 												'(' . $name . ' $storable)' . "\n";
 		$this->output .= "	{\n";
-		$this->output .= '		if (!$storable->isBlank())' . "\n";
-		$this->output .= "		{\n";
-		$this->output .= '			$this->dirty' . ucfirst($name) . 's[] = $storable;' . "\n";
-		$this->output .= "		}\n";
+		$this->output .= '		$this->dirty' . ucfirst($name) . 's[] = $storable;' . "\n";
 		$this->output .= "	}\n";
 		$this->output .= "	\n";
 		$this->output .= '	public function insert' . ucfirst($name) . 
@@ -120,22 +116,6 @@ class GoodMannersStoreCompiler implements GoodRolemodelVisitor
 													'Collection($condition, $resolver);' . "\n";
 		$this->output .= "	}\n";
 		$this->output .= "	\n";
-		
-		$this->create  = '	private $created' . ucfirst($name) . 's = array();' . "\n";
-		$this->create .= "	\n";
-		$this->create .= '	public function create' . ucfirst($name) .
-														'(array $array, $table = "t0", &$nextTable = 0)' . "\n";
-		$this->create .= "	{\n";
-		$this->create .= '		$nextTable++;' . "\n";
-		$this->create .= "		\n";
-		$this->create .= '		if (array_key_exists($array[$table . "_id"], ' .
-															'$this->created' . ucfirst($name) . 's))' . "\n";
-		$this->create .= "		{\n";
-		$this->create .= '			return $this->created' . ucfirst($name) . 
-													's[$array[$this->tableNamify($table) . "_id"]];' . "\n";
-		$this->create .= "		}";
-		$this->create .= "		\n";
-		$this->create .= '		$ret = ' . $name . '::createExisting($this, $array[$table . "_id"]';
 		
 		$this->resolver  = "<?php\n";
 		$this->resolver .= "\n";
@@ -212,7 +192,7 @@ class GoodMannersStoreCompiler implements GoodRolemodelVisitor
 		$this->output .= '	private $reflush = false;' . "\n";
 		$this->output .= "	\n";
 		$this->output .= '	public function reflush()' . "\n";
-		$this->output .= "	{";
+		$this->output .= "	{\n";
 		$this->output .= '		if ($this->flushes == 0)' . "\n";
 		$this->output .= "		{\n";
 		$this->output .= '			$this->reflush = false;' . "\n";
@@ -258,13 +238,6 @@ class GoodMannersStoreCompiler implements GoodRolemodelVisitor
 	}
 	public function visitTypeReference($type)
 	{
-		$this->create .= ",\n";
-		// TODO: spread this (and all arguments) over multiple lines in output
-		$this->create .= '			array_key_exists($table . "_" . $this->fieldNamify("' . $this->varName . '"),' . "\n"; 
-		$this->create .= '					$array) && $array[$table . "_" . $this->fieldNamify("' . $this->varName . "\")]\n";
-		$this->create .= '					 !== null ? $this->create' . ucfirst($type->getReferencedType()) . 
-											'($array, "t" . $nextTable, $nextTable) : null';
-		
 		$this->resolver .= '	private $resolved' . ucfirst($this->varName) . ' = null;' . "\n"; 
 		$this->resolver .= "	\n";
 		$this->resolver .= '	public function resolve' . ucfirst($this->varName) . '()' . "\n"; 
@@ -297,26 +270,23 @@ class GoodMannersStoreCompiler implements GoodRolemodelVisitor
 	}
 	public function visitTypePrimitiveText($type)
 	{
-		$this->createNonReference();
+		$this->visitNonReference();
 	}
 	public function visitTypePrimitiveInt($type)
 	{
-		$this->createNonReference();
+		$this->visitNonReference();
 	}
 	public function visitTypePrimitiveFloat($type)
 	{
-		$this->createNonReference();
+		$this->visitNonReference();
 	}
 	
-	private function createNonReference()
+	private function visitNonReference()
 	{
-		$this->create .= ",\n";
-		$this->create .= '			$array[$table . "_" . $this->fieldNamify("' . $this->varName . '")]';
-		
 		$this->resolver .= '	private $orderNumber' . ucfirst($this->varName) . ' = -1;' . "\n";
 		$this->resolver .= '	private $orderDirection' . ucfirst($this->varName) . ' = -1;' . "\n";
 		$this->resolver .= "	\n";
-		$this->resolver .= '	public function order' . ucfirst($this->varName) . 'Asc()' . "\n";
+		$this->resolver .= '	public function orderBy' . ucfirst($this->varName) . 'Asc()' . "\n";
 		$this->resolver .= "	{\n";
 		$this->resolver .= '		$this->orderNumber' . ucfirst($this->varName) .
 														' = $this->drawOrderTicket();' . "\n";
@@ -324,7 +294,7 @@ class GoodMannersStoreCompiler implements GoodRolemodelVisitor
 														' = self::ORDER_DIRECTION_ASC;' . "\n";
 		$this->resolver .= "	}\n";
 		$this->resolver .= "	\n";
-		$this->resolver .= '	public function order' . ucfirst($this->varName) . 'Desc()' . "\n";
+		$this->resolver .= '	public function orderBy' . ucfirst($this->varName) . 'Desc()' . "\n";
 		$this->resolver .= "	{\n";
 		$this->resolver .= '		$this->orderNumber' . ucfirst($this->varName) .
 														' = $this->drawOrderTicket();' . "\n";
@@ -355,16 +325,6 @@ class GoodMannersStoreCompiler implements GoodRolemodelVisitor
 	
 	private function finishDataType()
 	{
-		$this->create .= "\n";
-		$this->create .= '		);' . "\n";
-		$this->create .= '		$created' . ucfirst($this->dataType) . 's[$array[$table . "_id"]] = $ret;' . "\n";
-		$this->create .= "		\n";
-		$this->create .= '		return $ret;' . "\n";
-		$this->create .= "	}\n";
-		$this->create .= "	\n";
-		
-		$this->output .= $this->create;
-		
 		$this->resolverVisit .= "	}\n";
 		$this->resolverVisit .= "	\n";
 		

@@ -1,13 +1,12 @@
 <?php
 
-$test = array();
+class A
+{
+}
 
-$test[4] = 'test 4';
-$test[5] = 'test 5';
-$test[3] = 'test 3';
-$test[1] = 'test 1';
-$test[2] = 'test 2';
+$a = new A();
 
-echo implode(', ', $test);
+$a->bla = 'bla';
+$a->bladiebla();
 
 ?>

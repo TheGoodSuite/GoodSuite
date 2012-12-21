@@ -72,7 +72,7 @@ class GoodMemorySQLAdvancedUpdater implements GoodMemoryPropertyVisitor
 		}
 		else
 		{
-			$sql .= ', ';
+			$this->sql .= ', ';
 		}
 	}
 	
@@ -94,16 +94,16 @@ class GoodMemorySQLAdvancedUpdater implements GoodMemoryPropertyVisitor
 			{
 				$this->comma();
 				
-				$this->sql .= $this->store->fieldNamify($value->getName());
+				$this->sql .= $this->store->fieldNamify($name);
 				$this->sql .= ' = ';
 			
-				if ($value->isNull())
+				if ($null)
 				{
 					$this->sql .= 'NULL';
 				}
 				else
 				{
-					$this->sql .= intval($value->getOriginal()->getId());
+					$this->sql .= intval($value->getId());
 				}
 			}
 		}
@@ -158,7 +158,7 @@ class GoodMemorySQLAdvancedUpdater implements GoodMemoryPropertyVisitor
 		{
 			$this->comma();
 			
-			$this->sql .= fieldNamify($name);
+			$this->sql .= $this->store->fieldNamify($name);
 			$this->sql .= ' = ';
 			
 			if ($null)

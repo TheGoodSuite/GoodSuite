@@ -17,11 +17,10 @@ interface GoodMannersStorable
 	public function isNew();
 	public function setStore(GoodMannersStore $store);
 	public function setValidationToken(GoodMannersValidationToken $token);
-	public function isBlank();
 	public function getId();
 	public function isDirty();
 	
-	public static function getBlank();
+	public static function resolver();
 }
 
 

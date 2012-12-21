@@ -24,15 +24,12 @@ class GoodServiceModifierObservable implements GoodServiceModifier
 	
 	public function baseClassConstructor()
 	{
-		$res = "\n";
-		$res = '		$this->observers = array();' . "\n";
-		
-		return $res;
+		return '';
 	}
 	public function baseClassBody()
 	{
 		$res  = "	// Observer pattern (Observable)\n";
-		$res .= '	private $observers;' . "\n";
+		$res .= '	private $observers = array();' . "\n";
 		$res .= "	\n";
 		$res .= '	public function register(GoodServiceObserver $observer)'. "\n";
 		$res .= "	{\n";

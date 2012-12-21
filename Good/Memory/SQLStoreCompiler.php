@@ -9,6 +9,11 @@ class GoodMemorySQLStoreCompiler implements GoodRolemodelVisitor
 	private $outputDir;
 	private $output = null;
 	private $includes = array();
+	private $create = null;
+	private $firstDateType = true;
+	
+	private $varName;
+	private $dataType;
 	
 	public function __construct($outputDir)
 	{
@@ -29,7 +34,17 @@ class GoodMemorySQLStoreCompiler implements GoodRolemodelVisitor
 	
 	public function visitDataType($dataType)
 	{
+		if ($this->firstDateType)
+		{
+			$this->firstDateType = false;
+		}
+		else
+		{
+			$this->finishDataType();
+		}
+		
 		$name = $dataType->getName();
+		$this->dataType = $name;
 		
 		// ucfirst: upper case first (php builtin)
 		$this->output .= '	protected function saveNew' . ucfirst($name) . 's(array $entries)' . "\n";
@@ -62,6 +77,21 @@ class GoodMemorySQLStoreCompiler implements GoodRolemodelVisitor
 		$this->output .= '		$this->doAnyModify("' . $name . '", $condition, $modifications);' . "\n";
 		$this->output .= "	}\n";
 		
+		$this->create  = '	private $created' . ucfirst($name) . 's = array();' . "\n";
+		$this->create .= "	\n";
+		$this->create .= '	public function create' . ucfirst($name) .
+														'(array $array, $table = "t0", &$nextTable = 0)' . "\n";
+		$this->create .= "	{\n";
+		$this->create .= '		$nextTable++;' . "\n";
+		$this->create .= "		\n";
+		$this->create .= '		if (array_key_exists($array[$table . "_id"], ' .
+															'$this->created' . ucfirst($name) . 's))' . "\n";
+		$this->create .= "		{\n";
+		$this->create .= '			return $this->created' . ucfirst($name) . 
+													's[$array[$this->tableNamify($table) . "_id"]];' . "\n";
+		$this->create .= "		}";
+		$this->create .= "		\n";
+		$this->create .= '		$ret = ' . $name . '::createExisting($this, $array[$table . "_id"]';
 		
 		$out  = '<?php' . "\n";
 		$out .= "\n";
@@ -91,6 +121,8 @@ class GoodMemorySQLStoreCompiler implements GoodRolemodelVisitor
 	
 	public function visitEnd()
 	{
+		$this->finishDataType();
+		
 		// neatly start the file
 		$top  = "<?php\n";
 		$top .= "\n";
@@ -116,11 +148,54 @@ class GoodMemorySQLStoreCompiler implements GoodRolemodelVisitor
 		file_put_contents($this->outputDir . 'SQLStore.php', $this->output);
 	}
 	
-	public function visitDataMember($dataMember) {}
-	public function visitTypeReference($type) {}
-	public function visitTypePrimitiveText($type) {}
-	public function visitTypePrimitiveInt($type) {}	
-	public function visitTypePrimitiveFloat($type) {}
+	public function visitDataMember($dataMember) 
+	{
+		$this->varName = $dataMember->getName();
+	}
+	
+	public function visitTypeReference($type)
+	{
+		$this->create .= ",\n";
+		// TODO: spread this (and all arguments) over multiple lines in output
+		$this->create .= '			array_key_exists($table . "_" . $this->fieldNamify("' . 
+																$this->varName . '"),' . "\n"; 
+		$this->create .= '					$array) && $array[$table . "_" . $this->fieldNamify("' . 
+																				$this->varName . "\")]\n";
+		$this->create .= '					 !== null ? $this->create' . 
+												ucfirst($type->getReferencedType()) . 
+												'($array, "t" . $nextTable, $nextTable) : null';
+	}
+	public function visitTypePrimitiveText($type)
+	{
+		$this->visitNonReference();
+	}
+	public function visitTypePrimitiveInt($type)
+	{
+		$this->visitNonReference();
+	}
+	public function visitTypePrimitiveFloat($type)
+	{
+		$this->visitNonReference();
+	}
+	
+	private function visitNonReference()
+	{
+		$this->create .= ",\n";
+		$this->create .= '			$array[$table . "_" . $this->fieldNamify("' . $this->varName . '")]';
+	}
+	
+	private function finishDataType()
+	{
+		$this->create .= "\n";
+		$this->create .= '		);' . "\n";
+		$this->create .= '		$created' . ucfirst($this->dataType) . 's[$array[$table . "_id"]] = $ret;' . "\n";
+		$this->create .= "		\n";
+		$this->create .= '		return $ret;' . "\n";
+		$this->create .= "	}\n";
+		$this->create .= "	\n";
+		
+		$this->output .= $this->create;
+	}
 }
 
 ?>
