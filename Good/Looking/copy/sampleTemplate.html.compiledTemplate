@@ -1,0 +1,74 @@
+
+
+
+
+
+<html>
+<head>
+<title>Page's Name - <?php echo $this->getVar('title');?></title>
+</head>
+<body>
+<h1><?php echo $this->getVar('title');?></h1>
+
+<?php if ($this->getVar('logged_in')){?>
+	<p>Welcome <?php echo $this->getVar('name');?></p>
+<?php }else {?>
+	<?php if ($this->getVar('loginpage')){?>
+	
+		<p>Welcome, guest. Please register or log in</p>
+		
+	<?php }?>
+<?php }?>
+
+
+
+
+
+
+
+<p><?php echo $this->getVar('mainText');?></p>
+
+<?php $this->registerSpecialVar('newspaper', 0);$this->templateVars[1] = 0;foreach ($this->getVar('newspapers') as $this->templateVars[0]){$this->templateVars[1]++;?>
+	<table border="1">
+	
+	
+	
+	
+	
+	<?php $this->registerSpecialVar('article', 2);$this->templateVars[3] = 0;foreach ($this->getVar('newspaper') as $this->templateVars[2]){$this->templateVars[3]++;?>
+		<tr>
+		<td><?php echo $this->arrayItem($this->getVar('article'), 'name');?></td>
+		<td><?php echo $this->arrayItem($this->getVar('article'), 'date');echo ' - ';echo $this->arrayItem($this->getVar('article'), 'time');?></td>
+		
+		<td>views: <?php echo 10 + $this->arrayItem($this->getVar('article'), 'viewCount');?></td>
+		
+		<td>
+		<?php $this->registerSpecialVar('review', 4);$this->templateVars[5] = 0;foreach ($this->arrayItem($this->getVar('article'), 'reviews') as $this->templateVars[4]){$this->templateVars[5]++;?>
+			<a href='<?php echo $this->arrayItem($this->getVar('review'), 0);?>'><img src='<?php echo $this->arrayItem($this->getVar('review'), 1);?>' />
+			<?php echo $this->arrayItem($this->getVar('review'), 2);?></a><br />
+		<?php }?>
+		</td>
+		
+		
+			
+		<td class='<?php if ($this->arrayItem($this->getVar('article'), 'price') <= 2){?>redPrice<?php }else {?>price<?php }?>'>&euro;<?php echo $this->arrayItem($this->getVar('article'), 'price');?></td>
+		
+		
+		
+		<td><?php if ($this->arrayItem($this->arrayItem($this->getVar('article'), 'buy-now'), 'present') == true){echo $this->arrayItem($this->arrayItem($this->getVar('article'), 'buy-now'), 'link');}else {echo "Buy-now not present!";}?></td>
+			
+		</tr>
+	<?php }?>
+	
+	</table>
+<?php }?>
+
+<?php $this->templateVars[6] = $this->determineDelta(1, $this->getVar('ourFriendsCount'));for ($this->templateVars[7] = 1;$this->templateVars[7] <= $this->getVar('ourFriendsCount'); $this->templateVars[7] += $this->templateVars[6]){?>
+	<img src='friend.jpg' />
+<?php }?>
+
+<?php if ($this->getVar('insertFooter') == true && $this->getVar('footer') != "randomFooter"){?>
+	<?php echo 'footer.html';?>
+<?php }?>
+
+</html>

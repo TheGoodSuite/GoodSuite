@@ -1,0 +1,137 @@
+<:<:- TEST -:>:>
+
+<:- 
+	this is a sample template for my Templating system
+	Please do acknowledge that I am writing this file while my system can't even parse
+	a variable yet - so this is just a guideline for myself, not a file that is guaranteed to work
+	
+	Comment-syntax is like in the case of this piece of text, the comment delimiters are <:- and - : > (remove space,
+	I just wanted to make sure I did not break this comment)
+	Script delimiters are <: and :>
+	A comment may be inside script-tags or outside - it doesn't really matter
+-:>
+
+<:- 
+	This sample script want the following variables to be registered:
+		logged_in - whether the user is logged in
+		loginpage - whether this is a page you can log in on
+		name - current user's name
+		title - page's title
+		mainText - the main text for the page
+		newspapers - an array of newspapers
+			newspapers[] - any of these newspapers is again an array of articles
+				newspapers[][Article] - each of these articles is an array with properties of the article
+					newspapers[][Article]['name']
+					newspapers[][Article]['date']
+					newspapers[][Article]['time']
+					newspapers[][Article]['viewCount']
+					newspapers[][Article]['reviews'] - an array of review for the article
+						newspapers[][Article]['reviews'][] - each member of this array is array of properties
+						newspapers[][Article]['reviews'][][0] - href
+						newspapers[][Article]['reviews'][][1] - image
+						newspapers[][Article]['reviews'][][2] - title
+					newspapers[][Article]['price'] - price to read full article
+					newspapers[][Article]['buy-now'] - array of buy-now properties
+					newspapers[][Article]['buy-now']['present'] - whether or not the buy-now possibility is there
+					newspapers[][Article]['buy-now']['link'] - a link to the respective buy-now page
+		newspaperLinks[] - takes the name of a newspaper and holds it's link
+		newspaperNames[] - takes a newspaper number and holds it's name
+		ourFriendsCount - the amount of friends that should be drawn at the bottom of the page
+		insertFooter - whether or not a footer should be inserted
+		footer - is "randomFooter" when a random footer should be included
+		
+	Now, that's quite a few variables and some quite complicated arrays. This won't be too common (I hope)
+	in applications (that aren't too complicated themselves), but here I wanted to show the full extend of
+	the system.
+-:>
+
+<html>
+<head>
+<title>Page's Name - <:title:></title>
+</head>
+<body>
+<h1><:title:></h1>
+
+<:if (logged_in):>
+	<p>Welcome <:name <:- This is the user's name (just trying out a comment within code tags -:>:></p>
+<:else:>
+	<: if (<:- currently ! is not supported (while != is), so Icomment it out here !--:>loginpage):>
+	<:- if we're on the loginpage already, there's no need to display an additional message -:>
+		<p>Welcome, guest. Please register or log in</p>
+		<:- We do ask people to please register or log in, but we do not restrict them if they don't -:>
+	<:end if:>
+<:end if:>
+
+<:-
+I haven't made the menu file yet, so it is commented out -- fictional :P
+<:include('menu.html'):>
+-:>
+
+<:- The main text may again include tags - at least that is what I would like -:>
+<:- Seriously, just <i>what</i> was I thinking? -:>
+<:- Just like included files should be allowed to use tags again -:>
+<:- Sure, they should, but they are not like variables in the least bit -:>
+<p><:mainText:></p>
+
+<:foreach(newspaper in newspapers):>
+	<table border="1">
+	
+	<:- nameForCounter is a function that binds a name to a counter that keeps
+		number of iterations that have been in the topmost for or foreach loop -:>
+	
+	<:- Functions are not yet supported <:nameForCounter(newspaperNumber):> -:>
+	
+	<:foreach (article in newspaper):>
+		<tr>
+		<td><:article['name']:></td>
+		<td><:article['date']; ' - '; article['time']:></td>
+		<:- and we're gonna cheat a little :D -:>
+		<td>views: <: 10 + article['viewCount']:></td>
+		
+		<td>
+		<:foreach (review in article['reviews']):>
+			<a href='<:review[0]:>'><img src='<:review[1]:>' />
+			<:review[2]:></a><br />
+		<:end foreach:>
+		</td>
+		
+		<:- if the price is 2 or lower it should be displayed in red - so gets the redPrice class,
+		    otherwise it gets the price class. I know multiclassing would be a better solution to the
+			problem, but that was not what I wanted to show - remember this a sample <i>template</i> -:>
+			
+		<td class='<:if (article['price'] <= 2):>redPrice<:else:>price<:end if:>'>&euro;<:article['price']:></td>
+		
+		<:- if a buy-now link is present, put it in, otherwise, refer to newspaper site
+			this displays both the use of multidimentional arrays (they have been used before, but only with
+			foreach) and a nice multiline statement
+			
+			I decided also to put an array with a variable between the brackets here, informationdesnity is really
+			high in this example :P	Please not that I broke this up into multiple lines because that looked better,
+			there should be no need to do so
+			
+			it's not exactly elegant, but then again I am trying to achieve the limits of my system here -:>
+		
+		<td><:if (article['buy-now']['present'] == true); 
+			     article['buy-now']['link'];
+			  else; 
+				 <:- we do not have newspapernumber at this moment, because functions
+				     are not yet supported, thus I made up some alternative to what's below:
+					 newspaperLinks[newspaperNames[newspaperNumber]]; -:>
+				 "Buy-now not present!";
+			  end if; :></td>
+			
+		</tr>
+	<:end foreach:>
+	
+	</table>
+<:end foreach:>
+
+<:for(1 --> ourFriendsCount) :>
+	<img src='friend.jpg' />
+<:end for:>
+
+<:if (insertFooter == true && footer != "randomFooter"):>
+	<:<:- functions are not supported right now include(-:>'footer.html'<:-)-:>:>
+<:end if:>
+
+</html>

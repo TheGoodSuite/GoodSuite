@@ -2,10 +2,14 @@
 
 //namespace \Good\Looking
 //{
+    //error_reporting(E_ALL); 
+    
     require_once 'Compiler.php';
     require_once 'Interpreter.php';
     require_once 'Regexes.php';
     require_once 'constants.php';
+    require_once 'SQLStream.php';
+    
     
     class GoodLooking
     {
@@ -52,14 +56,14 @@
                 $this->throwError(GoodLookingErrorLevels::fatal, 'Template not found.');
             }
             
-            if (!file_exists($this->templateFileName . '.compiledTemplate') ||
-                        filemtime($this->templateFileName) > filemtime($this->templateFileName . '.compiledTemplate'))
+            if (!file_exists('db://' . 'blaat/' . $this->templateFileName) ||
+                        filemtime($this->templateFileName) > filemtime('db://' . 'blaat/' . $this->templateFileName))
             {
                 $compiler = new GoodLookingCompiler();
-                $compiler->compile($this->templateFileName, $this->templateFileName . '.compiledTemplate');
+                $compiler->compile($this->templateFileName, 'db://' . 'blaat/' . $this->templateFileName);
             }
             
-            $interpreter = new GoodLookingInterpreter($this->templateFileName . '.compiledTemplate', 
+            $interpreter = new GoodLookingInterpreter('db://' . 'blaat/' . $this->templateFileName, 
                                                       $this->registeredVars);
             
             $interpreter->interpret();

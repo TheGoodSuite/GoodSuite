@@ -20,19 +20,9 @@ echo "<body>\n";
 
 echo "<pre>";
 echo htmlentities(file_get_contents($_GET['file']));
-
-if ($_GET['file'] == 'sampleTemplate.html' || $_GET['file'] == 'sampleApplication.html.compiledTemplate')
-{
-    echo "&lt;/body&gt;\n&lt;/html&gt;";
-}
-
 echo "</pre>\n";
 
-echo "<script type='text/javascript'>\n";
-echo "  parent.document.getElementById('menuframe').contentDocument.getElementById('stats').innerHTML = '';\n";
-echo "</script>\n";
-
-echo "</body>\n";
-echo "</html>\n";
+echo "</body>";
+echo "</html>";
 
 ?>

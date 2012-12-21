@@ -1,6 +1,6 @@
 <?php
 // including the library
-include('../GoodLooking.php');
+include('GoodLooking.php');
 
 // starting it up (giving template file name as argument)
 $goodLooking = new GoodLooking('sampleTemplate.html');
@@ -25,4 +25,26 @@ $goodLooking->registerMultipleVars(array('ourFriendsCount' => $ourFriendsCount,
 
 // And the one magic word:
 $goodLooking->display();
- ?>
+
+
+// and now some added code that's not in the version we show (or in any real version)
+// which outputs the compile and interpreting times
+?>
+
+<script type='text/javascript'>
+  var html = document.documentElement.innerHTML;
+  
+  var compileTime = html.replace(/$<!-- Compiling took:([0-9.E-]+).* seconds -->[\s\S]*/, '$1');
+  var interpreting = html.replace(/<!-- Interpreting took:([0-9.E-]+) seconds -->\n<!-- www.000webhost.com Analytics Code -->[\s\S]*<!-- End Of Code -->^/, '$1');
+  
+  var output = '<h3>Stats</h3><p>';
+  
+  if (compileTime != html)
+  {
+      output += 'Compile time: ' + compileTime + '<br />';
+  }
+  
+  output += 'Interpreting time: ' + interpretingTime + '<br />';
+  
+  document.parent.document.getElementById('menuframe').contentDocument.getElementById('stats').innerHTML = output;
+</script>
