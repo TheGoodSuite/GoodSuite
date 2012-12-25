@@ -56,7 +56,7 @@
             }
             
             if (!file_exists($this->templateFileName . '.compiledTemplate') ||
-                        filemtime($this->templateFileName) > filemtime($this->templateFileName))
+                        filemtime($this->templateFileName) > filemtime($this->templateFileName . '.compiledTemplate'))
             {
                 $compiler = new GoodLookingCompiler();
                 $compiler->compile($this->templateFileName, $this->templateFileName . '.compiledTemplate');
