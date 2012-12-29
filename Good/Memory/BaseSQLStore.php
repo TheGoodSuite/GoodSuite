@@ -180,7 +180,7 @@ abstract class GoodMemoryBaseSQLStore extends GoodMannersStore
 	}
 	public function createInequalityCondition(GoodMannersStorable $to)
 	{
-		return new GoodMannersEqualityCondition($this, $to);
+		return new GoodMannersInequalityCondition($this, $to);
 	}
 	public function createGreaterCondition(GoodMannersStorable $to)
 	{
@@ -218,7 +218,7 @@ abstract class GoodMemoryBaseSQLStore extends GoodMannersStore
 	}
 	public function processInequalityCondition(GoodMannersStorable $to)
 	{
-		$this->currentConditionWriter->processEqualityCondition($to);
+		$this->currentConditionWriter->processInequalityCondition($to);
 	}
 	public function processGreaterCondition(GoodMannersStorable $to)
 	{
