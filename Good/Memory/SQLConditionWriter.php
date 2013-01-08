@@ -141,7 +141,6 @@ class GoodMemorySQLConditionWriter implements GoodMemoryPropertyVisitor,
 		
 			$this->condition .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($name) .
 									' ' . $this->comparison . ' ';
-									' ' . $this->comparison . ' ';
 			if ($null)
 			{
 				$this->condition .= ' NULL';
