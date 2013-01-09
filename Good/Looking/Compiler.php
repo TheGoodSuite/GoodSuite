@@ -483,7 +483,7 @@
                     if ($evaluateResult != '')
                     {
                         $output .= $this->execute_setCompilerOutputType(GoodLookingCompilerOutputTypes::php);
-                        $output .= 'echo ' . $evaluateResult .';';
+                        $output .= 'echo htmlentities(' . $evaluateResult .');';
                     }
                 }
                 else if ($mapMode == GoodLookingCompilerMapModes::layer || 
