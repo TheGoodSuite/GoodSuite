@@ -93,8 +93,8 @@ class GoodMemorySQLSelecter implements GoodMannersResolverVisitor
 		}
 		
 		$this->sql .= ', ';
-		$this->sql .= 't' . $this->currentTable . '.' . $name;
-		$this->sql .= ' AS t' . $this->currentTable . '_' . $name;
+		$this->sql .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($name);
+		$this->sql .= ' AS t' . $this->currentTable . '_' . $this->store->fieldNamify($name);
 	
 		$join = $this->store->getJoin($this->currentTable, $this->currentReference);
 		
