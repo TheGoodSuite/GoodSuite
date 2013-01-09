@@ -53,6 +53,19 @@ abstract class GoodMemoryBaseSQLStore extends GoodMannersStore
 		return floatval($value);
 	}
 	
+	public function parseDatetime($value)
+	{
+		// shouldn't be necessary when we do stricter type checking,
+		// but let's just stick with it for now.
+		if (!($value instanceof DateTime))
+		{
+			// TODO: turn this into real error reporting
+			die("Non-DateTime given for a DateTime field.");
+		}
+		
+		return "'" . $value->format('Y-m-d H:i:s') . "'";
+	}
+	
 	public function parseText($value)
 	{
 		return "'" . $this->db->escapeText($value) . "'";
@@ -266,6 +279,10 @@ abstract class GoodMemoryBaseSQLStore extends GoodMannersStore
 	public function visitFloatProperty($name, $dirty, $null, $value)
 	{
 		$this->currentPropertyVisitor->visitFloatProperty($name, $dirty, $null, $value);
+	}
+	public function visitDatetimeProperty($name, $dirty, $null, $value)
+	{
+		$this->currentPropertyVisitor->visitDatetimeProperty($name, $dirty, $null, $value);
 	}
 }
 

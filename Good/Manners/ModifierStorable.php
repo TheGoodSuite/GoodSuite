@@ -196,6 +196,15 @@ class GoodMannersModifierStorable implements GoodServiceModifier
 											'$this->is' . ucfirst($this->classVariable) . 'Null(), ' .
 											'$this->get' . ucfirst($this->classVariable) . '());' . "\n";
 	}
+	public function visitTypePrimitiveDatetime($type) 
+	{
+		$this->classVariableIsReference = false;
+		
+		$this->acceptStore .= '		$store->visitDatetimeProperty("' . $this->classVariable . '", ' .
+											'$this->is' . ucfirst($this->classVariable) . 'Dirty(), ' . 
+											'$this->is' . ucfirst($this->classVariable) . 'Null(), ' .
+											'$this->get' . ucfirst($this->classVariable) . '());' . "\n";
+	}
 	
 	public function visitEnd() {}
 	

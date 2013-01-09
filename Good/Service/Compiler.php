@@ -272,6 +272,18 @@ class GoodServiceCompiler implements GoodRolemodelVisitor
 		$this->commitVariable();
 	}
 	
+	public function visitTypePrimitiveDatetime($type)
+	{
+		foreach ($this->modifiers as $modifier)
+		{
+			$modifier->visitTypePrimitiveDatetime($type);
+		}
+		
+		$varType = 'datetime';
+		
+		$this->commitVariable();
+	}
+	
 	private function commitVariable()
 	{
 		foreach ($this->modifiers as $modifier)

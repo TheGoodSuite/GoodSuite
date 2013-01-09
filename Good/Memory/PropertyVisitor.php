@@ -7,6 +7,7 @@ interface GoodMemoryPropertyVisitor
 	public function visitTextProperty($name, $dirty, $null, $value);
 	public function visitIntProperty($name, $dirty, $null, $value);
 	public function visitFloatProperty($name, $dirty, $null, $value);
+	public function visitDatetimeProperty($name, $dirty, $null, $value);
 }
 
 ?>

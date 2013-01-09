@@ -339,6 +339,24 @@ class GoodMemorySQLUpdateConditionWriter implements GoodMemoryPropertyVisitor,
 			}
 		}
 	}
+	public function visitDatetimeProperty($name, $dirty, $null, $value)
+	{
+		if($dirty)
+		{
+			$this->writeBracketOrAnd();
+			$this->writeTableName();
+			
+			$this->condition .=  '.' . $this->store->fieldNamify($name) . ' ' . $this->comparison;
+			if ($null)
+			{
+				$this->condition .= ' NULL';
+			}
+			else
+			{
+				$this->condition .= ' ' . $this->store->parseDatetime($value);
+			}
+		}
+	}
 	
 	private function writeBracketOrAnd()
 	{

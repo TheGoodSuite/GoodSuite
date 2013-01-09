@@ -125,6 +125,26 @@ class GoodMemorySQLSimpleUpdater implements GoodMemoryPropertyVisitor
 			}
 		}
 	}
+	
+	public function visitDatetimeProperty($name, $dirty, $null, $value)
+	{
+		if ($dirty)
+		{
+			$this->comma();
+			
+			$this->sql .= $this->store->fieldNamify($name);
+			$this->sql .= ' = ';
+			
+			if ($null)
+			{
+				$this->sql .= 'NULL';
+			}
+			else
+			{
+				$this->sql .= $this->store->parseDatetime($value);
+			}
+		}
+	}
 }
 
 ?>

@@ -66,6 +66,7 @@ class GoodServiceModifierObservable implements GoodServiceModifier
 	public function visitTypePrimitiveText($type) {}
 	public function visitTypePrimitiveInt($type) {}
 	public function visitTypePrimitiveFloat($type) {}
+	public function visitTypePrimitiveDatetime($type) {}
 	public function visitEnd() {}
 	
 	public function varDefinitionBefore() {return '';}

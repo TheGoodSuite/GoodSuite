@@ -23,7 +23,9 @@ class GoodMemorySQLJoinDiscoverer implements GoodMemoryPropertyVisitor
 	
 	public function visitReferenceProperty($name, $datatypeName, $dirty, $null, 
 														GoodMannersStorable $value = null)
-	{	
+	{
+		echo $name, " which is ", $null ? "" : "not ", "null:";
+		var_dump($value); var_dump($null);
 		if (!$null && $dirty && $value->isNew())
 		{
 			$join = $this->store->getJoin($this->currentTable, $this->currentReference);
@@ -46,6 +48,7 @@ class GoodMemorySQLJoinDiscoverer implements GoodMemoryPropertyVisitor
 	public function visitTextProperty($name, $dirty, $null, $value) {}
 	public function visitIntProperty($name, $dirty, $null, $value) {}
 	public function visitFloatProperty($name, $dirty, $null, $value) {}
+	public function visitDatetimeProperty($name, $dirty, $null, $value) {}
 }
 
 ?>

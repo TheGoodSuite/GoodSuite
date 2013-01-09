@@ -139,6 +139,17 @@ class LookingWithMannersCompiler implements GoodRolemodelVisitor
 		$this->visitNonReference($type);
 	}
 	
+	public function visitTypePrimitiveDatetime($type)
+	{
+		if ($this->isPublic)
+		{
+			// It's a hack and should in the future be handled by GoodLooking
+			// (where we can then also allow custom date formatting)
+			$this->output .= '	$arr["' . $this->varName . '"] = $obj->get' . 
+							ucfirst($this->varName) . '()->format("Y-m-d H:i:s");' . "\n";
+		}
+	}
+	
 	private function visitNonReference()
 	{
 		if ($this->isPublic)

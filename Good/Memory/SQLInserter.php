@@ -160,6 +160,26 @@ class GoodMemorySQLInserter implements GoodMemoryPropertyVisitor
 			}
 		}
 	}
+	
+	public function visitDatetimeProperty($name, $dirty, $null, $value)
+	{
+		// If not dirty, do not include field and use default value
+		if ($dirty)
+		{
+			$this->comma();
+			
+			$this->sql .= $this->store->fieldNamify($name);
+		
+			if ($null)
+			{
+				$this->sql .= 'NULL';
+			}
+			else
+			{
+				$this->values .= $this->store->parseDatetime($value);
+			}
+		}
+	}
 }
 
 ?>

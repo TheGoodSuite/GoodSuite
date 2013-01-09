@@ -46,6 +46,8 @@ class GoodMannersStoreCompiler implements GoodRolemodelVisitor
 																	'$null, $value);' . "\n";
 		$this->output .= '	abstract public function visitFloatProperty($name, $dirty, ' .
 																	'$null, $value);' . "\n";
+		$this->output .= '	abstract public function visitDatetimeProperty($name, $dirty, ' .
+																	'$null, $value);' . "\n";
 		$this->output .= "	\n";
 		$this->output .= '	protected function invalidate()' . "\n";
 		$this->output .= "	{\n";
@@ -278,6 +280,10 @@ class GoodMannersStoreCompiler implements GoodRolemodelVisitor
 		$this->visitNonReference();
 	}
 	public function visitTypePrimitiveFloat($type)
+	{
+		$this->visitNonReference();
+	}
+	public function visitTypePrimitiveDatetime($type)
 	{
 		$this->visitNonReference();
 	}
