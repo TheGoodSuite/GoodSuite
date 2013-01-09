@@ -112,6 +112,7 @@ class GoodMannersStoreCompiler implements GoodRolemodelVisitor
 		$this->output .= '	public function get' . ucfirst($name) . 'Collection(GoodMannersCondition ' .
 													 '$condition, ' . $name . 'Resolver $resolver)' . "\n";
 		$this->output .= "	{\n";
+		$this->output .= '		$this->flush();' . "\n";
 		$this->output .= '		return $this->doGet' . ucfirst($name) . 
 													'Collection($condition, $resolver);' . "\n";
 		$this->output .= "	}\n";
