@@ -46,7 +46,15 @@ class GoodMemorySQLConditionWriter implements GoodMemoryPropertyVisitor,
 		
 		if ($this->first)
 		{
-			$this->condition = '1 = 1';
+			if ($to->getId() != -1)
+			{
+				$this->condition .= 't' . $this->currentTable . '.id' .
+										' ' . $this->comparison . ' ' . intval($to->getId());
+			}
+			else
+			{
+				$this->condition = '1 = 1';
+			}
 		}
 	}
 	

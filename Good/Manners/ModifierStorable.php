@@ -141,7 +141,11 @@ class GoodMannersModifierStorable implements GoodServiceModifier
 		
 		$this->acceptStore  = '	public function acceptStore(GoodMannersStore $store)' . "\n";
 		$this->acceptStore .= "	{\n";
-		$this->acceptStore .= '		if (!$this->storeMatches($store) && !$this->isNew())' . "\n";
+		// Due to the addition of a dummy, I changed the isNew() call to $this->store != null
+		// It should sort of do the same, even if it's less semantically clear
+		// However, as I want to revisit and remove this whole checking system anyway, I
+		// don't consider it to be a problem.
+		$this->acceptStore .= '		if (!$this->storeMatches($store) && $this->store != null)' . "\n";
 		$this->acceptStore .= "		{\n";
 		// TODO: turn this into real error handling
 		$this->acceptStore .= '			die("Error: Attempted to use Storable with Store that" . ' . "\n";
@@ -306,6 +310,17 @@ class GoodMannersModifierStorable implements GoodServiceModifier
 		$res .= '	public static function resolver()' . "\n";
 		$res .= "	{\n";
 		$res .= '		return new ' . $this->className . 'Resolver();' . "\n";
+		$res .= "	}\n";
+		$res .= "	\n";
+		
+		$res .= '	public static function createDummy($id)' . "\n";
+		$res .= "	{\n";
+		$res .= '		$obj = new ' . $this->className . '();' . "\n";
+		$res .= '		$obj->setId($id);' . "\n";
+		$res .= '		$obj->setNew(false);' . "\n";
+				// TODO: Make sure that accessing anything other than the id of
+				//       id doesn't work.
+		$res .= '		return $obj;' . "\n";
 		$res .= "	}\n";
 		$res .= "	\n";
 		
