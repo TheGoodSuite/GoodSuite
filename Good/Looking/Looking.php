@@ -49,7 +49,7 @@ class Looking
 	{
 		if (!\file_exists($this->templateFileName))
 		{
-			$this->throwError(ErrorLevels::fatal, 'Template not found.');
+			die('Template not found.');
 		}
 		
 		if (!\file_exists($this->templateFileName . '.compiledTemplate') ||
@@ -65,44 +65,4 @@ class Looking
 		$interpreter->interpret();
 		
 	} // display
-	
-	
-	private function throwError($errorLevel, $errorMessage)
-	{
-		if ($errorLevel == ErrorLevels::fatal)
-		{
-			$prefix = "Fatal Error: ";
-		}
-		else
-		{
-			$prefix = "Error: ";
-		}
-		
-		if ($errorLevel == ErrorLevels::low || 
-							$errorLevel == ErrorLevels::high)
-		{
-			echo "<!-- ";
-			echo $prefix . $errorMessage;
-			echo " -->";
-		}
-		
-		if ($errorLevel == ErrorLevels::medium ||
-							$errorLevel == ErrorLevels::fatal)
-		{			
-			echo "<b>$prefix</b>";
-			echo $errorMessage;
-			echo "<br /> \n";
-		}
-		
-		if ($errorLevel == ErrorLevels::high || 
-							$errorLevel == ErrorLevels::fatal)
-		{
-			echo "<script type='text/javascript'>alert('{$prefix}{$errorMessage}')</script>";
-		}
-		
-		if ($errorLevel == ErrorLevels::fatal)
-		{
-			die;
-		}
-	} // throwError
 } // GoodLooking
