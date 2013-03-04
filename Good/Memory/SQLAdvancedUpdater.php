@@ -2,6 +2,9 @@
 
 namespace Good\Memory;
 
+use Good\Manners\Storable;
+use Good\Manners\Condition;
+
 require_once dirname(__FILE__) . '/PropertyVisitor.php';
 require_once dirname(__FILE__) . '/SQLJoinDiscoverer.php';
 require_once dirname(__FILE__) . '/SQLUpdateConditionWriter.php';
@@ -28,14 +31,14 @@ class SQLAdvancedUpdater implements PropertyVisitor
 		$this->currentTable = $currentTable;
 	}
 	
-	public function update($datatypeName, \Good\Manners\Condition $condition, 
-							\Good\Manners\Storable $value)
+	public function update($datatypeName, Condition $condition, 
+							Storable $value)
 	{
 		$this->updateWithRootTableName($datatypeName, $condition, $value, $datatypeName);
 	}
 	
-	public function updateWithRootTableName($datatypeName, \Good\Manners\Condition $condition, 
-													\Good\Manners\Storable $value, $rootTableName)
+	public function updateWithRootTableName($datatypeName, Condition $condition, 
+													Storable $value, $rootTableName)
 	{
 		$this->condition = $condition;
 		$this->rootTableName = $rootTableName;
@@ -79,7 +82,7 @@ class SQLAdvancedUpdater implements PropertyVisitor
 	}
 	
 	public function visitReferenceProperty($name, $datatypeName, $dirty, $null, 
-														\Good\Manners\Storable $value = null)
+														Storable $value = null)
 	{
 		if ($dirty)
 		{

@@ -2,6 +2,8 @@
 
 namespace Good\Looking\AbstractSyntax;
 
+use Good\Looking\Regexes;
+
 class ForeachStructure extends ElementWithStatements
 {
 	private $varName;
@@ -10,13 +12,13 @@ class ForeachStructure extends ElementWithStatements
 	
 	public function __construct($condition, $statements)
 	{
-		if (\preg_match('/^\s*' . \Good\Looking\Regexes::$controlStructureConditions['foreach'] . 
+		if (\preg_match('/^\s*' . Regexes::$controlStructureConditions['foreach'] . 
 															'\s*$/', $condition, $matches) !== 1)
 		{
 			die('Error: Unable to parse foreach condition.');
 		}
 		
-		if (\preg_match('/^s*' . \Good\Looking\Regexes::$expression . '\s*$/', $matches['array']) !== 1)
+		if (\preg_match('/^s*' . Regexes::$expression . '\s*$/', $matches['array']) !== 1)
 		{
 			die('Error: array term in foreach condition is invalid.');
 		}

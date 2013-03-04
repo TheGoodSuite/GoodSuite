@@ -2,6 +2,8 @@
 
 namespace Good\Memory;
 
+use Good\Manners\Storable;
+
 require_once dirname(__FILE__) . '/PropertyVisitor.php';
 
 class SQLSimpleUpdater implements PropertyVisitor
@@ -19,7 +21,7 @@ class SQLSimpleUpdater implements PropertyVisitor
 	}
 	
 	
-	public function update($datatypeName, \Good\Manners\Storable $value)
+	public function update($datatypeName, Storable $value)
 	{
 		$this->sql = 'UPDATE ' . $this->store->tableNamify($datatypeName);
 		$this->sql .= ' SET ';
@@ -46,7 +48,7 @@ class SQLSimpleUpdater implements PropertyVisitor
 	}
 	
 	public function visitReferenceProperty($name, $datatypeName, $dirty, $null, 
-															\Good\Manners\Storable $value = null)
+															Storable $value = null)
 	{
 		// We don't need to recurse, because if the value is dirty as well,
 		// the store knows it and will get to updating it by itself

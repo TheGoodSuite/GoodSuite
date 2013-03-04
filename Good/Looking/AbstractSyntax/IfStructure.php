@@ -2,6 +2,8 @@
 
 namespace Good\Looking\AbstractSyntax;
 
+use Good\Looking\Regexes;
+
 class IfStructure extends ElementWithStatements
 {
 	private $condition;
@@ -9,7 +11,7 @@ class IfStructure extends ElementWithStatements
 	
 	public function __construct($condition, $statements)
 	{
-		if (\preg_match('/^\s*' . \Good\Looking\Regexes::$expression . '\s*$/', $condition) === 0)
+		if (\preg_match('/^\s*' . Regexes::$expression . '\s*$/', $condition) === 0)
 		{
 			die('Error: Unable to parse if condition.');
 		}

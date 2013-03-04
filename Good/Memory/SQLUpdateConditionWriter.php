@@ -2,6 +2,9 @@
 
 namespace Good\Memory;
 
+use Good\Manners\Storable;
+use Good\Manners\Condition;
+
 require_once dirname(__FILE__) . '/PropertyVisitor.php';
 require_once dirname(__FILE__) . '/../Manners/Condition.php';
 require_once dirname(__FILE__) . '/ConditionProcessor.php';
@@ -48,7 +51,7 @@ class SQLUpdateConditionWriter implements PropertyVisitor,
 		return $this->joinedTables;
 	}
 	
-	public function writeCondition(\Good\Manners\Condition $condition, 
+	public function writeCondition(Condition $condition, 
 								   $rootTableName,
 								   $updatingTableNumber,
 								   $updatingTableName)
@@ -61,7 +64,7 @@ class SQLUpdateConditionWriter implements PropertyVisitor,
 		$condition->process($this->store);
 	}
 	
-	public function writeComparisonCondition(\Good\Manners\Storable $to, $comparison)
+	public function writeComparisonCondition(Storable $to, $comparison)
 	{
 		$this->condition = '';
 		
@@ -132,7 +135,7 @@ class SQLUpdateConditionWriter implements PropertyVisitor,
 	
 	
 	
-	public function writeSimpleComparisonCondition(\Good\Manners\Storable $to, $comparison)
+	public function writeSimpleComparisonCondition(Storable $to, $comparison)
 	{
 		$this->store->setCurrentConditionProcessor($this);
 		
@@ -153,32 +156,32 @@ class SQLUpdateConditionWriter implements PropertyVisitor,
 	}
 	
 	
-	public function processEqualityCondition(\Good\Manners\Storable $to)
+	public function processEqualityCondition(Storable $to)
 	{
 		$this->writeComparisonCondition($to, '=');
 	}
-	public function processInequalityCondition(\Good\Manners\Storable $to)
+	public function processInequalityCondition(Storable $to)
 	{
 		$this->writeComparisonCondition($to, '<>');
 	}
-	public function processGreaterCondition(\Good\Manners\Storable $to)
+	public function processGreaterCondition(Storable $to)
 	{
 		$this->writeComparisonCondition($to, '>');
 	}
-	public function processGreaterOrEqualsCondition(\Good\Manners\Storable $to)
+	public function processGreaterOrEqualsCondition(Storable $to)
 	{
 		$this->writeComparisonCondition($to, '>=');
 	}
-	public function processLessCondition(\Good\Manners\Storable $to)
+	public function processLessCondition(Storable $to)
 	{
 		$this->writeComparisonCondition($to, '<');
 	}
-	public function processLessOrEqualsCondition(\Good\Manners\Storable $to)
+	public function processLessOrEqualsCondition(Storable $to)
 	{
 		$this->writeComparisonCondition($to, '<=');
 	}
 	
-	public function processAndCondition(\Good\Manners\Condition $condition1, \Good\Manners\Condition $condition2)
+	public function processAndCondition(Condition $condition1, Condition $condition2)
 	{
 		$this->writeCondition($condition1,
 							  $this->updatingTableNumber,
@@ -194,7 +197,7 @@ class SQLUpdateConditionWriter implements PropertyVisitor,
 		
 		$this->condition = '(' . $sqlCondition1 . ' AND ' . $sqlCondition2 . ')';
 	}
-	public function processOrCondition(\Good\Manners\Condition $condition1, \Good\Manners\Condition $condition2)
+	public function processOrCondition(Condition $condition1, Condition $condition2)
 	{
 		$this->writeCondition($condition1,
 							  $this->updatingTableNumber,
@@ -212,7 +215,7 @@ class SQLUpdateConditionWriter implements PropertyVisitor,
 	}
 	
 	public function visitReferenceProperty($name, $datatypeName, $dirty, $null, 
-															\Good\Manners\Storable $value = null)
+															Storable $value = null)
 	{
 		if ($dirty)
 		{

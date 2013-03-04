@@ -2,6 +2,8 @@
 
 namespace Good\Memory;
 
+use Good\Manners\Storable;
+
 require_once dirname(__FILE__) . '/PropertyVisitor.php';
 require_once dirname(__FILE__) . '/SQLPostponedForeignKey.php';
 
@@ -25,7 +27,7 @@ class SQLInserter implements PropertyVisitor
 	}
 	
 	
-	public function insert($datatypeName, \Good\Manners\Storable $value)
+	public function insert($datatypeName, Storable $value)
 	{
 		$this->sql = 'INSERT INTO ' . $this->store->tableNamify($datatypeName) . ' (';
 		$this->values = 'VALUES (';
@@ -65,7 +67,7 @@ class SQLInserter implements PropertyVisitor
 	}
 	
 	public function visitReferenceProperty($name, $datatypeName, $dirty, $null, 
-														\Good\Manners\Storable $value = null)
+														Storable $value = null)
 	{
 		// If not dirty, do not include field and use default value
 		if ($dirty)

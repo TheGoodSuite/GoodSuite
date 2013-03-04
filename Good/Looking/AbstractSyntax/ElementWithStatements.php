@@ -2,6 +2,8 @@
 
 namespace Good\Looking\AbstractSyntax;
 
+use Good\Looking\Regexes;
+
 // This class provides the functionality of parsing statements to child classes
 // This class exists only because out parser only partally parses and leaves
 // statements as strings. This should be fixed in the future, making sure
@@ -18,7 +20,7 @@ abstract class ElementWithStatements implements Element
 			return '';
 		}
 		
-		if (\preg_match('/' . \Good\Looking\Regexes::$expression . '/', $evaluateString) == 0)
+		if (\preg_match('/' . Regexes::$expression . '/', $evaluateString) == 0)
 		{
 			die("Syntax error");
 		}
@@ -27,28 +29,28 @@ abstract class ElementWithStatements implements Element
 		
 		while ($evaluateString != '')
 		{
-			if (\preg_match('/^\s*' . \Good\Looking\Regexes::$term . 
+			if (\preg_match('/^\s*' . Regexes::$term . 
 					'\s*(?P<op>(?P>operator))?\s*/', $evaluateString, $matches) == 0)
 			{
 				die("Syntax Error");
 			}
 			
-			$evaluateString = \preg_replace('/^\s*' . \Good\Looking\Regexes::$term . 
+			$evaluateString = \preg_replace('/^\s*' . Regexes::$term . 
 					'\s*(?P<op>(?P>operator))?\s*/', '', $evaluateString);
 			
 			$term = $matches['term'];
 			$operator = \array_key_exists('op', $matches) ? $matches['op'] : '';
 			
-			if (\preg_match('/^\(' . \Good\Looking\Regexes::$expression . '\)$/', $term) != 0)
+			if (\preg_match('/^\(' . Regexes::$expression . '\)$/', $term) != 0)
 			{
 				$output .= '(' . $this->evaluate($term) . ')';
 			}
-			else if (\preg_match('/^' . \Good\Looking\Regexes::$literalBoolean . '$/',
+			else if (\preg_match('/^' . Regexes::$literalBoolean . '$/',
 														$term, $matches) != 0)
 			{
 				$output .= $matches['boolean'];
 			}
-			else if (\preg_match('/^' . \Good\Looking\Regexes::$variable . '$/', 
+			else if (\preg_match('/^' . Regexes::$variable . '$/', 
 														$term, $matches) != 0)
 			{
 				$templateVariable = '$this->getVar(\'' . $matches['varName'] . '\')';
@@ -57,10 +59,10 @@ abstract class ElementWithStatements implements Element
 				
 				while ($arrayItemSelector != '')
 				{
-					\preg_match('/^\[' .\Good\Looking\Regexes::$expression . '\]/',
+					\preg_match('/^\[' .Regexes::$expression . '\]/',
 											$arrayItemSelector, $matches);
 					$arrayItemSelector = \preg_replace('/^\[' 
-												. \Good\Looking\Regexes::$expression . '\]/',
+												. Regexes::$expression . '\]/',
 												 '', $arrayItemSelector);
 					
 					$templateVariable = '$this->arrayItem(' . $templateVariable . ', ' .
@@ -69,15 +71,15 @@ abstract class ElementWithStatements implements Element
 				
 				$output .= $templateVariable;
 			}
-			else if (preg_match('/^' . \Good\Looking\Regexes::$literalString . '$/', $term) != 0)
+			else if (preg_match('/^' . Regexes::$literalString . '$/', $term) != 0)
 			{
 				$output .= $term;
 			}
-			else if (preg_match('/^' . \Good\Looking\Regexes::$literalNumber . '$/', $term) != 0)
+			else if (preg_match('/^' . Regexes::$literalNumber . '$/', $term) != 0)
 			{
 				$output .= $term;
 			}
-			else if (preg_match('/^' . \Good\Looking\Regexes::$func . '$/', $term) != 0)
+			else if (preg_match('/^' . Regexes::$func . '$/', $term) != 0)
 			{
 				// as of yet, functions are unsupported
 				die("Function call found while functions are currently unsupported");

@@ -2,6 +2,12 @@
 
 namespace Good\Memory;
 
+use Good\Manners\ComparingStore;
+use Good\Manners\BasicLogicStore;
+use Good\Manners\Storable;
+use Good\Manners\Condition;
+use Good\Manners\Resolver;
+
 require_once dirname(__FILE__) . '/../Manners/ComparingStore.php';
 require_once dirname(__FILE__) . '/../Manners/BasicLogicStore.php';
 require_once dirname(__FILE__) . '/SQLStore.php';
@@ -16,8 +22,8 @@ require_once dirname(__FILE__) . '/SQLJoin.php';
 require_once dirname(__FILE__) . '/ConditionProcessor.php';
 
 abstract class BaseSQLStore extends \GoodMannersStore // (generated so not namespaced)
-							implements \Good\Manners\ComparingStore,
-									   \Good\Manners\BasicLogicStore,
+							implements ComparingStore,
+									   BasicLogicStore,
 									   SQLStore
 {
 	protected $db;
@@ -121,8 +127,8 @@ abstract class BaseSQLStore extends \GoodMannersStore // (generated so not names
 	}
 	
 	protected function doAnyGet($datatypeName, 
-								\Good\Manners\Condition $condition, 
-								\Good\Manners\Resolver $resolver)
+								Condition $condition, 
+								Resolver $resolver)
 	{
 		$this->joins = array(0 => array());
 		$this->numberOfJoins = 0;
@@ -133,8 +139,8 @@ abstract class BaseSQLStore extends \GoodMannersStore // (generated so not names
 	}
 	
 	protected function doAnyModify($datatypeName,
-								   \Good\Manners\Condition $condition,
-								   \Good\Manners\Storable $modifications)
+								   Condition $condition,
+								   Storable $modifications)
 	{
 		$this->joins = array(0 => array());
 		$this->numberOfJoins = 0;

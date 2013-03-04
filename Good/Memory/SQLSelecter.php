@@ -2,12 +2,16 @@
 
 namespace Good\Memory;
 
+use Good\Manners\Condition;
+use Good\Manners\Resolver;
+use Good\Manners\ResolverVisitor;
+
 require_once dirname(__FILE__) . '/../Manners/ResolverVisitor.php';
 require_once dirname(__FILE__) . '/../Manners/Resolver.php';
 
 require_once dirname(__FILE__) . '/SQLConditionWriter.php';
 
-class SQLSelecter implements \Good\Manners\ResolverVisitor
+class SQLSelecter implements ResolverVisitor
 {
 	private $db;
 	private $store;
@@ -28,7 +32,7 @@ class SQLSelecter implements \Good\Manners\ResolverVisitor
 	}
 	
 	
-	public function select($datatypeName, \Good\Manners\Condition $condition, \Good\Manners\Resolver $resolver)
+	public function select($datatypeName, Condition $condition, Resolver $resolver)
 	{
 		$this->sql = "SELECT t0.id AS t0_id";
 		
@@ -43,7 +47,7 @@ class SQLSelecter implements \Good\Manners\ResolverVisitor
 	}
 	
 	public function writeQueryWithoutSelect($datatypeName, 
-											\Good\Manners\Condition $condition)
+											Condition $condition)
 	{
 		$sql  = " FROM " . $this->store->tableNamify($datatypeName) . " AS t0";
 		
@@ -84,7 +88,7 @@ class SQLSelecter implements \Good\Manners\ResolverVisitor
 		return $sql;
 	}
 	
-	public function resolverVisitResolvedReferenceProperty($name, $datatypeName, \Good\Manners\Resolver $resolver)
+	public function resolverVisitResolvedReferenceProperty($name, $datatypeName, Resolver $resolver)
 	{
 		if ($resolver == null)
 		{

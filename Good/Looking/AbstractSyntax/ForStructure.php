@@ -2,6 +2,8 @@
 
 namespace Good\Looking\AbstractSyntax;
 
+use Good\Looking\Regexes;
+
 class ForStructure extends ElementWithStatements
 {
 	private $term1;
@@ -10,18 +12,18 @@ class ForStructure extends ElementWithStatements
 	
 	public function __construct($condition, $statements)
 	{
-		if (\preg_match('/^\s*' . \Good\Looking\Regexes::$controlStructureConditions['for'] . 
+		if (\preg_match('/^\s*' . Regexes::$controlStructureConditions['for'] . 
 															'\s*$/', $condition, $matches) !== 1)
 		{
 			die('Error: Unable to parse for condition.');
 		}
 		
-		if (\preg_match('/^s*' . \Good\Looking\Regexes::$expression . '\s*$/', $matches['term1']) !== 1)
+		if (\preg_match('/^s*' . Regexes::$expression . '\s*$/', $matches['term1']) !== 1)
 		{
 			die('Error: first term in for condition is invalid.');
 		}
 		
-		if (\preg_match('/^s*' . \Good\Looking\Regexes::$expression . '\s*$/', $matches['term2']) !== 1)
+		if (\preg_match('/^s*' . Regexes::$expression . '\s*$/', $matches['term2']) !== 1)
 		{
 			die('Error: first term in for condition is invalid.');
 		}

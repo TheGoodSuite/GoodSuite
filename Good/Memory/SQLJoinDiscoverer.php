@@ -2,6 +2,8 @@
 
 namespace Good\Memory;
 
+use Good\Manners\Storable;
+
 class SQLJoinDiscoverer implements PropertyVisitor
 {
 	private $store;
@@ -15,7 +17,7 @@ class SQLJoinDiscoverer implements PropertyVisitor
 		$this->currentTable = $currentTable;
 	}
 	
-	public function discoverJoins(\Good\Manners\Storable $value)
+	public function discoverJoins(Storable $value)
 	{
 		$this->currentReference = 0;
 		
@@ -24,7 +26,7 @@ class SQLJoinDiscoverer implements PropertyVisitor
 	}
 	
 	public function visitReferenceProperty($name, $datatypeName, $dirty, $null, 
-														\Good\Manners\Storable $value = null)
+														Storable $value = null)
 	{
 		echo $name, " which is ", $null ? "" : "not ", "null:";
 		
