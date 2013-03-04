@@ -1,11 +1,13 @@
 <?php
 
+namespace Good\Memory;
+
 require_once dirname(__FILE__) . '/../Manners/ResolverVisitor.php';
 require_once dirname(__FILE__) . '/../Manners/Resolver.php';
 
 require_once dirname(__FILE__) . '/SQLConditionWriter.php';
 
-class GoodMemorySQLSelecter implements GoodMannersResolverVisitor
+class SQLSelecter implements \Good\Manners\ResolverVisitor
 {
 	private $db;
 	private $store;
@@ -18,7 +20,7 @@ class GoodMemorySQLSelecter implements GoodMannersResolverVisitor
 	
 	private $order = array();
 	
-	public function __construct(GoodMemorySQLStore $store, GoodMemoryDatabase $db, $currentTable)
+	public function __construct(SQLStore $store, Database\Database $db, $currentTable)
 	{
 		$this->db = $db;
 		$this->store = $store;
@@ -26,7 +28,7 @@ class GoodMemorySQLSelecter implements GoodMannersResolverVisitor
 	}
 	
 	
-	public function select($datatypeName, GoodMannersCondition $condition, GoodMannersResolver $resolver)
+	public function select($datatypeName, \Good\Manners\Condition $condition, \Good\Manners\Resolver $resolver)
 	{
 		$this->sql = "SELECT t0.id AS t0_id";
 		
@@ -41,11 +43,11 @@ class GoodMemorySQLSelecter implements GoodMannersResolverVisitor
 	}
 	
 	public function writeQueryWithoutSelect($datatypeName, 
-											GoodMannersCondition $condition)
+											\Good\Manners\Condition $condition)
 	{
 		$sql  = " FROM " . $this->store->tableNamify($datatypeName) . " AS t0";
 		
-		$conditionWriter = new GoodMemorySQLConditionWriter($this->store, 0);
+		$conditionWriter = new SQLConditionWriter($this->store, 0);
 		$conditionWriter->writeCondition($condition);
 		
 		foreach ($this->store->getJoins() as $somejoins)
@@ -67,7 +69,7 @@ class GoodMemorySQLSelecter implements GoodMannersResolverVisitor
 		// and we want to use the numerical indices as order.
 		// One could use "ksort", but I believe this is more efficient
 		// in most cases.
-		for ($i = 0; $i < count($this->order); $i++)
+		for ($i = 0; $i < \count($this->order); $i++)
 		{
 			if ($i == 0)
 			{
@@ -82,7 +84,7 @@ class GoodMemorySQLSelecter implements GoodMannersResolverVisitor
 		return $sql;
 	}
 	
-	public function resolverVisitResolvedReferenceProperty($name, $datatypeName, GoodMannersResolver $resolver)
+	public function resolverVisitResolvedReferenceProperty($name, $datatypeName, \Good\Manners\Resolver $resolver)
 	{
 		if ($resolver == null)
 		{

@@ -1,16 +1,18 @@
 <?php
 
-interface GoodMemoryConditionProcessor
+namespace Good\Memory;
+
+interface ConditionProcessor
 {
-	public function processEqualityCondition(GoodMannersStorable $to);
-	public function processInequalityCondition(GoodMannersStorable $to);
-	public function processGreaterCondition(GoodMannersStorable $to);
-	public function processGreaterOrEqualsCondition(GoodMannersStorable $to);
-	public function processLessCondition(GoodMannersStorable $to);
-	public function processLessOrEqualsCondition(GoodMannersStorable $to);
+	public function processEqualityCondition(\Good\Manners\Storable $to);
+	public function processInequalityCondition(\Good\Manners\Storable $to);
+	public function processGreaterCondition(\Good\Manners\Storable $to);
+	public function processGreaterOrEqualsCondition(\Good\Manners\Storable $to);
+	public function processLessCondition(\Good\Manners\Storable $to);
+	public function processLessOrEqualsCondition(\Good\Manners\Storable $to);
 	
-	public function processAndCondition(GoodMannersCondition $condition1, GoodMannersCondition $condition2);
-	public function processOrCondition(GoodMannersCondition $condition1, GoodMannersCondition $condition2);
+	public function processAndCondition(\Good\Manners\Condition $condition1, \Good\Manners\Condition $condition2);
+	public function processOrCondition(\Good\Manners\Condition $condition1, \Good\Manners\Condition $condition2);
 }
 
 ?>

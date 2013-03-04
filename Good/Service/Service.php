@@ -1,13 +1,15 @@
 <?php
 
-include_once dirname(__FILE__) . '/../Rolemodel/GoodRolemodel.php';
+namespace Good\Service;
+
+include_once dirname(__FILE__) . '/../Rolemodel/Rolemodel.php';
 include_once 'Compiler.php';
 
-class GoodService
+class Service
 {
-	public function compile($modifiers, GoodRolemodelDataModel $model, $outputDir)
+	public function compile($modifiers, \Good\Rolemodel\DataModel $model, $outputDir)
 	{
-		$compiler = new GoodServiceCompiler($modifiers, $outputDir);
+		$compiler = new Compiler($modifiers, $outputDir);
 		
 		$model->accept($compiler);
 	}
@@ -16,9 +18,9 @@ class GoodService
 	{
 		foreach ($classes as $class)
 		{
-			if (class_exists($class))
+			if (\class_exists($class))
 			{
-				$reflectionClass = new ReflectionClass($class);
+				$reflectionClass = new \ReflectionClass($class);
 				
 				if (!$reflectionClass->isSubClassOf('Base' . ucfirst($class)))
 				{

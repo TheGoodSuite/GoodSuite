@@ -1,8 +1,10 @@
 <?php
 
-require_once 'DatabaseResult.php';
+namespace Good\Memory\Database;
 
-class GoodMemoryDbMySQLResult
+require_once 'Result.php';
+
+class MySQLResult
 {
 	private $result;
 	

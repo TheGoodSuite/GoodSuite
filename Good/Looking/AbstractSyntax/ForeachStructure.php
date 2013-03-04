@@ -1,6 +1,8 @@
 <?php
 
-class GoodLookingForeachStructure extends GoodLookingAbstractSyntaxElementWithStatements
+namespace Good\Looking\AbstractSyntax;
+
+class ForeachStructure extends ElementWithStatements
 {
 	private $varName;
 	private $arrayStatement;
@@ -8,13 +10,13 @@ class GoodLookingForeachStructure extends GoodLookingAbstractSyntaxElementWithSt
 	
 	public function __construct($condition, $statements)
 	{
-		if (preg_match('/^\s*' . GoodLookingRegexes::$controlStructureConditions['foreach'] . 
+		if (\preg_match('/^\s*' . \Good\Looking\Regexes::$controlStructureConditions['foreach'] . 
 															'\s*$/', $condition, $matches) !== 1)
 		{
 			die('Error: Unable to parse foreach condition.');
 		}
 		
-		if (preg_match('/^s*' . GoodLookingRegexes::$expression . '\s*$/', $matches['array']) !== 1)
+		if (\preg_match('/^s*' . \Good\Looking\Regexes::$expression . '\s*$/', $matches['array']) !== 1)
 		{
 			die('Error: array term in foreach condition is invalid.');
 		}
@@ -24,7 +26,7 @@ class GoodLookingForeachStructure extends GoodLookingAbstractSyntaxElementWithSt
 		$this->varName = $matches['varName'];
 	}
 	
-	public function execute(GoodLookingEnvironment $environment)
+	public function execute(Environment $environment)
 	{
 		$counter = $environment->getTemplateVar();
 		

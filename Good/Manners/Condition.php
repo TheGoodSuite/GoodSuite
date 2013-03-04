@@ -1,17 +1,19 @@
 <?php
 
-abstract class GoodMannersCondition
+namespace Good\Manners;
+
+abstract class Condition
 {
 	abstract protected function doProcess();
 	
 	private $store;
 
-	protected function __construct(GoodMannersStore $store)
+	protected function __construct(Store $store)
 	{
 		$this->store = $store;
 	}
 	
-	public function process(GoodMannersStore $store)
+	public function process(Store $store)
 	{
 		if ($store != $this->store)
 		{

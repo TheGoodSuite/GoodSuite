@@ -1,9 +1,11 @@
 <?php
 
+namespace Good\Service;
+
 include_once dirname(__FILE__) . '/../Rolemodel/Visitor.php';
 include_once 'Modifier.php';
 
-class GoodServiceCompiler implements GoodRolemodelVisitor
+class Compiler implements \Good\Rolemodel\Visitor
 {
 	// TODO: prevent namespace collisions between things between
 	//       modifiers and generated variables / accessors
@@ -82,7 +84,7 @@ class GoodServiceCompiler implements GoodRolemodelVisitor
 		$output .= "\n";
 		$output .= '?>';
 		
-		file_put_contents($this->outputDir . 'GeneratedBaseClass.php', $output);
+		\file_put_contents($this->outputDir . 'GeneratedBaseClass.php', $output);
 	}
 	
 	public function visitDataType($dataType)
@@ -102,7 +104,7 @@ class GoodServiceCompiler implements GoodRolemodelVisitor
 		$this->includes = array();
 		
 		// ucfirst: make first letter upper case
-		$this->output = 'abstract class Base' . ucfirst($dataType->getName())
+		$this->output = 'abstract class Base' . \ucfirst($dataType->getName())
 													. " extends GeneratedBaseClass\n";
 		
 		$this->output .= "{\n";
@@ -111,7 +113,7 @@ class GoodServiceCompiler implements GoodRolemodelVisitor
 		//       and escape some stuff
 		// Note: This was previously based on the input file namespace
 		//       But I changed it to dataType name instead
-		$this->outputFile = $this->outputDir . 'Base' . ucfirst($dataType->getName()) . '.datatype.php';
+		$this->outputFile = $this->outputDir . 'Base' . \ucfirst($dataType->getName()) . '.datatype.php';
 	}
 	
 	private function saveOutput()
@@ -158,18 +160,18 @@ class GoodServiceCompiler implements GoodRolemodelVisitor
 		
 		$contents  = '<?php' . "\n";
 		$contents .= "\n";
-		$contents .= 'class ' . $this->className . ' extends Base' . ucfirst($this->className) . "\n";
+		$contents .= 'class ' . $this->className . ' extends Base' . \ucfirst($this->className) . "\n";
 		$contents .= "{\n";
 		$contents .= "}\n";
 		$contents .= "\n";
 		$contents .= '?>' . "\n";
 		
-		file_put_contents($this->outputFile, $this->output);
+		\file_put_contents($this->outputFile, $this->output);
 		
 		// TODO: make following line independant of execution path at any time
 		//       and escape some stuff
 		$file = $this->outputDir . $this->className . '.datatype.php';
-		file_put_contents($file, $contents);
+		\file_put_contents($file, $contents);
 	}
 	
 	public function visitDataMember($dataMember)
@@ -293,7 +295,7 @@ class GoodServiceCompiler implements GoodRolemodelVisitor
 		
 		$this->output .= '	private $' . $this->varName . ";\n";
 		// ucfirst: uper case first letter (php builtin)
-		$this->output .= '	private $is' . ucfirst($this->varName) . "Null;\n";
+		$this->output .= '	private $is' . \ucfirst($this->varName) . "Null;\n";
 		$this->output .= "	\n";
 		
 		foreach ($this->modifiers as $modifier)
@@ -305,7 +307,7 @@ class GoodServiceCompiler implements GoodRolemodelVisitor
 		
 		//getter
 		// ucfirst = upper case first letter (it's a php built-in)
-		$this->output .= '	' . $this->access . ' function get' . ucfirst($this->varName) . "()\n";
+		$this->output .= '	' . $this->access . ' function get' . \ucfirst($this->varName) . "()\n";
 		$this->output .= "	{\n";
 		
 		foreach ($this->modifiers as $modifier)
@@ -320,7 +322,7 @@ class GoodServiceCompiler implements GoodRolemodelVisitor
 		
 		//setter
 		// ucfirst = upper case first letter (it's a php built-in)
-		$this->output .= '	' . $this->access . ' function set' . ucfirst($this->varName) . '($value)' . "\n";
+		$this->output .= '	' . $this->access . ' function set' . \ucfirst($this->varName) . '($value)' . "\n";
 		$this->output .= "	{\n";
 		
 		foreach ($this->modifiers as $modifier)
@@ -341,7 +343,7 @@ class GoodServiceCompiler implements GoodRolemodelVisitor
 		
 		// null getter
 		// ucfirst: uper case first letter (php builtin)
-		$this->output .= '	' . $this->access . ' function is' . ucfirst($this->varName) . 'Null()' . "\n";
+		$this->output .= '	' . $this->access . ' function is' . \ucfirst($this->varName) . 'Null()' . "\n";
 		$this->output .= "	{\n";
 		
 		foreach ($this->modifiers as $modifier)
@@ -349,13 +351,13 @@ class GoodServiceCompiler implements GoodRolemodelVisitor
 			$this->output .= $modifier->nullGetterBegin();
 		}
 		
-		$this->output .= '		return $this->is' . ucfirst($this->varName) . 'Null;' . "\n";
+		$this->output .= '		return $this->is' . \ucfirst($this->varName) . 'Null;' . "\n";
 		$this->output .= "	}\n";
 		$this->output .= "	\n";
 		
 		// null setter
 		// ucfirst: uper case first letter (php builtin)
-		$this->output .= '	' . $this->access . ' function make' . ucfirst($this->varName) . 'Null($value = true)' . "\n";
+		$this->output .= '	' . $this->access . ' function make' . \ucfirst($this->varName) . 'Null($value = true)' . "\n";
 		$this->output .= "	{\n";
 		
 		foreach ($this->modifiers as $modifier)
@@ -363,7 +365,7 @@ class GoodServiceCompiler implements GoodRolemodelVisitor
 			$this->output .= $modifier->nullSetterBegin();
 		}
 		
-		$this->output .= '		$this->is' . ucfirst($this->varName) . 'Null = $value;' . "\n";
+		$this->output .= '		$this->is' . \ucfirst($this->varName) . 'Null = $value;' . "\n";
 		
 		foreach ($this->modifiers as $modifier)
 		{
@@ -389,7 +391,7 @@ class GoodServiceCompiler implements GoodRolemodelVisitor
 		{
 			foreach($modifier->extraFiles() as $filename => $contents)
 			{
-				file_put_contents($this->outputDir . $filename, $contents);
+				\file_put_contents($this->outputDir . $filename, $contents);
 			}
 		}
 		

@@ -1,11 +1,13 @@
 <?php
 
+namespace Good\Service;
+
 include_once 'Observer.php';
 
-interface GoodServiceObservable
+interface Observable
 {
-	public function register(GoodServiceObserver $observer);
-	public function unregister(GoodServiceObserver $observer);
+	public function register(Observer $observer);
+	public function unregister(Observer $observer);
 }
 
 ?>

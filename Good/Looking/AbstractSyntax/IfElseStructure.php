@@ -1,6 +1,8 @@
 <?php
 
-class GoodLookingIfElseStructure extends GoodLookingAbstractSyntaxElementWithStatements
+namespace Good\Looking\AbstractSyntax;
+
+class IfElseStructure extends ElementWithStatements
 {
 	private $condition;
 	private $statements;
@@ -8,7 +10,7 @@ class GoodLookingIfElseStructure extends GoodLookingAbstractSyntaxElementWithSta
 	
 	public function __construct($condition, $statements, $elseStatements)
 	{
-		if (preg_match('/^\s*' . GoodLookingRegexes::$expression . '\s*$/', $condition) === 0)
+		if (\preg_match('/^\s*' . \Good\Looking\Regexes::$expression . '\s*$/', $condition) === 0)
 		{
 			die('Error: Unable to parse if condition.');
 		}
@@ -18,7 +20,7 @@ class GoodLookingIfElseStructure extends GoodLookingAbstractSyntaxElementWithSta
 		$this->elseStatements = $elseStatements;
 	}
 	
-	public function execute(GoodLookingEnvironment $environment)
+	public function execute(Environment $environment)
 	{
 		$out = 'if (' . $this->evaluate($this->condition) . '):';
 		

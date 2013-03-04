@@ -1,5 +1,7 @@
 <?php
 
+namespace Good\Rolemodel;
+
 //
 // We are working on a structure that doesn't adhere too closely to the
 // composite pattern.
@@ -10,9 +12,9 @@
 
 include_once 'Visitor.php';
 
-interface GoodRolemodelVisitable
+interface Visitable
 {
-	public function accept(GoodRolemodelVisitor $visitor);
+	public function accept(Visitor $visitor);
 }
 
 ?>

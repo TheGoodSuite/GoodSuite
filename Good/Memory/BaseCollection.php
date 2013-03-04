@@ -1,9 +1,11 @@
 <?php
 
-require_once dirname(__FILE__) . '/Database/DatabaseResult.php';
+namespace Good\Memory;
+
+require_once dirname(__FILE__) . '/Database/Result.php';
 
 
-class GoodMemoryBaseCollection
+class BaseCollection
 {
 	protected $store;
 	protected $dbresult;

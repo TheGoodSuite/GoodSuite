@@ -1,8 +1,10 @@
 <?php
 
+namespace Good\Memory;
+
 require_once dirname(__FILE__) . '/PropertyVisitor.php';
 
-class GoodMemorySQLSimpleUpdater implements GoodMemoryPropertyVisitor
+class SQLSimpleUpdater implements PropertyVisitor
 {
 	private $db;
 	private $store;
@@ -10,14 +12,14 @@ class GoodMemorySQLSimpleUpdater implements GoodMemoryPropertyVisitor
 	private $sql;
 	private $first;
 	
-	public function __construct(GoodMemorySQLStore $store, GoodMemoryDatabase $db)
+	public function __construct(SQLStore $store, Database\Database $db)
 	{
 		$this->db = $db;
 		$this->store = $store;
 	}
 	
 	
-	public function update($datatypeName, GoodMannersStorable $value)
+	public function update($datatypeName, \Good\Manners\Storable $value)
 	{
 		$this->sql = 'UPDATE ' . $this->store->tableNamify($datatypeName);
 		$this->sql .= ' SET ';
@@ -44,7 +46,7 @@ class GoodMemorySQLSimpleUpdater implements GoodMemoryPropertyVisitor
 	}
 	
 	public function visitReferenceProperty($name, $datatypeName, $dirty, $null, 
-															GoodMannersStorable $value = null)
+															\Good\Manners\Storable $value = null)
 	{
 		// We don't need to recurse, because if the value is dirty as well,
 		// the store knows it and will get to updating it by itself
@@ -61,7 +63,7 @@ class GoodMemorySQLSimpleUpdater implements GoodMemoryPropertyVisitor
 			}
 			else
 			{
-				$this->sql .= intval($value->getId());
+				$this->sql .= \intval($value->getId());
 			}
 		}
 	}

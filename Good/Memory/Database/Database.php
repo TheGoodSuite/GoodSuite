@@ -1,6 +1,8 @@
 <?php
 
-interface GoodMemoryDatabase
+namespace Good\Memory\Database;
+
+interface Database
 {
 	public function query($sql);
 	public function getLastInsertedId();

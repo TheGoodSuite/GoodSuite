@@ -1,10 +1,12 @@
 <?php
 
+namespace Good\Service;
+
 include_once 'Observable.php';
 
-interface GoodServiceObserver
+interface Observer
 {
-	public function notify(GoodServiceObservable $observable);
+	public function notify(Observable $observable);
 }
 
 ?>

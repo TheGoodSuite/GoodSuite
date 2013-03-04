@@ -1,9 +1,9 @@
 <?php
 // including the library
-include('../GoodLooking.php');
+include('../Looking.php');
 
 // starting it up (giving template file name as argument)
-$goodLooking = new GoodLooking('sampleTemplate.html');
+$goodLooking = new \Good\Looking\Looking('sampleTemplate.html');
 
 // include the sample application that "gathers" my variables
 include('sampleApplication.php');

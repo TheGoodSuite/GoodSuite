@@ -1,8 +1,10 @@
 <?php
 
+namespace Good\Rolemodel;
+
 include_once 'Type.php';
 
-class GoodRolemodelTypeReference extends GoodRolemodelType
+class TypeReference extends Type
 {
 	private $value;
 	
@@ -11,7 +13,7 @@ class GoodRolemodelTypeReference extends GoodRolemodelType
 		$this->value = $value;
 	}
 	
-	public function accept(GoodRolemodelVisitor $visitor)
+	public function accept(Visitor $visitor)
 	{
 		// visit this, there are no children to pass visitor on to
 		$visitor->visitTypeReference($this);

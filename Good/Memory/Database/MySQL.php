@@ -1,9 +1,11 @@
 <?php
 
-require_once 'Database.php';
-require_once 'DbMySQLResult.php';
+namespace Good\Memory\Database;
 
-class GoodMemoryDbMySQL implements GoodMemoryDatabase
+require_once 'Database.php';
+require_once 'MySQLResult.php';
+
+class MySQL implements Database
 {
 	private $databaseName;  	// string
 	private $host;				// string
@@ -37,10 +39,10 @@ class GoodMemoryDbMySQL implements GoodMemoryDatabase
 	{
         if ($this->port == null)
         {
-            $this->port = ini_get("mysqli.default_port");
+            $this->port = \ini_get("mysqli.default_port");
         }
         
-		$this->db = new MySQLi($this->host, $this->user, $this->pass, 
+		$this->db = new \MySQLi($this->host, $this->user, $this->pass, 
                                                     $this->database, $this->port);
 	}
 	
@@ -77,7 +79,7 @@ class GoodMemoryDbMySQL implements GoodMemoryDatabase
 	
 	public function getResult()
 	{
-		return new GoodMemoryDbMySQLResult($this->result);
+		return new MySQLResult($this->result);
 	}
 	
 	/*

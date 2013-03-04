@@ -1,9 +1,11 @@
 <?php
 
+namespace Good\Memory;
+
 require_once dirname(__FILE__) . '/PropertyVisitor.php';
 require_once dirname(__FILE__) . '/SQLPostponedForeignKey.php';
 
-class GoodMemorySQLInserter implements GoodMemoryPropertyVisitor
+class SQLInserter implements PropertyVisitor
 {
 	private $db;
 	private $store;
@@ -15,7 +17,7 @@ class GoodMemorySQLInserter implements GoodMemoryPropertyVisitor
 	private $inserting;
 	private $postponed;
 	
-	public function __construct(GoodMemorySQLStore $store, GoodMemoryDatabase $db)
+	public function __construct(SQLStore $store, Database\Database $db)
 	{
 		$this->db = $db;
 		$this->store = $store;
@@ -23,7 +25,7 @@ class GoodMemorySQLInserter implements GoodMemoryPropertyVisitor
 	}
 	
 	
-	public function insert($datatypeName, GoodMannersStorable $value)
+	public function insert($datatypeName, \Good\Manners\Storable $value)
 	{
 		$this->sql = 'INSERT INTO ' . $this->store->tableNamify($datatypeName) . ' (';
 		$this->values = 'VALUES (';
@@ -63,7 +65,7 @@ class GoodMemorySQLInserter implements GoodMemoryPropertyVisitor
 	}
 	
 	public function visitReferenceProperty($name, $datatypeName, $dirty, $null, 
-														GoodMannersStorable $value = null)
+														\Good\Manners\Storable $value = null)
 	{
 		// If not dirty, do not include field and use default value
 		if ($dirty)
@@ -80,22 +82,22 @@ class GoodMemorySQLInserter implements GoodMemoryPropertyVisitor
 			{
 				if ($value->isNew())
 				{
-					$inserter = new GoodMemorySQLInserter($this->store, $this->db);
+					$inserter = new SQLInserter($this->store, $this->db);
 					$inserter->insert($datatypeName, $value);
-					$this->postponed = array_merge($this->postponed, $inserter->getPostponed());
+					$this->postponed = \array_merge($this->postponed, $inserter->getPostponed());
 					$this->store->setCurrentPropertyVisitor($this);
 				}
 				
 				if ($value->isNew() && $value->getId() == -1)
 				// $value is actually new, but not marked as such to prevent infinite recursion
 				{
-					$this->postponed[] = new GoodMemorySQLPostponedForeignKey($this->inserting,
-																			  $name,
-																			  $value);
+					$this->postponed[] = new SQLPostponedForeignKey($this->inserting,
+																	$name,
+																	$value);
 				}
 				else
 				{
-					$this->values .= intval($value->getId());
+					$this->values .= \intval($value->getId());
 				}
 			}
 		}

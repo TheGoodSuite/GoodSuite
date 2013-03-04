@@ -1,6 +1,8 @@
 <?php
 
-class GoodLookingEnvironment
+namespace Good\Looking\AbstractSyntax;
+
+class Environment
 {
 	private $templateVars = 0;
 	

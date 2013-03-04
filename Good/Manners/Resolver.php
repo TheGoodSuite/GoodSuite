@@ -1,10 +1,12 @@
 <?php
 
+namespace Good\Manners;
+
 require_once dirname(__FILE__) . '/ResolverVisitor.php';
 
-interface GoodMannersResolver
+interface Resolver
 {
-	public function resolverAccept(GoodMannersResolverVisitor $visitor);
+	public function resolverAccept(ResolverVisitor $visitor);
 }
 
 ?>

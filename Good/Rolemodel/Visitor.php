@@ -1,6 +1,8 @@
 <?php
 
-interface GoodRolemodelVisitor
+namespace Good\Rolemodel;
+
+interface Visitor
 {
 	public function visitDataModel($dataModel);
 	public function visitDataType($dataType);

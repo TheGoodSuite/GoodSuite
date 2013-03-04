@@ -1,18 +1,20 @@
 <?php
 
-class GoodLookingParser
+namespace Good\Looking;
+
+class Parser
 {
 	protected $factory;
 	protected $inTextMode;
 	
-	public function __construct(GoodLookingAbstractSyntaxFactory $factory)
+	public function __construct(AbstractSyntax\Factory $factory)
 	{
 		$this->factory = $factory;
 	}
 	
 	public function parseDocument($input)
 	{
-		$input = preg_replace('/' . GoodLookingRegexes::$comment . '/', '', $input);
+		$input = \preg_replace('/' . Regexes::$comment . '/', '', $input);
 		
 		$this->inTextMode = true;
 		
@@ -30,17 +32,17 @@ class GoodLookingParser
 	{
 		$statements = $this->parseStatementCollection($input);
 		
-		if (preg_match('/^\s*else\s*(?<terminator>' . 
-							GoodLookingRegexes::$statementEnder . '|' .
-								GoodLookingRegexes::$scriptDelimiterRight . '|$)/', $input, $matches) === 1)
+		if (\preg_match('/^\s*else\s*(?<terminator>' . 
+							Regexes::$statementEnder . '|' .
+								Regexes::$scriptDelimiterRight . '|$)/', $input, $matches) === 1)
 		{
 			$else = true;
 			
 			// remove the processed part
-			$input = substr($input, strlen($matches[0]));
+			$input = \substr($input, strlen($matches[0]));
 			
 			// determine next mode
-			if (preg_match('/' . GoodLookingRegexes::$scriptDelimiterRight . '/', $matches['terminator']) == 1)
+			if (\preg_match('/' . Regexes::$scriptDelimiterRight . '/', $matches['terminator']) == 1)
 			{
 				$this->inTextMode = true;
 			}
@@ -52,16 +54,16 @@ class GoodLookingParser
 			$else = false;
 		}
 		
-		if (preg_match('/^\s*end\s*if\s*(?<terminator>' . 
-							GoodLookingRegexes::$statementEnder . '|' .
-								GoodLookingRegexes::$scriptDelimiterRight . '|$)/', $input, $matches) === 1)
+		if (\preg_match('/^\s*end\s*if\s*(?<terminator>' . 
+							Regexes::$statementEnder . '|' .
+								Regexes::$scriptDelimiterRight . '|$)/', $input, $matches) === 1)
 		{
 			
 			// remove the processed part
-			$input = substr($input, strlen($matches[0]));
+			$input = \substr($input, strlen($matches[0]));
 			
 			// determine next mode
-			if (preg_match('/' . GoodLookingRegexes::$scriptDelimiterRight . '/', $matches['terminator']) == 1)
+			if (\preg_match('/' . Regexes::$scriptDelimiterRight . '/', $matches['terminator']) == 1)
 			{
 				$this->inTextMode = true;
 			}
@@ -80,13 +82,13 @@ class GoodLookingParser
 		{
 			die('Error: End of ducument found though there was still an "if" that needed to be closed.');
 		}
-		else if (preg_match('/^s*' . GoodLookingRegexes::$endingControlStructures . '\s*$/', $input, $matched))
+		else if (\preg_match('/^s*' . Regexes::$endingControlStructures . '\s*$/', $input, $matched))
 		{
 			die('Error: Control structure mismatch, found <i>' . $matches[0] . '</i> while parsing an if.');
 		}
 		else
 		{
-			die('Error: Unable to parse. Near: ' . htmlentities(substr($input, 0, 50)));
+			die('Error: Unable to parse. Near: ' . \htmlentities(substr($input, 0, 50)));
 		}
 	}
 	
@@ -94,15 +96,15 @@ class GoodLookingParser
 	{
 		$statements = $this->parseStatementCollection($input);
 		
-		if (preg_match('/^\s*end\s*for\s*(?<terminator>' . 
-							GoodLookingRegexes::$statementEnder . '|' .
-								GoodLookingRegexes::$scriptDelimiterRight . '|$)/', $input, $matches) === 1)
+		if (\preg_match('/^\s*end\s*for\s*(?<terminator>' . 
+							Regexes::$statementEnder . '|' .
+								Regexes::$scriptDelimiterRight . '|$)/', $input, $matches) === 1)
 		{
 			// remove the processed part
-			$input = substr($input, strlen($matches[0]));
+			$input = \substr($input, strlen($matches[0]));
 			
 			// determine next mode
-			if (preg_match('/' . GoodLookingRegexes::$scriptDelimiterRight . '/', $matches['terminator']) == 1)
+			if (\preg_match('/' . Regexes::$scriptDelimiterRight . '/', $matches['terminator']) == 1)
 			{
 				$this->inTextMode = true;
 			}
@@ -114,13 +116,13 @@ class GoodLookingParser
 		{
 			die('Error: End of ducument found though there was still a "for" that needed to be closed.');
 		}
-		else if (preg_match('/^s*' . GoodLookingRegexes::$endingControlStructures, $input, $matched))
+		else if (\preg_match('/^s*' . Regexes::$endingControlStructures, $input, $matched))
 		{
 			die('Error: Control structure mismatch, found <i>' . $matches[0] . '</i> while parsing a for.');
 		}
 		else
 		{
-			die('Error: Unable to parse. Near: ' . htmlentities(substr($input, 0, 20)));
+			die('Error: Unable to parse. Near: ' . \htmlentities(substr($input, 0, 20)));
 		}
 	}
 	
@@ -128,15 +130,15 @@ class GoodLookingParser
 	{
 		$statements = $this->parseStatementCollection($input);
 		
-		if (preg_match('/^\s*end\s*foreach\s*(?<terminator>' . 
-							GoodLookingRegexes::$statementEnder . '|' .
-								GoodLookingRegexes::$scriptDelimiterRight . '|$)/', $input, $matches) === 1)
+		if (\preg_match('/^\s*end\s*foreach\s*(?<terminator>' . 
+							Regexes::$statementEnder . '|' .
+								Regexes::$scriptDelimiterRight . '|$)/', $input, $matches) === 1)
 		{
 			// remove the processed part
 			$input = substr($input, strlen($matches[0]));
 			
 			// determine next mode
-			if (preg_match('/' . GoodLookingRegexes::$scriptDelimiterRight . '/', $matches['terminator']) == 1)
+			if (\preg_match('/' . Regexes::$scriptDelimiterRight . '/', $matches['terminator']) == 1)
 			{
 				$this->inTextMode = true;
 			}
@@ -148,13 +150,13 @@ class GoodLookingParser
 		{
 			die('Error: End of ducument found though there was still a "foreach" that needed to be closed.');
 		}
-		else if (preg_match('/^s*' . GoodLookingRegexes::$endingControlStructures . '\s*$/', $input, $matched))
+		else if (\preg_match('/^s*' . Regexes::$endingControlStructures . '\s*$/', $input, $matched))
 		{
 			die('Error: Control structure mismatch, found <i>' . $matches[0] . '</i> while parsing a foreach.');
 		}
 		else
 		{
-			die('Error: Unable to parse. Near: ' . htmlentities(substr($input, 0, 20)));
+			die('Error: Unable to parse. Near: ' . \htmlentities(substr($input, 0, 20)));
 		}
 	}
 	
@@ -166,34 +168,34 @@ class GoodLookingParser
 		// a statement or nothing anchored to the begin of $input 
 		// (with whitespace in front of and behind it) followed by
 		// a statement ender (;), script delimiter (:>) or the end of the string
-		$regexExpression = '/^\s*(' . GoodLookingRegexes::$expression . '|)\s*(?<terminator>' . 
-										GoodLookingRegexes::$statementEnder . '|' .
-											GoodLookingRegexes::$scriptDelimiterRight . '|$)/';
+		$regexExpression = '/^\s*(' . Regexes::$expression . '|)\s*(?<terminator>' . 
+										Regexes::$statementEnder . '|' .
+											Regexes::$scriptDelimiterRight . '|$)/';
 											
 		// Same idea as above, but for control structures
-		$regexControlStructure = '/^\s*' . GoodLookingRegexes::$startingControlStructures . '\s*(?<terminator>' . 
-											GoodLookingRegexes::$statementEnder . '|' .
-												GoodLookingRegexes::$scriptDelimiterRight . '|$)/';
+		$regexControlStructure = '/^\s*' . Regexes::$startingControlStructures . '\s*(?<terminator>' . 
+											Regexes::$statementEnder . '|' .
+												Regexes::$scriptDelimiterRight . '|$)/';
 		
 		$parseable = true;
 		
 		while ($parseable && $input != '')
 		{
 			while ($input !== '' && ($this->inTextMode ||
-					  preg_match($regexExpression, $input, $matches) === 1))
+					  \preg_match($regexExpression, $input, $matches) === 1))
 			{
 				if ($this->inTextMode)
 				{
 					// Everthing before delimiter is text
 					// Everything after is for the next iteration of parsing
-					$parts = preg_split('/' . GoodLookingRegexes::$scriptDelimiterLeft . '/', $input, 2);
+					$parts = \preg_split('/' . Regexes::$scriptDelimiterLeft . '/', $input, 2);
 					
 					if ($parts[0] != '')
 					{
 						$statements[] = $this->factory->createTextBlock($parts[0]);
 					}
 					
-					if (array_key_exists(1, $parts))
+					if (\array_key_exists(1, $parts))
 					{
 						$input = $parts[1];
 					}
@@ -211,13 +213,13 @@ class GoodLookingParser
 					// Make a statment out of entire match except the terminating symbol 
 					// (= statement ender, script delimiter or end of input)
 					$statements[] = $this->factory->createStatement(
-								substr($matches[0], 0, -1 * strlen($matches['terminator'])));
+								\substr($matches[0], 0, -1 * strlen($matches['terminator'])));
 					
 					// remove the processed part
-					$input = substr($input, strlen($matches[0]));
+					$input = \substr($input, strlen($matches[0]));
 					
 					// determine next mode
-					if (preg_match('/' . GoodLookingRegexes::$scriptDelimiterRight . '/', $matches['terminator']) == 1)
+					if (\preg_match('/' . Regexes::$scriptDelimiterRight . '/', $matches['terminator']) == 1)
 					{
 						$this->inTextMode = true;
 					}
@@ -231,7 +233,7 @@ class GoodLookingParser
 				$input = substr($input, strlen($matches[0]));
 				
 				// determine next mode
-				if (preg_match('/' . GoodLookingRegexes::$scriptDelimiterRight . '/', $matches['terminator']) == 1)
+				if (preg_match('/' . Regexes::$scriptDelimiterRight . '/', $matches['terminator']) == 1)
 				{
 					$this->inTextMode = true;
 				}

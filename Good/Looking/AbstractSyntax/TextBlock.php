@@ -1,6 +1,8 @@
 <?php
 
-class GoodLookingTextBlock implements GoodLookingAbstractSyntaxElement
+namespace Good\Looking\AbstractSyntax;
+
+class TextBlock implements Element
 {
 	private $text;
 	
@@ -9,7 +11,7 @@ class GoodLookingTextBlock implements GoodLookingAbstractSyntaxElement
 		$this->text = $text;
 	}
 	
-	public function execute(GoodLookingEnvironment $environment)
+	public function execute(Environment $environment)
 	{
 		return '?>' . $this->text . '<?php ';
 	}

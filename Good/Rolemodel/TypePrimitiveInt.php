@@ -1,10 +1,12 @@
 <?php
 
+namespace Good\Rolemodel;
+
 include_once 'TypePrimitive.php';
 
-class GoodRolemodelTypePrimitiveInt extends GoodRolemodelTypePrimitive
+class TypePrimitiveInt extends TypePrimitive
 {
-	public function accept(GoodRolemodelVisitor $visitor)
+	public function accept(Visitor $visitor)
 	{
 		// visit this, there are no children to pass visitor on to
 		$visitor->visitTypePrimitiveInt($this);

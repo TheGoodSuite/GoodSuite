@@ -1,9 +1,11 @@
 <?php
 
+namespace Good\Memory;
+
 require_once dirname(__FILE__) . '/../Rolemodel/Visitor.php';
 
 
-class GoodMemorySQLStoreCompiler implements GoodRolemodelVisitor
+class SQLStoreCompiler implements \Good\Rolemodel\Visitor
 {
 	// Compiler level data
 	private $outputDir;
@@ -23,9 +25,9 @@ class GoodMemorySQLStoreCompiler implements GoodRolemodelVisitor
 	public function visitDataModel($dataModel)
 	{
 		// Start off the class 
-		$this->output  = 'class GoodMemorySQLStore extends GoodMemoryBaseSQLStore' . "\n";
+		$this->output  = 'class GoodMemorySQLStore extends \\Good\\Memory\\BaseSQLStore' . "\n";
 		$this->output .= "{\n";
-		$this->output .= '	public function __construct(GoodMemoryDatabase $db)' . "\n";
+		$this->output .= '	public function __construct(\\Good\\Memory\\Database\\Database $db)' . "\n";
 		$this->output .= "	{\n";
 		$this->output .= '		parent::__construct($db);' . "\n";
 		$this->output .= "	}\n";
@@ -47,47 +49,47 @@ class GoodMemorySQLStoreCompiler implements GoodRolemodelVisitor
 		$this->dataType = $name;
 		
 		// ucfirst: upper case first (php builtin)
-		$this->output .= '	protected function saveNew' . ucfirst($name) . 's(array $entries)' . "\n";
+		$this->output .= '	protected function saveNew' . \ucfirst($name) . 's(array $entries)' . "\n";
 		$this->output .= "	{\n";
 		$this->output .= '		$this->saveAnyNew("' . $name . '", $entries);' . "\n";
 		$this->output .= "	}\n";
 		$this->output .= "	\n";
-		$this->output .= '	protected function save' . ucfirst($name) . 
+		$this->output .= '	protected function save' . \ucfirst($name) . 
 														'Modifications(array $entries)' . "\n";
 		$this->output .= "	{\n";
 		$this->output .= '		$this->saveAnyModifications("' . $name . '", $entries);' . "\n";
 		$this->output .= "	}\n";
 		$this->output .= "	\n";
-		$this->output .= '	protected function save' . ucfirst($name) . 'Deletions(array $entries)' . "\n";
+		$this->output .= '	protected function save' . \ucfirst($name) . 'Deletions(array $entries)' . "\n";
 		$this->output .= "	{\n";
 		$this->output .= '		$this->saveAnyDeletions("' . $name . '", $entries);' . "\n";
 		$this->output .= "	}\n";
 		$this->output .= "	\n";
-		$this->output .= '	protected function doGet' . ucfirst($name) .
-							'Collection(GoodMannersCondition $condition, ' . $name . 
+		$this->output .= '	protected function doGet' . \ucfirst($name) .
+							'Collection(\\Good\\Manners\\Condition $condition, ' . $name . 
 																	'Resolver $resolver)' . "\n";
 		$this->output .= "	{\n";
 		$this->output .= '		$res = $this->doAnyGet("' . $name . '", $condition, $resolver);' . "\n";
 		$this->output .= '		return new ' . $name . 'Collection($this, $res);' . "\n";
 		$this->output .= "	}\n";
 		$this->output .= "	\n";
-		$this->output .= '	protected function doModifyAny' . ucfirst($name) . 
-							'(GoodMannersCondition $condition, ' . $name . ' $modifications)' . "\n";
+		$this->output .= '	protected function doModifyAny' . \ucfirst($name) . 
+							'(\\Good\\Manners\\Condition $condition, ' . $name . ' $modifications)' . "\n";
 		$this->output .= "	{\n";
 		$this->output .= '		$this->doAnyModify("' . $name . '", $condition, $modifications);' . "\n";
 		$this->output .= "	}\n";
 		
-		$this->create  = '	private $created' . ucfirst($name) . 's = array();' . "\n";
+		$this->create  = '	private $created' . \ucfirst($name) . 's = array();' . "\n";
 		$this->create .= "	\n";
-		$this->create .= '	public function create' . ucfirst($name) .
+		$this->create .= '	public function create' . \ucfirst($name) .
 														'(array $array, $table = "t0", &$nextTable = 0)' . "\n";
 		$this->create .= "	{\n";
 		$this->create .= '		$nextTable++;' . "\n";
 		$this->create .= "		\n";
 		$this->create .= '		if (array_key_exists($array[$table . "_id"], ' .
-															'$this->created' . ucfirst($name) . 's))' . "\n";
+															'$this->created' . \ucfirst($name) . 's))' . "\n";
 		$this->create .= "		{\n";
-		$this->create .= '			return $this->created' . ucfirst($name) . 
+		$this->create .= '			return $this->created' . \ucfirst($name) . 
 													's[$array[$this->tableNamify($table) . "_id"]];' . "\n";
 		$this->create .= "		}";
 		$this->create .= "		\n";
@@ -97,13 +99,13 @@ class GoodMemorySQLStoreCompiler implements GoodRolemodelVisitor
 		$out .= "\n";
 		$out .= 'require_once $good->getGoodPath() . "/Memory/BaseCollection.php";' . "\n";
 		$out .= "\n";
-		$out .= 'class ' . $name . 'Collection extends GoodMemoryBaseCollection' . "\n";
+		$out .= 'class ' . $name . 'Collection extends \\Good\\Memory\\BaseCollection' . "\n";
 		$out .= "{\n";
 		$out .= '	public function getNext()' . "\n";
 		$out .= "	{\n";
 		$out .= '		if ($row = $this->dbresult->fetch())' . "\n";
 		$out .= "		{\n";
-		$out .= '			return $this->store->create' . ucfirst($name) . '($row);' . "\n";
+		$out .= '			return $this->store->create' . \ucfirst($name) . '($row);' . "\n";
 		$out .= "		}\n";
 		$out .= '		else' . "\n";
 		$out .= "		{\n";
@@ -157,7 +159,7 @@ class GoodMemorySQLStoreCompiler implements GoodRolemodelVisitor
 	{
 		$this->create .= ",\n";
 		// TODO: spread this (and all arguments) over multiple lines in output
-		$this->create .= '			array_key_exists($table . "_" . $this->fieldNamify("' . 
+		$this->create .= '			\array_key_exists($table . "_" . $this->fieldNamify("' . 
 																$this->varName . '"),' . "\n"; 
 		$this->create .= '					$array) && $array[$table . "_" . $this->fieldNamify("' . 
 																				$this->varName . "\")]\n";

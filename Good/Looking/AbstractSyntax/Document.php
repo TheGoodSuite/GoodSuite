@@ -1,6 +1,8 @@
 <?php
 
-class GoodLookingAbstractDocument implements GoodLookingAbstractSyntaxElement
+namespace Good\Looking\AbstractSyntax;
+
+class Document implements Element
 {
 	private $statements;
 	
@@ -9,7 +11,7 @@ class GoodLookingAbstractDocument implements GoodLookingAbstractSyntaxElement
 		$this->statements = $statements;
 	}
 	
-	public function execute(GoodLookingEnvironment $environment)
+	public function execute(Environment $environment)
 	{
 		$out = '<?php ';
 		

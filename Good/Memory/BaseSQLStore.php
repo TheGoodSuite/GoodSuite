@@ -1,7 +1,10 @@
 <?php
 
-require_once dirname(__FILE__) . '/../Manners/StoreSpecifications/ComparingStore.php';
-require_once dirname(__FILE__) . '/../Manners/StoreSpecifications/BasicLogicStore.php';
+namespace Good\Memory;
+
+require_once dirname(__FILE__) . '/../Manners/ComparingStore.php';
+require_once dirname(__FILE__) . '/../Manners/BasicLogicStore.php';
+require_once dirname(__FILE__) . '/SQLStore.php';
 
 require_once dirname(__FILE__) . '/../Manners/Resolver.php';
 
@@ -12,9 +15,10 @@ require_once dirname(__FILE__) . '/SQLSelecter.php';
 require_once dirname(__FILE__) . '/SQLJoin.php';
 require_once dirname(__FILE__) . '/ConditionProcessor.php';
 
-abstract class GoodMemoryBaseSQLStore extends GoodMannersStore
-									  implements GoodMannersComparingStore,
-												 GoodMannersBasicLogicStore
+abstract class BaseSQLStore extends \GoodMannersStore // (generated so not namespaced)
+							implements \Good\Manners\ComparingStore,
+									   \Good\Manners\BasicLogicStore,
+									   SQLStore
 {
 	protected $db;
 	private $currentConditionWriter = null;
@@ -35,22 +39,22 @@ abstract class GoodMemoryBaseSQLStore extends GoodMannersStore
 	
 	public function tableNamify($value)
 	{
-		return strtolower($value);
+		return \strtolower($value);
 	}
 	
 	public function fieldNamify($value)
 	{
-		return strtolower($value);
+		return \strtolower($value);
 	}
 	
 	public function parseInt($value)
 	{
-		return intval($value);
+		return \intval($value);
 	}
 	
 	public function parseFloat($value)
 	{
-		return floatval($value);
+		return \floatval($value);
 	}
 	
 	public function parseDatetime($value)
@@ -85,7 +89,7 @@ abstract class GoodMemoryBaseSQLStore extends GoodMannersStore
 	
 	protected function saveAnyNew($datatypeName, array $storables)
 	{
-		$inserter = new GoodMemorySQLInserter($this, $this->db);
+		$inserter = new SQLInserter($this, $this->db);
 		
 		foreach ($storables as $storable)
 		{
@@ -107,7 +111,7 @@ abstract class GoodMemoryBaseSQLStore extends GoodMannersStore
 	
 	protected function saveAnyModifications($datatypeName, array $storables)
 	{
-		$updater = new GoodMemorySQLSimpleUpdater($this, $this->db);
+		$updater = new SQLSimpleUpdater($this, $this->db);
 		
 		foreach ($storables as $storable)
 		{
@@ -117,32 +121,32 @@ abstract class GoodMemoryBaseSQLStore extends GoodMannersStore
 	}
 	
 	protected function doAnyGet($datatypeName, 
-								GoodMannersCondition $condition, 
-								GoodMannersResolver $resolver)
+								\Good\Manners\Condition $condition, 
+								\Good\Manners\Resolver $resolver)
 	{
 		$this->joins = array(0 => array());
 		$this->numberOfJoins = 0;
 		
-		$selecter = new GoodMemorySQLSelecter($this, $this->db, 0);
+		$selecter = new SQLSelecter($this, $this->db, 0);
 		
 		return $selecter->select($datatypeName, $condition, $resolver);
 	}
 	
 	protected function doAnyModify($datatypeName,
-								GoodMannersCondition $condition,
-								GoodMannersStorable $modifications)
+								   \Good\Manners\Condition $condition,
+								   \Good\Manners\Storable $modifications)
 	{
 		$this->joins = array(0 => array());
 		$this->numberOfJoins = 0;
 		
-		$updater = new GoodMemorySQLAdvancedUpdater($this, $this->db, 0);
+		$updater = new SQLAdvancedUpdater($this, $this->db, 0);
 		
 		$updater->update($datatypeName, $condition, $modifications);
 	}
 	
 	public function getJoin($table, $property)
 	{
-		if (array_key_exists($property, $this->joins[$table]))
+		if (\array_key_exists($property, $this->joins[$table]))
 		{
 			return $this->joins[$table][$property]->tableNumberDestination;
 		}
@@ -154,7 +158,7 @@ abstract class GoodMemoryBaseSQLStore extends GoodMannersStore
 	
 	public function getReverseJoin($tableNumber)
 	{
-		if (array_key_exists($tableNumber, $this->joinsReverse))
+		if (\array_key_exists($tableNumber, $this->joinsReverse))
 		{
 			return $this->joinsReverse[$tableNumber];
 		}
@@ -174,10 +178,10 @@ abstract class GoodMemoryBaseSQLStore extends GoodMannersStore
 		// we start off with increment because joins index is numberOfJoins + 1 (index 0 is for base table)
 		$this->numberOfJoins++;
 		
-		$join = new GoodMemorySQLJoin($tableNumberOrigin,
-									  $this->fieldNamify($fieldNameOrigin),
-									  $this->tableNamify($tableNameDestination),
-									  $this->numberOfJoins);
+		$join = new SQLJoin($tableNumberOrigin,
+							$this->fieldNamify($fieldNameOrigin),
+							$this->tableNamify($tableNameDestination),
+							$this->numberOfJoins);
 		
 		$this->joins[$tableNumberOrigin][$fieldNumberOrigin] = $join;
 		
@@ -187,84 +191,84 @@ abstract class GoodMemoryBaseSQLStore extends GoodMannersStore
 		return $this->numberOfJoins;
 	}
 	
-	public function createEqualityCondition(GoodMannersStorable $to)
+	public function createEqualityCondition(\Good\Manners\Storable $to)
 	{
-		return new GoodMannersEqualityCondition($this, $to);
+		return new \Good\Manners\EqualityCondition($this, $to);
 	}
-	public function createInequalityCondition(GoodMannersStorable $to)
+	public function createInequalityCondition(\Good\Manners\Storable $to)
 	{
-		return new GoodMannersInequalityCondition($this, $to);
+		return new \Good\Manners\InequalityCondition($this, $to);
 	}
-	public function createGreaterCondition(GoodMannersStorable $to)
+	public function createGreaterCondition(\Good\Manners\Storable $to)
 	{
-		return new GoodMannersGreaterCondition($this, $to);
+		return new \Good\Manners\GreaterCondition($this, $to);
 	}
-	public function createGreaterOrEqualsCondition(GoodMannersStorable $to)
+	public function createGreaterOrEqualsCondition(\Good\Manners\Storable $to)
 	{
-		return new GoodMannersGreaterOrEqualsCondition($this, $to);
+		return new \Good\Manners\GreaterOrEqualsCondition($this, $to);
 	}
-	public function createLessCondition(GoodMannersStorable $to)
+	public function createLessCondition(\Good\Manners\Storable $to)
 	{
-		return new GoodMannersLessCondition($this, $to);
+		return new \Good\Manners\LessCondition($this, $to);
 	}
-	public function createLessOrEqualsCondition(GoodMannersStorable $to)
+	public function createLessOrEqualsCondition(\Good\Manners\Storable $to)
 	{
-		return new GoodMannersLessOrEqualsCondition($this, $to);
+		return new \Good\Manners\LessOrEqualsCondition($this, $to);
 	}
-	public function createAndCondition(GoodMannersCondition $condition1, GoodMannersCondition $condition2)
+	public function createAndCondition(\Good\Manners\Condition $condition1, \Good\Manners\Condition $condition2)
 	{
-		return new GoodMannersAndCondition($this, $condition1, $condition2);
+		return new \Good\Manners\AndCondition($this, $condition1, $condition2);
 	}
-	public function createOrCondition(GoodMannersCondition $condition1, GoodMannersCondition $condition2)
+	public function createOrCondition(\Good\Manners\Condition $condition1, \Good\Manners\Condition $condition2)
 	{
-		return new GoodMannersOrCondition($this, $condition1, $condition2);
+		return new \Good\Manners\OrCondition($this, $condition1, $condition2);
 	}
 	
-	public function setCurrentConditionProcessor(GoodMemoryConditionProcessor $value)
+	public function setCurrentConditionProcessor(ConditionProcessor $value)
 	{
 		$this->currentConditionWriter = $value;
 	}
 	
-	public function processEqualityCondition(GoodMannersStorable $to)
+	public function processEqualityCondition(\Good\Manners\Storable $to)
 	{
 		$this->currentConditionWriter->processEqualityCondition($to);
 	}
-	public function processInequalityCondition(GoodMannersStorable $to)
+	public function processInequalityCondition(\Good\Manners\Storable $to)
 	{
 		$this->currentConditionWriter->processInequalityCondition($to);
 	}
-	public function processGreaterCondition(GoodMannersStorable $to)
+	public function processGreaterCondition(\Good\Manners\Storable $to)
 	{
 		$this->currentConditionWriter->processGreaterCondition($to);
 	}
-	public function processGreaterOrEqualsCondition(GoodMannersStorable $to)
+	public function processGreaterOrEqualsCondition(\Good\Manners\Storable $to)
 	{
 		$this->currentConditionWriter->processGreaterOrEqualsCondition($to);
 	}
-	public function processLessCondition(GoodMannersStorable $to)
+	public function processLessCondition(\Good\Manners\Storable $to)
 	{
 		$this->currentConditionWriter->processLessCondition($to);
 	}
-	public function processLessOrEqualsCondition(GoodMannersStorable $to)
+	public function processLessOrEqualsCondition(\Good\Manners\Storable $to)
 	{
 		$this->currentConditionWriter->processLessOrEqualsCondition($to);
 	}
-	public function processAndCondition(GoodMannersCondition $condition1, GoodMannersCondition $condition2)
+	public function processAndCondition(\Good\Manners\Condition $condition1, \Good\Manners\Condition $condition2)
 	{
 		$this->currentConditionWriter->processAndCondition($condition1, $condition2);
 	}
-	public function processOrCondition(GoodMannersCondition $condition1, GoodMannersCondition $condition2)
+	public function processOrCondition(\Good\Manners\Condition $condition1, \Good\Manners\Condition $condition2)
 	{
 		$this->currentConditionWriter->processOrCondition($condition1, $condition2);
 	}
 	
-	public function setCurrentPropertyVisitor(GoodMemoryPropertyVisitor $value)
+	public function setCurrentPropertyVisitor(PropertyVisitor $value)
 	{
 		$this->currentPropertyVisitor = $value;
 	}
 	
 	public function visitReferenceProperty($name, $datatypeName, $dirty, $null, 
-													GoodMannersStorable $value = null)
+													\Good\Manners\Storable $value = null)
 	{
 		$this->currentPropertyVisitor->visitReferenceProperty($name, $datatypeName, $dirty, $null, $value);
 	}

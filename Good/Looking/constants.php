@@ -1,8 +1,8 @@
 <?php
 
-//namespace \Good\Looking\ErrorLevels
-//{
-class GoodLookingErrorLevels
+namespace Good\Looking;
+
+class ErrorLevels
 {
     const low    = 0;		// like an undeclared variable, invisible on page, visible in source
     const medium = 1;	    // visible on screen
@@ -11,9 +11,7 @@ class GoodLookingErrorLevels
 }
 
 
-//namespace \Good\Looking\CompilerMapModes
-//{
-class GoodLookingCompilerMapModes
+class CompilerMapModes
 {
     const plain  = 0; 
     const script = 1;
@@ -21,18 +19,14 @@ class GoodLookingCompilerMapModes
     const branch = 3;
 }
 
-//namespace \Good\Looking\CompilerLayerTypes
-//{
-class GoodLookingCompilerLayerTypes
+class CompilerLayerTypes
 {
     const toplevel           = 0;
     const contStrucStarting  = 1;
     const contStrucBranching = 2;
 }
 
-//namespace \Good\Looking\CompilerOutputTypes
-//{
-class GoodLookingCompilerOutputTypes
+class CompilerOutputTypes
 {
     const text = 0;
     const php  = 1;

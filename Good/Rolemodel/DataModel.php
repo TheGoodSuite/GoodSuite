@@ -1,9 +1,11 @@
 <?php
 
+namespace Good\Rolemodel;
+
 include_once 'Visitable.php';
 include_once 'DataType.php';
 
-class GoodRolemodelDataModel implements GoodRolemodelVisitable
+class DataModel implements Visitable
 {
 	private $dataTypes;
 	
@@ -11,7 +13,7 @@ class GoodRolemodelDataModel implements GoodRolemodelVisitable
 	{
 		// we index the types by their names, so we can easily access them
 		$this->dataTypes = array();
-		for ($i = 0; $i < count($dataTypes); $i++)
+		for ($i = 0; $i < \count($dataTypes); $i++)
 		{
 			$this->dataTypes[$dataTypes[$i]->getName()] = $dataTypes[$i];
 		}
@@ -21,7 +23,7 @@ class GoodRolemodelDataModel implements GoodRolemodelVisitable
 		{
 			$references = $dataType->getReferencedTypes();
 			
-			for ($j = 0; $j < count($references); $j++)
+			for ($j = 0; $j < \count($references); $j++)
 			{
 				if (!isset($this->dataTypes[$references[$j]]))
 				{
@@ -33,7 +35,7 @@ class GoodRolemodelDataModel implements GoodRolemodelVisitable
 		}
 	}
 		
-	public function accept(GoodRolemodelVisitor $visitor)
+	public function accept(Visitor $visitor)
 	{
 		// visit this
 		$visitor->visitDataModel($this);

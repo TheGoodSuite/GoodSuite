@@ -1,11 +1,13 @@
 <?php
 
+namespace Good\Memory;
+
 require_once dirname(__FILE__) . '/PropertyVisitor.php';
 require_once dirname(__FILE__) . '/../Manners/Condition.php';
 require_once dirname(__FILE__) . '/ConditionProcessor.php';
 
-class GoodMemorySQLUpdateConditionWriter implements GoodMemoryPropertyVisitor,
-													GoodMemoryConditionProcessor
+class SQLUpdateConditionWriter implements PropertyVisitor,
+										  ConditionProcessor
 {
 	private $store;
 	private $comparison;
@@ -25,7 +27,7 @@ class GoodMemorySQLUpdateConditionWriter implements GoodMemoryPropertyVisitor,
 	private $phase2;
 	private $rootTableName;
 	
-	public function __construct(GoodMemorySQLStore $store, $currentTable)
+	public function __construct(SQLStore $store, $currentTable)
 	{	
 		$this->store = $store;
 		$this->currentTable = $currentTable;
@@ -46,7 +48,7 @@ class GoodMemorySQLUpdateConditionWriter implements GoodMemoryPropertyVisitor,
 		return $this->joinedTables;
 	}
 	
-	public function writeCondition(GoodMannersCondition $condition, 
+	public function writeCondition(\Good\Manners\Condition $condition, 
 								   $rootTableName,
 								   $updatingTableNumber,
 								   $updatingTableName)
@@ -59,7 +61,7 @@ class GoodMemorySQLUpdateConditionWriter implements GoodMemoryPropertyVisitor,
 		$condition->process($this->store);
 	}
 	
-	public function writeComparisonCondition(GoodMannersStorable $to, $comparison)
+	public function writeComparisonCondition(\Good\Manners\Storable $to, $comparison)
 	{
 		$this->condition = '';
 		
@@ -78,7 +80,7 @@ class GoodMemorySQLUpdateConditionWriter implements GoodMemoryPropertyVisitor,
 				$join = $this->store->getReverseJoin($this->updatingTableNumber);
 				
 				while ($join->tableNumberOrigin != 0 &&
-					    !array_key_exists($join->tableNumberOrigin, $this->joinedTables))
+					    !\array_key_exists($join->tableNumberOrigin, $this->joinedTables))
 				{
 					$join = $this->store->getReverseJoin($join->tableNumberOrigin);
 					
@@ -130,7 +132,7 @@ class GoodMemorySQLUpdateConditionWriter implements GoodMemoryPropertyVisitor,
 	
 	
 	
-	public function writeSimpleComparisonCondition(GoodMannersStorable $to, $comparison)
+	public function writeSimpleComparisonCondition(\Good\Manners\Storable $to, $comparison)
 	{
 		$this->store->setCurrentConditionProcessor($this);
 		
@@ -151,32 +153,32 @@ class GoodMemorySQLUpdateConditionWriter implements GoodMemoryPropertyVisitor,
 	}
 	
 	
-	public function processEqualityCondition(GoodMannersStorable $to)
+	public function processEqualityCondition(\Good\Manners\Storable $to)
 	{
 		$this->writeComparisonCondition($to, '=');
 	}
-	public function processInequalityCondition(GoodMannersStorable $to)
+	public function processInequalityCondition(\Good\Manners\Storable $to)
 	{
 		$this->writeComparisonCondition($to, '<>');
 	}
-	public function processGreaterCondition(GoodMannersStorable $to)
+	public function processGreaterCondition(\Good\Manners\Storable $to)
 	{
 		$this->writeComparisonCondition($to, '>');
 	}
-	public function processGreaterOrEqualsCondition(GoodMannersStorable $to)
+	public function processGreaterOrEqualsCondition(\Good\Manners\Storable $to)
 	{
 		$this->writeComparisonCondition($to, '>=');
 	}
-	public function processLessCondition(GoodMannersStorable $to)
+	public function processLessCondition(\Good\Manners\Storable $to)
 	{
 		$this->writeComparisonCondition($to, '<');
 	}
-	public function processLessOrEqualsCondition(GoodMannersStorable $to)
+	public function processLessOrEqualsCondition(\Good\Manners\Storable $to)
 	{
 		$this->writeComparisonCondition($to, '<=');
 	}
 	
-	public function processAndCondition(GoodMannersCondition $condition1, GoodMannersCondition $condition2)
+	public function processAndCondition(\Good\Manners\Condition $condition1, \Good\Manners\Condition $condition2)
 	{
 		$this->writeCondition($condition1,
 							  $this->updatingTableNumber,
@@ -192,7 +194,7 @@ class GoodMemorySQLUpdateConditionWriter implements GoodMemoryPropertyVisitor,
 		
 		$this->condition = '(' . $sqlCondition1 . ' AND ' . $sqlCondition2 . ')';
 	}
-	public function processOrCondition(GoodMannersCondition $condition1, GoodMannersCondition $condition2)
+	public function processOrCondition(\Good\Manners\Condition $condition1, \Good\Manners\Condition $condition2)
 	{
 		$this->writeCondition($condition1,
 							  $this->updatingTableNumber,
@@ -210,7 +212,7 @@ class GoodMemorySQLUpdateConditionWriter implements GoodMemoryPropertyVisitor,
 	}
 	
 	public function visitReferenceProperty($name, $datatypeName, $dirty, $null, 
-															GoodMannersStorable $value = null)
+															\Good\Manners\Storable $value = null)
 	{
 		if ($dirty)
 		{
@@ -244,7 +246,7 @@ class GoodMemorySQLUpdateConditionWriter implements GoodMemoryPropertyVisitor,
 						$join = $this->store->createJoin($this->currentTable, $name, $this->currentReference, $datatypeName);
 					}
 					
-					$subWriter = new GoodMemorySQLUpdateConditionWriter($this->store, $join);
+					$subWriter = new SQLUpdateConditionWriter($this->store, $join);
 					$subWriter->writeSimpleComparisonCondition($value, $this->comparison);
 					
 					$this->store->setCurrentConditionProcessor($this);
@@ -260,7 +262,7 @@ class GoodMemorySQLUpdateConditionWriter implements GoodMemoryPropertyVisitor,
 						$this->joining .= $subWriter->getJoining();
 						$this->writeBracketOrAnd();
 						$this->condition .= $subWriter->getCondition();
-						$this->joinedTables = array_merge($this->joinedTables, $subWriter->getJoinedTables);
+						$this->joinedTables = \array_merge($this->joinedTables, $subWriter->getJoinedTables);
 					}
 					else
 					{

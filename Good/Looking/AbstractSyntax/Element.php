@@ -1,8 +1,10 @@
 <?php
 
-interface GoodLookingAbstractSyntaxElement
+namespace Good\Looking\AbstractSyntax;
+
+interface Element
 {
-	public function execute(GoodLookingEnvironment $environment);
+	public function execute(Environment $environment);
 }
 
 ?>

@@ -1,6 +1,8 @@
 <?php
 
-class GoodMemorySQLPostponedForeignKey
+namespace Good\Memory;
+
+class SQLPostponedForeignKey
 {
 	private $referer;
 	private $field;
@@ -16,7 +18,7 @@ class GoodMemorySQLPostponedForeignKey
 	public function doNow()
 	{
 		// Is there maybe a nicer way to do this?
-		$field = 'set' . ucfirst($this->field);
+		$field = 'set' . \ucfirst($this->field);
 		$this->referer->$field($foreigner->getId());
 	}
 }

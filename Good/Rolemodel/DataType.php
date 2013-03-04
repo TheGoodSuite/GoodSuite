@@ -1,9 +1,11 @@
 <?php
 
+namespace Good\Rolemodel;
+
 include_once 'Visitable.php';
 include_once 'DataMember.php';
 
-class GoodRolemodelDataType implements GoodRolemodelVisitable
+class DataType implements Visitable
 {
 	private $sourceFileName;
 	private $name;
@@ -17,13 +19,13 @@ class GoodRolemodelDataType implements GoodRolemodelVisitable
 		$this->dataMembers = $dataMembers;
 	}
 	
-	public function accept(GoodRolemodelVisitor $visitor)
+	public function accept(Visitor $visitor)
 	{
 		// visit this
 		$visitor->visitDataType($this);
 		
 		// and move the visitor to your children
-		for ($i = 0; $i < count($this->dataMembers); $i++)
+		for ($i = 0; $i < \count($this->dataMembers); $i++)
 		{
 			$this->dataMembers[$i]->accept($visitor);
 		}
@@ -43,7 +45,7 @@ class GoodRolemodelDataType implements GoodRolemodelVisitable
 	{
 		$res = array();
 		
-		for ($i = 0; $i < count($this->dataMembers); $i++)
+		for ($i = 0; $i < \count($this->dataMembers); $i++)
 		{
 			$newElement = $this->dataMembers[$i]->getReferencedTypeIfAny();
 			

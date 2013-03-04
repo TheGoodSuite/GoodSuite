@@ -1,8 +1,10 @@
 <?php
 
+namespace Good\Service;
+
 include_once 'Modifier.php';
 
-class GoodServiceModifierObservable implements GoodServiceModifier
+class ModifierObservable implements Modifier
 {	
 	public function __construct()
 	{
@@ -19,7 +21,7 @@ class GoodServiceModifierObservable implements GoodServiceModifier
 	
 	public function implementingInterfaces()
 	{
-		return array('GoodServiceObservable');
+		return array('\\Good\\Service\\Observable');
 	}
 	
 	public function baseClassConstructor()
@@ -31,17 +33,17 @@ class GoodServiceModifierObservable implements GoodServiceModifier
 		$res  = "	// Observer pattern (Observable)\n";
 		$res .= '	private $observers = array();' . "\n";
 		$res .= "	\n";
-		$res .= '	public function register(GoodServiceObserver $observer)'. "\n";
+		$res .= '	public function register(\\Good\\Service\\Observer $observer)'. "\n";
 		$res .= "	{\n";
 		$res .= '		$this->observers[] = $observer;' . "\n";
 		$res .= "	}\n";
 		$res .= "	\n";
-		$res .= '	public function unregister(GoodServiceObserver $observer)'. "\n";
+		$res .= '	public function unregister(\\Good\\Service\\Observer $observer)'. "\n";
 		$res .= "	{\n";
-		$res .= '		$pos = array_search($observer);' . "\n";
+		$res .= '		$pos = \\array_search($observer);' . "\n";
 		$res .= '		if ($pos !== FALSE)' . "\n";
 		$res .= "		{\n";
-		$res .= '			array_splice($this->observers, $pos, 1);' . "\n";
+		$res .= '			\array_splice($this->observers, $pos, 1);' . "\n";
 		$res .= "		}\n";
 		$res .= "	}\n";
 		$res .= "	\n";

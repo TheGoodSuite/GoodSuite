@@ -1,6 +1,8 @@
 <?php
 
-class GoodLookingStatement extends GoodLookingAbstractSyntaxElementWithStatements
+namespace Good\Looking\AbstractSyntax;
+
+class Statement extends ElementWithStatements
 {
 	private $code;
 	
@@ -9,14 +11,14 @@ class GoodLookingStatement extends GoodLookingAbstractSyntaxElementWithStatement
 		$this->code = $code;
 	}
 	
-	public function execute(GoodLookingEnvironment $environment)
+	public function execute(Environment $environment)
 	{
-		if (preg_match('/^\s*$/', $this->code) === 1)
+		if (\preg_match('/^\s*$/', $this->code) === 1)
 		{
 			return '';
 		}
 		
-		return 'echo htmlentities(' . $this->evaluate($this->code) . '); ';
+		return 'echo \htmlentities(' . $this->evaluate($this->code) . '); ';
 	}
 }
 

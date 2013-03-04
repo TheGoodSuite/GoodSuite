@@ -1,6 +1,8 @@
 <?php
 
-class GoodMemorySQLJoin
+namespace Good\Memory;
+
+class SQLJoin
 {
 	public $tableNumberOrigin;
 	public $fieldNameOrigin;

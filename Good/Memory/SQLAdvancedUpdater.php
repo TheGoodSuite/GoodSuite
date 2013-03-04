@@ -1,10 +1,12 @@
 <?php
 
+namespace Good\Memory;
+
 require_once dirname(__FILE__) . '/PropertyVisitor.php';
 require_once dirname(__FILE__) . '/SQLJoinDiscoverer.php';
 require_once dirname(__FILE__) . '/SQLUpdateConditionWriter.php';
 
-class GoodMemorySQLAdvancedUpdater implements GoodMemoryPropertyVisitor
+class SQLAdvancedUpdater implements PropertyVisitor
 {
 	private $db;
 	private $store;
@@ -19,26 +21,26 @@ class GoodMemorySQLAdvancedUpdater implements GoodMemoryPropertyVisitor
 	private $condition;
 	private $rootTableName;
 	
-	public function __construct(GoodMemorySQLStore $store, GoodMemoryDatabase $db, $currentTable)
+	public function __construct(SQLStore $store, Database\Database $db, $currentTable)
 	{
 		$this->db = $db;
 		$this->store = $store;
 		$this->currentTable = $currentTable;
 	}
 	
-	public function update($datatypeName, GoodMannersCondition $condition, 
-							GoodMannersStorable $value)
+	public function update($datatypeName, \Good\Manners\Condition $condition, 
+							\Good\Manners\Storable $value)
 	{
 		$this->updateWithRootTableName($datatypeName, $condition, $value, $datatypeName);
 	}
 	
-	public function updateWithRootTableName($datatypeName, GoodMannersCondition $condition, 
-													GoodMannersStorable $value, $rootTableName)
+	public function updateWithRootTableName($datatypeName, \Good\Manners\Condition $condition, 
+													\Good\Manners\Storable $value, $rootTableName)
 	{
 		$this->condition = $condition;
 		$this->rootTableName = $rootTableName;
 	
-		$joinDiscoverer = new GoodMemorySQLJoinDiscoverer($this->store, 0);
+		$joinDiscoverer = new SQLJoinDiscoverer($this->store, 0);
 		$joinDiscoverer->discoverJoins($value);
 		
 		$this->sql = 'UPDATE ' . $this->store->tableNamify($datatypeName);
@@ -54,7 +56,7 @@ class GoodMemorySQLAdvancedUpdater implements GoodMemoryPropertyVisitor
 		//  table is only used in the ON clause)
 		if (!$this->first)
 		{
-			$conditionWriter = new GoodMemorySQLUpdateConditionWriter($this->store, 0);
+			$conditionWriter = new SQLUpdateConditionWriter($this->store, 0);
 			$conditionWriter->writeCondition($condition, $rootTableName, $this->currentTable, $datatypeName);
 			
 			$this->sql .= ' WHERE ' . $conditionWriter->getCondition();
@@ -77,7 +79,7 @@ class GoodMemorySQLAdvancedUpdater implements GoodMemoryPropertyVisitor
 	}
 	
 	public function visitReferenceProperty($name, $datatypeName, $dirty, $null, 
-														GoodMannersStorable $value = null)
+														\Good\Manners\Storable $value = null)
 	{
 		if ($dirty)
 		{
@@ -85,7 +87,7 @@ class GoodMemorySQLAdvancedUpdater implements GoodMemoryPropertyVisitor
 			{
 				$join = $this->store->getJoin($this->currentTable, $this->currentReference);
 				
-				$updater = new GoodMemorySQLAdvancedUpdater($this->store, $this->db, $join);
+				$updater = new SQLAdvancedUpdater($this->store, $this->db, $join);
 				$updater->updateWithRootTableName($datatypeName, $this->condition, 
 																$value, $this->rootTableName);
 				$this->store->setCurrentPropertyVisitor($this);

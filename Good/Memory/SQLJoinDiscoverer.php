@@ -1,6 +1,8 @@
 <?php
 
-class GoodMemorySQLJoinDiscoverer implements GoodMemoryPropertyVisitor
+namespace Good\Memory;
+
+class SQLJoinDiscoverer implements PropertyVisitor
 {
 	private $store;
 	
@@ -13,7 +15,7 @@ class GoodMemorySQLJoinDiscoverer implements GoodMemoryPropertyVisitor
 		$this->currentTable = $currentTable;
 	}
 	
-	public function discoverJoins(GoodMannersStorable $value)
+	public function discoverJoins(\Good\Manners\Storable $value)
 	{
 		$this->currentReference = 0;
 		
@@ -22,10 +24,10 @@ class GoodMemorySQLJoinDiscoverer implements GoodMemoryPropertyVisitor
 	}
 	
 	public function visitReferenceProperty($name, $datatypeName, $dirty, $null, 
-														GoodMannersStorable $value = null)
+														\Good\Manners\Storable $value = null)
 	{
 		echo $name, " which is ", $null ? "" : "not ", "null:";
-		var_dump($value); var_dump($null);
+		
 		if (!$null && $dirty && $value->isNew())
 		{
 			$join = $this->store->getJoin($this->currentTable, $this->currentReference);
@@ -38,7 +40,7 @@ class GoodMemorySQLJoinDiscoverer implements GoodMemoryPropertyVisitor
 												 $datatypeName);
 			}
 			
-			$recursionDiscoverer = new GoodMemorySQLJoinDiscoverer($this->store, $join);
+			$recursionDiscoverer = new SQLJoinDiscoverer($this->store, $join);
 			$recursionDiscoverer->discoverJoins($value);
 		}
 		

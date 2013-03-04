@@ -1,27 +1,29 @@
 <?php
 
+namespace Good\Rolemodel;
+
 include_once 'TypePrimitiveText.php';
 include_once 'TypePrimitiveInt.php';
 include_once 'TypePrimitiveFloat.php';
 include_once 'TypePrimitiveDatetime.php';
 
-class GoodRolemodelPrimitiveFactory
+class PrimitiveFactory
 {
 	public static function makePrimitive($value)
 	{
 		switch ($value)
 		{
 			case 'text':
-				return new GoodRolemodelTypePrimitiveText();
+				return new TypePrimitiveText();
 			
 			case 'int':
-				return new GoodRolemodelTypePrimitiveInt();
+				return new TypePrimitiveInt();
 			
 			case 'float';
-				return new GoodRolemodelTypePrimitiveFloat();
+				return new TypePrimitiveFloat();
 			
 			case 'datetime';
-				return new GoodRolemodelTypePrimitiveDatetime();
+				return new TypePrimitiveDatetime();
 				
 			default:
 				// TODO: better error handling

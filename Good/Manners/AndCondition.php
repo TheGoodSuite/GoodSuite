@@ -1,17 +1,19 @@
 <?php
 
-require_once dirname(__FILE__) . '/../Condition.php';
+namespace Good\Manners;
+
+require_once dirname(__FILE__) . '/Condition.php';
 require_once 'BasicLogicStore.php';
 
-class GoodMannersAndCondition extends GoodMannersCondition
+class AndCondition extends Condition
 {
 	private $store;
 	private $condition1;
 	private $condition2;
 
-	public function __construct(GoodMannersBasicLogicStore $store, 
-								    GoodMannersCondition $condition1, 
-								     GoodMannersCondition $condition2)
+	public function __construct(BasicLogicStore $store, 
+								    Condition $condition1, 
+								     Condition $condition2)
 	{
 		parent::__construct($store);
 		

@@ -1,5 +1,7 @@
 <?php
 
+namespace temptools;
+
 // This is a temporary script that fixes the incompatibility between the
 // GoodLooking way of accessing variables with the GoodMannersStorables
 // Though this should be fixed on a higher level, this uses the temporary
@@ -35,7 +37,7 @@
 
 include_once dirname(__FILE__) . '/../Rolemodel/Visitor.php';
 
-class LookingWithMannersCompiler implements GoodRolemodelVisitor
+class LookingWithMannersCompiler implements \Good\Rolemodel\Visitor
 {
 	private $outputDir;
 	private $output = null;
@@ -69,19 +71,19 @@ class LookingWithMannersCompiler implements GoodRolemodelVisitor
 		
 		$className = $dataType->getName();
 		
-		$this->output .= 'function parse' . ucfirst($className) . 'Collection($collection)' . "\n";
+		$this->output .= 'function parse' . \ucfirst($className) . 'Collection($collection)' . "\n";
 		$this->output .= "{\n";
 		$this->output .= '	$arr = array();' . "\n";
 		$this->output .= "	\n";
 		$this->output .= '	while ($obj = $collection->getNext())' . "\n";
 		$this->output .= "	{\n";
-		$this->output .= '		$arr[] = parse' . ucfirst($className) . '($obj);' . "\n";
+		$this->output .= '		$arr[] = parse' . \ucfirst($className) . '($obj);' . "\n";
 		$this->output .= "	}\n";
 		$this->output .= "	\n";
 		$this->output .= '	return $arr;' . "\n";
 		$this->output .= "}\n";
 		$this->output .= "\n";
-		$this->output .= 'function parse' . ucfirst($className) . '($obj)' . "\n";
+		$this->output .= 'function parse' . \ucfirst($className) . '($obj)' . "\n";
 		$this->output .= "{\n";
 		$this->output .= '	if ($obj == null)' . "\n";
 		$this->output .= "	{\n";
@@ -110,8 +112,8 @@ class LookingWithMannersCompiler implements GoodRolemodelVisitor
 		// (move the visibility to the datamodel from the compiler)
 		// but since this whole script is in fact an ugly fix,
 		// I allowed it for now.
-		$this->isPublic = !(in_array('private', $dataMember->getAttributes()) || 
-							in_array('protected', $dataMember->getAttributes()));
+		$this->isPublic = !(\in_array('private', $dataMember->getAttributes()) || 
+							\in_array('protected', $dataMember->getAttributes()));
 	}
 	
 	public function visitTypeReference($type)
@@ -119,7 +121,7 @@ class LookingWithMannersCompiler implements GoodRolemodelVisitor
 		if ($this->isPublic)
 		{
 			$this->output .= '	$arr["' . $this->varName . '"] = parse' . 
-									ucfirst($type->getReferencedType()) .
+									\ucfirst($type->getReferencedType()) .
 									'($obj->get' . ucfirst($this->varName) . '());' . "\n";
 		}
 	}
@@ -146,7 +148,7 @@ class LookingWithMannersCompiler implements GoodRolemodelVisitor
 			// It's a hack and should in the future be handled by GoodLooking
 			// (where we can then also allow custom date formatting)
 			$this->output .= '	$arr["' . $this->varName . '"] = $obj->get' . 
-							ucfirst($this->varName) . '()->format("Y-m-d H:i:s");' . "\n";
+							\ucfirst($this->varName) . '()->format("Y-m-d H:i:s");' . "\n";
 		}
 	}
 	
@@ -155,7 +157,7 @@ class LookingWithMannersCompiler implements GoodRolemodelVisitor
 		if ($this->isPublic)
 		{
 			$this->output .= '	$arr["' . $this->varName . '"] = $obj->get' . 
-												ucfirst($this->varName) . '();' . "\n";
+												\ucfirst($this->varName) . '();' . "\n";
 		}
 	}
 	
@@ -171,6 +173,6 @@ class LookingWithMannersCompiler implements GoodRolemodelVisitor
 		$this->output .= "\n";
 		$this->output .= "?>";
 		
-		file_put_contents($this->outputDir . 'LookingWithManners.php', $this->output);
+		\file_put_contents($this->outputDir . 'LookingWithManners.php', $this->output);
 	}
 }

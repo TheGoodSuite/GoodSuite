@@ -1,8 +1,10 @@
 <?php
 
+namespace Good\Rolemodel;
+
 include_once 'Visitable.php';
 
-abstract class GoodRolemodelType implements GoodRolemodelVisitable
+abstract class Type implements Visitable
 {
 	abstract public function getReferencedTypeIfAny();
 }

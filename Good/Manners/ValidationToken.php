@@ -1,6 +1,8 @@
 <?php
 
-class GoodMannersValidationToken
+namespace Good\Manners;
+
+class ValidationToken
 {
 	private $value;
 	

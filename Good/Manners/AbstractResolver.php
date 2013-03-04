@@ -1,8 +1,10 @@
 <?php
 
+namespace Good\Manners;
+
 require_once 'Resolver.php';
 
-abstract class GoodMannersAbstractResolver implements GoodMannersResolver
+abstract class AbstractResolver implements Resolver
 {
 	const ORDER_DIRECTION_ASC = 0;
 	const ORDER_DIRECTION_DESC = 1;
@@ -11,7 +13,7 @@ abstract class GoodMannersAbstractResolver implements GoodMannersResolver
 	
 	private $orderCount = 0;
 	
-	public function __construct(GoodMannersAbstractResolver $root = null)
+	public function __construct(AbstractResolver $root = null)
 	{
 		if ($root == null)
 		{

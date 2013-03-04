@@ -1,10 +1,12 @@
 <?php
 
+namespace Good\Rolemodel;
+
 include_once 'DataMember.php';
 include_once 'DataType.php';
 include_once 'DataModel.php';
 
-class GoodRolemodel
+class Rolemodel
 {
 	public function createDataModel($input)
 	{
@@ -15,30 +17,30 @@ class GoodRolemodel
 			$dataTypes[] = $this->fileToDataType($name, $file);
 		}
 		
-		return new GoodRolemodelDataModel($dataTypes);
+		return new DataModel($dataTypes);
 	}
 	
 	private function fileToDataType($name, $file)
 	{
 		// read the file
-		$input = file_get_contents($file);
+		$input = \file_get_contents($file);
 		
 		// Cutting out php tags out if they are there
 		// (they are allowed as an additional method to make the content unaccesible)
 		
 		if (substr($input, 0, 5) == '<?php')
 		{
-			$input = substr($input, 5);
+			$input = \substr($input, 5);
 		}
 		
 		if (substr($input, -2) == '?>')
 		{
-			$input = substr($input, 0, -2);
+			$input = \substr($input, 0, -2);
 		}
 		
 		// And now we start parsing the file
 		// line by line
-		$inputLines = explode("\r\n", $input);
+		$inputLines = \explode("\r\n", $input);
 		
 		// building a complicated regex just once
 		// (so outside the for loop)
@@ -51,27 +53,27 @@ class GoodRolemodel
 		// We'll use this array to build the result in
 		$members = array();
 		
-		for ($i = 0; $i < count($inputLines); $i++)
+		for ($i = 0; $i < \count($inputLines); $i++)
 		{
 			// if the line is only whitespace, we just move on to the next
-			if (preg_match('/^\\s*$/', $inputLines[$i]) != 0)
+			if (\preg_match('/^\\s*$/', $inputLines[$i]) != 0)
 				continue;
 				
 			
-			if (preg_match('/' . $regexDataDefinition . '/', $inputLines[$i], $matches) != 0)
+			if (\preg_match('/' . $regexDataDefinition . '/', $inputLines[$i], $matches) != 0)
 			{
 				$type = $matches['type'];
 				$varName = $matches['name'];
 				if ($matches['attributes'] != '')
 				{
-					$attributes = preg_split('/' . $regexAttributeSeperator . '/', $matches['attributes']);
+					$attributes = \preg_split('/' . $regexAttributeSeperator . '/', $matches['attributes']);
 				}
 				else
 				{
 					$attributes = array();
 				}
 				
-				$members[] = new GoodRolemodelDataMember($attributes, $type, $varName);
+				$members[] = new DataMember($attributes, $type, $varName);
 			}
 			else
 			{
@@ -80,7 +82,7 @@ class GoodRolemodel
 			}
 		}
 		
-		return new GoodRolemodelDataType($file, $name, $members);
+		return new DataType($file, $name, $members);
 	}
 }
 

@@ -1,5 +1,7 @@
 <?php
 
+namespace Good;
+
 class Good
 {
 	private $installed;
@@ -10,7 +12,7 @@ class Good
 	{
 		$this->path = dirname(__FILE__) . '/';
 		
-		if (!file_exists($this->path . $config))
+		if (!\file_exists($this->path . $config))
 		{
 			$this->installed = false;
 		}
@@ -49,7 +51,7 @@ class Good
 	
 	function getGoodPath()
 	{
-		return dirname(__FILE__);
+		return \dirname(__FILE__);
 	}
 }
 
