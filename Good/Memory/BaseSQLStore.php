@@ -61,7 +61,7 @@ abstract class BaseSQLStore extends \GoodMannersStore // (generated so not names
 	{
 		// shouldn't be necessary when we do stricter type checking,
 		// but let's just stick with it for now.
-		if (!($value instanceof DateTime))
+		if (!($value instanceof \DateTime))
 		{
 			// TODO: turn this into real error reporting
 			die("Non-DateTime given for a DateTime field.");
