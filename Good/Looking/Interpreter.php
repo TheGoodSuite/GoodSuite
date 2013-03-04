@@ -34,7 +34,8 @@
             include $this->compiledTemplate;
             
             // for testing I wanna know how long this function outputs how long it took
-            echo '<!-- Interpreting took:' . (microtime(true)-$executionTime) . ' seconds -->';
+			global $interpretTime;
+            $interpretTime = microtime(true)-$executionTime;
             
         } // interpret
         
@@ -61,17 +62,5 @@
         {
             return $array[$item];
         } // arrayItem
-        
-        private function determineDelta($term1, $term2)
-        {
-            if ($term2 < $term1)
-            {
-                return -1;
-            }
-            else
-            {
-                return 1;
-            }
-        } // determineDelta
     } // GoodLookingInterpreter
 //} // \Good\Looking

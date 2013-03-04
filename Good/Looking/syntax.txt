@@ -1,6 +1,6 @@
 - scripts will be delimited by "<:" and ":>" (no apostrophes of course)
 - comments will be delimited by "<:-" and "-:>" (still no apostrophes)
-- script can be inside and outside script tags
+- comment can be inside and outside script tags
 - a script can have either one or more statements, if more they must be seperated by semicolons (";")
 - each statement does one of the following:
 	- print a value to the file

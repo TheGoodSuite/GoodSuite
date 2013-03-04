@@ -95,7 +95,11 @@
     
     // regexes not relying on any others
     
-    GoodLookingRegexes::$varName = '\\b[A-Za-z][A-Za-z0-9_]*\\b';
+	// An ugly hack to avoid matching else
+	// but this should be removed when we use a lexer like a good kid
+	// (possibly even earlier)
+    GoodLookingRegexes::$varName = '\\b(?!else)[A-Za-z][A-Za-z0-9_]*\\b';
+	
     GoodLookingRegexes::$controlStructure = '\\b(?:(?:(?:end )?(if|for|foreach))|else)\\b';
     GoodLookingRegexes::$scriptDelimiterLeft = '<:';
     GoodLookingRegexes::$scriptDelimiterRight = ':>';
@@ -108,9 +112,9 @@
     GoodLookingRegexes::$literalBoolean = '(?P<boolean>true|false)';
     GoodLookingRegexes::$operator = '(?P<operator>\+|-|\/|\*|\|\||\bor\b|&&|\band\b|==|=|!=|>=|<=|>|<|\.)';
     
-    GoodLookingRegexes::$allControlStructures = '^\s*(?P<structure>(?:(?:end\s*)?(?:if|for|foreach))|else)(?:\s*\((?P<condition>.*)\))?\s*$';
-    GoodLookingRegexes::$startingControlStructures = '^\s*(?P<structure>if|for|foreach)\s*\((?P<condition>.*)\)\s*$';
-    GoodLookingRegexes::$branchingControlStructures = '^\s*(?P<structure>else)\s*$';
+    GoodLookingRegexes::$allControlStructures = '(?P<structure>(?:(?:end\s*)?(?:if|for|foreach))|else)(?:\s*\((?P<condition>.*)\))?';
+    GoodLookingRegexes::$startingControlStructures = '(?P<structure>if|for|foreach)\s*\((?P<condition>.*)\)';
+    GoodLookingRegexes::$branchingControlStructures = '(?P<structure>else)';
     GoodLookingRegexes::$endingControlStructures = '^\s*(?P<structure>end\s*(?:if|for|foreach))\s*$';
     
     // for for-regex \\term1 should contain first term, \\term2 the last term

@@ -1,4 +1,4 @@
-
+<?php ?>
 
 
 
@@ -6,20 +6,20 @@
 
 <html>
 <head>
-<title>Page's Name - <?php echo $this->getVar('title');?></title>
+<title>Page's Name - <?php echo htmlentities($this->getVar('title')); ?></title>
 </head>
 <body>
-<h1><?php echo $this->getVar('title');?></h1>
+<h1><?php echo htmlentities($this->getVar('title')); ?></h1>
 
-<?php if ($this->getVar('logged_in')){?>
-	<p>Welcome <?php echo $this->getVar('name');?></p>
-<?php }else {?>
-	<?php if ($this->getVar('loginpage')){?>
+<?php if ($this->getVar('logged_in')):?>
+	<p>Welcome <?php echo htmlentities($this->getVar('name')); ?></p>
+<?php else: ?>
+	<?php if ($this->getVar('loginpage')):?>
 	
 		<p>Welcome, guest. Please register or log in</p>
 		
-	<?php }?>
-<?php }?>
+	<?php endif; ?>
+<?php endif; ?>
 
 
 
@@ -27,49 +27,49 @@
 
 
 
-<p><?php echo $this->getVar('mainText');?></p>
+<p><?php echo htmlentities($this->getVar('mainText')); ?></p>
 
-<?php $this->registerSpecialVar('', 0);$this->templateVars[1] = 0;foreach ($this->getVar('newspapers') as $this->templateVars[0]){$this->templateVars[1]++;?>
+<?php $this->registerSpecialVar("newspaper", 0); foreach($this->getVar('newspapers') as $this->templateVars[0]): ?>
 	<table border="1">
 	
 	
 	
 	
 	
-	<?php $this->registerSpecialVar('', 2);$this->templateVars[3] = 0;foreach ($this->getVar('newspaper') as $this->templateVars[2]){$this->templateVars[3]++;?>
+	<?php $this->registerSpecialVar("article", 1); foreach($this->getVar('newspaper') as $this->templateVars[1]): ?>
 		<tr>
-		<td><?php echo $this->arrayItem($this->getVar('article'), 'name');?></td>
-		<td><?php echo $this->arrayItem($this->getVar('article'), 'date');echo ' - ';echo $this->arrayItem($this->getVar('article'), 'time');?></td>
+		<td><?php echo htmlentities($this->arrayItem($this->getVar('article'), 'name')); ?></td>
+		<td><?php echo htmlentities($this->arrayItem($this->getVar('article'), 'date')); echo htmlentities(' - '); echo htmlentities($this->arrayItem($this->getVar('article'), 'time')); ?></td>
 		
-		<td>views: <?php echo 10 + $this->arrayItem($this->getVar('article'), 'viewCount');?></td>
+		<td>views: <?php echo htmlentities(10 + $this->arrayItem($this->getVar('article'), 'viewCount')); ?></td>
 		
 		<td>
-		<?php $this->registerSpecialVar('', 4);$this->templateVars[5] = 0;foreach ($this->arrayItem($this->getVar('article'), 'reviews') as $this->templateVars[4]){$this->templateVars[5]++;?>
-			<a href='<?php echo $this->arrayItem($this->getVar('review'), 0);?>'><img src='<?php echo $this->arrayItem($this->getVar('review'), 1);?>' />
-			<?php echo $this->arrayItem($this->getVar('review'), 2);?></a><br />
-		<?php }?>
+		<?php $this->registerSpecialVar("review", 2); foreach($this->arrayItem($this->getVar('article'), 'reviews') as $this->templateVars[2]): ?>
+			<a href='<?php echo htmlentities($this->arrayItem($this->getVar('review'), 0)); ?>'><img src='<?php echo htmlentities($this->arrayItem($this->getVar('review'), 1)); ?>' />
+			<?php echo htmlentities($this->arrayItem($this->getVar('review'), 2)); ?></a><br />
+		<?php endforeach; ?>
 		</td>
 		
 		
 			
-		<td class='<?php if ($this->arrayItem($this->getVar('article'), 'price') <= 2){?>redPrice<?php }else {?>price<?php }?>'>&euro;<?php echo $this->arrayItem($this->getVar('article'), 'price');?></td>
+		<td class='<?php if ($this->arrayItem($this->getVar('article'), 'price') <= 2):?>redPrice<?php else: ?>price<?php endif; ?>'>&euro;<?php echo htmlentities($this->arrayItem($this->getVar('article'), 'price')); ?></td>
 		
 		
 		
-		<td><?php if ($this->arrayItem($this->arrayItem($this->getVar('article'), 'buy-now'), 'present') == true){echo $this->arrayItem($this->arrayItem($this->getVar('article'), 'buy-now'), 'link');}else {echo "Buy-now not present!";}?></td>
+		<td><?php if ($this->arrayItem($this->arrayItem($this->getVar('article'), 'buy-now'), 'present') == true):echo htmlentities($this->arrayItem($this->arrayItem($this->getVar('article'), 'buy-now'), 'link')); else: echo htmlentities("Buy-now not present!"); endif; ?></td>
 			
 		</tr>
-	<?php }?>
+	<?php endforeach; ?>
 	
 	</table>
-<?php }?>
+<?php endforeach; ?>
 
-<?php $this->templateVars[6] = $this->determineDelta(1, $this->getVar('ourFriendsCount'));for ($this->templateVars[7] = 1;$this->templateVars[7] <= $this->getVar('ourFriendsCount'); $this->templateVars[7] += $this->templateVars[6]){?>
+<?php $this->templateVars[4] = 1; $this->templateVars[5] = $this->getVar('ourFriendsCount'); $this->templateVars[6] = $this->templateVars[4] < $this->templateVars[5] ? 1 : -1; for ($this->templateVars[3] = $this->templateVars[4]; $this->templateVars[3] * $this->templateVars[6] <= $this->templateVars[5] * $this->templateVars[6]; $this->templateVars[3] += $this->templateVars[6]):?>
 	<img src='friend.jpg' />
-<?php }?>
+<?php endfor; ?>
 
-<?php if ($this->getVar('insertFooter') == true && $this->getVar('footer') != "randomFooter"){?>
-	<?php echo 'footer.html';?>
-<?php }?>
+<?php if ($this->getVar('insertFooter') == true && $this->getVar('footer') != "randomFooter"):?>
+	<?php echo htmlentities('footer.html'); ?>
+<?php endif; ?>
 
-</html>
+</html><?php ?>
