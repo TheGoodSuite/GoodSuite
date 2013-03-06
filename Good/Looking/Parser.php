@@ -39,13 +39,10 @@ class Parser
 			$else = true;
 			
 			// remove the processed part
-			$input = \substr($input, strlen($matches[0]));
+			$this->removeFromStart($input, $matches[0]);
 			
 			// determine next mode
-			if (\preg_match('/' . Regexes::$scriptDelimiterRight . '/', $matches['terminator']) == 1)
-			{
-				$this->inTextMode = true;
-			}
+			$this->determineIfNextModeIsText($matches['terminator']);
 			
 			$elseStatements = $this->parseStatementCollection($input);
 		}
@@ -58,15 +55,11 @@ class Parser
 							Regexes::$statementEnder . '|' .
 								Regexes::$scriptDelimiterRight . '|$)/', $input, $matches) === 1)
 		{
-			
 			// remove the processed part
-			$input = \substr($input, strlen($matches[0]));
+			$this->removeFromStart($input, $matches[0]);
 			
 			// determine next mode
-			if (\preg_match('/' . Regexes::$scriptDelimiterRight . '/', $matches['terminator']) == 1)
-			{
-				$this->inTextMode = true;
-			}
+			$this->determineIfNextModeIsText($matches['terminator']);
 			
 			if ($else)
 			{
@@ -101,13 +94,10 @@ class Parser
 								Regexes::$scriptDelimiterRight . '|$)/', $input, $matches) === 1)
 		{
 			// remove the processed part
-			$input = \substr($input, strlen($matches[0]));
+			$this->removeFromStart($input, $matches[0]);
 			
 			// determine next mode
-			if (\preg_match('/' . Regexes::$scriptDelimiterRight . '/', $matches['terminator']) == 1)
-			{
-				$this->inTextMode = true;
-			}
+			$this->determineIfNextModeIsText($matches['terminator']);
 			
 			return $this->factory->createForStructure($condition, $statements);
 		}
@@ -135,13 +125,10 @@ class Parser
 								Regexes::$scriptDelimiterRight . '|$)/', $input, $matches) === 1)
 		{
 			// remove the processed part
-			$input = substr($input, strlen($matches[0]));
+			$this->removeFromStart($input, $matches[0]);
 			
 			// determine next mode
-			if (\preg_match('/' . Regexes::$scriptDelimiterRight . '/', $matches['terminator']) == 1)
-			{
-				$this->inTextMode = true;
-			}
+			$this->determineIfNextModeIsText($matches['terminator']);
 			
 			return $this->factory->createForeachStructure($condition, $statements);
 		}
@@ -157,6 +144,26 @@ class Parser
 		else
 		{
 			die('Error: Unable to parse. Near: ' . \htmlentities(substr($input, 0, 20)));
+		}
+	}
+	
+	private function removeFromStart(&$input, $needle)
+	{
+		if (strlen($input) > strlen($needle))
+		{
+			$input = substr($input, strlen($needle));
+		}
+		else
+		{
+			$input = '';
+		}
+	}
+		
+	private function determineIfNextModeIsText($terminator)
+	{
+		if (\preg_match('/' . Regexes::$scriptDelimiterRight . '/', $terminator) == 1)
+		{
+			$this->inTextMode = true;
 		}
 	}
 	
@@ -216,13 +223,10 @@ class Parser
 								\substr($matches[0], 0, -1 * strlen($matches['terminator'])));
 					
 					// remove the processed part
-					$input = \substr($input, strlen($matches[0]));
+					$this->removeFromStart($input, $matches[0]);
 					
 					// determine next mode
-					if (\preg_match('/' . Regexes::$scriptDelimiterRight . '/', $matches['terminator']) == 1)
-					{
-						$this->inTextMode = true;
-					}
+					$this->determineIfNextModeIsText($matches['terminator']);
 				}
 			}
 			
@@ -230,13 +234,10 @@ class Parser
 			{
 					
 				// remove the processed part
-				$input = substr($input, strlen($matches[0]));
+				$this->removeFromStart($input, $matches[0]);
 				
 				// determine next mode
-				if (preg_match('/' . Regexes::$scriptDelimiterRight . '/', $matches['terminator']) == 1)
-				{
-					$this->inTextMode = true;
-				}
+				$this->determineIfNextModeIsText($matches['terminator']);
 				
 				if ($matches['structure'] == 'if')
 				{
