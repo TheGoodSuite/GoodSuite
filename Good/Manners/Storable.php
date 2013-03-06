@@ -2,8 +2,6 @@
 
 namespace Good\Manners;
 
-require_once 'ValidationToken.php';
-
 //
 // Note that while a class needs to adhere to this Storable interface in order
 // to be stored in a Store, but it also needs to implement some less obvious

@@ -2,11 +2,6 @@
 
 namespace Good\Looking;
 
-require_once 'Compiler.php';
-require_once 'Interpreter.php';
-require_once 'Regexes.php';
-require_once 'constants.php';
-
 class Looking
 {
 	// the name of the template file (is set in constructor)

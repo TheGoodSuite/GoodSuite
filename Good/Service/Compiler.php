@@ -2,9 +2,6 @@
 
 namespace Good\Service;
 
-include_once dirname(__FILE__) . '/../Rolemodel/Visitor.php';
-include_once 'Modifier.php';
-
 class Compiler implements \Good\Rolemodel\Visitor
 {
 	// TODO: prevent namespace collisions between things between

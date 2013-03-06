@@ -2,8 +2,6 @@
 
 namespace Good\Service;
 
-include_once dirname(__FILE__) . '/../Rolemodel/Visitor.php';
-
 interface Modifier extends \Good\Rolemodel\Visitor
 {
 	public function baseClassTopOfFile();

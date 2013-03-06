@@ -2,8 +2,6 @@
 
 namespace Good\Manners;
 
-include_once dirname(__FILE__) . '/../Service/Modifier.php';
-
 class ModifierStorable implements \Good\Service\Modifier
 {
 	private $className;
@@ -18,10 +16,7 @@ class ModifierStorable implements \Good\Service\Modifier
 	
 	public function baseClassTopOfFile()
 	{
-		$res  = 'require_once $good->getGoodPath() . "/Manners/Storable.php";' . "\n";
-		$res .= "\n";
-		
-		return $res;
+		return '';
 	}
 	
 	public function implementingInterfaces()
@@ -274,10 +269,7 @@ class ModifierStorable implements \Good\Service\Modifier
 	
 	public function topOfFile()
 	{
-		$res  = 'require_once "' . $this->className . 'Resolver.php";' . "\n";
-		$res .= "\n";
-		
-		return $res;
+		return '';
 	}
 	
 	public function classBody()

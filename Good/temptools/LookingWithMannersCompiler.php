@@ -35,8 +35,6 @@ namespace temptools;
 // NOTE: If a given Storable contains a circular reference, this script will
 //       not terminate
 
-include_once dirname(__FILE__) . '/../Rolemodel/Visitor.php';
-
 class LookingWithMannersCompiler implements \Good\Rolemodel\Visitor
 {
 	private $outputDir;

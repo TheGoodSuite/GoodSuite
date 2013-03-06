@@ -55,6 +55,4 @@ class Good
 	}
 }
 
-$good = new Good();
-
 ?>

@@ -2,9 +2,6 @@
 
 namespace Good\Rolemodel;
 
-include_once 'Visitable.php';
-include_once 'DataType.php';
-
 class DataModel implements Visitable
 {
 	private $dataTypes;

@@ -2,8 +2,6 @@
 
 namespace Good\Rolemodel;
 
-include_once 'TypePrimitive.php';
-
 class TypePrimitiveDatetime extends TypePrimitive
 {
 	public function accept(Visitor $visitor)

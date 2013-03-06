@@ -2,10 +2,6 @@
 
 namespace Good\Rolemodel;
 
-include_once 'DataMember.php';
-include_once 'DataType.php';
-include_once 'DataModel.php';
-
 class Rolemodel
 {
 	public function createDataModel($input)

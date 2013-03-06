@@ -2,11 +2,6 @@
 
 namespace Good\Rolemodel;
 
-include_once 'TypePrimitiveText.php';
-include_once 'TypePrimitiveInt.php';
-include_once 'TypePrimitiveFloat.php';
-include_once 'TypePrimitiveDatetime.php';
-
 class PrimitiveFactory
 {
 	public static function makePrimitive($value)

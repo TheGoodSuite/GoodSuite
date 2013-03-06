@@ -2,8 +2,6 @@
 
 namespace Good\Manners;
 
-require_once 'Resolver.php';
-
 abstract class AbstractResolver implements Resolver
 {
 	const ORDER_DIRECTION_ASC = 0;

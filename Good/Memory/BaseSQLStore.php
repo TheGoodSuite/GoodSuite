@@ -8,19 +8,6 @@ use Good\Manners\Storable;
 use Good\Manners\Condition;
 use Good\Manners\Resolver;
 
-require_once dirname(__FILE__) . '/../Manners/ComparingStore.php';
-require_once dirname(__FILE__) . '/../Manners/BasicLogicStore.php';
-require_once dirname(__FILE__) . '/SQLStore.php';
-
-require_once dirname(__FILE__) . '/../Manners/Resolver.php';
-
-require_once dirname(__FILE__) . '/SQLSimpleUpdater.php';
-require_once dirname(__FILE__) . '/SQLAdvancedUpdater.php';
-require_once dirname(__FILE__) . '/SQLInserter.php';
-require_once dirname(__FILE__) . '/SQLSelecter.php';
-require_once dirname(__FILE__) . '/SQLJoin.php';
-require_once dirname(__FILE__) . '/ConditionProcessor.php';
-
 abstract class BaseSQLStore extends \GoodMannersStore // (generated so not namespaced)
 							implements ComparingStore,
 									   BasicLogicStore,

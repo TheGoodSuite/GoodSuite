@@ -10,8 +10,6 @@ namespace Good\Rolemodel;
 // does just that.
 // 
 
-include_once 'Visitor.php';
-
 interface Visitable
 {
 	public function accept(Visitor $visitor);

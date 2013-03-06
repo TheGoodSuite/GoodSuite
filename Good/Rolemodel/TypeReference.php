@@ -2,8 +2,6 @@
 
 namespace Good\Rolemodel;
 
-include_once 'Type.php';
-
 class TypeReference extends Type
 {
 	private $value;

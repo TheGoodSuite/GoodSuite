@@ -2,8 +2,6 @@
 
 namespace Good\Manners;
 
-require_once dirname(__FILE__) . '/Resolver.php';
-
 interface ResolverVisitor
 {
 	public function resolverVisitResolvedReferenceProperty($name, $typeName, 

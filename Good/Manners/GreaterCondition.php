@@ -2,10 +2,6 @@
 
 namespace Good\Manners;
 
-require_once dirname(__FILE__) . '/Condition.php';
-require_once 'ComparingStore.php';
-require_once dirname(__FILE__) . '/Storable.php';
-
 class GreaterCondition extends Condition
 {
 	private $store;

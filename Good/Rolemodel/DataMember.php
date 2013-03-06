@@ -2,10 +2,6 @@
 
 namespace Good\Rolemodel;
 
-include_once 'Visitable.php';
-include_once 'TypeReference.php';
-include_once 'PrimitiveFactory.php';
-
 class DataMember implements Visitable
 {
 	private $attributes;

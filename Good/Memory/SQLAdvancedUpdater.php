@@ -5,10 +5,6 @@ namespace Good\Memory;
 use Good\Manners\Storable;
 use Good\Manners\Condition;
 
-require_once dirname(__FILE__) . '/PropertyVisitor.php';
-require_once dirname(__FILE__) . '/SQLJoinDiscoverer.php';
-require_once dirname(__FILE__) . '/SQLUpdateConditionWriter.php';
-
 class SQLAdvancedUpdater implements PropertyVisitor
 {
 	private $db;

@@ -4,9 +4,6 @@ namespace Good\Memory;
 
 use Good\Manners\Storable;
 
-require_once dirname(__FILE__) . '/PropertyVisitor.php';
-require_once dirname(__FILE__) . '/SQLPostponedForeignKey.php';
-
 class SQLInserter implements PropertyVisitor
 {
 	private $db;

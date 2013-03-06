@@ -2,9 +2,6 @@
 
 namespace Good\Service;
 
-include_once dirname(__FILE__) . '/../Rolemodel/Rolemodel.php';
-include_once 'Compiler.php';
-
 class Service
 {
 	public function compile($modifiers, \Good\Rolemodel\DataModel $model, $outputDir)

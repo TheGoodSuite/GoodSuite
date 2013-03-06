@@ -4,8 +4,6 @@ namespace Good\Memory;
 
 use Good\Manners\Storable;
 
-require_once dirname(__FILE__) . '/PropertyVisitor.php';
-
 class SQLSimpleUpdater implements PropertyVisitor
 {
 	private $db;

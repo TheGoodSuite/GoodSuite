@@ -2,9 +2,6 @@
 
 namespace Good\Memory;
 
-require_once dirname(__FILE__) . '/Database/Result.php';
-
-
 class BaseCollection
 {
 	protected $store;

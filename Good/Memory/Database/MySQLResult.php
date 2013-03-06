@@ -2,8 +2,6 @@
 
 namespace Good\Memory\Database;
 
-require_once 'Result.php';
-
 class MySQLResult
 {
 	private $result;

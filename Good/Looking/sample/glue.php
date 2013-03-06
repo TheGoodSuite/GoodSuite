@@ -1,6 +1,6 @@
 <?php
 // including the library
-include('../Looking.php');
+include('../../autoload.php');
 
 // starting it up (giving template file name as argument)
 $goodLooking = new \Good\Looking\Looking('sampleTemplate.html');

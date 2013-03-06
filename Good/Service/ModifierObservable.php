@@ -2,8 +2,6 @@
 
 namespace Good\Service;
 
-include_once 'Modifier.php';
-
 class ModifierObservable implements Modifier
 {	
 	public function __construct()
@@ -12,11 +10,7 @@ class ModifierObservable implements Modifier
 	
 	public function baseClassTopOfFile()
 	{
-		$res  = 'include_once $good->getGoodPath() . "/Service/Observer.php";' . "\n";
-		$res  = 'include_once $good->getGoodPath() . "/Service/Observable.php";' . "\n";
-		$res .= "\n";
-		
-		return $res;
+		return '';
 	}
 	
 	public function implementingInterfaces()

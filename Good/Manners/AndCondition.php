@@ -2,9 +2,6 @@
 
 namespace Good\Manners;
 
-require_once dirname(__FILE__) . '/Condition.php';
-require_once 'BasicLogicStore.php';
-
 class AndCondition extends Condition
 {
 	private $store;

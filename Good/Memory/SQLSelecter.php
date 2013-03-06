@@ -6,11 +6,6 @@ use Good\Manners\Condition;
 use Good\Manners\Resolver;
 use Good\Manners\ResolverVisitor;
 
-require_once dirname(__FILE__) . '/../Manners/ResolverVisitor.php';
-require_once dirname(__FILE__) . '/../Manners/Resolver.php';
-
-require_once dirname(__FILE__) . '/SQLConditionWriter.php';
-
 class SQLSelecter implements ResolverVisitor
 {
 	private $db;

@@ -2,20 +2,6 @@
 
 namespace Good\Looking;
 
-require_once 'Regexes.php';
-require_once 'AbstractSyntax/Element.php';
-require_once 'AbstractSyntax/ElementWithStatements.php';
-require_once 'AbstractSyntax/Document.php';
-require_once 'AbstractSyntax/TextBlock.php';
-require_once 'AbstractSyntax/Statement.php';
-require_once 'AbstractSyntax/IfStructure.php';
-require_once 'AbstractSyntax/IfElseStructure.php';
-require_once 'AbstractSyntax/ForStructure.php';
-require_once 'AbstractSyntax/ForeachStructure.php';
-require_once 'AbstractSyntax/Factory.php';
-require_once 'AbstractSyntax/Environment.php';
-require_once 'Parser.php';
-
 Class Compiler
 {
 	public function __construct()

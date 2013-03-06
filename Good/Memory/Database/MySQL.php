@@ -2,9 +2,6 @@
 
 namespace Good\Memory\Database;
 
-require_once 'Database.php';
-require_once 'MySQLResult.php';
-
 class MySQL implements Database
 {
 	private $databaseName;  	// string

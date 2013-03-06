@@ -2,8 +2,6 @@
 
 namespace Good\Manners;
 
-require_once dirname(__FILE__) . '/../Rolemodel/Visitor.php';
-
 
 class StoreCompiler implements \Good\Rolemodel\Visitor
 {
@@ -124,8 +122,6 @@ class StoreCompiler implements \Good\Rolemodel\Visitor
 		
 		$this->resolver  = "<?php\n";
 		$this->resolver .= "\n";
-		$this->resolver .= 'require_once $good->getGoodPath() . "/Manners/AbstractResolver.php";' . "\n";
-		$this->resolver .= "\n";
 		$this->resolver .= 'class ' . $name . 'Resolver extends \\Good\\Manners\\AbstractResolver' . "\n";
 		$this->resolver .= "{\n";
 		
@@ -215,11 +211,6 @@ class StoreCompiler implements \Good\Rolemodel\Visitor
 		$top  = "<?php\n";
 		$top .= "\n";
 		
-		$top .= 'require_once $good->getGoodPath() . "/Manners/Condition.php";' . "\n";
-		$top .= 'require_once $good->getGoodPath() . "/Manners/ValidationToken.php";' . "\n";
-		$top .= 'require_once $good->getGoodPath() . "/Manners/Resolver.php";' . "\n";
-		$top .= 'require_once $good->getGoodPath() . "/Manners/Store.php";' . "\n";
-		$top .= "\n";
 		foreach ($this->dataTypes as $className)
 		{
 			// TODO: Either make this work in some way, or remove it.

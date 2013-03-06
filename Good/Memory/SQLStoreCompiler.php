@@ -2,9 +2,6 @@
 
 namespace Good\Memory;
 
-require_once dirname(__FILE__) . '/../Rolemodel/Visitor.php';
-
-
 class SQLStoreCompiler implements \Good\Rolemodel\Visitor
 {
 	// Compiler level data
@@ -97,8 +94,6 @@ class SQLStoreCompiler implements \Good\Rolemodel\Visitor
 		
 		$out  = '<?php' . "\n";
 		$out .= "\n";
-		$out .= 'require_once $good->getGoodPath() . "/Memory/BaseCollection.php";' . "\n";
-		$out .= "\n";
 		$out .= 'class ' . $name . 'Collection extends \\Good\\Memory\\BaseCollection' . "\n";
 		$out .= "{\n";
 		$out .= '	public function getNext()' . "\n";
@@ -127,9 +122,6 @@ class SQLStoreCompiler implements \Good\Rolemodel\Visitor
 		
 		// neatly start the file
 		$top  = "<?php\n";
-		$top .= "\n";
-		
-		$top .= 'require_once $good->getGoodPath() . "/Memory/BaseSQLStore.php";' . "\n";
 		$top .= "\n";
 		
 		foreach ($this->includes as $include)

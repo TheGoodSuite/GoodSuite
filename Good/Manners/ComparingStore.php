@@ -2,14 +2,6 @@
 
 namespace Good\Manners;
 
-require_once dirname(__FILE__) . '/Storable.php';
-require_once dirname(__FILE__) . '/EqualityCondition.php';
-require_once dirname(__FILE__) . '/InequalityCondition.php';
-require_once dirname(__FILE__) . '/GreaterCondition.php';
-require_once dirname(__FILE__) . '/GreaterOrEqualsCondition.php';
-require_once dirname(__FILE__) . '/LessCondition.php';
-require_once dirname(__FILE__) . '/LessOrEqualsCondition.php';
-
 interface ComparingStore
 {
 	public function createEqualityCondition(Storable $to);

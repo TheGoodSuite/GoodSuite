@@ -2,8 +2,6 @@
 
 namespace Good\Service;
 
-include_once 'Observer.php';
-
 interface Observable
 {
 	public function register(Observer $observer);

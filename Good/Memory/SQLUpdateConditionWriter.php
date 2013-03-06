@@ -5,10 +5,6 @@ namespace Good\Memory;
 use Good\Manners\Storable;
 use Good\Manners\Condition;
 
-require_once dirname(__FILE__) . '/PropertyVisitor.php';
-require_once dirname(__FILE__) . '/../Manners/Condition.php';
-require_once dirname(__FILE__) . '/ConditionProcessor.php';
-
 class SQLUpdateConditionWriter implements PropertyVisitor,
 										  ConditionProcessor
 {
