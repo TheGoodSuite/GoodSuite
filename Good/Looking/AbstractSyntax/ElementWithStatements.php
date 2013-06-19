@@ -22,7 +22,7 @@ abstract class ElementWithStatements implements Element
 		
 		if (\preg_match('/' . Regexes::$expression . '/', $evaluateString) == 0)
 		{
-			die("Syntax error");
+			throw new \Exception("Syntax error");
 		}
 		
 		$output = '';
@@ -32,7 +32,7 @@ abstract class ElementWithStatements implements Element
 			if (\preg_match('/^\s*' . Regexes::$term . 
 					'\s*(?P<op>(?P>operator))?\s*/', $evaluateString, $matches) == 0)
 			{
-				die("Syntax Error");
+				throw new \Exception("Syntax Error");
 			}
 			
 			$evaluateString = \preg_replace('/^\s*' . Regexes::$term . 
@@ -82,11 +82,11 @@ abstract class ElementWithStatements implements Element
 			else if (preg_match('/^' . Regexes::$func . '$/', $term) != 0)
 			{
 				// as of yet, functions are unsupported
-				die("Function call found while functions are currently unsupported");
+				throw new \Exception("Function call found while functions are currently unsupported");
 			}
 			else
 			{
-				die("Could not qualify term as any type of term!");
+				throw new \Exception("Could not qualify term as any type of term!");
 			}
 			
 			switch ($operator)

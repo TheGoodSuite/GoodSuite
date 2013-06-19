@@ -22,7 +22,7 @@ class Parser
 		
 		if ($input !== '')
 		{
-			die('Error: Could not parse document. Near: ' . substr($input, 0, 50));
+			throw new \Exception('Error: Could not parse document. Near: ' . substr($input, 0, 50));
 		}
 		
 		return $out;
@@ -73,15 +73,15 @@ class Parser
 		
 		if ($input == '')
 		{
-			die('Error: End of ducument found though there was still an "if" that needed to be closed.');
+			throw new \Exception('Error: End of ducument found though there was still an "if" that needed to be closed.');
 		}
 		else if (\preg_match('/^s*' . Regexes::$endingControlStructures . '\s*$/', $input, $matched))
 		{
-			die('Error: Control structure mismatch, found <i>' . $matches[0] . '</i> while parsing an if.');
+			throw new \Exception('Error: Control structure mismatch, found <i>' . $matches[0] . '</i> while parsing an if.');
 		}
 		else
 		{
-			die('Error: Unable to parse. Near: ' . \htmlentities(substr($input, 0, 50)));
+			throw new \Exception('Error: Unable to parse. Near: ' . \htmlentities(substr($input, 0, 50)));
 		}
 	}
 	
@@ -104,15 +104,15 @@ class Parser
 		
 		if ($input == '')
 		{
-			die('Error: End of ducument found though there was still a "for" that needed to be closed.');
+			throw new \Exception('Error: End of ducument found though there was still a "for" that needed to be closed.');
 		}
 		else if (\preg_match('/^s*' . Regexes::$endingControlStructures, $input, $matched))
 		{
-			die('Error: Control structure mismatch, found <i>' . $matches[0] . '</i> while parsing a for.');
+			throw new \Exception('Error: Control structure mismatch, found <i>' . $matches[0] . '</i> while parsing a for.');
 		}
 		else
 		{
-			die('Error: Unable to parse. Near: ' . \htmlentities(substr($input, 0, 20)));
+			throw new \Exception('Error: Unable to parse. Near: ' . \htmlentities(substr($input, 0, 20)));
 		}
 	}
 	
@@ -135,15 +135,15 @@ class Parser
 		
 		if ($input == '')
 		{
-			die('Error: End of ducument found though there was still a "foreach" that needed to be closed.');
+			throw new \Exception('Error: End of ducument found though there was still a "foreach" that needed to be closed.');
 		}
 		else if (\preg_match('/^s*' . Regexes::$endingControlStructures . '\s*$/', $input, $matched))
 		{
-			die('Error: Control structure mismatch, found <i>' . $matches[0] . '</i> while parsing a foreach.');
+			throw new \Exception('Error: Control structure mismatch, found <i>' . $matches[0] . '</i> while parsing a foreach.');
 		}
 		else
 		{
-			die('Error: Unable to parse. Near: ' . \htmlentities(substr($input, 0, 20)));
+			throw new \Exception('Error: Unable to parse. Near: ' . \htmlentities(substr($input, 0, 20)));
 		}
 	}
 	
@@ -253,7 +253,7 @@ class Parser
 				}
 				else
 				{
-					die('Unrecognized Control Structure');
+					throw new \Exception('Unrecognized Control Structure');
 				}
 			}
 			else

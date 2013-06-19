@@ -22,7 +22,7 @@ class PrimitiveFactory
 				
 			default:
 				// TODO: better error handling
-				die("Unrecognized type.");
+				throw new \Exception("Unrecognized type.");
 		}
 	}
 }

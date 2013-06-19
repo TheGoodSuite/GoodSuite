@@ -104,7 +104,7 @@ class ModifierStorable implements \Good\Service\Modifier
 		$res .= '		if ($this->validationToken != null &&!$this->validationToken->value())' . "\n";
 		$res .= "		{\n";
 						// TODO: turn this into decent error handling
-		$res .= '			die("Tried to acces an invalid Storable. It was probably made invalid by actions" .' . "\n";
+		$res .= '			throw new \\Exception("Tried to acces an invalid Storable. It was probably made invalid by actions" .' . "\n";
 		$res .= '		 	    " on its store (like doing a modify, which invalidates all its Storables).");' . "\n";
 		$res .= "		}\n";
 		$res .= "	}\n";

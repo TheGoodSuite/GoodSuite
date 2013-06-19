@@ -44,7 +44,7 @@ class Looking
 	{
 		if (!\file_exists($this->templateFileName))
 		{
-			die('Template not found.');
+			throw new \Exception('Template not found.');
 		}
 		
 		if (!\file_exists($this->templateFileName . '.compiledTemplate') ||

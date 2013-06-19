@@ -15,17 +15,17 @@ class ForStructure extends ElementWithStatements
 		if (\preg_match('/^\s*' . Regexes::$controlStructureConditions['for'] . 
 															'\s*$/', $condition, $matches) !== 1)
 		{
-			die('Error: Unable to parse for condition.');
+			throw new \Exception('Error: Unable to parse for condition.');
 		}
 		
 		if (\preg_match('/^s*' . Regexes::$expression . '\s*$/', $matches['term1']) !== 1)
 		{
-			die('Error: first term in for condition is invalid.');
+			throw new \Exception('Error: first term in for condition is invalid.');
 		}
 		
 		if (\preg_match('/^s*' . Regexes::$expression . '\s*$/', $matches['term2']) !== 1)
 		{
-			die('Error: first term in for condition is invalid.');
+			throw new \Exception('Error: first term in for condition is invalid.');
 		}
 		
 		$this->statements = $statements;

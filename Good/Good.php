@@ -25,7 +25,7 @@ class Good
 		if (!$this->installed)
 		{
 			require 'notInstalled.html';
-			die;
+			throw new \Exception("");
 		}
 		
 		require $this->path . 'modules.php';
@@ -45,7 +45,7 @@ class Good
 		else
 		{
 			require 'uninstalledModule.html';
-			die();
+			throw new \Exception("");
 		}
 	}
 	

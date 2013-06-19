@@ -18,7 +18,7 @@ abstract class Condition
 		if ($store != $this->store)
 		{
 			// TODO: turn this into decent error reporting
-			die("Store/Condition mismatch: You can only use Conditions created at a Store with that same Store.");
+			throw new \Exception("Store/Condition mismatch: You can only use Conditions created at a Store with that same Store.");
 		}
 		
 		$this->doProcess();

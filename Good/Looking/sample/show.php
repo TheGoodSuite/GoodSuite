@@ -4,12 +4,12 @@ if ($_GET['file'] != 'glue.php' && $_GET['file'] != 'sampleApplication.php' &&
         $_GET['file'] != 'sampleTemplate.html' && $_GET['file'] != 'sampleTemplate.html.compiledTemplate')
 {
     header("HTTP/1.0 404 Not Found");
-    die();
+    exit;
 }
 
 if (!file_exists($_GET['file']))
 {
-    die("File not found.");
+    exit("File not found.");
 }
 
 echo "<html>\n";

@@ -74,7 +74,7 @@ class Rolemodel
 			else
 			{
 				// TODO: better error handling outputting, et al
-				die("Malformed Datamodel file: " . $file);
+				throw new \Exception("Malformed Datamodel file: " . $file);
 			}
 		}
 		

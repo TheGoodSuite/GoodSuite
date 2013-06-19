@@ -22,7 +22,7 @@ class Service
 				if (!$reflectionClass->isSubClassOf('Base' . ucfirst($class)))
 				{
 					// TODO: Turn this into good error handling
-					die('Error: ' . $class . ' does not implement Base' . ucfirst($class) . '. ' .
+					throw new \Exception('Error: ' . $class . ' does not implement Base' . ucfirst($class) . '. ' .
 					      'If you have a class with the name of one of your datatypes, it should ' .
 						   'inherit the corresponding base class.');
 				}

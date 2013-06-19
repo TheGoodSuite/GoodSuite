@@ -15,12 +15,12 @@ class ForeachStructure extends ElementWithStatements
 		if (\preg_match('/^\s*' . Regexes::$controlStructureConditions['foreach'] . 
 															'\s*$/', $condition, $matches) !== 1)
 		{
-			die('Error: Unable to parse foreach condition.');
+			throw new \Exception('Error: Unable to parse foreach condition.');
 		}
 		
 		if (\preg_match('/^s*' . Regexes::$expression . '\s*$/', $matches['array']) !== 1)
 		{
-			die('Error: array term in foreach condition is invalid.');
+			throw new \Exception('Error: array term in foreach condition is invalid.');
 		}
 		
 		$this->statements = $statements;

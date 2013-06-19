@@ -26,7 +26,7 @@ class DataModel implements Visitable
 				{
 					// TODO: better error handling
 					
-					die("Error: Type " . $references[$j] . " was referenced, but not supplied itself.");
+					throw new \Exception("Error: Type " . $references[$j] . " was referenced, but not supplied itself.");
 				}
 			}
 		}

@@ -194,7 +194,7 @@ class Compiler implements \Good\Rolemodel\Visitor
 					if ($this->access != null)
 					{
 						// TODO: better error handling
-						die('Error: More than one attribute specifying access on variable ' . 
+						throw new \Exception('Error: More than one attribute specifying access on variable ' . 
 								$this->varName . ' from ' . $this->inputFile . '.');
 					}
 					$this->access = 'protected';
@@ -204,7 +204,7 @@ class Compiler implements \Good\Rolemodel\Visitor
 					if ($this->access != null)
 					{
 						// TODO: better error handling
-						die('Error: More than one attribute specifying access on variable ' . 
+						throw new \Exception('Error: More than one attribute specifying access on variable ' . 
 								$this->varName . ' from ' . $this->inputFile . '.');
 					}
 					$this->access = 'private';

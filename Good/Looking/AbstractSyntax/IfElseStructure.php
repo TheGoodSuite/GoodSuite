@@ -14,7 +14,7 @@ class IfElseStructure extends ElementWithStatements
 	{
 		if (\preg_match('/^\s*' . Regexes::$expression . '\s*$/', $condition) === 0)
 		{
-			die('Error: Unable to parse if condition.');
+			throw new \Exception('Error: Unable to parse if condition.');
 		}
 		
 		$this->condition = $condition;

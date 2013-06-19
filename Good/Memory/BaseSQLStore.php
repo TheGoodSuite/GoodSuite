@@ -57,7 +57,7 @@ abstract class BaseSQLStore extends \GoodMannersStore // (generated so not names
 		if (!($value instanceof \DateTime))
 		{
 			// TODO: turn this into real error reporting
-			die("Non-DateTime given for a DateTime field.");
+			throw new \Exception("Non-DateTime given for a DateTime field.");
 		}
 		
 		return "'" . $value->format('Y-m-d H:i:s') . "'";
