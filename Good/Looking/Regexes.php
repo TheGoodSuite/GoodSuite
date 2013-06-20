@@ -97,7 +97,7 @@ Class Regexes
 // An ugly hack to avoid matching a couple of reserved words
 // but this should be removed when we use a lexer like a good kid
 // (possibly even earlier)
-Regexes::$varName = '\\b(?!else|end)[A-Za-z][A-Za-z0-9_]*\\b';
+Regexes::$varName = '\\b(?!(else|end\\s*if|end\\s*for|end\\s*foreach)\\b)[A-Za-z][A-Za-z0-9_]*\\b';
 
 Regexes::$controlStructure = '\\b(?:(?:(?:end )?(if|for|foreach))|else)\\b';
 Regexes::$scriptDelimiterLeft = '<:';
@@ -109,7 +109,7 @@ Regexes::$stringSingle = "'(?:[^\\\\']|\\\\'|\\\\)*(?<!\\\\)'";
 Regexes::$stringDouble = '"(?:[^\\\\"]|\\\\"|\\\\)*(?<!\\\\)"';
 Regexes::$literalNumber = '\\b[0-9]+\\b';
 Regexes::$literalBoolean = '(?P<boolean>true|false)';
-Regexes::$operator = '(?P<operator>\\+|-|\\/|\\*|\\|\\||\\bor\\b|&&|\\band\\b|==|=|!=|>=|<=|>|<|\.)';
+Regexes::$operator = '(?P<operator>\\+|-|\\/|\\*|\\|\\||\\bor\\b|\\bxor\\b|&&|\\band\\b|==|=|!=|>=|<=|>|<|\.)';
 
 Regexes::$allControlStructures = '(?P<structure>(?:(?:end\\s*)?(?:if|for|foreach))|else)(?:\\s*\((?P<condition>.*)\))?';
 Regexes::$startingControlStructures = '(?P<structure>if|for|foreach)\\s*\((?P<condition>.*)\)';

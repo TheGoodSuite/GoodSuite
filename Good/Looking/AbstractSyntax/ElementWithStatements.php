@@ -112,6 +112,10 @@ abstract class ElementWithStatements implements Element
 					$output .= ' || ';
 					break;
 					
+				case 'xor':
+					$output .= ' xor ';
+					break;
+					
 				case '&&':
 				case 'and':
 					$output .= ' && ';
