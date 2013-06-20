@@ -94,10 +94,10 @@ Class Regexes
 
 // regexes not relying on any others
 
-// An ugly hack to avoid matching else
+// An ugly hack to avoid matching a couple of reserved words
 // but this should be removed when we use a lexer like a good kid
 // (possibly even earlier)
-Regexes::$varName = '\\b(?!else)[A-Za-z][A-Za-z0-9_]*\\b';
+Regexes::$varName = '\\b(?!else|end)[A-Za-z][A-Za-z0-9_]*\\b';
 
 Regexes::$controlStructure = '\\b(?:(?:(?:end )?(if|for|foreach))|else)\\b';
 Regexes::$scriptDelimiterLeft = '<:';
