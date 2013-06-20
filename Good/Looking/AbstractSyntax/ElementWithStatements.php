@@ -43,7 +43,7 @@ abstract class ElementWithStatements implements Element
 			
 			if (\preg_match('/^\(' . Regexes::$expression . '\)$/', $term) != 0)
 			{
-				$output .= '(' . $this->evaluate($term) . ')';
+				$output .= '(' . $this->evaluate(substr($term, 1, -1)) . ')';
 			}
 			else if (\preg_match('/^' . Regexes::$literalBoolean . '$/',
 														$term, $matches) != 0)
