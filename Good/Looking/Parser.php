@@ -32,7 +32,7 @@ class Parser
 	{
 		$statements = $this->parseStatementCollection($input);
 		
-		if (\preg_match('/^\s*else\s*(?<terminator>' . 
+		if (\preg_match('/^\\s*else\\s*(?<terminator>' . 
 							Regexes::$statementEnder . '|' .
 								Regexes::$scriptDelimiterRight . '|$)/', $input, $matches) === 1)
 		{
@@ -51,7 +51,7 @@ class Parser
 			$else = false;
 		}
 		
-		if (\preg_match('/^\s*end\s*if\s*(?<terminator>' . 
+		if (\preg_match('/^\\s*end\\s*if\\s*(?<terminator>' . 
 							Regexes::$statementEnder . '|' .
 								Regexes::$scriptDelimiterRight . '|$)/', $input, $matches) === 1)
 		{
@@ -75,7 +75,7 @@ class Parser
 		{
 			throw new \Exception('Error: End of document found though there was still an "if" that needed to be closed.');
 		}
-		else if (\preg_match('/^s*' . Regexes::$endingControlStructures . '\s*$/', $input, $matched))
+		else if (\preg_match('/^\\s*' . Regexes::$endingControlStructures . '\\s*$/', $input, $matched))
 		{
 			throw new \Exception('Error: Control structure mismatch, found <i>' . $matches[0] . '</i> while parsing an if.');
 		}
@@ -89,7 +89,7 @@ class Parser
 	{
 		$statements = $this->parseStatementCollection($input);
 		
-		if (\preg_match('/^\s*end\s*for\s*(?<terminator>' . 
+		if (\preg_match('/^\\s*end\\s*for\\s*(?<terminator>' . 
 							Regexes::$statementEnder . '|' .
 								Regexes::$scriptDelimiterRight . '|$)/', $input, $matches) === 1)
 		{
@@ -120,7 +120,7 @@ class Parser
 	{
 		$statements = $this->parseStatementCollection($input);
 		
-		if (\preg_match('/^\s*end\s*foreach\s*(?<terminator>' . 
+		if (\preg_match('/^\\s*end\\s*foreach\\s*(?<terminator>' . 
 							Regexes::$statementEnder . '|' .
 								Regexes::$scriptDelimiterRight . '|$)/', $input, $matches) === 1)
 		{
@@ -137,7 +137,7 @@ class Parser
 		{
 			throw new \Exception('Error: End of document found though there was still a "foreach" that needed to be closed.');
 		}
-		else if (\preg_match('/^s*' . Regexes::$endingControlStructures . '\s*$/', $input, $matched))
+		else if (\preg_match('/^\\s*' . Regexes::$endingControlStructures . '\\s*$/', $input, $matched))
 		{
 			throw new \Exception('Error: Control structure mismatch, found <i>' . $matches[0] . '</i> while parsing a foreach.');
 		}
@@ -175,12 +175,12 @@ class Parser
 		// a statement or nothing anchored to the begin of $input 
 		// (with whitespace in front of and behind it) followed by
 		// a statement ender (;), script delimiter (:>) or the end of the string
-		$regexExpression = '/^\s*(' . Regexes::$expression . '|)\s*(?<terminator>' . 
+		$regexExpression = '/^\\s*(' . Regexes::$expression . '|)\\s*(?<terminator>' . 
 										Regexes::$statementEnder . '|' .
 											Regexes::$scriptDelimiterRight . '|$)/';
 											
 		// Same idea as above, but for control structures
-		$regexControlStructure = '/^\s*' . Regexes::$startingControlStructures . '\s*(?<terminator>' . 
+		$regexControlStructure = '/^\\s*' . Regexes::$startingControlStructures . '\\s*(?<terminator>' . 
 											Regexes::$statementEnder . '|' .
 												Regexes::$scriptDelimiterRight . '|$)/';
 		

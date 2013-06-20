@@ -109,23 +109,23 @@ Regexes::$stringSingle = "'(?:[^\\\\']|\\\\'|\\\\)*(?<!\\\\)'";
 Regexes::$stringDouble = '"(?:[^\\\\"]|\\\\"|\\\\)*(?<!\\\\)"';
 Regexes::$literalNumber = '\\b[0-9]+\\b';
 Regexes::$literalBoolean = '(?P<boolean>true|false)';
-Regexes::$operator = '(?P<operator>\+|-|\/|\*|\|\||\bor\b|&&|\band\b|==|=|!=|>=|<=|>|<|\.)';
+Regexes::$operator = '(?P<operator>\\+|-|\\/|\\*|\\|\\||\\bor\\b|&&|\\band\\b|==|=|!=|>=|<=|>|<|\.)';
 
-Regexes::$allControlStructures = '(?P<structure>(?:(?:end\s*)?(?:if|for|foreach))|else)(?:\s*\((?P<condition>.*)\))?';
-Regexes::$startingControlStructures = '(?P<structure>if|for|foreach)\s*\((?P<condition>.*)\)';
+Regexes::$allControlStructures = '(?P<structure>(?:(?:end\\s*)?(?:if|for|foreach))|else)(?:\\s*\((?P<condition>.*)\))?';
+Regexes::$startingControlStructures = '(?P<structure>if|for|foreach)\\s*\((?P<condition>.*)\)';
 Regexes::$branchingControlStructures = '(?P<structure>else)';
-Regexes::$endingControlStructures = '^\s*(?P<structure>end\s*(?:if|for|foreach))\s*$';
+Regexes::$endingControlStructures = '^\\s*(?P<structure>end\\s*(?:if|for|foreach))\\s*$';
 
 // for for-regex \\term1 should contain first term, \\term2 the last term
-Regexes::$controlStructureConditions['for'] = '^(?P<term1>[\s\S]*)-->(?P<term2>[\s\S]*)$';
+Regexes::$controlStructureConditions['for'] = '^(?P<term1>[\\s\\S]*)-->(?P<term2>[\\s\\S]*)$';
 // for foreach-regex \\varName should contain variable name, \\array the array
-Regexes::$controlStructureConditions['foreach'] = '^\s*(?P<varName>' . Regexes::$varName . ')\s+in\s(?P<array>[\s\S]*)$';
+Regexes::$controlStructureConditions['foreach'] = '^\\s*(?P<varName>' . Regexes::$varName . ')\\s+in\\s(?P<array>[\\s\\S]*)$';
 
 
 // regexes that use others for concatenation
 
-Regexes::$script = Regexes::$scriptDelimiterLeft . '[\s\S]*?' . Regexes::$scriptDelimiterRight;
-Regexes::$comment = Regexes::$commentDelimiterLeft . '[\s\S]*?' . 
+Regexes::$script = Regexes::$scriptDelimiterLeft . '[\\s\\S]*?' . Regexes::$scriptDelimiterRight;
+Regexes::$comment = Regexes::$commentDelimiterLeft . '[\\s\\S]*?' . 
 										Regexes::$commentDelimiterRight;
 Regexes::$literalString = '(?:' . Regexes::$stringDouble . ')|(?:' . 
 						Regexes::$stringSingle . ')';
@@ -134,17 +134,17 @@ Regexes::$literalString = '(?:' . Regexes::$stringDouble . ')|(?:' .
 // circular references). Here they are stored in their pre-monkey dance variables
 
 $pre_variable = '(?P<variable>(?P<varName>' . Regexes::$varName . 
-									')(?P<arrayItemSelector>(?:\[(?P>expression)\])*))';
-$pre_func = '(?P<function>\b[a-zA-Z][a-zA-Z0-9_]*\((?P<arguments>(?P>expression)(?:,(?P>expression))*)?\))';
+									')(?P<arrayItemSelector>(?:\\[(?P>expression)\\])*))';
+$pre_func = '(?P<function>\\b[a-zA-Z][a-zA-Z0-9_]*\\((?P<arguments>(?P>expression)(?:,(?P>expression))*)?\\))';
 
-$pre_term = '(?P<term>\s*(?:(?:' . Regexes::$literalNumber . 
+$pre_term = '(?P<term>\\s*(?:(?:' . Regexes::$literalNumber . 
 					 ')|(?P>function)|' . Regexes::$literalBoolean .
 					  '|(?P>variable)|(?:' . Regexes::$literalString . 
-					   ')|\((?P>expression)\)))';
+					   ')|\\((?P>expression)\\)))';
 
-$pre_expression = '(?P<expression>(?P>term)\s*(?:' . 
+$pre_expression = '(?P<expression>(?P>term)\\s*(?:' . 
 									Regexes::$operator .
-										'\s*(?P>term)\s*)*)';
+										'\\s*(?P>term)\\s*)*)';
 
 // DA MONKEY DANCE!!
 
