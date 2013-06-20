@@ -73,7 +73,7 @@ class Parser
 		
 		if ($input == '')
 		{
-			throw new \Exception('Error: End of ducument found though there was still an "if" that needed to be closed.');
+			throw new \Exception('Error: End of document found though there was still an "if" that needed to be closed.');
 		}
 		else if (\preg_match('/^s*' . Regexes::$endingControlStructures . '\s*$/', $input, $matched))
 		{
@@ -104,7 +104,7 @@ class Parser
 		
 		if ($input == '')
 		{
-			throw new \Exception('Error: End of ducument found though there was still a "for" that needed to be closed.');
+			throw new \Exception('Error: End of document found though there was still a "for" that needed to be closed.');
 		}
 		else if (\preg_match('/^s*' . Regexes::$endingControlStructures, $input, $matched))
 		{
@@ -135,7 +135,7 @@ class Parser
 		
 		if ($input == '')
 		{
-			throw new \Exception('Error: End of ducument found though there was still a "foreach" that needed to be closed.');
+			throw new \Exception('Error: End of document found though there was still a "foreach" that needed to be closed.');
 		}
 		else if (\preg_match('/^s*' . Regexes::$endingControlStructures . '\s*$/', $input, $matched))
 		{
