@@ -4,8 +4,12 @@ namespace Good\Service;
 
 class Service
 {
+	private $outputDir = null;
+	
 	public function compile($modifiers, \Good\Rolemodel\DataModel $model, $outputDir)
 	{
+		$this->outputDir = $outputDir;
+		
 		$compiler = new Compiler($modifiers, $outputDir);
 		
 		$model->accept($compiler);
@@ -30,7 +34,7 @@ class Service
 			else
 			{
 				// Fix path here
-				require 'compiled/' . $class . '.datatype.php';
+				require $this->outputDir . $class . '.datatype.php';
 			}
 		}
 	}
