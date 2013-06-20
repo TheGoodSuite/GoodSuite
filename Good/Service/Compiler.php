@@ -200,14 +200,14 @@ class Compiler implements \Good\Rolemodel\Visitor
 					$this->access = 'protected';
 				break;
 				
-				case 'private':
+				case 'public':
 					if ($this->access != null)
 					{
 						// TODO: better error handling
 						throw new \Exception('Error: More than one attribute specifying access on variable ' . 
 								$this->varName . ' from ' . $this->inputFile . '.');
 					}
-					$this->access = 'private';
+					$this->access = 'public';
 				break;
 				
 				default:
