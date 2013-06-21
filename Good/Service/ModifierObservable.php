@@ -34,7 +34,7 @@ class ModifierObservable implements Modifier
 		$res .= "	\n";
 		$res .= '	public function unregister(\\Good\\Service\\Observer $observer)'. "\n";
 		$res .= "	{\n";
-		$res .= '		$pos = \\array_search($observer);' . "\n";
+		$res .= '		$pos = \\array_search($observer, $this->observers);' . "\n";
 		$res .= '		if ($pos !== FALSE)' . "\n";
 		$res .= "		{\n";
 		$res .= '			\array_splice($this->observers, $pos, 1);' . "\n";
