@@ -138,7 +138,7 @@ class ModifierStorable implements \Good\Service\Modifier
 		
 		$this->acceptStore  = '	public function acceptStore(\\Good\\Manners\\Store $store)' . "\n";
 		$this->acceptStore .= "	{\n";
-		// Due to the addition of a dummy, I changed the isNew() call to $this->store != null
+		// Due to the addition of a dummy, I replaced the isNew() call with $this->store != null
 		// It should sort of do the same, even if it's less semantically clear
 		// However, as I want to revisit and remove this whole checking system anyway, I
 		// don't consider it to be a problem.
