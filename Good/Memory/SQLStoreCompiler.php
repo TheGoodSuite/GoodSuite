@@ -176,8 +176,9 @@ class SQLStoreCompiler implements \Good\Rolemodel\Visitor
 		// I should look into abstracting this more in order to make it work
 		// better with more SQL implementations, but I think this will do for now
 		$this->create .= ",\n";
-		$this->create .= '			new DateTime($array[$table . "_" . $this->fieldNamify("' . 
-																		$this->varName . '")])';
+		$this->create .= '			$array[$table . "_" . $this->fieldNamify("' . 
+										$this->varName . '")] === null ? null : new DateTime($array[$table . ' .
+  										  '"_" . $this->fieldNamify("' . $this->varName . '")])';
 	}
 	
 	private function visitNonReference()
