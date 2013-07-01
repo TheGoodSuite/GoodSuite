@@ -91,6 +91,7 @@ class SQLSelecter implements ResolverVisitor
 			// just checking here (maybe this should throw an error,
 			// but I'd say it's only a flaw in Good not outside it 
 			// that can trigger this)
+			throw new Exception();
 		}
 		
 		$this->sql .= ', ';
