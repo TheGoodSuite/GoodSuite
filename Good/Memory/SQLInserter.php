@@ -113,7 +113,7 @@ class SQLInserter implements PropertyVisitor
 			
 			if ($null)
 			{
-				$this->sql .= 'NULL';
+				$this->values .= 'NULL';
 			}
 			else
 			{
@@ -133,7 +133,7 @@ class SQLInserter implements PropertyVisitor
 			
 			if ($null)
 			{
-				$this->sql .= 'NULL';
+				$this->values .= 'NULL';
 			}
 			else
 			{
@@ -153,7 +153,7 @@ class SQLInserter implements PropertyVisitor
 		
 			if ($null)
 			{
-				$this->sql .= 'NULL';
+				$this->values .= 'NULL';
 			}
 			else
 			{
@@ -173,7 +173,7 @@ class SQLInserter implements PropertyVisitor
 		
 			if ($null)
 			{
-				$this->sql .= 'NULL';
+				$this->values .= 'NULL';
 			}
 			else
 			{

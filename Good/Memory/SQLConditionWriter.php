@@ -160,15 +160,23 @@ class SQLConditionWriter implements PropertyVisitor,
 		{
 			$this->writeBracketOrAnd();
 		
-			$this->condition .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($name) .
-									' ' . $this->comparison . ' ';
+			$this->condition .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($name) . ' ';
 			if ($null)
 			{
-				$this->condition .= ' NULL';
+				if ($this->comparison == '=')
+				{
+					$this->condition .= ' IS NULL';
+				}
+				else // if ($this->comparison == '<>')
+				{
+					$this->condition .= ' IS NOT NULL';
+				}
+				
+				// todo: error out if not equality or inequality
 			}
 			else
 			{
-				$this->condition .= ' ' . $this->store->parseText($value);
+				$this->condition .= $this->comparison .' ' . $this->store->parseText($value);
 			}
 			
 		}
@@ -179,15 +187,23 @@ class SQLConditionWriter implements PropertyVisitor,
 		{
 			$this->writeBracketOrAnd();
 		
-			$this->condition .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($name) .
-									' ' . $this->comparison;
+			$this->condition .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($name) . ' ';
 			if ($null)
 			{
-				$this->condition .= ' NULL';
+				if ($this->comparison == '=')
+				{
+					$this->condition .= ' IS NULL';
+				}
+				else // if ($this->comparison == '<>')
+				{
+					$this->condition .= ' IS NOT NULL';
+				}
+				
+				// todo: error out if not equality or inequality
 			}
 			else
 			{
-				$this->condition .= ' ' . $this->store->parseInt($value);
+				$this->condition .= $this->comparison .' ' . $this->store->parseInt($value);
 			}
 		}
 	}
@@ -196,16 +212,24 @@ class SQLConditionWriter implements PropertyVisitor,
 		if($dirty)
 		{
 			$this->writeBracketOrAnd();
-			
-			$this->condition .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($name) .
-									' ' . $this->comparison;
+		
+			$this->condition .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($name) . ' ';
 			if ($null)
 			{
-				$this->condition .= ' NULL';
+				if ($this->comparison == '=')
+				{
+					$this->condition .= ' IS NULL';
+				}
+				else // if ($this->comparison == '<>')
+				{
+					$this->condition .= ' IS NOT NULL';
+				}
+				
+				// todo: error out if not equality or inequality
 			}
 			else
 			{
-				$this->condition .= ' ' . $this->store->parseFloat($value);
+				$this->condition .= $this->comparison .' ' . $this->store->parseFloat($value);
 			}
 		}
 	}
@@ -214,16 +238,24 @@ class SQLConditionWriter implements PropertyVisitor,
 		if($dirty)
 		{
 			$this->writeBracketOrAnd();
-			
-			$this->condition .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($name) .
-									' ' . $this->comparison;
+		
+			$this->condition .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($name) . ' ';
 			if ($null)
 			{
-				$this->condition .= ' NULL';
+				if ($this->comparison == '=')
+				{
+					$this->condition .= ' IS NULL';
+				}
+				else // if ($this->comparison == '<>')
+				{
+					$this->condition .= ' IS NOT NULL';
+				}
+				
+				// todo: error out if not equality or inequality
 			}
 			else
 			{
-				$this->condition .= ' ' . $this->store->parseDatetime($value);
+				$this->condition .= $this->comparison .' ' . $this->store->parseDatetime($value);
 			}
 		}
 	}
