@@ -126,8 +126,8 @@ class SQLStoreCompiler implements \Good\Rolemodel\Visitor
 		
 		foreach ($this->includes as $include)
 		{
-			// TODO: Make this location independent
-			$top .= 'require_once "compiled/' . $include . '";' . "\n";
+			// TODO: Dirty, but better than previously (which had a hardcoded location)
+			$top .= 'require_once dirname(__FILE__) . "/' . $include . '";' . "\n";
 		}
 		
 		$top .= "\n";
