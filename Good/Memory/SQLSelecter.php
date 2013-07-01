@@ -53,7 +53,7 @@ class SQLSelecter implements ResolverVisitor
 		{
 			foreach ($somejoins as $join)
 			{
-				$sql .= ' JOIN ' . $this->store->tableNamify($join->tableNameDestination) . 
+				$sql .= ' LEFT JOIN ' . $this->store->tableNamify($join->tableNameDestination) . 
 															' AS t' . $join->tableNumberDestination;
 				$sql .= ' ON t' . $join->tableNumberOrigin . '.' . 
 											$this->store->fieldNamify($join->fieldNameOrigin);
