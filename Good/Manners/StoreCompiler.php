@@ -164,6 +164,8 @@ class StoreCompiler implements \Good\Rolemodel\Visitor
 			$this->output .= "			}\n";
 			$this->output .= "		}\n";
 			$this->output .= "		\n";
+			$this->output .= '		$this->dirty' . \ucfirst($type) . 's = array();' . "\n";
+			$this->output .= "		\n";
 			$this->output .= '		if (count($new) > 0)' . "\n";
 			$this->output .= "		{\n";
 			$this->output .= '			$this->saveNew' . \ucfirst($type) . 's($new);' . "\n";

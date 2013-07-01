@@ -43,6 +43,7 @@ class SQLInserter implements PropertyVisitor
 		
 		$this->db->query($this->sql);
 		$value->setId($this->db->getLastInsertedId());
+		$value->makeDirty(false);
 	}
 
 	private function comma()
@@ -87,12 +88,13 @@ class SQLInserter implements PropertyVisitor
 					$this->store->setCurrentPropertyVisitor($this);
 				}
 				
-				if ($value->isNew() && $value->getId() == -1)
+				if (!$value->isNew() && $value->getId() == -1)
 				// $value is actually new, but not marked as such to prevent infinite recursion
 				{
 					$this->postponed[] = new SQLPostponedForeignKey($this->inserting,
 																	$name,
 																	$value);
+					$this->values .= 'NULL';
 				}
 				else
 				{

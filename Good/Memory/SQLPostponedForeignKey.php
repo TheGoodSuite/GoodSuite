@@ -19,7 +19,7 @@ class SQLPostponedForeignKey
 	{
 		// Is there maybe a nicer way to do this?
 		$field = 'set' . \ucfirst($this->field);
-		$this->referer->$field($foreigner->getId());
+		$this->referer->$field($this->foreigner);
 	}
 }
 

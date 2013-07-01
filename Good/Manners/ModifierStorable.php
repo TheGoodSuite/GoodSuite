@@ -36,7 +36,7 @@ class ModifierStorable implements \Good\Service\Modifier
 		$res .= '	protected $store = null;' . "\n";
 		$res .= '	private $validationToken = null;' . "\n";
 		$res .= '	private $id = -1;' . "\n";
-		$res .= '	private $dirty = false;' . "\n";
+		$res .= '	protected $dirty = false;' . "\n";
 		$res .= "	\n";
 		$res .= '	abstract protected function dirty();' . "\n";
 		$res .= "	\n";
@@ -94,10 +94,7 @@ class ModifierStorable implements \Good\Service\Modifier
 		$res .= '		return $this->dirty;' . "\n";
 		$res .= "	}\n";
 		$res .= "	\n";
-		$res .= '	public function makeDirty($value = true)' . "\n";
-		$res .= "	{\n";
-		$res .= '		return $this->dirty = $value;' . "\n";
-		$res .= "	}\n";
+		$res .= '	abstract public function makeDirty($value = true);' . "\n";
 		$res .= "	\n";
 		$res .= '	protected function checkValidationToken()' . "\n";
 		$res .= "	{\n";
@@ -313,6 +310,19 @@ class ModifierStorable implements \Good\Service\Modifier
 		$res .= '		return $ret;' . "\n";
 		$res .= "	}\n";
 		$res .= "	\n";
+		$res .= '	public function makeDirty($value = true)' . "\n";
+		$res .= "	{\n";
+		$res .= '		$this->dirty = $value;' . "\n";
+		$res .= "		\n";
+		$res .= '		if ($value == false)' . "\n";
+		$res .= "		{\n";
+		foreach ($this->classMembers as $member)
+		{
+			$res .= '			$this->make' . ucfirst($member) . 'Dirty(false);' . "\n";
+		}
+		$res .= '		' . "\n";
+		$res .= "		}\n";
+		$res .= "	}\n";
 		
 		$res .= '	public static function resolver()' . "\n";
 		$res .= "	{\n";
