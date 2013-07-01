@@ -235,6 +235,11 @@ class ModifierStorable implements \Good\Service\Modifier
 	{
 		$res  = '		$this->checkValidationToken();' . "\n";
 		$res .= "		\n";
+		$res .= '		if ($value === null)' . "\n";
+		$res .= "		{\n";
+		$res .= '			$this->make' . \ucfirst($this->classVariable) . 'Null();' . "\n";
+		$res .= "		}\n";
+		$res .= "		\n";
 		
 		return $res;
 	}
