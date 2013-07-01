@@ -114,13 +114,25 @@ class SQLConditionWriter implements PropertyVisitor,
 			
 			if($null)
 			{
-				$this->condition .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($name) . 
-											$this->comparison . ' NULL';
+				if ($this->comparison == '=')
+				{
+					$this->condition .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($name) . 
+												' IS NULL';
+				}
+				else // if ($this->comparison == '<>')
+				{
+					$this->condition .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($name) . 
+												' IS NOT NULL';
+				}
+				
+				// todo: error out if not equality or inequality
 			}
 			else if (!$value->isNew())
 			{
 				$this->condition .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($name) . 
 											$this->comparison . ' ' . \intval($value->getId());
+				
+				// todo: error out if not equality or inequality
 			}
 			else
 			{
