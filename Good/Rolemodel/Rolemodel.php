@@ -36,7 +36,7 @@ class Rolemodel
 		
 		// And now we start parsing the file
 		// line by line
-		$inputLines = \explode("\r\n", $input);
+		$inputLines = \preg_split("/(\r\n|\n)/", $input);
 		
 		// building a complicated regex just once
 		// (so outside the for loop)
