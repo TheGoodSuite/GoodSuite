@@ -57,6 +57,8 @@ class SQLUpdateConditionWriter implements PropertyVisitor,
 		$this->rootTableName = $rootTableName;
 		$this->store->setCurrentConditionProcessor($this);
 		
+		$this->first = true;
+		
 		$condition->process($this->store);
 	}
 	
@@ -73,17 +75,17 @@ class SQLUpdateConditionWriter implements PropertyVisitor,
 			$this->phase2 = false;
 			$this->writeSimpleComparisonCondition($to, $comparison);
 			
+			$joins = '';
+			
 			if ($this->updatingTableValue == null)
 			{
-				$joins = '';
 				$join = $this->store->getReverseJoin($this->updatingTableNumber);
 				
 				while ($join->tableNumberOrigin != 0 &&
 					    !\array_key_exists($join->tableNumberOrigin, $this->joinedTables))
 				{
-					$join = $this->store->getReverseJoin($join->tableNumberOrigin);
 					
-					$sql .= ' JOIN ' . $this->store->tableNamify($join->tableNameDestination) . 
+					$sql = ' JOIN ' . $this->store->tableNamify($join->tableNameDestination) . 
 																' AS t' . $join->tableNumberDestination;
 					$sql .= ' ON t' . $join->tableNumberOrigin . '.' . 
 												$this->store->fieldNamify($join->fieldNameOrigin);
@@ -92,9 +94,9 @@ class SQLUpdateConditionWriter implements PropertyVisitor,
 					// They need to be added to the sql in reverse as well, or else
 					// we'll get unknown table names
 					$joins = $sql . $joins;
+					
+					$join = $this->store->getReverseJoin($join->tableNumberOrigin);
 				}
-				
-				$this->joins .= $joins;
 			}
 			
 			$join = $this->store->getReverseJoin($this->updatingTableNumber);
@@ -105,12 +107,11 @@ class SQLUpdateConditionWriter implements PropertyVisitor,
 			$sql .= ' FROM ' . $this->store->tableNamify($this->rootTableName) . 
 														' AS t' . $join->tableNumberOrigin;
 					
-			$sql .= $this->joins;
+			$sql .= $joins;
 			$sql .= ' WHERE ' . $this->condition;
-			$this->first = false;
 				
 			$sql .= ')';
-			
+			$this->writeBracketOrAnd();
 			$this->condition = $sql;
 		}
 		
@@ -122,10 +123,25 @@ class SQLUpdateConditionWriter implements PropertyVisitor,
 			$this->phase2 = true;
 			$this->store->setCurrentPropertyVisitor($this);
 			$this->comparison = $comparison;
+			$this->writeBracketOrAnd();
 			$this->first = true;
 			$this->currentTable = $this->updatingTableNumber;
+			$this->currentReference = 0;
 			
 			$this->updatingTableValue->acceptStore($this->store);
+		}
+		
+		if ($this->first)
+		{
+			if ($to->getId() != -1)
+			{
+				$this->condition .= 't' . $this->currentTable . '.id' .
+										' ' . $this->comparison . ' ' . \intval($to->getId());
+			}
+			else
+			{
+				$this->condition = '1 = 1';
+			}
 		}
 	}
 	
@@ -141,6 +157,7 @@ class SQLUpdateConditionWriter implements PropertyVisitor,
 		$this->joining = '';
 		$this->updatingTableFound = null;
 		$this->joinedTables = array();
+		$this->currentReference = 0;
 		
 		$this->store->setCurrentPropertyVisitor($this);
 		$to->acceptStore($this->store);
@@ -180,15 +197,15 @@ class SQLUpdateConditionWriter implements PropertyVisitor,
 	public function processAndCondition(Condition $condition1, Condition $condition2)
 	{
 		$this->writeCondition($condition1,
+							  $this->rootTableName,
 							  $this->updatingTableNumber,
-							  $this->updatingTableName,
-							  $this->updatingTableValue);
+							  $this->updatingTableName);
 		$sqlCondition1 = $this->getCondition();
 		
-		$this->writeCondition($condition1,
+		$this->writeCondition($condition2,
+							  $this->rootTableName,
 							  $this->updatingTableNumber,
-							  $this->updatingTableName,
-							  $this->updatingTableValue);
+							  $this->updatingTableName);
 		$sqlCondition2 = $this->getCondition();
 		
 		$this->condition = '(' . $sqlCondition1 . ' AND ' . $sqlCondition2 . ')';
@@ -196,15 +213,15 @@ class SQLUpdateConditionWriter implements PropertyVisitor,
 	public function processOrCondition(Condition $condition1, Condition $condition2)
 	{
 		$this->writeCondition($condition1,
+							  $this->rootTableName,
 							  $this->updatingTableNumber,
-							  $this->updatingTableName,
-							  $this->updatingTableValue);
+							  $this->updatingTableName);
 		$sqlCondition1 = $this->getCondition();
 		
-		$this->writeCondition($condition1,
+		$this->writeCondition($condition2,
+							  $this->rootTableName,
 							  $this->updatingTableNumber,
-							  $this->updatingTableName,
-							  $this->updatingTableValue);
+							  $this->updatingTableName);
 		$sqlCondition2 = $this->getCondition();
 		
 		$this->condition = '(' . $sqlCondition1 . ' OR ' . $sqlCondition2 . ')';
@@ -220,7 +237,17 @@ class SQLUpdateConditionWriter implements PropertyVisitor,
 				$this->writeBracketOrAnd();
 				
 				$this->writeTableName();
-				$this->condition .= '.' . $this->store->fieldNamify($name) . $this->comparison . ' NULL';
+				
+				if ($this->comparison == '=')
+				{
+					$this->condition .= '.' . $this->store->fieldNamify($name) . ' IS NULL';
+				}
+				else // if ($this->comparison == '<>')
+				{
+					$this->condition .= '.' . $this->store->fieldNamify($name) . ' IS NOT NULL';
+				}
+				
+				// todo: error out if another comparison
 			}
 			else if (!$value->isNew())
 			{
@@ -261,7 +288,7 @@ class SQLUpdateConditionWriter implements PropertyVisitor,
 						$this->joining .= $subWriter->getJoining();
 						$this->writeBracketOrAnd();
 						$this->condition .= $subWriter->getCondition();
-						$this->joinedTables = \array_merge($this->joinedTables, $subWriter->getJoinedTables);
+						$this->joinedTables = \array_merge($this->joinedTables, $subWriter->getJoinedTables());
 					}
 					else
 					{
@@ -290,16 +317,24 @@ class SQLUpdateConditionWriter implements PropertyVisitor,
 			$this->writeBracketOrAnd();
 			$this->writeTableName();
 			
-			$this->condition .=  '.' . $this->store->fieldNamify($name) .
-										' ' . $this->comparison . ' ';
-										' ' . $this->comparison . ' ';
+			$this->condition .=  '.' . $this->store->fieldNamify($name) . ' ';
+			
 			if ($null)
 			{
-				$this->condition .= ' NULL';
+				if ($this->comparison == '=')
+				{
+					$this->condition .= 'IS NULL';
+				}
+				else // if ($this->comparison == '<>')
+				{
+					$this->condition .= 'IS NOT NULL';
+				}
+				
+				// todo: error out if another comparison
 			}
 			else
 			{
-				$this->condition .= ' ' . $this->store->parseText($value);
+				$this->condition .=  $this->comparison . ' ' . $this->store->parseText($value);
 			}
 			
 		}
@@ -311,14 +346,24 @@ class SQLUpdateConditionWriter implements PropertyVisitor,
 			$this->writeBracketOrAnd();
 			$this->writeTableName();
 			
-			$this->condition .=  '.' . $this->store->fieldNamify($name) . ' ' . $this->comparison;
+			$this->condition .=  '.' . $this->store->fieldNamify($name) . ' ';
+			
 			if ($null)
 			{
-				$this->condition .= ' NULL';
+				if ($this->comparison == '=')
+				{
+					$this->condition .= 'IS NULL';
+				}
+				else // if ($this->comparison == '<>')
+				{
+					$this->condition .= 'IS NOT NULL';
+				}
+				
+				// todo: error out if another comparison
 			}
 			else
 			{
-				$this->condition .= ' ' . $this->store->parseInt($value);
+				$this->condition .= $this->comparison .' ' . $this->store->parseInt($value);
 			}
 		}
 	}
@@ -329,14 +374,24 @@ class SQLUpdateConditionWriter implements PropertyVisitor,
 			$this->writeBracketOrAnd();
 			$this->writeTableName();
 			
-			$this->condition .=  '.' . $this->store->fieldNamify($name) . ' ' . $this->comparison;
+			$this->condition .=  '.' . $this->store->fieldNamify($name) . ' ';
+			
 			if ($null)
 			{
-				$this->condition .= ' NULL';
+				if ($this->comparison == '=')
+				{
+					$this->condition .= 'IS NULL';
+				}
+				else // if ($this->comparison == '<>')
+				{
+					$this->condition .= 'IS NOT NULL';
+				}
+				
+				// todo: error out if another comparison
 			}
 			else
 			{
-				$this->condition .= ' ' . $this->store->parseFloat($value);
+				$this->condition .= $this->comparison . ' ' . $this->store->parseFloat($value);
 			}
 		}
 	}
@@ -347,14 +402,23 @@ class SQLUpdateConditionWriter implements PropertyVisitor,
 			$this->writeBracketOrAnd();
 			$this->writeTableName();
 			
-			$this->condition .=  '.' . $this->store->fieldNamify($name) . ' ' . $this->comparison;
+			$this->condition .=  '.' . $this->store->fieldNamify($name) . ' ';
 			if ($null)
 			{
-				$this->condition .= ' NULL';
+				if ($this->comparison == '=')
+				{
+					$this->condition .= 'IS NULL';
+				}
+				else // if ($this->comparison == '<>')
+				{
+					$this->condition .= 'IS NOT NULL';
+				}
+				
+				// todo: error out if another comparison
 			}
 			else
 			{
-				$this->condition .= ' ' . $this->store->parseDatetime($value);
+				$this->condition .= $this->comparison . ' ' . $this->store->parseDatetime($value);
 			}
 		}
 	}

@@ -138,7 +138,7 @@ class SQLAdvancedUpdater implements PropertyVisitor
 		{
 			$this->comma();
 			
-			$this->sql .= fieldNamify($name);
+			$this->sql .= $this->store->fieldNamify($name);
 			$this->sql .= ' = ';
 			
 			if ($null)

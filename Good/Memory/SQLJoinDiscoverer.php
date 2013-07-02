@@ -28,8 +28,6 @@ class SQLJoinDiscoverer implements PropertyVisitor
 	public function visitReferenceProperty($name, $datatypeName, $dirty, $null, 
 														Storable $value = null)
 	{
-		echo $name, " which is ", $null ? "" : "not ", "null:";
-		
 		if (!$null && $dirty && $value->isNew())
 		{
 			$join = $this->store->getJoin($this->currentTable, $this->currentReference);
