@@ -140,48 +140,59 @@ class StoreCompiler implements \Good\Rolemodel\Visitor
 		$this->output .= "	{\n";
 		$this->output .= '		$this->flushes++;' . "\n";
 		
+		$new = '';
+		$modified = '';
+		$deleted = '';
+		
 		foreach ($this->dataTypes as $type)
 		{
-			$this->output .= '		// Flush all the ' . $type . ' objects' . "\n";
-			$this->output .= '		$deleted = array();' . "\n";
-			$this->output .= '		$modified = array();' . "\n";
-			$this->output .= '		$new = array();' . "\n";
+			$this->output .= '		// Sort all the ' . $type . ' objects' . "\n";
+			$this->output .= '		$deleted' . ucfirst($type) . 's = array();' . "\n";
+			$this->output .= '		$modified' . ucfirst($type) . 's = array();' . "\n";
+			$this->output .= '		$new' . ucfirst($type) . 's = array();' . "\n";
 			$this->output .= "		\n";
 			// ucfirst: Make first letter uppercase (it's a part of php)
 			$this->output .= '		foreach ($this->dirty' . \ucfirst($type) . 's as $dirty)' . "\n";
 			$this->output .= "		{\n";
 			$this->output .= '			if ($dirty->isDeleted() && !$dirty->isNew())' . "\n";
 			$this->output .= "			{\n";
-			$this->output .= '				$deleted[] = $dirty;' . "\n";
+			$this->output .= '				$deleted' . ucfirst($type) . 's[] = $dirty;' . "\n";
 			$this->output .= "			}\n";
 			$this->output .= '			else if ($dirty->isNew() && !$dirty->isDeleted())' . "\n";
 			$this->output .= "			{\n";
-			$this->output .= '				$new[] = $dirty;' . "\n";
+			$this->output .= '				$new' . ucfirst($type) . 's[] = $dirty;' . "\n";
 			$this->output .= "			}\n";
 			$this->output .= '			else if (!$dirty->isNew())' . "\n";
 			$this->output .= "			{\n";
-			$this->output .= '				$modified[] = $dirty;' . "\n";
+			$this->output .= '				$modified' . ucfirst($type) . 's[] = $dirty;' . "\n";
 			$this->output .= "			}\n";
 			$this->output .= "		}\n";
 			$this->output .= "		\n";
 			$this->output .= '		$this->dirty' . \ucfirst($type) . 's = array();' . "\n";
 			$this->output .= "		\n";
-			$this->output .= '		if (count($new) > 0)' . "\n";
-			$this->output .= "		{\n";
-			$this->output .= '			$this->saveNew' . \ucfirst($type) . 's($new);' . "\n";
-			$this->output .= "		}\n";
-			$this->output .= "		\n";
-			$this->output .= '		if (count($modified) > 0)' . "\n";
-			$this->output .= "		{\n";
-			$this->output .= '			$this->save' . \ucfirst($type) . 'Modifications($modified);' . "\n";
-			$this->output .= "		}\n";
-			$this->output .= "		\n";
-			$this->output .= '		if (count($deleted) > 0)' . "\n";
-			$this->output .= "		{\n";
-			$this->output .= '			$this->save' . \ucfirst($type) . 'Deletions($deleted);' . "\n";
-			$this->output .= "		}\n";
-			$this->output .= "		\n";
+			
+			$new .= '		if (count($new' . ucfirst($type) . 's) > 0)' . "\n";
+			$new .= "		{\n";
+			$new .= '			$this->saveNew' . ucfirst($type) . 's($new' . ucfirst($type) . 's);' . "\n";
+			$new .= "		}\n";
+			$new .= "		\n";
+			
+			$modified .= '		if (count($modified' . ucfirst($type) . 's) > 0)' . "\n";
+			$modified .= "		{\n";
+			$modified .= '			$this->save' . \ucfirst($type) . 'Modifications($modified' . ucfirst($type) . 's);' . "\n";
+			$modified .= "		}\n";
+			$modified .= "		\n";
+			
+			$deleted .= '		if (count($deleted' . ucfirst($type) . 's) > 0)' . "\n";
+			$deleted .= "		{\n";
+			$deleted .= '			$this->save' . \ucfirst($type) . 'Deletions($deleted' . ucfirst($type) . 's);' . "\n";
+			$deleted .= "		}\n";
+			$deleted .= "		\n";
 		}
+		
+		$this->output .= $new;
+		$this->output .= $modified;
+		$this->output .= $deleted;
 		
 		$this->output .= '		$this->flushes--;' . "\n";
 		$this->output .= "		\n";
