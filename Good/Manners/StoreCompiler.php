@@ -106,6 +106,7 @@ class StoreCompiler implements \Good\Rolemodel\Visitor
 		$this->output .= '	public function modifyAny' . \ucfirst($name) .'(\\Good\\Manners\\Condition ' .
 													'$condition, ' . $name . ' $modifications)' . "\n";
 		$this->output .= "	{\n";
+		$this->output .= '		$this->flush();' . "\n";
 		$this->output .= '		$this->invalidate();' . "\n";
 		$this->output .= "		\n";
 		$this->output .= '		$this->doModifyAny' . \ucfirst($name) .'($condition, $modifications);' . "\n";
