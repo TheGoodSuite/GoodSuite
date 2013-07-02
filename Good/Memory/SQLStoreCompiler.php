@@ -14,6 +14,8 @@ class SQLStoreCompiler implements \Good\Rolemodel\Visitor
 	private $varName;
 	private $dataType;
 	
+	private $flush;
+	
 	public function __construct($outputDir)
 	{
 		$this->outputDir = $outputDir;
@@ -29,6 +31,9 @@ class SQLStoreCompiler implements \Good\Rolemodel\Visitor
 		$this->output .= '		parent::__construct($db);' . "\n";
 		$this->output .= "	}\n";
 		$this->output .= "	\n";
+		
+		$this->flush  = '	public function flush()' . "\n";
+		$this->flush .= "	{\n";
 	}
 	
 	public function visitDataType($dataType)
@@ -75,6 +80,7 @@ class SQLStoreCompiler implements \Good\Rolemodel\Visitor
 		$this->output .= "	{\n";
 		$this->output .= '		$this->doAnyModify("' . $name . '", $condition, $modifications);' . "\n";
 		$this->output .= "	}\n";
+		$this->output .= "	\n";
 		
 		$this->create  = '	private $created' . \ucfirst($name) . 's = array();' . "\n";
 		$this->create .= "	\n";
@@ -134,6 +140,13 @@ class SQLStoreCompiler implements \Good\Rolemodel\Visitor
 		
 		$this->output = $top . $this->output;
 		
+		$this->flush .= "		\n";
+		$this->flush .= '		parent::flush();' . "\n";
+		$this->flush .= "	}\n";
+		$this->flush .= "	\n";
+		
+		$this->output .= $this->flush;
+		
 		// close the file off
 		$this->output .= "}\n";
 		$this->output .= "\n";
@@ -191,13 +204,15 @@ class SQLStoreCompiler implements \Good\Rolemodel\Visitor
 	{
 		$this->create .= "\n";
 		$this->create .= '		);' . "\n";
-		$this->create .= '		$created' . ucfirst($this->dataType) . 's[$array[$table . "_id"]] = $ret;' . "\n";
+		$this->create .= '		$this->created' . ucfirst($this->dataType) . 's[$array[$table . "_id"]] = $ret;' . "\n";
 		$this->create .= "		\n";
 		$this->create .= '		return $ret;' . "\n";
 		$this->create .= "	}\n";
 		$this->create .= "	\n";
 		
 		$this->output .= $this->create;
+		
+		$this->flush .= '		$this->created' . ucfirst($this->dataType) . 's = array();' . "\n";
 	}
 }
 
