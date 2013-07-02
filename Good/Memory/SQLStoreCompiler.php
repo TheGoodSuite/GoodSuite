@@ -9,6 +9,8 @@ class SQLStoreCompiler implements \Good\Rolemodel\Visitor
 	private $output = null;
 	private $includes = array();
 	private $create = null;
+	private $createTop = null;
+	private $createReferenceCount = null;
 	private $firstDateType = true;
 	
 	private $varName;
@@ -82,21 +84,23 @@ class SQLStoreCompiler implements \Good\Rolemodel\Visitor
 		$this->output .= "	}\n";
 		$this->output .= "	\n";
 		
-		$this->create  = '	private $created' . \ucfirst($name) . 's = array();' . "\n";
-		$this->create .= "	\n";
-		$this->create .= '	public function create' . \ucfirst($name) .
+		$this->createTop  = '	private $created' . \ucfirst($name) . 's = array();' . "\n";
+		$this->createTop .= "	\n";
+		$this->createTop .= '	public function create' . \ucfirst($name) .
 														'(array $array, $table = "t0", &$nextTable = 0)' . "\n";
-		$this->create .= "	{\n";
-		$this->create .= '		$nextTable++;' . "\n";
-		$this->create .= "		\n";
-		$this->create .= '		if (array_key_exists($array[$table . "_id"], ' .
+		$this->createTop .= "	{\n";
+		$this->createTop .= '		$nextTable++;' . "\n";
+		$this->createTop .= "		\n";
+		$this->createTop .= '		if (array_key_exists($array[$table . "_id"], ' .
 															'$this->created' . \ucfirst($name) . 's))' . "\n";
-		$this->create .= "		{\n";
-		$this->create .= '			return $this->created' . \ucfirst($name) . 
+		$this->createTop .= "		{\n";
+		$this->createTop .= '			return $this->created' . \ucfirst($name) . 
 													's[$array[$this->tableNamify($table) . "_id"]];' . "\n";
-		$this->create .= "		}";
-		$this->create .= "		\n";
+		$this->createTop .= "		}";
+		$this->create  = "		\n";
 		$this->create .= '		$ret = ' . $name . '::createExisting($this, $array[$table . "_id"]';
+		
+		$this->createReferenceCount = 0;
 		
 		$out  = '<?php' . "\n";
 		$out .= "\n";
@@ -162,15 +166,26 @@ class SQLStoreCompiler implements \Good\Rolemodel\Visitor
 	
 	public function visitTypeReference($type)
 	{
-		$this->create .= ",\n";
 		// TODO: spread this (and all arguments) over multiple lines in output
-		$this->create .= '			\array_key_exists($table . "_" . $this->fieldNamify("' . 
-																$this->varName . '"),' . "\n"; 
-		$this->create .= '					$array) && $array[$table . "_" . $this->fieldNamify("' . 
-																				$this->varName . "\")]\n";
-		$this->create .= '					 !== null ? $this->create' . 
-												ucfirst($type->getReferencedType()) . 
-												'($array, "t" . $nextTable, $nextTable) : null';
+		$this->createTop .= "		\n"; 
+		$this->createTop .= '		if (!\array_key_exists($table . "_" . $this->fieldNamify("' . $this->varName . '"), $array))' . "\n"; 
+		$this->createTop .= "		{\n"; 
+		$this->createTop .= '			$reference' . $this->createReferenceCount . ' = null;' . "\n"; 
+		$this->createTop .= "		}\n"; 
+		$this->createTop .= '		else if ($array[$table . "_" . $this->fieldNamify("' . $this->varName . '")] === null)' . "\n"; 
+		$this->createTop .= "		{\n"; 
+		$this->createTop .= '			$reference' . $this->createReferenceCount . ' = null;' . "\n";
+		$this->createTop .= '			$nextTable++;' . "\n";
+		$this->createTop .= "		}\n"; 
+		$this->createTop .= '		else' . "\n"; 
+		$this->createTop .= "		{\n"; 
+		$this->createTop .= '			$reference'  . $this->createReferenceCount . ' = $this->create' . ucfirst($type->getReferencedType()) . '($array, "t" . $nextTable, $nextTable);' . "\n";
+		$this->createTop .= "		}\n";
+		
+		$this->create .= ",\n";
+		$this->create .= '			$reference'  . $this->createReferenceCount;
+		
+		$this->createReferenceCount++;
 	}
 	public function visitTypePrimitiveText($type)
 	{
@@ -210,6 +225,7 @@ class SQLStoreCompiler implements \Good\Rolemodel\Visitor
 		$this->create .= "	}\n";
 		$this->create .= "	\n";
 		
+		$this->output .= $this->createTop;
 		$this->output .= $this->create;
 		
 		$this->flush .= '		$this->created' . ucfirst($this->dataType) . 's = array();' . "\n";
