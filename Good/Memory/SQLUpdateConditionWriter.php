@@ -132,15 +132,7 @@ class SQLUpdateConditionWriter implements PropertyVisitor,
 		
 		if ($this->first)
 		{
-			if ($to->getId() != -1)
-			{
-				$this->condition .= 't' . $this->currentTable . '.id' .
-										' ' . $this->comparison . ' ' . \intval($to->getId());
-			}
-			else
-			{
-				$this->condition = '1 = 1';
-			}
+			$this->condition = '1 = 1';
 		}
 	}
 	
