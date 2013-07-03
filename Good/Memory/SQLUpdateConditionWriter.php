@@ -84,6 +84,7 @@ class SQLUpdateConditionWriter implements PropertyVisitor,
 				while ($join->tableNumberOrigin != 0 &&
 					    !\array_key_exists($join->tableNumberOrigin, $this->joinedTables))
 				{
+					$join = $this->store->getReverseJoin($join->tableNumberOrigin);
 					
 					$sql = ' JOIN ' . $this->store->tableNamify($join->tableNameDestination) . 
 																' AS t' . $join->tableNumberDestination;
@@ -94,8 +95,6 @@ class SQLUpdateConditionWriter implements PropertyVisitor,
 					// They need to be added to the sql in reverse as well, or else
 					// we'll get unknown table names
 					$joins = $sql . $joins;
-					
-					$join = $this->store->getReverseJoin($join->tableNumberOrigin);
 				}
 			}
 			
@@ -105,7 +104,7 @@ class SQLUpdateConditionWriter implements PropertyVisitor,
 			$sql .= ' IN (SELECT t' . $join->tableNumberOrigin . '.' .
 										$this->store->fieldNamify($join->fieldNameOrigin);
 			$sql .= ' FROM ' . $this->store->tableNamify($this->rootTableName) . 
-														' AS t' . $join->tableNumberOrigin;
+														' AS t0';
 					
 			$sql .= $joins;
 			$sql .= ' WHERE ' . $this->condition;
