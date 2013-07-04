@@ -92,7 +92,12 @@ class SQLStoreCompiler implements \Good\Rolemodel\Visitor
 		$this->createTop .= '		$nextTable++;' . "\n";
 		$this->createTop .= "		\n";
 		$this->createTop .= '		if (array_key_exists($array[$table . "_id"], ' .
-															'$this->created' . \ucfirst($name) . 's))' . "\n";
+		// todo: allow for proper checking again, after solving the problems that brought with it.
+		//													'$this->created' . \ucfirst($name) . 's))' . "\n";
+		// for now, we just concoct something that will always evaluate to false
+															'array()))' . "\n";
+		
+		
 		$this->createTop .= "		{\n";
 		$this->createTop .= '			return $this->created' . \ucfirst($name) . 
 													's[$array[$this->tableNamify($table) . "_id"]];' . "\n";
