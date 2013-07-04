@@ -72,8 +72,7 @@ abstract class BaseSQLStore extends \GoodMannersStore // (generated so not names
 	{
 		foreach ($storables as $storable)
 		{
-			$sql  = 'UPDATE ' . $this->tableNamify($datatypeName);
-			$sql .= ' SET deleted = TRUE';
+			$sql  = 'DELETE FROM ' . $this->tableNamify($datatypeName);
 			$sql .= " WHERE id = " . intval($storable->getId());
 			
 			$this->db->query($sql);
