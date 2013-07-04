@@ -1,0 +1,4 @@
+
+PHP needs write permissions on this folder to run the tests properply.
+
+(Also, git needed this file to get this folder into the repository.)
