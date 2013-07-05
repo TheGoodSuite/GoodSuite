@@ -1,10 +1,14 @@
 <?php
 
-namespace Good\Memory;
+namespace Good\Memory\SQL;
 
+use Good\Memory\Database as Database;
+
+use Good\Memory\SQLStore;
+use Good\Memory\PropertyVisitor;
 use Good\Manners\Storable;
 
-class SQLInserter implements PropertyVisitor
+class Inserter implements PropertyVisitor
 {
 	private $db;
 	private $store;
@@ -82,7 +86,7 @@ class SQLInserter implements PropertyVisitor
 			{
 				if ($value->isNew())
 				{
-					$inserter = new SQLInserter($this->store, $this->db);
+					$inserter = new Inserter($this->store, $this->db);
 					$inserter->insert($datatypeName, $value);
 					$this->postponed = \array_merge($this->postponed, $inserter->getPostponed());
 					$this->store->setCurrentPropertyVisitor($this);

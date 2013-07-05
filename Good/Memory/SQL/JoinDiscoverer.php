@@ -1,10 +1,11 @@
 <?php
 
-namespace Good\Memory;
+namespace Good\Memory\SQL;
 
+use Good\Memory\PropertyVisitor;
 use Good\Manners\Storable;
 
-class SQLJoinDiscoverer implements PropertyVisitor
+class JoinDiscoverer implements PropertyVisitor
 {
 	private $store;
 	
@@ -40,7 +41,7 @@ class SQLJoinDiscoverer implements PropertyVisitor
 												 $datatypeName);
 			}
 			
-			$recursionDiscoverer = new SQLJoinDiscoverer($this->store, $join);
+			$recursionDiscoverer = new JoinDiscoverer($this->store, $join);
 			$recursionDiscoverer->discoverJoins($value);
 		}
 		

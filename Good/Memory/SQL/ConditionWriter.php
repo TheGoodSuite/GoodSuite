@@ -1,12 +1,15 @@
 <?php
 
-namespace Good\Memory;
+namespace Good\Memory\SQL;
 
+use Good\Memory\SQLStore;
+use Good\Memory\PropertyVisitor;
+use Good\Memory\ConditionProcessor;
 use Good\Manners\Storable;
 use Good\Manners\Condition;
 
-class SQLConditionWriter implements PropertyVisitor,
-									ConditionProcessor
+class ConditionWriter implements PropertyVisitor,
+								 ConditionProcessor
 {
 	private $store;
 	private $comparison;
@@ -143,7 +146,7 @@ class SQLConditionWriter implements PropertyVisitor,
 					$join = $this->store->createJoin($this->currentTable, $name, $this->currentReference, $datatypeName);
 				}
 				
-				$subWriter = new SQLConditionWriter($this->store, $join);
+				$subWriter = new ConditionWriter($this->store, $join);
 				$subWriter->writeComparisonCondition($value, $this->comparison);
 				
 				$this->store->setCurrentConditionProcessor($this);

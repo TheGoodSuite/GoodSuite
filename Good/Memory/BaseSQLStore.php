@@ -81,7 +81,7 @@ abstract class BaseSQLStore extends \GoodMannersStore // (generated so not names
 	
 	protected function saveAnyNew($datatypeName, array $storables)
 	{
-		$inserter = new SQLInserter($this, $this->db);
+		$inserter = new SQL\Inserter($this, $this->db);
 		
 		foreach ($storables as $storable)
 		{
@@ -103,7 +103,7 @@ abstract class BaseSQLStore extends \GoodMannersStore // (generated so not names
 	
 	protected function saveAnyModifications($datatypeName, array $storables)
 	{
-		$updater = new SQLSimpleUpdater($this, $this->db);
+		$updater = new SQL\SimpleUpdater($this, $this->db);
 		
 		foreach ($storables as $storable)
 		{
@@ -119,7 +119,7 @@ abstract class BaseSQLStore extends \GoodMannersStore // (generated so not names
 		$this->joins = array(0 => array());
 		$this->numberOfJoins = 0;
 		
-		$selecter = new SQLSelecter($this, $this->db, 0);
+		$selecter = new SQL\Selecter($this, $this->db, 0);
 		
 		return $selecter->select($datatypeName, $condition, $resolver);
 	}
@@ -131,7 +131,7 @@ abstract class BaseSQLStore extends \GoodMannersStore // (generated so not names
 		$this->joins = array(0 => array());
 		$this->numberOfJoins = 0;
 		
-		$updater = new SQLAdvancedUpdater($this, $this->db, 0);
+		$updater = new SQL\AdvancedUpdater($this, $this->db, 0);
 		
 		$updater->update($datatypeName, $condition, $modifications);
 	}
@@ -170,7 +170,7 @@ abstract class BaseSQLStore extends \GoodMannersStore // (generated so not names
 		// we start off with increment because joins index is numberOfJoins + 1 (index 0 is for base table)
 		$this->numberOfJoins++;
 		
-		$join = new SQLJoin($tableNumberOrigin,
+		$join = new SQL\Join($tableNumberOrigin,
 							$this->fieldNamify($fieldNameOrigin),
 							$this->tableNamify($tableNameDestination),
 							$this->numberOfJoins);

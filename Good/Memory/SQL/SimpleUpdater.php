@@ -1,10 +1,14 @@
 <?php
 
-namespace Good\Memory;
+namespace Good\Memory\SQL;
 
+use Good\Memory\Database as Database;
+
+use Good\Memory\SQLStore;
+use Good\Memory\PropertyVisitor;
 use Good\Manners\Storable;
 
-class SQLSimpleUpdater implements PropertyVisitor
+class SimpleUpdater implements PropertyVisitor
 {
 	private $db;
 	private $store;

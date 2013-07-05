@@ -1,11 +1,15 @@
 <?php
 
-namespace Good\Memory;
+namespace Good\Memory\SQL;
 
+use Good\Memory\Database as Database;
+
+use Good\Memory\SQLStore;
+use Good\Memory\PropertyVisitor;
 use Good\Manners\Storable;
 use Good\Manners\Condition;
 
-class SQLAdvancedUpdater implements PropertyVisitor
+class AdvancedUpdater implements PropertyVisitor
 {
 	private $db;
 	private $store;
@@ -39,7 +43,7 @@ class SQLAdvancedUpdater implements PropertyVisitor
 		$this->condition = $condition;
 		$this->rootTableName = $rootTableName;
 	
-		$joinDiscoverer = new SQLJoinDiscoverer($this->store, 0);
+		$joinDiscoverer = new JoinDiscoverer($this->store, 0);
 		$joinDiscoverer->discoverJoins($value);
 		
 		$this->sql = 'UPDATE ' . $this->store->tableNamify($datatypeName);
@@ -55,7 +59,7 @@ class SQLAdvancedUpdater implements PropertyVisitor
 		//  table is only used in the ON clause)
 		if (!$this->first)
 		{
-			$conditionWriter = new SQLUpdateConditionWriter($this->store, 0);
+			$conditionWriter = new UpdateConditionWriter($this->store, 0);
 			$conditionWriter->writeCondition($condition, $rootTableName, $this->currentTable, $datatypeName);
 			
 			$this->sql .= ' WHERE ' . $conditionWriter->getCondition();
@@ -86,7 +90,7 @@ class SQLAdvancedUpdater implements PropertyVisitor
 			{
 				$join = $this->store->getJoin($this->currentTable, $this->currentReference);
 				
-				$updater = new SQLAdvancedUpdater($this->store, $this->db, $join);
+				$updater = new AdvancedUpdater($this->store, $this->db, $join);
 				$updater->updateWithRootTableName($datatypeName, $this->condition, 
 																$value, $this->rootTableName);
 				$this->store->setCurrentPropertyVisitor($this);

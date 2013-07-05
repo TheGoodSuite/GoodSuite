@@ -1,12 +1,15 @@
 <?php
 
-namespace Good\Memory;
+namespace Good\Memory\SQL;
 
+use Good\Memory\Database as Database;
+
+use Good\Memory\SQLStore;
 use Good\Manners\Condition;
 use Good\Manners\Resolver;
 use Good\Manners\ResolverVisitor;
 
-class SQLSelecter implements ResolverVisitor
+class Selecter implements ResolverVisitor
 {
 	private $db;
 	private $store;
@@ -46,7 +49,7 @@ class SQLSelecter implements ResolverVisitor
 	{
 		$sql  = " FROM " . $this->store->tableNamify($datatypeName) . " AS t0";
 		
-		$conditionWriter = new SQLConditionWriter($this->store, 0);
+		$conditionWriter = new ConditionWriter($this->store, 0);
 		$conditionWriter->writeCondition($condition);
 		
 		foreach ($this->store->getJoins() as $somejoins)
@@ -91,7 +94,7 @@ class SQLSelecter implements ResolverVisitor
 			// just checking here (maybe this should throw an error,
 			// but I'd say it's only a flaw in Good not outside it 
 			// that can trigger this)
-			throw new Exception();
+			throw new \Exception();
 		}
 		
 		$this->sql .= ', ';
