@@ -35,7 +35,7 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
 		$model = $rolemodel->createDataModel(array('InsertType' => dirname(__FILE__) . '/../testInputFiles/InsertType.datatype'));
 
 		$service = new \Good\Service\Service();
-		$service->compile(array(new \Good\Manners\ModifierStorable()), $model, dirname(__FILE__) . '/../generated/');
+		$service->compile(array(new \Good\Manners\Modifier\Storable()), $model, dirname(__FILE__) . '/../generated/');
 		
 		require dirname(__FILE__) . '/../generated/BaseInsertType.datatype.php';
 		

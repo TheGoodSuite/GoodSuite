@@ -39,7 +39,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 												   'OtherType' => dirname(__FILE__) . '/../testInputFiles/OtherType.datatype'));
 
 		$service = new \Good\Service\Service();
-		$service->compile(array(new \Good\Manners\ModifierStorable()), $model, dirname(__FILE__) . '/../generated/');
+		$service->compile(array(new \Good\Manners\Modifier\Storable()), $model, dirname(__FILE__) . '/../generated/');
 		
 		require dirname(__FILE__) . '/../generated/BaseGetType.datatype.php';
 		require dirname(__FILE__) . '/../generated/BaseOtherType.datatype.php';

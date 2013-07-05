@@ -47,7 +47,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
 														dirname(__FILE__) . '/../testInputFiles/ThirdType.datatype'));
 
 		$service = new \Good\Service\Service();
-		$service->compile(array(new \Good\Manners\ModifierStorable()), $model, dirname(__FILE__) . '/../generated/');
+		$service->compile(array(new \Good\Manners\Modifier\Storable()), $model, dirname(__FILE__) . '/../generated/');
 		
 		require dirname(__FILE__) . '/../generated/BaseAdvancedUpdateType.datatype.php';
 		require dirname(__FILE__) . '/../generated/BaseYetAnotherType.datatype.php';

@@ -1,8 +1,8 @@
 <?php
 
-namespace Good\Manners;
+namespace Good\Manners\Modifier;
 
-class ModifierStorable implements \Good\Service\Modifier
+class Storable implements \Good\Service\Modifier
 {
 	private $className;
 	private $classMembers;

@@ -17,7 +17,7 @@ abstract class GoodMannersModifierStorableBaseTest extends GoodServiceBaseTest
 	{
 		if ($modifiers == null)
 		{
-			parent::compile($types, array(new \Good\Manners\ModifierStorable()));
+			parent::compile($types, array(new \Good\Manners\Modifier\Storable()));
 		}
 		else
 		{
