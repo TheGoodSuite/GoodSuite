@@ -18,7 +18,7 @@ abstract class GoodServiceModifierObservableBaseTest extends GoodServiceBaseTest
 	{
 		if ($modifiers == null)
 		{
-			parent::compile($types, array(new \Good\Service\ModifierObservable()));
+			parent::compile($types, array(new \Good\Service\Modifier\Observable()));
 		}
 		else
 		{

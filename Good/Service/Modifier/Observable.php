@@ -1,8 +1,8 @@
 <?php
 
-namespace Good\Service;
+namespace Good\Service\Modifier;
 
-class ModifierObservable implements Modifier
+class Observable implements \Good\Service\Modifier
 {	
 	public function __construct()
 	{
