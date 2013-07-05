@@ -1,6 +1,8 @@
 <?php
 
-namespace Good\Manners;
+namespace Good\Manners\Condition;
+
+use Good\Manners\Condition;
 
 class AndCondition extends Condition
 {
@@ -8,7 +10,7 @@ class AndCondition extends Condition
 	private $condition1;
 	private $condition2;
 
-	public function __construct(BasicLogicStore $store, 
+	public function __construct(\Good\Manners\BasicLogicStore $store, 
 								    Condition $condition1, 
 								     Condition $condition2)
 	{

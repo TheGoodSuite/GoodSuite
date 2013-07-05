@@ -1,13 +1,16 @@
 <?php
 
-namespace Good\Manners;
+namespace Good\Manners\Condition;
 
-class GreaterOrEqualsCondition extends Condition
+use Good\Manners\Condition;
+use Good\Manners\Storable;
+
+class GreaterOrEquals extends Condition
 {
 	private $store;
 	private $to;
 
-	public function __construct(ComparingStore $store, Storable $to)
+	public function __construct(\Good\Manners\ComparingStore $store, Storable $to)
 	{
 		parent::__construct($store);
 		
