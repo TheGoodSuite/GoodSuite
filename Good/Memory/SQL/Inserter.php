@@ -5,6 +5,7 @@ namespace Good\Memory\SQL;
 use Good\Memory\Database as Database;
 
 use Good\Memory\SQLStore;
+use Good\Memory\SQLPostponedForeignKey;
 use Good\Memory\PropertyVisitor;
 use Good\Manners\Storable;
 
