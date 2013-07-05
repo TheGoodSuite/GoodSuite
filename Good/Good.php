@@ -2,57 +2,11 @@
 
 namespace Good;
 
+
+// After removing the things that make no sense, nothing is left in this class
+// However, I am convinced it will at one point grow again and have content
 class Good
 {
-	private $installed;
-	private $path;
-	private $modules;
-	
-	function __construct($config = 'config/Good.php')
-	{
-		$this->path = dirname(__FILE__) . '/';
-		
-		if (!\file_exists($this->path . $config))
-		{
-			$this->installed = false;
-		}
-		else
-		{
-			require $this->path . $config;
-			$this->installed = $GoodInstalled;
-		}
-		
-		if (!$this->installed)
-		{
-			require 'notInstalled.html';
-			throw new \Exception("");
-		}
-		
-		require $this->path . 'modules.php';
-		
-		$this->modules = $modules;
-	}
-	
-	function module($moduleId)
-	{
-		if (isset($this->modules[$module]))
-		{
-			$config = $this->modules[$moduleId]['config'];	
-			require $this->path . 'objects/' . $this->modules[$moduleId]['moduleName'] .'.php';
-			
-			return $moduleObject;
-		}
-		else
-		{
-			require 'uninstalledModule.html';
-			throw new \Exception("");
-		}
-	}
-	
-	function getGoodPath()
-	{
-		return \dirname(__FILE__);
-	}
 }
 
 ?>
