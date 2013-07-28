@@ -2,6 +2,7 @@
 
 namespace Good\Manners;
 
+use Good\Rolemodel\Schema;
 
 class StoreCompiler implements \Good\Rolemodel\Visitor
 {
@@ -20,7 +21,7 @@ class StoreCompiler implements \Good\Rolemodel\Visitor
 		$this->outputDir = $outputDir;
 	}
 	
-	public function visitSchema($schema)
+	public function visitSchema(Schema $schema)
 	{
 		// Start off the class 
 		$this->output  = "abstract class GoodMannersStore implements \\Good\\Manners\\Store \n";
@@ -168,7 +169,7 @@ class StoreCompiler implements \Good\Rolemodel\Visitor
 		file_put_contents($this->outputDir . 'Store.php', $this->output);
 	}
 	
-	public function visitDataType($dataType)
+	public function visitDataType(Schema\DataType $dataType)
 	{
 		if ($this->firstDateType)
 		{
@@ -242,7 +243,7 @@ class StoreCompiler implements \Good\Rolemodel\Visitor
 		$this->resolverVisit .= "	{\n";
 	}
 	
-	public function visitReferenceMember($member)
+	public function visitReferenceMember(Schema\ReferenceMember $member)
 	{
 		$this->resolver .= '	private $resolved' . \ucfirst($member->getName()) . ' = null;' . "\n"; 
 		$this->resolver .= "	\n";
@@ -274,24 +275,24 @@ class StoreCompiler implements \Good\Rolemodel\Visitor
 											'"' . $member->getName() . '");' . "\n";
 		$this->resolverVisit .= "		}\n";
 	}
-	public function visitTextMember($member)
+	public function visitTextMember(Schema\TextMember $member)
 	{
 		$this->visitNonReference($member);
 	}
-	public function visitIntMember($member)
+	public function visitIntMember(Schema\IntMember $member)
 	{
 		$this->visitNonReference($member);
 	}
-	public function visitFloatMember($member)
+	public function visitFloatMember(Schema\FloatMember $member)
 	{
 		$this->visitNonReference($member);
 	}
-	public function visitDatetimeMember($member)
+	public function visitDatetimeMember(Schema\DatetimeMember $member)
 	{
 		$this->visitNonReference($member);
 	}
 	
-	private function visitNonReference($member)
+	private function visitNonReference(Schema\PrimitiveMember $member)
 	{
 		$this->resolver .= '	private $orderNumber' . \ucfirst($member->getName()) . ' = -1;' . "\n";
 		$this->resolver .= '	private $orderDirection' . \ucfirst($member->getName()) . ' = -1;' . "\n";

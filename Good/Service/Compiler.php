@@ -2,6 +2,8 @@
 
 namespace Good\Service;
 
+use Good\Rolemodel\Schema;
+
 class Compiler implements \Good\Rolemodel\Visitor
 {
 	// TODO: prevent namespace collisions between things between
@@ -24,7 +26,7 @@ class Compiler implements \Good\Rolemodel\Visitor
 		$this->modifiers = $modifiers;
 	}
 	
-	public function visitSchema($schema)
+	public function visitSchema(Schema $schema)
 	{
 		foreach ($this->modifiers as $modifier)
 		{
@@ -104,7 +106,7 @@ class Compiler implements \Good\Rolemodel\Visitor
 		}
 	}
 	
-	public function visitDataType($dataType)
+	public function visitDataType(Schema\DataType $dataType)
 	{
 		if ($this->output != null)
 		{
@@ -191,7 +193,7 @@ class Compiler implements \Good\Rolemodel\Visitor
 		\file_put_contents($file, $contents);
 	}
 	
-	public function visitReferenceMember($member)
+	public function visitReferenceMember(Schema\ReferenceMember $member)
 	{
 		foreach ($this->modifiers as $modifier)
 		{
@@ -204,7 +206,7 @@ class Compiler implements \Good\Rolemodel\Visitor
 		$this->commitVariable($member, $varType);
 	}
 	
-	public function visitTextMember($member)
+	public function visitTextMember(Schema\TextMember $member)
 	{
 		foreach ($this->modifiers as $modifier)
 		{
@@ -216,7 +218,7 @@ class Compiler implements \Good\Rolemodel\Visitor
 		$this->commitVariable($member, $varType);
 	}
 	
-	public function visitIntMember($member)
+	public function visitIntMember(Schema\IntMember $member)
 	{
 		foreach ($this->modifiers as $modifier)
 		{
@@ -228,7 +230,7 @@ class Compiler implements \Good\Rolemodel\Visitor
 		$this->commitVariable($member, $varType);
 	}
 	
-	public function visitFloatMember($member)
+	public function visitFloatMember(Schema\FloatMember $member)
 	{
 		foreach ($this->modifiers as $modifier)
 		{
@@ -240,7 +242,7 @@ class Compiler implements \Good\Rolemodel\Visitor
 		$this->commitVariable($member, $varType);
 	}
 	
-	public function visitDatetimeMember($member)
+	public function visitDatetimeMember(Schema\DatetimeMember $member)
 	{
 		foreach ($this->modifiers as $modifier)
 		{
@@ -252,7 +254,7 @@ class Compiler implements \Good\Rolemodel\Visitor
 		$this->commitVariable($member, $varType);
 	}
 	
-	private function commitVariable($member, $varType)
+	private function commitVariable(Schema\Member $member, $varType)
 	{
 		// Var type is currently unused but might be used when I do typechecking
 		// (then again, I might actually do it differently)

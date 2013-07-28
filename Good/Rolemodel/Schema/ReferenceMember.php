@@ -6,13 +6,13 @@ use Good\Rolemodel\Visitor;
 
 class ReferenceMember extends Member
 {
-	private $value;
+	private $referencedType;
 	
-	public function __construct($attributes, $name, $value)
+	public function __construct(array $attributes, $name, $referencedType)
 	{
 		parent::__construct($attributes, $name);
 		
-		$this->value = $value;
+		$this->referencedType = $referencedType;
 	}
 	
 	public function accept(Visitor $visitor)
@@ -23,12 +23,12 @@ class ReferenceMember extends Member
 	
 	public function getReferencedType()
 	{
-		return $this->value;
+		return $this->referencedType;
 	}
 	
 	public function getReferencedTypeIfAny()
 	{
-		return $this->value;
+		return $this->referencedType;
 	}
 }
 

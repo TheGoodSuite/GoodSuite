@@ -4,9 +4,9 @@ namespace Good\Rolemodel;
 
 class PrimitiveFactory
 {
-	public static function makePrimitive($attributes, $name, $value)
+	public static function makePrimitive(array $attributes, $name, $type)
 	{
-		switch ($value)
+		switch ($type)
 		{
 			case 'text':
 				return new Schema\TextMember($attributes, $name);

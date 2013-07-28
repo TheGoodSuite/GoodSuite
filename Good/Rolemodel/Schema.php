@@ -6,7 +6,7 @@ class Schema implements Visitable
 {
 	private $dataTypes;
 	
-	public function __construct($dataTypes)
+	public function __construct(array $dataTypes)
 	{
 		// we index the types by their names, so we can easily access them
 		// hm... I really need to take a look at this.

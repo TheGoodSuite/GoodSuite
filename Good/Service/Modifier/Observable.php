@@ -2,6 +2,8 @@
 
 namespace Good\Service\Modifier;
 
+use Good\Rolemodel\Schema;
+
 class Observable implements \Good\Service\Modifier
 {	
 	public function __construct()
@@ -53,16 +55,16 @@ class Observable implements \Good\Service\Modifier
 		return $res;
 	}
 	
-	public function visitSchema($schema) {}
+	public function visitSchema(Schema $schema) {}
 	public function visitSchemaEnd() {}
 	
-	public function visitDataType($dataType) {}
+	public function visitDataType(Schema\DataType $dataType) {}
 	
-	public function visitReferenceMember($member) {}
-	public function visitTextMember($member) {}
-	public function visitIntMember($member) {}
-	public function visitFloatMember($member) {}
-	public function visitDatetimeMember($member) {}
+	public function visitReferenceMember(Schema\ReferenceMember $member) {}
+	public function visitTextMember(Schema\TextMember $member) {}
+	public function visitIntMember(Schema\IntMember $member) {}
+	public function visitFloatMember(Schema\FloatMember $member) {}
+	public function visitDatetimeMember(Schema\DatetimeMember $member) {}
 	
 	public function varDefinitionBefore() {return '';}
 	public function varDefinitionAfter() {return '';}

@@ -14,7 +14,7 @@ abstract class Member implements Visitable
 	
 	private static $knownAttributes = array('server_only', 'private', 'protected', 'public');
 	
-	public function __construct($attributes, $name)
+	public function __construct(array $attributes, $name)
 	{
 		// Attributes
 	

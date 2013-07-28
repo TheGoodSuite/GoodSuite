@@ -2,6 +2,8 @@
 
 namespace Good\Memory;
 
+use Good\Rolemodel\Schema;
+
 class SQLStoreCompiler implements \Good\Rolemodel\Visitor
 {
 	// Compiler level data
@@ -23,7 +25,7 @@ class SQLStoreCompiler implements \Good\Rolemodel\Visitor
 		$this->outputDir = $outputDir;
 	}
 	
-	public function visitSchema($schema)
+	public function visitSchema(Schema $schema)
 	{
 		// Start off the class 
 		$this->output  = 'class GoodMemorySQLStore extends \\Good\\Memory\\BaseSQLStore' . "\n";
@@ -71,7 +73,7 @@ class SQLStoreCompiler implements \Good\Rolemodel\Visitor
 		file_put_contents($this->outputDir . 'SQLStore.php', $this->output);
 	}
 	
-	public function visitDataType($dataType)
+	public function visitDataType(Schema\DataType $dataType)
 	{
 		if ($this->firstDateType)
 		{
@@ -164,7 +166,7 @@ class SQLStoreCompiler implements \Good\Rolemodel\Visitor
 		$this->includes[] = $name . 'Collection.php';
 	}
 	
-	public function visitReferenceMember($member)
+	public function visitReferenceMember(Schema\ReferenceMember $member)
 	{
 		// TODO: spread this (and all arguments) over multiple lines in output
 		$this->createTop .= "		\n"; 
@@ -187,19 +189,19 @@ class SQLStoreCompiler implements \Good\Rolemodel\Visitor
 		
 		$this->createReferenceCount++;
 	}
-	public function visitTextMember($member)
+	public function visitTextMember(Schema\TextMember $member)
 	{
 		$this->visitNonReference($member);
 	}
-	public function visitIntMember($member)
+	public function visitIntMember(Schema\IntMember $member)
 	{
 		$this->visitNonReference($member);
 	}
-	public function visitFloatMember($member)
+	public function visitFloatMember(Schema\FloatMember $member)
 	{
 		$this->visitNonReference($member);
 	}
-	public function visitDatetimeMember($member)
+	public function visitDatetimeMember(Schema\DatetimeMember $member)
 	{
 		// I should look into abstracting this more in order to make it work
 		// better with more SQL implementations, but I think this will do for now
@@ -209,7 +211,7 @@ class SQLStoreCompiler implements \Good\Rolemodel\Visitor
   										  '"_" . $this->fieldNamify("' . $member->getName() . '")])';
 	}
 	
-	private function visitNonReference($member)
+	private function visitNonReference(Schema\PrimitiveMember $member)
 	{
 		$this->create .= ",\n";
 		$this->create .= '			$array[$table . "_" . $this->fieldNamify("' . $member->getName() . '")]';

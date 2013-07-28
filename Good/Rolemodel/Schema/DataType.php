@@ -10,7 +10,7 @@ class DataType
 	private $name;
 	private $members;
 	
-	public function __construct($sourceFileName, $name, $members)
+	public function __construct($sourceFileName, $name, array $members)
 	{
 		$this->sourceFileName = $sourceFileName;
 		// TODO: make sure name is valid

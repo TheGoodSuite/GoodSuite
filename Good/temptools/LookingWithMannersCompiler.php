@@ -1,6 +1,8 @@
 <?php
 
-namespace temptools;
+namespace Good\temptools;
+
+use Good\Rolemodel\Schema;
 
 // This is a temporary script that fixes the incompatibility between the
 // GoodLooking way of accessing variables with the GoodMannersStorables
@@ -48,7 +50,7 @@ class LookingWithMannersCompiler implements \Good\Rolemodel\Visitor
 		$model->accept($this);
 	}
 	
-	public function visitSchema($schema)
+	public function visitSchema(Schema $schema)
 	{
 		$this->output  = "<?php\n";
 		$this->output .= "\n";
@@ -68,7 +70,7 @@ class LookingWithMannersCompiler implements \Good\Rolemodel\Visitor
 		\file_put_contents($this->outputDir . 'LookingWithManners.php', $this->output);
 	}
 	
-	public function visitDataType($dataType)
+	public function visitDataType(Schema\DataType $dataType)
 	{
 		if ($this->firstDataType)
 		{
@@ -113,7 +115,7 @@ class LookingWithMannersCompiler implements \Good\Rolemodel\Visitor
 		$this->output .= "\n";
 	}
 	
-	public function referenceMember($member)
+	public function referenceMember(Schema\ReferenceMember $member)
 	{
 		// This is a pretty ugly hack and it should perhaps be fixed
 		// (move the visibility to the datamodel from the compiler)
@@ -128,17 +130,17 @@ class LookingWithMannersCompiler implements \Good\Rolemodel\Visitor
 		}
 	}
 	
-	public function visitTextMember($member)
+	public function visitTextMember(Schema\TextMember $member)
 	{
 		$this->visitNonReference($member);
 	}
 	
-	public function visitIntMember($member)
+	public function visitIntMember(Schema\IntMember $member)
 	{
 		$this->visitNonReference($member);
 	}
 	
-	public function visitFloatMember($member)
+	public function visitFloatMember(Schema\FloatMember $member)
 	{
 		$this->visitNonReference($member);
 	}
@@ -159,7 +161,7 @@ class LookingWithMannersCompiler implements \Good\Rolemodel\Visitor
 		}
 	}
 	
-	private function visitNonReference($member)
+	private function visitNonReference(Schema\PrimitiveMember $member)
 	{
 		// This is a pretty ugly hack and it should perhaps be fixed
 		// (move the visibility to the datamodel from the compiler)

@@ -4,7 +4,7 @@ namespace Good\Rolemodel;
 
 class Rolemodel
 {
-	public function createSchema($input)
+	public function createSchema(array $input)
 	{
 		$dataTypes = array();
 		

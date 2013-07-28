@@ -2,6 +2,8 @@
 
 namespace Good\Manners\Modifier;
 
+use Good\Rolemodel\Schema;
+
 class Storable implements \Good\Service\Modifier
 {
 	private $className;
@@ -126,10 +128,10 @@ class Storable implements \Good\Service\Modifier
 		return $res;
 	}
 	
-	public function visitSchema($schema) {}
+	public function visitSchema(Schema $schema) {}
 	public function visitSchemaEnd() {}
 	
-	public function visitDataType($dataType)
+	public function visitDataType(Schema\DataType $dataType)
 	{
 		$this->className = $dataType->getName();
 		$this->classMembers = array();
@@ -149,7 +151,7 @@ class Storable implements \Good\Service\Modifier
 		$this->acceptStore .= "		\n";
 	}
 	
-	public function visitReferenceMember($member)
+	public function visitReferenceMember(Schema\ReferenceMember $member)
 	{
 		$this->classVariable = $member->getName();
 		$this->classMembers[] = $this->classVariable;
@@ -162,7 +164,7 @@ class Storable implements \Good\Service\Modifier
 											'$this->is' . \ucfirst($member->getName()) . 'Null(), ' .
 											'$this->get' . \ucfirst($member->getName()) . '());' . "\n";
 	}
-	public function visitTextMember($member) 
+	public function visitTextMember(Schema\TextMember $member) 
 	{
 		$this->classVariable = $member->getName();
 		$this->classMembers[] = $this->classVariable;
@@ -174,7 +176,7 @@ class Storable implements \Good\Service\Modifier
 											'$this->is' . \ucfirst($member->getName()) . 'Null(), ' .
 											'$this->get' . \ucfirst($member->getName()) . '());' . "\n";
 	}
-	public function visitIntMember($member) 
+	public function visitIntMember(Schema\IntMember $member) 
 	{
 		$this->classVariable = $member->getName();
 		$this->classMembers[] = $this->classVariable;
@@ -186,7 +188,7 @@ class Storable implements \Good\Service\Modifier
 											'$this->is' . \ucfirst($member->getName()) . 'Null(), ' .
 											'$this->get' . \ucfirst($member->getName()) . '());' . "\n";
 	}
-	public function visitFloatMember($member) 
+	public function visitFloatMember(Schema\FloatMember $member) 
 	{
 		$this->classVariable = $member->getName();
 		$this->classMembers[] = $this->classVariable;
@@ -198,7 +200,7 @@ class Storable implements \Good\Service\Modifier
 											'$this->is' . \ucfirst($member->getName()) . 'Null(), ' .
 											'$this->get' . \ucfirst($member->getName()) . '());' . "\n";
 	}
-	public function visitDatetimeMember($member) 
+	public function visitDatetimeMember(Schema\DatetimeMember $member) 
 	{
 		$this->classVariable = $member->getName();
 		$this->classMembers[] = $this->classVariable;
