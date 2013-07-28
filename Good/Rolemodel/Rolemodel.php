@@ -49,12 +49,13 @@ class Rolemodel
 		// We'll use this array to build the result in
 		$members = array();
 		
+		$factory = new PrimitiveFactory();
+		
 		foreach ($inputLines as $line)
 		{
 			// if the line is only whitespace, we just move on to the next
 			if (\preg_match('/^\\s*$/', $line) != 0)
 				continue;
-				
 			
 			if (\preg_match('/' . $regexDataDefinition . '/', $line, $matches) != 0)
 			{
@@ -76,7 +77,7 @@ class Rolemodel
 				}
 				else
 				{
-					$members[] = PrimitiveFactory::makePrimitive($attributes, $varName, $type);
+					$members[] = $factory->makePrimitive($attributes, $varName, $type);
 				}
 			}
 			else

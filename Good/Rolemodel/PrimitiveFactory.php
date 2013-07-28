@@ -4,7 +4,7 @@ namespace Good\Rolemodel;
 
 class PrimitiveFactory
 {
-	public static function makePrimitive(array $attributes, $name, $type)
+	public function makePrimitive(array $attributes, $name, $type)
 	{
 		switch ($type)
 		{
