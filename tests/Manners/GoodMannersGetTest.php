@@ -35,11 +35,11 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 																			"int yourInt\n");
 	
 		$rolemodel = new \Good\Rolemodel\Rolemodel();
-		$model = $rolemodel->createDataModel(array('GetType' => dirname(__FILE__) . '/../testInputFiles/GetType.datatype',
+		$schema = $rolemodel->createSchema(array('GetType' => dirname(__FILE__) . '/../testInputFiles/GetType.datatype',
 												   'OtherType' => dirname(__FILE__) . '/../testInputFiles/OtherType.datatype'));
 
 		$service = new \Good\Service\Service();
-		$service->compile(array(new \Good\Manners\Modifier\Storable()), $model, dirname(__FILE__) . '/../generated/');
+		$service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');
 		
 		require dirname(__FILE__) . '/../generated/BaseGetType.datatype.php';
 		require dirname(__FILE__) . '/../generated/BaseOtherType.datatype.php';
@@ -48,11 +48,11 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		//require dirname(__FILE__) . '/../generated/GetType.datatype.php';
 		
 		$manners = new \Good\Manners\Manners();
-		$manners->compileStore($model, dirname(__FILE__) . '/../generated/');
+		$manners->compileStore($schema, dirname(__FILE__) . '/../generated/');
 		require dirname(__FILE__) . '/../generated/Store.php';
 
 		$memory = new \Good\Memory\Memory();
-		$memory->compileSQLStore($model, dirname(__FILE__) . '/../generated/');
+		$memory->compileSQLStore($schema, dirname(__FILE__) . '/../generated/');
 		require dirname(__FILE__) . '/../generated/SQLStore.php';
 		
 		require dirname(__FILE__) . '/../generated/GetTypeResolver.php';
@@ -154,6 +154,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 	
 	public function tearDown()
 	{
+		return;
 		// Just doing this already to make sure the deconstructor will hasve
 		// side-effects at an unspecified moment...
 		// (at which point the database will probably be in a wrong state for this)

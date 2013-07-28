@@ -2,13 +2,15 @@
 
 namespace Good\Rolemodel;
 
-class DataModel implements Visitable
+class Schema implements Visitable
 {
 	private $dataTypes;
 	
 	public function __construct($dataTypes)
 	{
 		// we index the types by their names, so we can easily access them
+		// hm... I really need to take a look at this.
+		// I don't really see a good reason to be doing this, actually.
 		$this->dataTypes = array();
 		for ($i = 0; $i < \count($dataTypes); $i++)
 		{
@@ -35,7 +37,7 @@ class DataModel implements Visitable
 	public function accept(Visitor $visitor)
 	{
 		// visit this
-		$visitor->visitDataModel($this);
+		$visitor->visitSchema($this);
 		
 		// and move the visitor to your children
 		foreach ($this->dataTypes as $dataType)
@@ -43,7 +45,7 @@ class DataModel implements Visitable
 			$dataType->accept($visitor);
 		}
 		
-		$visitor->visitEnd();
+		$visitor->visitSchemaEnd();
 	}
 }
 

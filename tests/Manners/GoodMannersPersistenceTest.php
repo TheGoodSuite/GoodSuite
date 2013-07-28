@@ -21,22 +21,22 @@ abstract class GoodMannersPersistenceTest extends PHPUnit_Framework_TestCase
 																			"datetime myDatetime\n");
 	
 		$rolemodel = new \Good\Rolemodel\Rolemodel();
-		$model = $rolemodel->createDataModel(array('PersistenceType' => 
+		$schema = $rolemodel->createSchema(array('PersistenceType' => 
 							dirname(__FILE__) . '/../testInputFiles/PersistenceType.datatype'));
 
 		$service = new \Good\Service\Service();
-		$service->compile(array(new \Good\Manners\Modifier\Storable()), $model, dirname(__FILE__) . '/../generated/');
+		$service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');
 		
 		require dirname(__FILE__) . '/../generated/BasePersistenceType.datatype.php';
 		
 		$service->requireClasses(array('PersistenceType'));
 		
 		$manners = new \Good\Manners\Manners();
-		$manners->compileStore($model, dirname(__FILE__) . '/../generated/');
+		$manners->compileStore($schema, dirname(__FILE__) . '/../generated/');
 		require dirname(__FILE__) . '/../generated/Store.php';
 
 		$memory = new \Good\Memory\Memory();
-		$memory->compileSQLStore($model, dirname(__FILE__) . '/../generated/');
+		$memory->compileSQLStore($schema, dirname(__FILE__) . '/../generated/');
 		require dirname(__FILE__) . '/../generated/SQLStore.php';
 		
 		require dirname(__FILE__) . '/../generated/PersistenceTypeResolver.php';

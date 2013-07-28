@@ -23,7 +23,7 @@ class SQLStoreCompiler implements \Good\Rolemodel\Visitor
 		$this->outputDir = $outputDir;
 	}
 	
-	public function visitDataModel($dataModel)
+	public function visitSchema($schema)
 	{
 		// Start off the class 
 		$this->output  = 'class GoodMemorySQLStore extends \\Good\\Memory\\BaseSQLStore' . "\n";
@@ -36,6 +36,39 @@ class SQLStoreCompiler implements \Good\Rolemodel\Visitor
 		
 		$this->flush  = '	public function flush()' . "\n";
 		$this->flush .= "	{\n";
+	}
+	
+	public function visitSchemaEnd()
+	{
+		$this->finishDataType();
+		
+		// neatly start the file
+		$top  = "<?php\n";
+		$top .= "\n";
+		
+		foreach ($this->includes as $include)
+		{
+			// TODO: Dirty, but better than previously (which had a hardcoded location)
+			$top .= 'require_once dirname(__FILE__) . "/' . $include . '";' . "\n";
+		}
+		
+		$top .= "\n";
+		
+		$this->output = $top . $this->output;
+		
+		$this->flush .= "		\n";
+		$this->flush .= '		parent::flush();' . "\n";
+		$this->flush .= "	}\n";
+		$this->flush .= "	\n";
+		
+		$this->output .= $this->flush;
+		
+		// close the file off
+		$this->output .= "}\n";
+		$this->output .= "\n";
+		$this->output .= "?>";
+		
+		file_put_contents($this->outputDir . 'SQLStore.php', $this->output);
 	}
 	
 	public function visitDataType($dataType)
@@ -131,60 +164,22 @@ class SQLStoreCompiler implements \Good\Rolemodel\Visitor
 		$this->includes[] = $name . 'Collection.php';
 	}
 	
-	public function visitEnd()
-	{
-		$this->finishDataType();
-		
-		// neatly start the file
-		$top  = "<?php\n";
-		$top .= "\n";
-		
-		foreach ($this->includes as $include)
-		{
-			// TODO: Dirty, but better than previously (which had a hardcoded location)
-			$top .= 'require_once dirname(__FILE__) . "/' . $include . '";' . "\n";
-		}
-		
-		$top .= "\n";
-		
-		$this->output = $top . $this->output;
-		
-		$this->flush .= "		\n";
-		$this->flush .= '		parent::flush();' . "\n";
-		$this->flush .= "	}\n";
-		$this->flush .= "	\n";
-		
-		$this->output .= $this->flush;
-		
-		// close the file off
-		$this->output .= "}\n";
-		$this->output .= "\n";
-		$this->output .= "?>";
-		
-		file_put_contents($this->outputDir . 'SQLStore.php', $this->output);
-	}
-	
-	public function visitDataMember($dataMember) 
-	{
-		$this->varName = $dataMember->getName();
-	}
-	
-	public function visitTypeReference($type)
+	public function visitReferenceMember($member)
 	{
 		// TODO: spread this (and all arguments) over multiple lines in output
 		$this->createTop .= "		\n"; 
-		$this->createTop .= '		if (!\array_key_exists($table . "_" . $this->fieldNamify("' . $this->varName . '"), $array))' . "\n"; 
+		$this->createTop .= '		if (!\array_key_exists($table . "_" . $this->fieldNamify("' . $member->getName() . '"), $array))' . "\n"; 
 		$this->createTop .= "		{\n"; 
 		$this->createTop .= '			$reference' . $this->createReferenceCount . ' = null;' . "\n"; 
 		$this->createTop .= "		}\n"; 
-		$this->createTop .= '		else if ($array[$table . "_" . $this->fieldNamify("' . $this->varName . '")] === null)' . "\n"; 
+		$this->createTop .= '		else if ($array[$table . "_" . $this->fieldNamify("' . $member->getName() . '")] === null)' . "\n"; 
 		$this->createTop .= "		{\n"; 
 		$this->createTop .= '			$reference' . $this->createReferenceCount . ' = null;' . "\n";
 		$this->createTop .= '			$nextTable++;' . "\n";
 		$this->createTop .= "		}\n"; 
 		$this->createTop .= '		else' . "\n"; 
 		$this->createTop .= "		{\n"; 
-		$this->createTop .= '			$reference'  . $this->createReferenceCount . ' = $this->create' . ucfirst($type->getReferencedType()) . '($array, "t" . $nextTable, $nextTable);' . "\n";
+		$this->createTop .= '			$reference'  . $this->createReferenceCount . ' = $this->create' . ucfirst($member->getReferencedType()) . '($array, "t" . $nextTable, $nextTable);' . "\n";
 		$this->createTop .= "		}\n";
 		
 		$this->create .= ",\n";
@@ -192,32 +187,32 @@ class SQLStoreCompiler implements \Good\Rolemodel\Visitor
 		
 		$this->createReferenceCount++;
 	}
-	public function visitTypePrimitiveText($type)
+	public function visitTextMember($member)
 	{
-		$this->visitNonReference();
+		$this->visitNonReference($member);
 	}
-	public function visitTypePrimitiveInt($type)
+	public function visitIntMember($member)
 	{
-		$this->visitNonReference();
+		$this->visitNonReference($member);
 	}
-	public function visitTypePrimitiveFloat($type)
+	public function visitFloatMember($member)
 	{
-		$this->visitNonReference();
+		$this->visitNonReference($member);
 	}
-	public function visitTypePrimitiveDatetime($type)
+	public function visitDatetimeMember($member)
 	{
 		// I should look into abstracting this more in order to make it work
 		// better with more SQL implementations, but I think this will do for now
 		$this->create .= ",\n";
 		$this->create .= '			$array[$table . "_" . $this->fieldNamify("' . 
-										$this->varName . '")] === null ? null : new DateTime($array[$table . ' .
-  										  '"_" . $this->fieldNamify("' . $this->varName . '")])';
+										$member->getName() . '")] === null ? null : new DateTime($array[$table . ' .
+  										  '"_" . $this->fieldNamify("' . $member->getName() . '")])';
 	}
 	
-	private function visitNonReference()
+	private function visitNonReference($member)
 	{
 		$this->create .= ",\n";
-		$this->create .= '			$array[$table . "_" . $this->fieldNamify("' . $this->varName . '")]';
+		$this->create .= '			$array[$table . "_" . $this->fieldNamify("' . $member->getName() . '")]';
 	}
 	
 	private function finishDataType()

@@ -39,15 +39,15 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
 																			'"YetAnotherType" ref' . "\n");
 	
 		$rolemodel = new \Good\Rolemodel\Rolemodel();
-		$model = $rolemodel->createDataModel(array('AdvancedUpdateType' => 
+		$schema = $rolemodel->createSchema(array('AdvancedUpdateType' => 
 														dirname(__FILE__) . '/../testInputFiles/AdvancedUpdateType.datatype',
-												   'YetAnotherType' => 
+												'YetAnotherType' => 
 														dirname(__FILE__) . '/../testInputFiles/YetAnotherType.datatype',
-													'ThirdType' =>
+												'ThirdType' =>
 														dirname(__FILE__) . '/../testInputFiles/ThirdType.datatype'));
 
 		$service = new \Good\Service\Service();
-		$service->compile(array(new \Good\Manners\Modifier\Storable()), $model, dirname(__FILE__) . '/../generated/');
+		$service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');
 		
 		require dirname(__FILE__) . '/../generated/BaseAdvancedUpdateType.datatype.php';
 		require dirname(__FILE__) . '/../generated/BaseYetAnotherType.datatype.php';
@@ -56,11 +56,11 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
 		$service->requireClasses(array('AdvancedUpdateType', 'YetAnotherType', 'ThirdType'));
 		
 		$manners = new \Good\Manners\Manners();
-		$manners->compileStore($model, dirname(__FILE__) . '/../generated/');
+		$manners->compileStore($schema, dirname(__FILE__) . '/../generated/');
 		require dirname(__FILE__) . '/../generated/Store.php';
 
 		$memory = new \Good\Memory\Memory();
-		$memory->compileSQLStore($model, dirname(__FILE__) . '/../generated/');
+		$memory->compileSQLStore($schema, dirname(__FILE__) . '/../generated/');
 		require dirname(__FILE__) . '/../generated/SQLStore.php';
 		
 		require dirname(__FILE__) . '/../generated/AdvancedUpdateTypeResolver.php';

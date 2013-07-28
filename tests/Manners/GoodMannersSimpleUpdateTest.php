@@ -35,13 +35,13 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
 																			"int yourInt\n");
 	
 		$rolemodel = new \Good\Rolemodel\Rolemodel();
-		$model = $rolemodel->createDataModel(array('SimpleUpdateType' => 
+		$schema = $rolemodel->createSchema(array('SimpleUpdateType' => 
 														dirname(__FILE__) . '/../testInputFiles/SimpleUpdateType.datatype',
 												   'AnotherType' => 
 														dirname(__FILE__) . '/../testInputFiles/AnotherType.datatype'));
 
 		$service = new \Good\Service\Service();
-		$service->compile(array(new \Good\Manners\Modifier\Storable()), $model, dirname(__FILE__) . '/../generated/');
+		$service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');
 		
 		require dirname(__FILE__) . '/../generated/BaseSimpleUpdateType.datatype.php';
 		require dirname(__FILE__) . '/../generated/BaseAnotherType.datatype.php';
@@ -49,11 +49,11 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
 		$service->requireClasses(array('SimpleUpdateType', 'AnotherType'));
 		
 		$manners = new \Good\Manners\Manners();
-		$manners->compileStore($model, dirname(__FILE__) . '/../generated/');
+		$manners->compileStore($schema, dirname(__FILE__) . '/../generated/');
 		require dirname(__FILE__) . '/../generated/Store.php';
 
 		$memory = new \Good\Memory\Memory();
-		$memory->compileSQLStore($model, dirname(__FILE__) . '/../generated/');
+		$memory->compileSQLStore($schema, dirname(__FILE__) . '/../generated/');
 		require dirname(__FILE__) . '/../generated/SQLStore.php';
 		
 		require dirname(__FILE__) . '/../generated/SimpleUpdateTypeResolver.php';

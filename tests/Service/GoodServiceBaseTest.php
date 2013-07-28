@@ -25,11 +25,11 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
 	{
 		$rolemodel = new \Good\Rolemodel\Rolemodel();
 
-		$model = $rolemodel->createDataModel($types);
+		$schema = $rolemodel->createSchema($types);
 
 		$service = new \Good\Service\Service();
 
-		$service->compile($modifiers, $model, $this->outputDir);
+		$service->compile($modifiers, $schema, $this->outputDir);
 		
 		foreach ($types as $type => $path)
 		{

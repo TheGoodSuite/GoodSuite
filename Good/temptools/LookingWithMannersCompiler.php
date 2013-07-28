@@ -39,9 +39,7 @@ class LookingWithMannersCompiler implements \Good\Rolemodel\Visitor
 {
 	private $outputDir;
 	private $output = null;
-	private $varName = null;
 	private $firstDataType = true;
-	private $isPublic = false;
 	
 	public function compile($model, $outputDir)
 	{
@@ -50,10 +48,24 @@ class LookingWithMannersCompiler implements \Good\Rolemodel\Visitor
 		$model->accept($this);
 	}
 	
-	public function visitDataModel($dataModel)
+	public function visitSchema($schema)
 	{
 		$this->output  = "<?php\n";
 		$this->output .= "\n";
+	}
+	
+	public function visitSchemaEnd()
+	{
+		if (!$this->firstDataType)
+		{
+			$this->finishDataType();
+		}
+		
+		// close the file off
+		$this->output .= "\n";
+		$this->output .= "?>";
+		
+		\file_put_contents($this->outputDir . 'LookingWithManners.php', $this->output);
 	}
 	
 	public function visitDataType($dataType)
@@ -101,76 +113,63 @@ class LookingWithMannersCompiler implements \Good\Rolemodel\Visitor
 		$this->output .= "\n";
 	}
 	
-	public function visitDataMember($dataMember)
+	public function referenceMember($member)
 	{
-		$this->varName = $dataMember->getName();
-		
-		
 		// This is a pretty ugly hack and it should perhaps be fixed
 		// (move the visibility to the datamodel from the compiler)
 		// but since this whole script is in fact an ugly fix,
 		// I allowed it for now.
-		$this->isPublic = !(\in_array('private', $dataMember->getAttributes()) || 
-							\in_array('protected', $dataMember->getAttributes()));
-	}
-	
-	public function visitTypeReference($type)
-	{
-		if ($this->isPublic)
+		if (!(\in_array('private', $dataMember->getAttributes()) || 
+			  \in_array('protected', $dataMember->getAttributes())))
 		{
-			$this->output .= '	$arr["' . $this->varName . '"] = parse' . 
+			$this->output .= '	$arr["' . $member->getName() . '"] = parse' . 
 									\ucfirst($type->getReferencedType()) .
-									'($obj->get' . ucfirst($this->varName) . '());' . "\n";
+									'($obj->get' . ucfirst($member->getName()) . '());' . "\n";
 		}
 	}
 	
-	public function visitTypePrimitiveText($type)
+	public function visitTextMember($member)
 	{
-		$this->visitNonReference($type);
+		$this->visitNonReference($member);
 	}
 	
-	public function visitTypePrimitiveInt($type)
+	public function visitIntMember($member)
 	{
-		$this->visitNonReference($type);
+		$this->visitNonReference($member);
 	}
 	
-	public function visitTypePrimitiveFloat($type)
+	public function visitFloatMember($member)
 	{
-		$this->visitNonReference($type);
+		$this->visitNonReference($member);
 	}
 	
-	public function visitTypePrimitiveDatetime($type)
+	public function visitDatetimeMember($member)
 	{
-		if ($this->isPublic)
+		// This is a pretty ugly hack and it should perhaps be fixed
+		// (move the visibility to the datamodel from the compiler)
+		// but since this whole script is in fact an ugly fix,
+		// I allowed it for now.
+		if (!(\in_array('private', $dataMember->getAttributes()) || 
+			  \in_array('protected', $dataMember->getAttributes())))
 		{
 			// It's a hack and should in the future be handled by GoodLooking
 			// (where we can then also allow custom date formatting)
-			$this->output .= '	$arr["' . $this->varName . '"] = $obj->get' . 
-							\ucfirst($this->varName) . '()->format("Y-m-d H:i:s");' . "\n";
+			$this->output .= '	$arr["' . $member->getName() . '"] = $obj->get' . 
+							\ucfirst($member->getName()) . '()->format("Y-m-d H:i:s");' . "\n";
 		}
 	}
 	
-	private function visitNonReference()
+	private function visitNonReference($member)
 	{
-		if ($this->isPublic)
+		// This is a pretty ugly hack and it should perhaps be fixed
+		// (move the visibility to the datamodel from the compiler)
+		// but since this whole script is in fact an ugly fix,
+		// I allowed it for now.
+		if (!(\in_array('private', $dataMember->getAttributes()) || 
+			  \in_array('protected', $dataMember->getAttributes())))
 		{
-			$this->output .= '	$arr["' . $this->varName . '"] = $obj->get' . 
-												\ucfirst($this->varName) . '();' . "\n";
+			$this->output .= '	$arr["' . $member->getName() . '"] = $obj->get' . 
+												\ucfirst($member->getName()) . '();' . "\n";
 		}
-	}
-	
-	
-	public function visitEnd()
-	{
-		if (!$this->firstDataType)
-		{
-			$this->finishDataType();
-		}
-		
-		// close the file off
-		$this->output .= "\n";
-		$this->output .= "?>";
-		
-		\file_put_contents($this->outputDir . 'LookingWithManners.php', $this->output);
 	}
 }

@@ -4,21 +4,21 @@ namespace Good\Rolemodel;
 
 class PrimitiveFactory
 {
-	public static function makePrimitive($value)
+	public static function makePrimitive($attributes, $name, $value)
 	{
 		switch ($value)
 		{
 			case 'text':
-				return new TypePrimitiveText();
+				return new Schema\TextMember($attributes, $name);
 			
 			case 'int':
-				return new TypePrimitiveInt();
+				return new Schema\IntMember($attributes, $name);
 			
 			case 'float';
-				return new TypePrimitiveFloat();
+				return new Schema\FloatMember($attributes, $name);
 			
 			case 'datetime';
-				return new TypePrimitiveDatetime();
+				return new Schema\DatetimeMember($attributes, $name);
 				
 			default:
 				// TODO: better error handling

@@ -6,7 +6,7 @@ class Service
 {
 	private $outputDir = null;
 	
-	public function compile($modifiers, \Good\Rolemodel\DataModel $model, $outputDir)
+	public function compile($modifiers, \Good\Rolemodel\Schema $model, $outputDir)
 	{
 		$this->outputDir = $outputDir;
 		

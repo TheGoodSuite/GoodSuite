@@ -126,7 +126,8 @@ class Storable implements \Good\Service\Modifier
 		return $res;
 	}
 	
-	public function visitDataModel($dataModel) {}
+	public function visitSchema($schema) {}
+	public function visitSchemaEnd() {}
 	
 	public function visitDataType($dataType)
 	{
@@ -148,59 +149,67 @@ class Storable implements \Good\Service\Modifier
 		$this->acceptStore .= "		\n";
 	}
 	
-	public function visitDataMember($dataMember)
+	public function visitReferenceMember($member)
 	{
-		$this->classVariable = $dataMember->getName();
+		$this->classVariable = $member->getName();
 		$this->classMembers[] = $this->classVariable;
-	}
-	public function visitTypeReference($type)
-	{
+		
 		$this->classVariableIsReference = true;
 		
-		$this->acceptStore .= '		$store->visitReferenceProperty("' . $this->classVariable . '", ' .
-											'"' . $type->getReferencedType() . '", ' . 
-											'$this->is' . \ucfirst($this->classVariable) . 'Dirty(), ' .
-											'$this->is' . \ucfirst($this->classVariable) . 'Null(), ' .
-											'$this->get' . \ucfirst($this->classVariable) . '());' . "\n";
+		$this->acceptStore .= '		$store->visitReferenceProperty("' . $member->getName() . '", ' .
+											'"' . $member->getReferencedType() . '", ' . 
+											'$this->is' . \ucfirst($member->getName()) . 'Dirty(), ' .
+											'$this->is' . \ucfirst($member->getName()) . 'Null(), ' .
+											'$this->get' . \ucfirst($member->getName()) . '());' . "\n";
 	}
-	public function visitTypePrimitiveText($type) 
+	public function visitTextMember($member) 
 	{
+		$this->classVariable = $member->getName();
+		$this->classMembers[] = $this->classVariable;
+		
 		$this->classVariableIsReference = false;
 		
-		$this->acceptStore .= '		$store->visitTextProperty("' . $this->classVariable . '", ' .
-											'$this->is' . \ucfirst($this->classVariable) . 'Dirty(), ' . 
-											'$this->is' . \ucfirst($this->classVariable) . 'Null(), ' .
-											'$this->get' . \ucfirst($this->classVariable) . '());' . "\n";
+		$this->acceptStore .= '		$store->visitTextProperty("' . $member->getName() . '", ' .
+											'$this->is' . \ucfirst($member->getName()) . 'Dirty(), ' . 
+											'$this->is' . \ucfirst($member->getName()) . 'Null(), ' .
+											'$this->get' . \ucfirst($member->getName()) . '());' . "\n";
 	}
-	public function visitTypePrimitiveInt($type) 
+	public function visitIntMember($member) 
 	{
+		$this->classVariable = $member->getName();
+		$this->classMembers[] = $this->classVariable;
+		
 		$this->classVariableIsReference = false;
 		
-		$this->acceptStore .= '		$store->visitIntProperty("' . $this->classVariable . '", ' .
-											'$this->is' . \ucfirst($this->classVariable) . 'Dirty(), ' . 
-											'$this->is' . \ucfirst($this->classVariable) . 'Null(), ' .
-											'$this->get' . \ucfirst($this->classVariable) . '());' . "\n";
+		$this->acceptStore .= '		$store->visitIntProperty("' . $member->getName() . '", ' .
+											'$this->is' . \ucfirst($member->getName()) . 'Dirty(), ' . 
+											'$this->is' . \ucfirst($member->getName()) . 'Null(), ' .
+											'$this->get' . \ucfirst($member->getName()) . '());' . "\n";
 	}
-	public function visitTypePrimitiveFloat($type) 
+	public function visitFloatMember($member) 
 	{
+		$this->classVariable = $member->getName();
+		$this->classMembers[] = $this->classVariable;
+		
 		$this->classVariableIsReference = false;
 		
-		$this->acceptStore .= '		$store->visitFloatProperty("' . $this->classVariable . '", ' .
-											'$this->is' . \ucfirst($this->classVariable) . 'Dirty(), ' . 
-											'$this->is' . \ucfirst($this->classVariable) . 'Null(), ' .
-											'$this->get' . \ucfirst($this->classVariable) . '());' . "\n";
+		$this->acceptStore .= '		$store->visitFloatProperty("' . $member->getName() . '", ' .
+											'$this->is' . \ucfirst($member->getName()) . 'Dirty(), ' . 
+											'$this->is' . \ucfirst($member->getName()) . 'Null(), ' .
+											'$this->get' . \ucfirst($member->getName()) . '());' . "\n";
 	}
-	public function visitTypePrimitiveDatetime($type) 
+	public function visitDatetimeMember($member) 
 	{
+		$this->classVariable = $member->getName();
+		$this->classMembers[] = $this->classVariable;
+		
 		$this->classVariableIsReference = false;
 		
-		$this->acceptStore .= '		$store->visitDatetimeProperty("' . $this->classVariable . '", ' .
-											'$this->is' . \ucfirst($this->classVariable) . 'Dirty(), ' . 
-											'$this->is' . \ucfirst($this->classVariable) . 'Null(), ' .
-											'$this->get' . \ucfirst($this->classVariable) . '());' . "\n";
+		$this->acceptStore .= '		$store->visitDatetimeProperty("' . $member->getName() . '", ' .
+											'$this->is' . \ucfirst($member->getName()) . 'Dirty(), ' . 
+											'$this->is' . \ucfirst($member->getName()) . 'Null(), ' .
+											'$this->get' . \ucfirst($member->getName()) . '());' . "\n";
 	}
-	
-	public function visitEnd() {}
 	
 	public function varDefinitionBefore() {return '';}
 	public function varDefinitionAfter() 

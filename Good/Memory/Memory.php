@@ -4,7 +4,7 @@ namespace Good\Memory;
 
 class Memory
 {
-	public function compileSQLStore(\Good\Rolemodel\DataModel $model, $outputDir)
+	public function compileSQLStore(\Good\Rolemodel\Schema $model, $outputDir)
 	{
 		$compiler = new SQLStoreCompiler($outputDir);
 		

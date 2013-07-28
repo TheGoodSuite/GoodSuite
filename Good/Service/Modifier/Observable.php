@@ -53,17 +53,16 @@ class Observable implements \Good\Service\Modifier
 		return $res;
 	}
 	
-	public function visitDataModel($dataModel) {}
+	public function visitSchema($schema) {}
+	public function visitSchemaEnd() {}
 	
 	public function visitDataType($dataType) {}
 	
-	public function visitDataMember($dataMember) {}
-	public function visitTypeReference($type) {}
-	public function visitTypePrimitiveText($type) {}
-	public function visitTypePrimitiveInt($type) {}
-	public function visitTypePrimitiveFloat($type) {}
-	public function visitTypePrimitiveDatetime($type) {}
-	public function visitEnd() {}
+	public function visitReferenceMember($member) {}
+	public function visitTextMember($member) {}
+	public function visitIntMember($member) {}
+	public function visitFloatMember($member) {}
+	public function visitDatetimeMember($member) {}
 	
 	public function varDefinitionBefore() {return '';}
 	public function varDefinitionAfter() {return '';}

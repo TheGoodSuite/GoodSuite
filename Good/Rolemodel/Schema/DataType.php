@@ -1,19 +1,21 @@
 <?php
 
-namespace Good\Rolemodel;
+namespace Good\Rolemodel\Schema;
 
-class DataType implements Visitable
+use Good\Rolemodel\Visitor;
+
+class DataType
 {
 	private $sourceFileName;
 	private $name;
-	private $dataMembers;
+	private $members;
 	
-	public function __construct($sourceFileName, $name, $dataMembers)
+	public function __construct($sourceFileName, $name, $members)
 	{
 		$this->sourceFileName = $sourceFileName;
 		// TODO: make sure name is valid
 		$this->name = $name;
-		$this->dataMembers = $dataMembers;
+		$this->members = $members;
 	}
 	
 	public function accept(Visitor $visitor)
@@ -22,9 +24,9 @@ class DataType implements Visitable
 		$visitor->visitDataType($this);
 		
 		// and move the visitor to your children
-		for ($i = 0; $i < \count($this->dataMembers); $i++)
+		for ($i = 0; $i < \count($this->members); $i++)
 		{
-			$this->dataMembers[$i]->accept($visitor);
+			$this->members[$i]->accept($visitor);
 		}
 	}
 	
@@ -42,9 +44,9 @@ class DataType implements Visitable
 	{
 		$res = array();
 		
-		for ($i = 0; $i < \count($this->dataMembers); $i++)
+		for ($i = 0; $i < \count($this->members); $i++)
 		{
-			$newElement = $this->dataMembers[$i]->getReferencedTypeIfAny();
+			$newElement = $this->members[$i]->getReferencedTypeIfAny();
 			
 			if ($newElement != null)
 			{

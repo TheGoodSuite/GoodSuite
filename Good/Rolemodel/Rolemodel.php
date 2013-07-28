@@ -4,7 +4,7 @@ namespace Good\Rolemodel;
 
 class Rolemodel
 {
-	public function createDataModel($input)
+	public function createSchema($input)
 	{
 		$dataTypes = array();
 		
@@ -13,7 +13,7 @@ class Rolemodel
 			$dataTypes[] = $this->fileToDataType($name, $file);
 		}
 		
-		return new DataModel($dataTypes);
+		return new Schema($dataTypes);
 	}
 	
 	private function fileToDataType($name, $file)
@@ -69,7 +69,15 @@ class Rolemodel
 					$attributes = array();
 				}
 				
-				$members[] = new DataMember($attributes, $type, $varName);
+				// Type
+				if (\substr($type, 0, 1) == '"' && \substr($type, -1) == '"')
+				{
+					$members[] = new Schema\ReferenceMember($attributes, $varName, \substr($type, 1, -1));
+				}
+				else
+				{
+					$members[] = PrimitiveFactory::makePrimitive($attributes, $varName, $type);
+				}
 			}
 			else
 			{
@@ -78,7 +86,7 @@ class Rolemodel
 			}
 		}
 		
-		return new DataType($file, $name, $members);
+		return new Schema\DataType($file, $name, $members);
 	}
 }
 

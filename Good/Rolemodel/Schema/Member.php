@@ -1,0 +1,49 @@
+<?php
+
+namespace Good\Rolemodel\Schema;
+
+use Good\Rolemodel\Visitable;
+
+abstract class Member implements Visitable
+{
+	private $attributes;
+	private $name;
+	
+	abstract public function getReferencedTypeIfAny();
+	// each (non-abstract) child also needs to implement accept from Visitable!
+	
+	private static $knownAttributes = array('server_only', 'private', 'protected', 'public');
+	
+	public function __construct($attributes, $name)
+	{
+		// Attributes
+	
+		$this->attributes = $attributes;
+		
+		// check for unknown attributes
+		for ($i = 0; $i < \count($attributes); $i++)
+		{
+			if (!\in_array($attributes[$i], self::$knownAttributes))
+			{
+				// TODO: add a real warning
+				
+				// WARNING: unknown attribute
+			}
+		}
+		
+		// Name
+		$this->name = $name;
+	}
+	
+	public function getAttributes()
+	{
+		return $this->attributes;
+	}
+	
+	public function getName()
+	{
+		return $this->name;
+	}
+}
+
+?>

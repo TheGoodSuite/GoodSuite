@@ -9,7 +9,6 @@ class StoreCompiler implements \Good\Rolemodel\Visitor
 	private $outputDir;
 	private $dataTypes = array();
 	private $output = null;
-	private $varName = null;
 	private $firstDateType = true;
 	private $dataType = null;
 	
@@ -21,7 +20,7 @@ class StoreCompiler implements \Good\Rolemodel\Visitor
 		$this->outputDir = $outputDir;
 	}
 	
-	public function visitDataModel($dataModel)
+	public function visitSchema($schema)
 	{
 		// Start off the class 
 		$this->output  = "abstract class GoodMannersStore implements \\Good\\Manners\\Store \n";
@@ -57,81 +56,7 @@ class StoreCompiler implements \Good\Rolemodel\Visitor
 		$this->output .= "	\n";
 	}
 	
-	public function visitDataType($dataType)
-	{
-		if ($this->firstDateType)
-		{
-			$this->firstDateType = false;
-		}
-		else
-		{
-			$this->finishDataType();
-		}
-		$name = $dataType->getName();
-		$this->dataType = $name;
-		$this->dataTypes[] = $name;
-		
-		// ucfirst: upper case first (php builtin)
-		$this->output .= '	abstract protected function doModifyAny' . \ucfirst($name) . 
-							'(\\Good\\Manners\\Condition $condition, ' . $name . ' $modifications);' . "\n";
-		$this->output .= '	abstract protected function doGet' . \ucfirst($name) .
-							'Collection(\\Good\\Manners\\Condition $condition, ' . $name . 
-															'Resolver $resolver);' . "\n";
-		$this->output .= "	\n";
-		$this->output .= '	abstract protected function saveNew' . \ucfirst($name) . 
-																's(array $entries);' . "\n";
-		$this->output .= '	abstract protected function save' . \ucfirst($name) . 
-															'Modifications(array $entries);' . "\n";
-		$this->output .= '	abstract protected function save' . \ucfirst($name) . 
-															'Deletions(array $entries);' . "\n";
-		$this->output .= "	\n";
-		
-		$this->output .= '	private $dirty' . \ucfirst($name) . 's = array();' . "\n";
-		$this->output .= "	\n";
-		$this->output .= '	public function dirty' . \ucfirst($name) . 
-												'(' . $name . ' $storable)' . "\n";
-		$this->output .= "	{\n";
-		$this->output .= '		$this->dirty' . \ucfirst($name) . 's[] = $storable;' . "\n";
-		$this->output .= "	}\n";
-		$this->output .= "	\n";
-		$this->output .= '	public function insert' . \ucfirst($name) . 
-												'(' . $name . ' $storable)' . "\n";
-		$this->output .= "	{\n";
-		$this->output .= '		$storable->setStore($this);' . "\n";
-		$this->output .= '		$storable->setValidationToken($this->validationToken);' . "\n";
-		$this->output .= "		\n";
-		$this->output .= '		$this->dirty' . \ucfirst($name) . 's[] = $storable;' . "\n";
-		$this->output .= "	}\n";
-		$this->output .= "\n";
-		$this->output .= '	public function modifyAny' . \ucfirst($name) .'(\\Good\\Manners\\Condition ' .
-													'$condition, ' . $name . ' $modifications)' . "\n";
-		$this->output .= "	{\n";
-		$this->output .= '		$this->flush();' . "\n";
-		$this->output .= '		$this->invalidate();' . "\n";
-		$this->output .= "		\n";
-		$this->output .= '		$this->doModifyAny' . \ucfirst($name) .'($condition, $modifications);' . "\n";
-		$this->output .= "	}\n";
-		$this->output .= "	\n";
-		$this->output .= '	public function get' . \ucfirst($name) . 'Collection(\\Good\\Manners\\Condition ' .
-													 '$condition, ' . $name . 'Resolver $resolver)' . "\n";
-		$this->output .= "	{\n";
-		$this->output .= '		$this->flush();' . "\n";
-		$this->output .= '		return $this->doGet' . \ucfirst($name) . 
-													'Collection($condition, $resolver);' . "\n";
-		$this->output .= "	}\n";
-		$this->output .= "	\n";
-		
-		$this->resolver  = "<?php\n";
-		$this->resolver .= "\n";
-		$this->resolver .= 'class ' . $name . 'Resolver extends \\Good\\Manners\\AbstractResolver' . "\n";
-		$this->resolver .= "{\n";
-		
-		$this->resolverVisit  = '	public function resolverAccept' . 
-												'(\\Good\\Manners\\ResolverVisitor $visitor)' . "\n";
-		$this->resolverVisit .= "	{\n";
-	}
-	
-	public function visitEnd()
+	public function visitSchemaEnd()
 	{
 		$this->finishDataType();
 	
@@ -243,97 +168,167 @@ class StoreCompiler implements \Good\Rolemodel\Visitor
 		file_put_contents($this->outputDir . 'Store.php', $this->output);
 	}
 	
-	public function visitDataMember($dataMember)
+	public function visitDataType($dataType)
 	{
-		$this->varName = $dataMember->getName();
+		if ($this->firstDateType)
+		{
+			$this->firstDateType = false;
+		}
+		else
+		{
+			$this->finishDataType();
+		}
+		$name = $dataType->getName();
+		$this->dataType = $name;
+		$this->dataTypes[] = $name;
+		
+		// ucfirst: upper case first (php builtin)
+		$this->output .= '	abstract protected function doModifyAny' . \ucfirst($name) . 
+							'(\\Good\\Manners\\Condition $condition, ' . $name . ' $modifications);' . "\n";
+		$this->output .= '	abstract protected function doGet' . \ucfirst($name) .
+							'Collection(\\Good\\Manners\\Condition $condition, ' . $name . 
+															'Resolver $resolver);' . "\n";
+		$this->output .= "	\n";
+		$this->output .= '	abstract protected function saveNew' . \ucfirst($name) . 
+																's(array $entries);' . "\n";
+		$this->output .= '	abstract protected function save' . \ucfirst($name) . 
+															'Modifications(array $entries);' . "\n";
+		$this->output .= '	abstract protected function save' . \ucfirst($name) . 
+															'Deletions(array $entries);' . "\n";
+		$this->output .= "	\n";
+		
+		$this->output .= '	private $dirty' . \ucfirst($name) . 's = array();' . "\n";
+		$this->output .= "	\n";
+		$this->output .= '	public function dirty' . \ucfirst($name) . 
+												'(' . $name . ' $storable)' . "\n";
+		$this->output .= "	{\n";
+		$this->output .= '		$this->dirty' . \ucfirst($name) . 's[] = $storable;' . "\n";
+		$this->output .= "	}\n";
+		$this->output .= "	\n";
+		$this->output .= '	public function insert' . \ucfirst($name) . 
+												'(' . $name . ' $storable)' . "\n";
+		$this->output .= "	{\n";
+		$this->output .= '		$storable->setStore($this);' . "\n";
+		$this->output .= '		$storable->setValidationToken($this->validationToken);' . "\n";
+		$this->output .= "		\n";
+		$this->output .= '		$this->dirty' . \ucfirst($name) . 's[] = $storable;' . "\n";
+		$this->output .= "	}\n";
+		$this->output .= "\n";
+		$this->output .= '	public function modifyAny' . \ucfirst($name) .'(\\Good\\Manners\\Condition ' .
+													'$condition, ' . $name . ' $modifications)' . "\n";
+		$this->output .= "	{\n";
+		$this->output .= '		$this->flush();' . "\n";
+		$this->output .= '		$this->invalidate();' . "\n";
+		$this->output .= "		\n";
+		$this->output .= '		$this->doModifyAny' . \ucfirst($name) .'($condition, $modifications);' . "\n";
+		$this->output .= "	}\n";
+		$this->output .= "	\n";
+		$this->output .= '	public function get' . \ucfirst($name) . 'Collection(\\Good\\Manners\\Condition ' .
+													 '$condition, ' . $name . 'Resolver $resolver)' . "\n";
+		$this->output .= "	{\n";
+		$this->output .= '		$this->flush();' . "\n";
+		$this->output .= '		return $this->doGet' . \ucfirst($name) . 
+													'Collection($condition, $resolver);' . "\n";
+		$this->output .= "	}\n";
+		$this->output .= "	\n";
+		
+		$this->resolver  = "<?php\n";
+		$this->resolver .= "\n";
+		$this->resolver .= 'class ' . $name . 'Resolver extends \\Good\\Manners\\AbstractResolver' . "\n";
+		$this->resolver .= "{\n";
+		
+		$this->resolverVisit  = '	public function resolverAccept' . 
+												'(\\Good\\Manners\\ResolverVisitor $visitor)' . "\n";
+		$this->resolverVisit .= "	{\n";
 	}
-	public function visitTypeReference($type)
+	
+	public function visitReferenceMember($member)
 	{
-		$this->resolver .= '	private $resolved' . \ucfirst($this->varName) . ' = null;' . "\n"; 
+		$this->resolver .= '	private $resolved' . \ucfirst($member->getName()) . ' = null;' . "\n"; 
 		$this->resolver .= "	\n";
-		$this->resolver .= '	public function resolve' . \ucfirst($this->varName) . '()' . "\n"; 
+		$this->resolver .= '	public function resolve' . \ucfirst($member->getName()) . '()' . "\n"; 
 		$this->resolver .= "	{\n";
-		$this->resolver .= '		$this->resolved' . \ucfirst($this->varName) . ' = ' .
-										'new ' . $type->getReferencedType() . 
+		$this->resolver .= '		$this->resolved' . \ucfirst($member->getName()) . ' = ' .
+										'new ' . $member->getReferencedType() . 
 																'Resolver($this->root);' . "\n";
 		$this->resolver .= "		\n";
-		$this->resolver .= '		return $this->resolved' . \ucfirst($this->varName) . ';' . "\n"; 
+		$this->resolver .= '		return $this->resolved' . \ucfirst($member->getName()) . ';' . "\n"; 
 		$this->resolver .= "	}\n";
 		$this->resolver .= "	\n";
-		$this->resolver .= '	public function get' . \ucfirst($this->varName) . '()' . "\n"; 
+		$this->resolver .= '	public function get' . \ucfirst($member->getName()) . '()' . "\n"; 
 		$this->resolver .= "	{\n";
-		$this->resolver .= '		return $this->resolved' . \ucfirst($this->varName) . ';' . "\n"; 
+		$this->resolver .= '		return $this->resolved' . \ucfirst($member->getName()) . ';' . "\n"; 
 		$this->resolver .= "	}\n";
 		$this->resolver .= "	\n";
 		
-		$this->resolverVisit .= '		if ($this->resolved' . \ucfirst($this->varName) . ' != null)' . "\n";
+		$this->resolverVisit .= '		if ($this->resolved' . \ucfirst($member->getName()) . ' != null)' . "\n";
 		$this->resolverVisit .= "		{\n";
 		$this->resolverVisit .= '			$visitor->resolverVisitResolvedReferenceProperty("' .
-											$this->varName . '", "' . $type->getReferencedType() . 
-											'", ' . '$this->resolved' . \ucfirst($this->varName) . 
+											$member->getName() . '", "' . $member->getReferencedType() . 
+											'", ' . '$this->resolved' . \ucfirst($member->getName()) . 
 											');' . "\n";
 		$this->resolverVisit .= "		}\n";
 		$this->resolverVisit .= '		else' . "\n";
 		$this->resolverVisit .= "		{\n";
 		$this->resolverVisit .= '			$visitor->resolverVisitUnresolvedReferenceProperty(' . 
-											'"' . $this->varName . '");' . "\n";
+											'"' . $member->getName() . '");' . "\n";
 		$this->resolverVisit .= "		}\n";
 	}
-	public function visitTypePrimitiveText($type)
+	public function visitTextMember($member)
 	{
-		$this->visitNonReference();
+		$this->visitNonReference($member);
 	}
-	public function visitTypePrimitiveInt($type)
+	public function visitIntMember($member)
 	{
-		$this->visitNonReference();
+		$this->visitNonReference($member);
 	}
-	public function visitTypePrimitiveFloat($type)
+	public function visitFloatMember($member)
 	{
-		$this->visitNonReference();
+		$this->visitNonReference($member);
 	}
-	public function visitTypePrimitiveDatetime($type)
+	public function visitDatetimeMember($member)
 	{
-		$this->visitNonReference();
+		$this->visitNonReference($member);
 	}
 	
-	private function visitNonReference()
+	private function visitNonReference($member)
 	{
-		$this->resolver .= '	private $orderNumber' . \ucfirst($this->varName) . ' = -1;' . "\n";
-		$this->resolver .= '	private $orderDirection' . \ucfirst($this->varName) . ' = -1;' . "\n";
+		$this->resolver .= '	private $orderNumber' . \ucfirst($member->getName()) . ' = -1;' . "\n";
+		$this->resolver .= '	private $orderDirection' . \ucfirst($member->getName()) . ' = -1;' . "\n";
 		$this->resolver .= "	\n";
-		$this->resolver .= '	public function orderBy' . \ucfirst($this->varName) . 'Asc()' . "\n";
+		$this->resolver .= '	public function orderBy' . \ucfirst($member->getName()) . 'Asc()' . "\n";
 		$this->resolver .= "	{\n";
-		$this->resolver .= '		$this->orderNumber' . \ucfirst($this->varName) .
+		$this->resolver .= '		$this->orderNumber' . \ucfirst($member->getName()) .
 														' = $this->drawOrderTicket();' . "\n";
-		$this->resolver .= '		$this->orderDirection' . \ucfirst($this->varName) . 
+		$this->resolver .= '		$this->orderDirection' . \ucfirst($member->getName()) . 
 														' = self::ORDER_DIRECTION_ASC;' . "\n";
 		$this->resolver .= "	}\n";
 		$this->resolver .= "	\n";
-		$this->resolver .= '	public function orderBy' . \ucfirst($this->varName) . 'Desc()' . "\n";
+		$this->resolver .= '	public function orderBy' . \ucfirst($member->getName()) . 'Desc()' . "\n";
 		$this->resolver .= "	{\n";
-		$this->resolver .= '		$this->orderNumber' . \ucfirst($this->varName) .
+		$this->resolver .= '		$this->orderNumber' . \ucfirst($member->getName()) .
 														' = $this->drawOrderTicket();' . "\n";
-		$this->resolver .= '		$this->orderDirection' . \ucfirst($this->varName) . 
+		$this->resolver .= '		$this->orderDirection' . \ucfirst($member->getName()) . 
 														' = self::ORDER_DIRECTION_DESC;' . "\n";
 		$this->resolver .= "	}\n";
 		$this->resolver .= "	\n";
 		
 		$this->resolverVisit .= '		$visitor->resolverVisitNonReferenceProperty("' .
-															$this->varName . '");' . "\n";
-		$this->resolverVisit .= '		if ($this->orderNumber' . \ucfirst($this->varName) . ' != -1)' . "\n";
+															$member->getName() . '");' . "\n";
+		$this->resolverVisit .= '		if ($this->orderNumber' . \ucfirst($member->getName()) . ' != -1)' . "\n";
 		$this->resolverVisit .= "		{\n";
-		$this->resolverVisit .= '			if ($this->orderDirection' . \ucfirst($this->varName) . 
+		$this->resolverVisit .= '			if ($this->orderDirection' . \ucfirst($member->getName()) . 
 														'== self::ORDER_DIRECTION_ASC)' . "\n";
 		$this->resolverVisit .= "			{\n";
 		$this->resolverVisit .= '				$visitor->resolverVisitOrderAsc($this->orderNumber' 
-													. \ucfirst($this->varName) . ', "'
-													. $this->varName . '");' . "\n";
+													. \ucfirst($member->getName()) . ', "'
+													. $member->getName() . '");' . "\n";
 		$this->resolverVisit .= "			}\n";
 		$this->resolverVisit .= '			else' . "\n";
 		$this->resolverVisit .= "			{\n";
 		$this->resolverVisit .= '				$visitor->resolverVisitOrderDesc($this->orderNumber' 
-													. \ucfirst($this->varName) . ', "'
-													. $this->varName . '");' . "\n";
+													. \ucfirst($member->getName()) . ', "'
+													. $member->getName() . '");' . "\n";
 		$this->resolverVisit .= "			}\n";
 		$this->resolverVisit .= "		}\n";
 	}

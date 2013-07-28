@@ -18,21 +18,17 @@ class Compiler implements \Good\Rolemodel\Visitor
 	private $includes = null;
 	private $className = null;
 	
-	// variable level data
-	private $varName = null;
-	private $access = null;
-	
 	public function __construct($modifiers, $outputDir)
 	{
 		$this->outputDir = $outputDir;
 		$this->modifiers = $modifiers;
 	}
 	
-	public function visitDataModel($dataModel)
+	public function visitSchema($schema)
 	{
 		foreach ($this->modifiers as $modifier)
 		{
-			$modifier->visitDataModel($dataModel);
+			$modifier->visitSchema($schema);
 		}
 		
 		// TODO: prevent namespace and filename collisions here
@@ -82,6 +78,30 @@ class Compiler implements \Good\Rolemodel\Visitor
 		$output .= '?>';
 		
 		\file_put_contents($this->outputDir . 'GeneratedBaseClass.php', $output);
+	}
+	
+	
+	public function visitSchemaEnd()
+	{
+		if ($this->output != null)
+		{
+			$this->saveOutput();
+		}
+		
+		$this->output = null;
+		
+		foreach ($this->modifiers as $modifier)
+		{
+			foreach($modifier->extraFiles() as $filename => $contents)
+			{
+				\file_put_contents($this->outputDir . $filename, $contents);
+			}
+		}
+		
+		foreach ($this->modifiers as $modifier)
+		{
+			$modifier->visitSchemaEnd();
+		}
 	}
 	
 	public function visitDataType($dataType)
@@ -171,18 +191,74 @@ class Compiler implements \Good\Rolemodel\Visitor
 		\file_put_contents($file, $contents);
 	}
 	
-	public function visitDataMember($dataMember)
+	public function visitReferenceMember($member)
 	{
 		foreach ($this->modifiers as $modifier)
 		{
-			$modifier->visitDataMember($dataMember);
+			$modifier->visitReferenceMember($member);
 		}
 		
-		$this->varName = $dataMember->getName();
+		$varType = $member->getReferencedType();
+		$includes[] = $member->getReferencedType();
 		
-		$this->access = null;
+		$this->commitVariable($member, $varType);
+	}
+	
+	public function visitTextMember($member)
+	{
+		foreach ($this->modifiers as $modifier)
+		{
+			$modifier->visitTextMember($member);
+		}
 		
-		foreach ($dataMember->getAttributes() as $attribute)
+		$varType = 'string';
+		
+		$this->commitVariable($member, $varType);
+	}
+	
+	public function visitIntMember($member)
+	{
+		foreach ($this->modifiers as $modifier)
+		{
+			$modifier->visitIntMember($member);
+		}
+		
+		$varType = 'int';
+		
+		$this->commitVariable($member, $varType);
+	}
+	
+	public function visitFloatMember($member)
+	{
+		foreach ($this->modifiers as $modifier)
+		{
+			$modifier->visitFloatMember($member);
+		}
+		
+		$varType = 'float';
+		
+		$this->commitVariable($member, $varType);
+	}
+	
+	public function visitDatetimeMember($member)
+	{
+		foreach ($this->modifiers as $modifier)
+		{
+			$modifier->visitDatetimeMember($member);
+		}
+		
+		$varType = 'datetime';
+		
+		$this->commitVariable($member, $varType);
+	}
+	
+	private function commitVariable($member, $varType)
+	{
+		// Var type is currently unused but might be used when I do typechecking
+		// (then again, I might actually do it differently)
+		$access = null;
+		
+		foreach ($member->getAttributes() as $attribute)
 		{
 			switch ($attribute)
 			{
@@ -191,23 +267,23 @@ class Compiler implements \Good\Rolemodel\Visitor
 					// (otherwise it would be useless...)
 				case 'protected':
 					// but we also allow a user to just use the protected attribute instead
-					if ($this->access != null)
+					if ($access != null)
 					{
 						// TODO: better error handling
 						throw new \Exception('Error: More than one attribute specifying access on variable ' . 
-								$this->varName . ' from ' . $this->inputFile . '.');
+								$member->getName() . ' from ' . $this->inputFile . '.');
 					}
-					$this->access = 'protected';
+					$access = 'protected';
 				break;
 				
 				case 'public':
-					if ($this->access != null)
+					if ($access != null)
 					{
 						// TODO: better error handling
 						throw new \Exception('Error: More than one attribute specifying access on variable ' . 
-								$this->varName . ' from ' . $this->inputFile . '.');
+								$member->getName() . ' from ' . $this->inputFile . '.');
 					}
-					$this->access = 'public';
+					$access = 'public';
 				break;
 				
 				default:
@@ -216,83 +292,20 @@ class Compiler implements \Good\Rolemodel\Visitor
 		}
 		
 		// default access is public
-		if ($this->access == null)
+		if ($access == null)
 		{
-			$this->access = 'public';
-		}
-	}
-	
-	public function visitTypeReference($type)
-	{
-		foreach ($this->modifiers as $modifier)
-		{
-			$modifier->visitTypeReference($type);
+			$access = 'public';
 		}
 		
-		$varType = $type->getReferencedType();
-		$includes[] = $type->getReferencedType();
 		
-		$this->commitVariable();
-	}
-	
-	public function visitTypePrimitiveText($type)
-	{
-		foreach ($this->modifiers as $modifier)
-		{
-			$modifier->visitTypePrimitiveText($type);
-		}
-		
-		$varType = 'string';
-		
-		$this->commitVariable();
-	}
-	
-	public function visitTypePrimitiveInt($type)
-	{
-		foreach ($this->modifiers as $modifier)
-		{
-			$modifier->visitTypePrimitiveInt($type);
-		}
-		
-		$varType = 'int';
-		
-		$this->commitVariable();
-	}
-	
-	public function visitTypePrimitiveFloat($type)
-	{
-		foreach ($this->modifiers as $modifier)
-		{
-			$modifier->visitTypePrimitiveFloat($type);
-		}
-		
-		$varType = 'float';
-		
-		$this->commitVariable();
-	}
-	
-	public function visitTypePrimitiveDatetime($type)
-	{
-		foreach ($this->modifiers as $modifier)
-		{
-			$modifier->visitTypePrimitiveDatetime($type);
-		}
-		
-		$varType = 'datetime';
-		
-		$this->commitVariable();
-	}
-	
-	private function commitVariable()
-	{
 		foreach ($this->modifiers as $modifier)
 		{
 			$this->output .= $modifier->varDefinitionBefore();
 		}
 		
-		$this->output .= '	private $' . $this->varName . ";\n";
+		$this->output .= '	private $' . $member->getName() . ";\n";
 		// ucfirst: uper case first letter (php builtin)
-		$this->output .= '	private $is' . \ucfirst($this->varName) . "Null;\n";
+		$this->output .= '	private $is' . \ucfirst($member->getName()) . "Null;\n";
 		$this->output .= "	\n";
 		
 		foreach ($this->modifiers as $modifier)
@@ -304,7 +317,7 @@ class Compiler implements \Good\Rolemodel\Visitor
 		
 		//getter
 		// ucfirst = upper case first letter (it's a php built-in)
-		$this->output .= '	' . $this->access . ' function get' . \ucfirst($this->varName) . "()\n";
+		$this->output .= '	' . $access . ' function get' . \ucfirst($member->getName()) . "()\n";
 		$this->output .= "	{\n";
 		
 		foreach ($this->modifiers as $modifier)
@@ -312,14 +325,14 @@ class Compiler implements \Good\Rolemodel\Visitor
 			$this->output .= $modifier->getterBegin();
 		}
 		
-		$this->output .= '		return $this->' . $this->varName . ";\n";
+		$this->output .= '		return $this->' . $member->getName() . ";\n";
 		
 		$this->output .= "	}\n";
 		$this->output .= "	\n";
 		
 		//setter
 		// ucfirst = upper case first letter (it's a php built-in)
-		$this->output .= '	' . $this->access . ' function set' . \ucfirst($this->varName) . '($value)' . "\n";
+		$this->output .= '	' . $access . ' function set' . \ucfirst($member->getName()) . '($value)' . "\n";
 		$this->output .= "	{\n";
 		
 		foreach ($this->modifiers as $modifier)
@@ -327,7 +340,7 @@ class Compiler implements \Good\Rolemodel\Visitor
 			$this->output .= $modifier->setterBegin();
 		}
 		
-		$this->output .= '		$this->' . $this->varName . ' = $value;' . "\n";
+		$this->output .= '		$this->' . $member->getName() . ' = $value;' . "\n";
 		
 		foreach ($this->modifiers as $modifier)
 		{
@@ -340,7 +353,7 @@ class Compiler implements \Good\Rolemodel\Visitor
 		
 		// null getter
 		// ucfirst: uper case first letter (php builtin)
-		$this->output .= '	' . $this->access . ' function is' . \ucfirst($this->varName) . 'Null()' . "\n";
+		$this->output .= '	' . $access . ' function is' . \ucfirst($member->getName()) . 'Null()' . "\n";
 		$this->output .= "	{\n";
 		
 		foreach ($this->modifiers as $modifier)
@@ -348,13 +361,13 @@ class Compiler implements \Good\Rolemodel\Visitor
 			$this->output .= $modifier->nullGetterBegin();
 		}
 		
-		$this->output .= '		return $this->is' . \ucfirst($this->varName) . 'Null;' . "\n";
+		$this->output .= '		return $this->is' . \ucfirst($member->getName()) . 'Null;' . "\n";
 		$this->output .= "	}\n";
 		$this->output .= "	\n";
 		
 		// null setter
 		// ucfirst: uper case first letter (php builtin)
-		$this->output .= '	' . $this->access . ' function make' . \ucfirst($this->varName) . 'Null($value = true)' . "\n";
+		$this->output .= '	' . $access . ' function make' . \ucfirst($member->getName()) . 'Null($value = true)' . "\n";
 		$this->output .= "	{\n";
 		
 		foreach ($this->modifiers as $modifier)
@@ -362,7 +375,7 @@ class Compiler implements \Good\Rolemodel\Visitor
 			$this->output .= $modifier->nullSetterBegin();
 		}
 		
-		$this->output .= '		$this->is' . \ucfirst($this->varName) . 'Null = $value;' . "\n";
+		$this->output .= '		$this->is' . \ucfirst($member->getName()) . 'Null = $value;' . "\n";
 		
 		foreach ($this->modifiers as $modifier)
 		{
@@ -371,31 +384,6 @@ class Compiler implements \Good\Rolemodel\Visitor
 		
 		$this->output .= "	}\n";
 		$this->output .= "	\n";
-		
-	}
-	
-	
-	public function visitEnd()
-	{
-		if ($this->output != null)
-		{
-			$this->saveOutput();
-		}
-		
-		$this->output = null;
-		
-		foreach ($this->modifiers as $modifier)
-		{
-			foreach($modifier->extraFiles() as $filename => $contents)
-			{
-				\file_put_contents($this->outputDir . $filename, $contents);
-			}
-		}
-		
-		foreach ($this->modifiers as $modifier)
-		{
-			$modifier->visitEnd();
-		}
 	}
 }
 
