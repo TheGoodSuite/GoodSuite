@@ -26,10 +26,10 @@ class JoinDiscoverer implements PropertyVisitor
 		$value->acceptStore($this->store);
 	}
 	
-	public function visitReferenceProperty($name, $datatypeName, $dirty, $null, 
+	public function visitReferenceProperty($name, $datatypeName, $dirty, 
 														Storable $value = null)
 	{
-		if (!$null && $dirty && $value->isNew())
+		if ($value !== null && $dirty && $value->isNew())
 		{
 			$join = $this->store->getJoin($this->currentTable, $this->currentReference);
 			
@@ -48,10 +48,10 @@ class JoinDiscoverer implements PropertyVisitor
 		$this->currentReference++;
 	}
 	
-	public function visitTextProperty($name, $dirty, $null, $value) {}
-	public function visitIntProperty($name, $dirty, $null, $value) {}
-	public function visitFloatProperty($name, $dirty, $null, $value) {}
-	public function visitDatetimeProperty($name, $dirty, $null, $value) {}
+	public function visitTextProperty($name, $dirty, $value) {}
+	public function visitIntProperty($name, $dirty, $value) {}
+	public function visitFloatProperty($name, $dirty, $value) {}
+	public function visitDatetimeProperty($name, $dirty, $value) {}
 }
 
 ?>

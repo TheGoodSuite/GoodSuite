@@ -39,15 +39,15 @@ class StoreCompiler implements \Good\Rolemodel\Visitor
 		$this->output .= "	}\n";
 		$this->output .= "	\n";
 		$this->output .= '	abstract public function visitReferenceProperty($name, ' .
-								'$datatypeName, $dirty, $null, \\Good\\Manners\\Storable $value = null);' . "\n";
+								'$datatypeName, $dirty, \\Good\\Manners\\Storable $value = null);' . "\n";
 		$this->output .= '	abstract public function visitTextProperty($name, $dirty, ' .
-																	'$null, $value);' . "\n";
+																	'$value);' . "\n";
 		$this->output .= '	abstract public function visitIntProperty($name, $dirty, ' .
-																	'$null, $value);' . "\n";
+																	'$value);' . "\n";
 		$this->output .= '	abstract public function visitFloatProperty($name, $dirty, ' .
-																	'$null, $value);' . "\n";
+																	'$value);' . "\n";
 		$this->output .= '	abstract public function visitDatetimeProperty($name, $dirty, ' .
-																	'$null, $value);' . "\n";
+																	'$value);' . "\n";
 		$this->output .= "	\n";
 		$this->output .= '	protected function invalidate()' . "\n";
 		$this->output .= "	{\n";

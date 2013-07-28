@@ -221,12 +221,12 @@ class UpdateConditionWriter implements PropertyVisitor,
 		$this->condition = '(' . $sqlCondition1 . ' OR ' . $sqlCondition2 . ')';
 	}
 	
-	public function visitReferenceProperty($name, $datatypeName, $dirty, $null, 
+	public function visitReferenceProperty($name, $datatypeName, $dirty, 
 															Storable $value = null)
 	{
 		if ($dirty)
 		{
-			if($null)
+			if($value === null)
 			{
 				$this->writeBracketOrAnd();
 				
@@ -304,7 +304,7 @@ class UpdateConditionWriter implements PropertyVisitor,
 		$this->currentReference++;
 	}
 	
-	public function visitTextProperty($name, $dirty, $null, $value)
+	public function visitTextProperty($name, $dirty, $value)
 	{
 		if($dirty)
 		{
@@ -313,7 +313,7 @@ class UpdateConditionWriter implements PropertyVisitor,
 			
 			$this->condition .=  '.' . $this->store->fieldNamify($name) . ' ';
 			
-			if ($null)
+			if ($value === null)
 			{
 				if ($this->comparison == '=')
 				{
@@ -333,7 +333,7 @@ class UpdateConditionWriter implements PropertyVisitor,
 			
 		}
 	}
-	public function visitIntProperty($name, $dirty, $null, $value)
+	public function visitIntProperty($name, $dirty, $value)
 	{
 		if($dirty)
 		{
@@ -342,7 +342,7 @@ class UpdateConditionWriter implements PropertyVisitor,
 			
 			$this->condition .=  '.' . $this->store->fieldNamify($name) . ' ';
 			
-			if ($null)
+			if ($value === null)
 			{
 				if ($this->comparison == '=')
 				{
@@ -361,7 +361,7 @@ class UpdateConditionWriter implements PropertyVisitor,
 			}
 		}
 	}
-	public function visitFloatProperty($name, $dirty, $null, $value)
+	public function visitFloatProperty($name, $dirty, $value)
 	{
 		if($dirty)
 		{
@@ -370,7 +370,7 @@ class UpdateConditionWriter implements PropertyVisitor,
 			
 			$this->condition .=  '.' . $this->store->fieldNamify($name) . ' ';
 			
-			if ($null)
+			if ($value === null)
 			{
 				if ($this->comparison == '=')
 				{
@@ -389,7 +389,7 @@ class UpdateConditionWriter implements PropertyVisitor,
 			}
 		}
 	}
-	public function visitDatetimeProperty($name, $dirty, $null, $value)
+	public function visitDatetimeProperty($name, $dirty, $value)
 	{
 		if($dirty)
 		{
@@ -397,7 +397,7 @@ class UpdateConditionWriter implements PropertyVisitor,
 			$this->writeTableName();
 			
 			$this->condition .=  '.' . $this->store->fieldNamify($name) . ' ';
-			if ($null)
+			if ($value === null)
 			{
 				if ($this->comparison == '=')
 				{

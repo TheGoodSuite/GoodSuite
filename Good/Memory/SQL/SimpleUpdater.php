@@ -49,7 +49,7 @@ class SimpleUpdater implements PropertyVisitor
 		}
 	}
 	
-	public function visitReferenceProperty($name, $datatypeName, $dirty, $null, 
+	public function visitReferenceProperty($name, $datatypeName, $dirty, 
 															Storable $value = null)
 	{
 		// We don't need to recurse, because if the value is dirty as well,
@@ -61,7 +61,7 @@ class SimpleUpdater implements PropertyVisitor
 			$this->sql .= $this->store->fieldNamify($name);
 			$this->sql .= ' = ';
 		
-			if ($null)
+			if ($value === null)
 			{
 				$this->sql .= 'NULL';
 			}
@@ -72,7 +72,7 @@ class SimpleUpdater implements PropertyVisitor
 		}
 	}
 	
-	public function visitTextProperty($name, $dirty, $null, $value)
+	public function visitTextProperty($name, $dirty, $value)
 	{
 		if ($dirty)
 		{
@@ -81,7 +81,7 @@ class SimpleUpdater implements PropertyVisitor
 			$this->sql .= $this->store->fieldNamify($name);
 			$this->sql .= ' = ';
 			
-			if ($null)
+			if ($value === null)
 			{
 				$this->sql .= 'NULL';
 			}
@@ -92,7 +92,7 @@ class SimpleUpdater implements PropertyVisitor
 		}
 	}
 	
-	public function visitIntProperty($name, $dirty, $null, $value)
+	public function visitIntProperty($name, $dirty, $value)
 	{
 		if ($dirty)
 		{
@@ -101,7 +101,7 @@ class SimpleUpdater implements PropertyVisitor
 			$this->sql .= $this->store->fieldNamify($name);
 			$this->sql .= ' = ';
 			
-			if ($null)
+			if ($value === null)
 			{
 				$this->sql .= 'NULL';
 			}
@@ -112,7 +112,7 @@ class SimpleUpdater implements PropertyVisitor
 		}
 	}
 	
-	public function visitFloatProperty($name, $dirty, $null, $value)
+	public function visitFloatProperty($name, $dirty, $value)
 	{
 		if ($dirty)
 		{
@@ -121,7 +121,7 @@ class SimpleUpdater implements PropertyVisitor
 			$this->sql .= $this->store->fieldNamify($name);
 			$this->sql .= ' = ';
 			
-			if ($null)
+			if ($value === null)
 			{
 				$this->sql .= 'NULL';
 			}
@@ -132,7 +132,7 @@ class SimpleUpdater implements PropertyVisitor
 		}
 	}
 	
-	public function visitDatetimeProperty($name, $dirty, $null, $value)
+	public function visitDatetimeProperty($name, $dirty, $value)
 	{
 		if ($dirty)
 		{
@@ -141,7 +141,7 @@ class SimpleUpdater implements PropertyVisitor
 			$this->sql .= $this->store->fieldNamify($name);
 			$this->sql .= ' = ';
 			
-			if ($null)
+			if ($value === null)
 			{
 				$this->sql .= 'NULL';
 			}

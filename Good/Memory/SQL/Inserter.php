@@ -69,7 +69,7 @@ class Inserter implements PropertyVisitor
 		return $this->postponed;
 	}
 	
-	public function visitReferenceProperty($name, $datatypeName, $dirty, $null, 
+	public function visitReferenceProperty($name, $datatypeName, $dirty, 
 														Storable $value = null)
 	{
 		// If not dirty, do not include field and use default value
@@ -79,7 +79,7 @@ class Inserter implements PropertyVisitor
 			
 			$this->sql .= $this->store->fieldNamify($name);
 		
-			if ($null)
+			if ($value === null)
 			{
 				$this->values .= 'NULL';
 			}
@@ -109,7 +109,7 @@ class Inserter implements PropertyVisitor
 		}
 	}
 	
-	public function visitTextProperty($name, $dirty, $null, $value)
+	public function visitTextProperty($name, $dirty, $value)
 	{
 		// If not dirty, do not include field and use default value
 		if ($dirty)
@@ -118,7 +118,7 @@ class Inserter implements PropertyVisitor
 			
 			$this->sql .= $this->store->fieldNamify($name);
 			
-			if ($null)
+			if ($value === null)
 			{
 				$this->values .= 'NULL';
 			}
@@ -129,7 +129,7 @@ class Inserter implements PropertyVisitor
 		}
 	}
 	
-	public function visitIntProperty($name, $dirty, $null, $value)
+	public function visitIntProperty($name, $dirty, $value)
 	{
 		// If not dirty, do not include field and use default value
 		if ($dirty)
@@ -138,7 +138,7 @@ class Inserter implements PropertyVisitor
 			
 			$this->sql .= $this->store->fieldNamify($name);
 			
-			if ($null)
+			if ($value === null)
 			{
 				$this->values .= 'NULL';
 			}
@@ -149,7 +149,7 @@ class Inserter implements PropertyVisitor
 		}
 	}
 	
-	public function visitFloatProperty($name, $dirty, $null, $value)
+	public function visitFloatProperty($name, $dirty, $value)
 	{
 		// If not dirty, do not include field and use default value
 		if ($dirty)
@@ -158,7 +158,7 @@ class Inserter implements PropertyVisitor
 			
 			$this->sql .= $this->store->fieldNamify($name);
 		
-			if ($null)
+			if ($value === null)
 			{
 				$this->values .= 'NULL';
 			}
@@ -169,7 +169,7 @@ class Inserter implements PropertyVisitor
 		}
 	}
 	
-	public function visitDatetimeProperty($name, $dirty, $null, $value)
+	public function visitDatetimeProperty($name, $dirty, $value)
 	{
 		// If not dirty, do not include field and use default value
 		if ($dirty)
@@ -178,7 +178,7 @@ class Inserter implements PropertyVisitor
 			
 			$this->sql .= $this->store->fieldNamify($name);
 		
-			if ($null)
+			if ($value === null)
 			{
 				$this->values .= 'NULL';
 			}

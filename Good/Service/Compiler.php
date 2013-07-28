@@ -305,9 +305,7 @@ class Compiler implements \Good\Rolemodel\Visitor
 			$this->output .= $modifier->varDefinitionBefore();
 		}
 		
-		$this->output .= '	private $' . $member->getName() . ";\n";
-		// ucfirst: uper case first letter (php builtin)
-		$this->output .= '	private $is' . \ucfirst($member->getName()) . "Null;\n";
+		$this->output .= '	private $' . $member->getName() . " = null;\n";
 		$this->output .= "	\n";
 		
 		foreach ($this->modifiers as $modifier)
@@ -347,41 +345,6 @@ class Compiler implements \Good\Rolemodel\Visitor
 		foreach ($this->modifiers as $modifier)
 		{
 			$this->output .= $modifier->setterEnd();
-		}
-		
-		$this->output .= "	}\n";
-		$this->output .= "	\n";
-		
-		
-		// null getter
-		// ucfirst: uper case first letter (php builtin)
-		$this->output .= '	' . $access . ' function is' . \ucfirst($member->getName()) . 'Null()' . "\n";
-		$this->output .= "	{\n";
-		
-		foreach ($this->modifiers as $modifier)
-		{
-			$this->output .= $modifier->nullGetterBegin();
-		}
-		
-		$this->output .= '		return $this->is' . \ucfirst($member->getName()) . 'Null;' . "\n";
-		$this->output .= "	}\n";
-		$this->output .= "	\n";
-		
-		// null setter
-		// ucfirst: uper case first letter (php builtin)
-		$this->output .= '	' . $access . ' function make' . \ucfirst($member->getName()) . 'Null($value = true)' . "\n";
-		$this->output .= "	{\n";
-		
-		foreach ($this->modifiers as $modifier)
-		{
-			$this->output .= $modifier->nullSetterBegin();
-		}
-		
-		$this->output .= '		$this->is' . \ucfirst($member->getName()) . 'Null = $value;' . "\n";
-		
-		foreach ($this->modifiers as $modifier)
-		{
-			$this->output .= $modifier->nullSetterEnd();
 		}
 		
 		$this->output .= "	}\n";

@@ -108,14 +108,14 @@ class ConditionWriter implements PropertyVisitor,
 		$this->condition = '(' . $sqlCondition1 . ' OR ' . $sqlCondition2 . ')';
 	}
 	
-	public function visitReferenceProperty($name, $datatypeName, $dirty, $null, 
+	public function visitReferenceProperty($name, $datatypeName, $dirty, 
 															Storable $value = null)
 	{
 		if ($dirty)
 		{
 			$this->writeBracketOrAnd();
 			
-			if($null)
+			if($value === null)
 			{
 				if ($this->comparison == '=')
 				{
@@ -157,14 +157,14 @@ class ConditionWriter implements PropertyVisitor,
 		$this->currentReference++;
 	}
 	
-	public function visitTextProperty($name, $dirty, $null, $value)
+	public function visitTextProperty($name, $dirty, $value)
 	{
 		if($dirty)
 		{
 			$this->writeBracketOrAnd();
 		
 			$this->condition .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($name) . ' ';
-			if ($null)
+			if ($value === null)
 			{
 				if ($this->comparison == '=')
 				{
@@ -184,14 +184,14 @@ class ConditionWriter implements PropertyVisitor,
 			
 		}
 	}
-	public function visitIntProperty($name, $dirty, $null, $value)
+	public function visitIntProperty($name, $dirty, $value)
 	{
 		if($dirty)
 		{
 			$this->writeBracketOrAnd();
 		
 			$this->condition .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($name) . ' ';
-			if ($null)
+			if ($value === null)
 			{
 				if ($this->comparison == '=')
 				{
@@ -210,14 +210,14 @@ class ConditionWriter implements PropertyVisitor,
 			}
 		}
 	}
-	public function visitFloatProperty($name, $dirty, $null, $value)
+	public function visitFloatProperty($name, $dirty, $value)
 	{
 		if($dirty)
 		{
 			$this->writeBracketOrAnd();
 		
 			$this->condition .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($name) . ' ';
-			if ($null)
+			if ($value === null)
 			{
 				if ($this->comparison == '=')
 				{
@@ -236,14 +236,14 @@ class ConditionWriter implements PropertyVisitor,
 			}
 		}
 	}
-	public function visitDatetimeProperty($name, $dirty, $null, $value)
+	public function visitDatetimeProperty($name, $dirty, $value)
 	{
 		if($dirty)
 		{
 			$this->writeBracketOrAnd();
 		
 			$this->condition .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($name) . ' ';
-			if ($null)
+			if ($value === null)
 			{
 				if ($this->comparison == '=')
 				{
