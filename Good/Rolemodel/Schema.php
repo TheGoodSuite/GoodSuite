@@ -12,9 +12,9 @@ class Schema implements Visitable
 		// hm... I really need to take a look at this.
 		// I don't really see a good reason to be doing this, actually.
 		$this->dataTypes = array();
-		for ($i = 0; $i < \count($dataTypes); $i++)
+		foreach ($dataTypes as $dataType)
 		{
-			$this->dataTypes[$dataTypes[$i]->getName()] = $dataTypes[$i];
+			$this->dataTypes[$dataType->getName()] = $dataType;
 		}
 		
 		// Make sure all referenced dataTypes are present
@@ -22,13 +22,13 @@ class Schema implements Visitable
 		{
 			$references = $dataType->getReferencedTypes();
 			
-			for ($j = 0; $j < \count($references); $j++)
+			foreach ($references as $reference)
 			{
-				if (!isset($this->dataTypes[$references[$j]]))
+				if (!isset($this->dataTypes[$reference]))
 				{
 					// TODO: better error handling
 					
-					throw new \Exception("Error: Type " . $references[$j] . " was referenced, but not supplied itself.");
+					throw new \Exception("Error: Type " . $reference . " was referenced, but not supplied itself.");
 				}
 			}
 		}

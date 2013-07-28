@@ -24,9 +24,9 @@ class DataType
 		$visitor->visitDataType($this);
 		
 		// and move the visitor to your children
-		for ($i = 0; $i < \count($this->members); $i++)
+		foreach ($this->members as $member)
 		{
-			$this->members[$i]->accept($visitor);
+			$member->accept($visitor);
 		}
 	}
 	
@@ -44,9 +44,9 @@ class DataType
 	{
 		$res = array();
 		
-		for ($i = 0; $i < \count($this->members); $i++)
+		foreach ($this->members as $member)
 		{
-			$newElement = $this->members[$i]->getReferencedTypeIfAny();
+			$newElement = $member->getReferencedTypeIfAny();
 			
 			if ($newElement != null)
 			{

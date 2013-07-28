@@ -21,9 +21,9 @@ abstract class Member implements Visitable
 		$this->attributes = $attributes;
 		
 		// check for unknown attributes
-		for ($i = 0; $i < \count($attributes); $i++)
+		foreach ($attributes as $attribute)
 		{
-			if (!\in_array($attributes[$i], self::$knownAttributes))
+			if (!\in_array($attribute, self::$knownAttributes))
 			{
 				// TODO: add a real warning
 				
