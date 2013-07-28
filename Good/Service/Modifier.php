@@ -11,9 +11,6 @@ interface Modifier extends \Good\Rolemodel\Visitor
 	public function getterBegin();
 	public function setterBegin();
 	public function setterEnd();
-	public function nullGetterBegin();
-	public function nullSetterBegin();
-	public function nullSetterEnd();
 	public function varDefinitionBefore();
 	public function varDefinitionAfter();
 	public function topOfFile();

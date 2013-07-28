@@ -250,17 +250,6 @@ class Storable implements \Good\Service\Modifier
 		
 		return $res;
 	}
-	public function nullGetterBegin()
-	{
-		return $this->getterBegin();
-	}
-	public function nullSetterBegin()
-	{
-	}
-	public function nullSetterEnd()
-	{
-		return $this->setterEnd();
-	}
 	
 	public function topOfFile()
 	{

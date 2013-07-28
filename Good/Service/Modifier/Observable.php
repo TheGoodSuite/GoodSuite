@@ -77,12 +77,6 @@ class Observable implements \Good\Service\Modifier
 		
 		return $res;
 	}
-	public function nullGetterBegin() {return '';}
-	public function nullSetterBegin() {return '';}
-	public function nullSetterEnd()
-	{
-		return $this->setterEnd();
-	}
 	
 	public function topOfFile() {return '';}
 	public function classBody() {return '';}
