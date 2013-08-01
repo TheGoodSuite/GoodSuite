@@ -4,8 +4,8 @@ namespace Good\Service;
 
 interface Observable
 {
-	public function register(Observer $observer);
-	public function unregister(Observer $observer);
+	public function registerObserver(Observer $observer);
+	public function unregisterObserver(Observer $observer);
 }
 
 ?>

@@ -29,12 +29,12 @@ class Observable implements \Good\Service\Modifier
 		$res  = "	// Observer pattern (Observable)\n";
 		$res .= '	private $observers = array();' . "\n";
 		$res .= "	\n";
-		$res .= '	public function register(\\Good\\Service\\Observer $observer)'. "\n";
+		$res .= '	public function registerObserver(\\Good\\Service\\Observer $observer)'. "\n";
 		$res .= "	{\n";
 		$res .= '		$this->observers[] = $observer;' . "\n";
 		$res .= "	}\n";
 		$res .= "	\n";
-		$res .= '	public function unregister(\\Good\\Service\\Observer $observer)'. "\n";
+		$res .= '	public function unregisterObserver(\\Good\\Service\\Observer $observer)'. "\n";
 		$res .= "	{\n";
 		$res .= '		$pos = \\array_search($observer, $this->observers);' . "\n";
 		$res .= '		if ($pos !== FALSE)' . "\n";
@@ -47,7 +47,7 @@ class Observable implements \Good\Service\Modifier
 		$res .= "	{\n";
 		$res .= '		foreach ($this->observers as $observer)' . "\n";
 		$res .= "		{\n";
-		$res .= '			$observer->notify($this);' . "\n";
+		$res .= '			$observer->notifyObserver($this);' . "\n";
 		$res .= "		}\n";
 		$res .= "	}\n";
 		$res .= "	\n";

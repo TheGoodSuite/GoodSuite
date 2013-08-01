@@ -36,12 +36,12 @@ abstract class GoodServiceModifierObservableBaseTest extends GoodServiceBaseTest
 		
 		$observer = $this->getMock('\Good\Service\Observer');
 		$observer->expects($this->once())
-                 ->method('notify')
+                 ->method('notifyObserver')
                  ->with($this->equalTo($observable));
 		
 		$observable->setMyInt(5);
 		
-		$observable->register($observer);
+		$observable->registerObserver($observer);
 		
 		$observable->setMyInt(7);
 	}
@@ -59,18 +59,18 @@ abstract class GoodServiceModifierObservableBaseTest extends GoodServiceBaseTest
 		
 		$observer = $this->getMock('\Good\Service\Observer');
 		$observer->expects($this->once())
-                 ->method('notify')
+                 ->method('notifyObserver')
                  ->with($this->equalTo($observable));
 		
 		$observer2 = $this->getMock('\Good\Service\Observer');
 		$observer2->expects($this->once())
-                  ->method('notify')
+                  ->method('notifyObserver')
                   ->with($this->equalTo($observable));
 		
 		$observable->setMyInt(5);
 		
-		$observable->register($observer);
-		$observable->register($observer2);
+		$observable->registerObserver($observer);
+		$observable->registerObserver($observer2);
 		
 		$observable->setMyInt(7);
 	}
@@ -96,7 +96,7 @@ abstract class GoodServiceModifierObservableBaseTest extends GoodServiceBaseTest
 		
 		$observer = $this->getMock('\Good\Service\Observer');
 		$observer->expects($this->exactly(4))
-                 ->method('notify')
+                 ->method('notifyObserver')
                  ->with($this->logicalOr($this->equalTo($observable),
 										 $this->equalTo($observable2)))
 				 ->will($this->returnCallback(array($this, 'equalsExpecting')));
@@ -105,8 +105,8 @@ abstract class GoodServiceModifierObservableBaseTest extends GoodServiceBaseTest
 		$observable->setMyInt(5);
 		$observable2->setMyInt(14);
 		
-		$observable->register($observer);
-		$observable2->register($observer);
+		$observable->registerObserver($observer);
+		$observable2->registerObserver($observer);
 		
 		$this->expecting = $observable2;
 		$observable2->setMyInt(22);
@@ -132,22 +132,22 @@ abstract class GoodServiceModifierObservableBaseTest extends GoodServiceBaseTest
 		
 		$observer = $this->getMock('\Good\Service\Observer');
 		$observer->expects($this->exactly(2))
-                 ->method('notify')
+                 ->method('notifyObserver')
                  ->with($this->equalTo($observable))
 				 ->will($this->returnCallback(array($this, 'equalsExpecting')));
 				 
 		
 		$observable->setMyInt(5213213);
 		
-		$observable->register($observer);
+		$observable->registerObserver($observer);
 		$this->expecting = $observable;
 		$observable->setMyInt(22234);
 		
-		$observable->unregister($observer);
+		$observable->unregisterObserver($observer);
 		$this->expecting = null;
 		$observable->setMyInt(213213);
 		
-		$observable->register($observer);
+		$observable->registerObserver($observer);
 		$this->expecting = $observable;
 		$observable->setMyInt(1235555);
 	}
