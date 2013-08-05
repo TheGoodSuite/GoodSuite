@@ -66,24 +66,6 @@ class Storable implements \Good\Service\Modifier
 		$res .= '	public function setStore(\\Good\\Manners\\Store $store)' . "\n";
 		$res .= "	{\n";
 		$res .= '		$this->store = $store;' . "\n";
-		$res .= '		if ($this->isNew)' . "\n";
-		$res .= "		{\n";
-						// Just comented it out, as it looks like it's not in line with
-						//  the currently planned API.
-		$res .= '			//$this->store->setNew($this);' . "\n";
-		$res .= "		}\n";
-		$res .= "	}\n";
-		$res .= "	\n";
-		$res .= '	public function storeMatches(\\Good\\Manners\\Store $store)' . "\n";
-		$res .= "	{\n";
-		$res .= '		if ($store == $this->store)' . "\n";
-		$res .= "		{\n";
-		$res .= '			return true;' . "\n";
-		$res .= "		}\n";
-		$res .= '		else' . "\n";
-		$res .= "		{\n";
-		$res .= '			return false;' . "\n";
-		$res .= "		}\n";
 		$res .= "	}\n";
 		$res .= "	\n";
 		$res .= '	public function setValidationToken(\\Good\\Manners\\ValidationToken $token)' . "\n";
@@ -100,7 +82,7 @@ class Storable implements \Good\Service\Modifier
 		$res .= "	\n";
 		$res .= '	protected function checkValidationToken()' . "\n";
 		$res .= "	{\n";
-		$res .= '		if ($this->validationToken != null &&!$this->validationToken->value())' . "\n";
+		$res .= '		if ($this->validationToken != null && !$this->validationToken->value())' . "\n";
 		$res .= "		{\n";
 						// TODO: turn this into decent error handling
 		$res .= '			throw new \\Exception("Tried to acces an invalid Storable. It was probably made invalid by actions" .' . "\n";
@@ -118,12 +100,6 @@ class Storable implements \Good\Service\Modifier
 		$res .= '		$this->id = $value;' . "\n";
 		$res .= "	}\n";
 		$res .= "	\n";
-		$res .= '	public static function helpCreatingExisting(\\Good\\Manners\\Storable $value, $id)' . "\n";
-		$res .= "	{\n";
-		$res .= '		$value->id = $id;' . "\n";
-		$res .= '		$value->isNew = false;' . "\n";
-		$res .= "	}\n";
-		$res .= "	\n";
 		
 		return $res;
 	}
@@ -138,16 +114,6 @@ class Storable implements \Good\Service\Modifier
 		
 		$this->acceptStore  = '	public function acceptStore(\\Good\\Manners\\Store $store)' . "\n";
 		$this->acceptStore .= "	{\n";
-		// Due to the addition of a dummy, I replaced the isNew() call with $this->store != null
-		// It should sort of do the same, even if it's less semantically clear
-		// However, as I want to revisit and remove this whole checking system anyway, I
-		// don't consider it to be a problem.
-		$this->acceptStore .= '		if (!$this->storeMatches($store) && $this->store != null)' . "\n";
-		$this->acceptStore .= "		{\n";
-		// TODO: turn this into real error handling
-		$this->acceptStore .= '			die("Error: Attempted to use Storable with Store that" . ' . "\n";
-		$this->acceptStore .= '				  " is not its own.");' . "\n";
-		$this->acceptStore .= "		}\n";
 		$this->acceptStore .= "		\n";
 	}
 	
@@ -266,30 +232,8 @@ class Storable implements \Good\Service\Modifier
 		$res .= '			$this->store->dirty' . \ucfirst($this->className) . '($this);' . "\n";
 		$res .= "		}\n";
 		$res .= "	}\n";
-		
-		$res  .= '	public static function createExisting($store, $id';
-		foreach ($this->classMembers as $member)
-		{
-			$res .= ', ';
-			$res .= '$' . $member;
-		}
-		$res .= ')' . "\n";
-		$res .= "	{\n";
-		$res .= '		$ret = new ' . $this->className . '();' . "\n";
-		$res .= '		GeneratedBaseClass::helpCreatingExisting($ret, $id);' . "\n";;
-		$res .= "		\n";
-		foreach ($this->classMembers as $member)
-		{
-			// ucfirst: upper case first letter (it's a php built-in)
-			$res .= '		$ret->' . $member . ' = $' . $member . ';' . "\n";
-			$res .= '		$ret->is' . \ucfirst($member) . 'Dirty = false;' . "\n";
-		}
-		
-		$res .= '		$ret->setStore($store);' . "\n";
-		$res .= "		\n";
-		$res .= '		return $ret;' . "\n";
-		$res .= "	}\n";
 		$res .= "	\n";
+		
 		$res .= '	public function makeDirty($value = true)' . "\n";
 		$res .= "	{\n";
 		$res .= '		$this->dirty = $value;' . "\n";
@@ -307,17 +251,6 @@ class Storable implements \Good\Service\Modifier
 		$res .= '	public static function resolver()' . "\n";
 		$res .= "	{\n";
 		$res .= '		return new ' . $this->className . 'Resolver();' . "\n";
-		$res .= "	}\n";
-		$res .= "	\n";
-		
-		$res .= '	public static function createDummy($id)' . "\n";
-		$res .= "	{\n";
-		$res .= '		$obj = new ' . $this->className . '();' . "\n";
-		$res .= '		$obj->setId($id);' . "\n";
-		$res .= '		$obj->setNew(false);' . "\n";
-				// TODO: Make sure that accessing anything other than the id of
-				//       id doesn't work.
-		$res .= '		return $obj;' . "\n";
 		$res .= "	}\n";
 		$res .= "	\n";
 		

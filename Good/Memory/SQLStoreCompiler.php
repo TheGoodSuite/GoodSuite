@@ -138,7 +138,9 @@ class SQLStoreCompiler implements \Good\Rolemodel\Visitor
 													's[$array[$this->tableNamify($table) . "_id"]];' . "\n";
 		$this->createTop .= "		}";
 		$this->create  = "		\n";
-		$this->create .= '		$ret = ' . $name . '::createExisting($this, $array[$table . "_id"]';
+		$this->create .= '		$ret = new ' . $name . '();' . "\n";
+		
+		$this->create .= '		$ret->setId($array[$table . "_id"]);' . "\n";
 		
 		$this->createReferenceCount = 0;
 		
@@ -184,8 +186,7 @@ class SQLStoreCompiler implements \Good\Rolemodel\Visitor
 		$this->createTop .= '			$reference'  . $this->createReferenceCount . ' = $this->create' . ucfirst($member->getReferencedType()) . '($array, "t" . $nextTable, $nextTable);' . "\n";
 		$this->createTop .= "		}\n";
 		
-		$this->create .= ",\n";
-		$this->create .= '			$reference'  . $this->createReferenceCount;
+		$this->create .= '		$ret->set' . \ucfirst($member->getName()) . '($reference'  . $this->createReferenceCount . ');' . "\n";
 		
 		$this->createReferenceCount++;
 	}
@@ -205,22 +206,26 @@ class SQLStoreCompiler implements \Good\Rolemodel\Visitor
 	{
 		// I should look into abstracting this more in order to make it work
 		// better with more SQL implementations, but I think this will do for now
-		$this->create .= ",\n";
-		$this->create .= '			$array[$table . "_" . $this->fieldNamify("' . 
+										  
+		$this->create .= '		$ret->set' . \ucfirst($member->getName()) . '($array[$table . "_" . $this->fieldNamify("' . 
 										$member->getName() . '")] === null ? null : new DateTime($array[$table . ' .
-  										  '"_" . $this->fieldNamify("' . $member->getName() . '")])';
+  										  '"_" . $this->fieldNamify("' . $member->getName() . '")]));' . "\n";
 	}
 	
 	private function visitNonReference(Schema\PrimitiveMember $member)
 	{
-		$this->create .= ",\n";
-		$this->create .= '			$array[$table . "_" . $this->fieldNamify("' . $member->getName() . '")]';
+		$this->create .= '		$ret->set' . \ucfirst($member->getName()) . 
+						'($array[$table . "_" . $this->fieldNamify("' . $member->getName() . '")]);' . "\n";
+		
 	}
 	
 	private function finishDataType()
 	{
-		$this->create .= "\n";
-		$this->create .= '		);' . "\n";
+		$this->create .= "		\n";
+		$this->create .= '		$ret->setNew(false);' . "\n";
+		$this->create .= '		$ret->makeDirty(false);' . "\n";
+		$this->create .= '		$ret->setStore($this);' . "\n";
+		$this->create .= "		\n";
 		$this->create .= '		$this->created' . ucfirst($this->dataType) . 's[$array[$table . "_id"]] = $ret;' . "\n";
 		$this->create .= "		\n";
 		$this->create .= '		return $ret;' . "\n";
