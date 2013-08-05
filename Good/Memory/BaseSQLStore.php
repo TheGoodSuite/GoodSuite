@@ -181,35 +181,35 @@ abstract class BaseSQLStore extends \GoodMannersStore // (generated so not names
 	
 	public function createEqualityCondition(\Good\Manners\Storable $to)
 	{
-		return new \Good\Manners\Condition\Equality($this, $to);
+		return new \Good\Manners\Condition\Equality($to);
 	}
 	public function createInequalityCondition(\Good\Manners\Storable $to)
 	{
-		return new \Good\Manners\Condition\Inequality($this, $to);
+		return new \Good\Manners\Condition\Inequality($to);
 	}
 	public function createGreaterCondition(\Good\Manners\Storable $to)
 	{
-		return new \Good\Manners\Condition\Greater($this, $to);
+		return new \Good\Manners\Condition\Greater($to);
 	}
 	public function createGreaterOrEqualsCondition(\Good\Manners\Storable $to)
 	{
-		return new \Good\Manners\Condition\GreaterOrEquals($this, $to);
+		return new \Good\Manners\Condition\GreaterOrEquals($to);
 	}
 	public function createLessCondition(\Good\Manners\Storable $to)
 	{
-		return new \Good\Manners\Condition\Less($this, $to);
+		return new \Good\Manners\Condition\Less($to);
 	}
 	public function createLessOrEqualsCondition(\Good\Manners\Storable $to)
 	{
-		return new \Good\Manners\Condition\LessOrEquals($this, $to);
+		return new \Good\Manners\Condition\LessOrEquals($to);
 	}
 	public function createAndCondition(\Good\Manners\Condition $condition1, \Good\Manners\Condition $condition2)
 	{
-		return new \Good\Manners\Condition\AndCondition($this, $condition1, $condition2);
+		return new \Good\Manners\Condition\AndCondition($condition1, $condition2);
 	}
 	public function createOrCondition(\Good\Manners\Condition $condition1, \Good\Manners\Condition $condition2)
 	{
-		return new \Good\Manners\Condition\OrCondition($this, $condition1, $condition2);
+		return new \Good\Manners\Condition\OrCondition($condition1, $condition2);
 	}
 	
 	public function setCurrentConditionProcessor(ConditionProcessor $value)

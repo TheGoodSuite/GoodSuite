@@ -4,23 +4,20 @@ namespace Good\Manners\Condition;
 
 use Good\Manners\Condition;
 use Good\Manners\Storable;
+use Good\Manners\Store;
 
-class Greater extends Condition
+class Greater implements Condition
 {
-	private $store;
 	private $to;
 
-	public function __construct(\Good\Manners\Store $store, Storable $to)
+	public function __construct(Storable $to)
 	{
-		parent::__construct($store);
-		
-		$this->store = $store;
 		$this->to = $to;
 	}
 	
-	protected function doProcess()
+	public function process(Store $store)
 	{
-		$this->store->processGreaterCondition($this->to);
+		$store->processGreaterCondition($this->to);
 	}
 }
 
