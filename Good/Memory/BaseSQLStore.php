@@ -4,10 +4,12 @@ namespace Good\Memory;
 
 use Good\Manners\Storable;
 use Good\Manners\Condition;
+use Good\Manners\ConditionProcessor AS CP;
 use Good\Manners\Resolver;
 
 abstract class BaseSQLStore extends \GoodMannersStore // (generated so not namespaced)
-							implements SQLStore
+							implements SQLStore,
+									   CP
 {
 	protected $db;
 	private $currentConditionWriter = null;
@@ -179,7 +181,7 @@ abstract class BaseSQLStore extends \GoodMannersStore // (generated so not names
 		return $this->numberOfJoins;
 	}
 	
-	public function setCurrentConditionProcessor(ConditionProcessor $value)
+	public function setCurrentConditionProcessor(namespace\ConditionProcessor $value)
 	{
 		$this->currentConditionWriter = $value;
 	}

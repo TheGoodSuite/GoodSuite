@@ -3,6 +3,7 @@
 namespace Good\Manners\Condition;
 
 use Good\Manners\Condition;
+use Good\Manners\ConditionProcessor;
 use Good\Manners\Store;
 
 class AndCondition implements Condition
@@ -17,7 +18,7 @@ class AndCondition implements Condition
 		$this->condition2 = $condition2;
 	}
 	
-	public function process(Store $store)
+	public function process(ConditionProcessor $store)
 	{
 		$store->processAndCondition($this->condition1, $this->condition2);
 	}

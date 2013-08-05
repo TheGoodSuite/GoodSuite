@@ -3,6 +3,7 @@
 namespace Good\Manners\Condition;
 
 use Good\Manners\Condition;
+use Good\Manners\ConditionProcessor;
 use Good\Manners\Storable;
 use Good\Manners\Store;
 
@@ -15,7 +16,7 @@ class LessOrEquals implements Condition
 		$this->to = $to;
 	}
 	
-	public function process(Store $store)
+	public function process(ConditionProcessor $store)
 	{
 		$store->processLessOrEqualsCondition($this->to);
 	}
