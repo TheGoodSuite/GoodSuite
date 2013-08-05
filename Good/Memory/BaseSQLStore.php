@@ -4,12 +4,10 @@ namespace Good\Memory;
 
 use Good\Manners\Storable;
 use Good\Manners\Condition;
-use Good\Manners\ConditionProcessor AS CP;
 use Good\Manners\Resolver;
 
 abstract class BaseSQLStore extends \GoodMannersStore // (generated so not namespaced)
-							implements SQLStore,
-									   CP
+							implements SQLStore
 {
 	protected $db;
 	private $currentConditionWriter = null;
@@ -179,44 +177,6 @@ abstract class BaseSQLStore extends \GoodMannersStore // (generated so not names
 		$this->joinsReverse[$this->numberOfJoins] = $join;
 		
 		return $this->numberOfJoins;
-	}
-	
-	public function setCurrentConditionProcessor(namespace\ConditionProcessor $value)
-	{
-		$this->currentConditionWriter = $value;
-	}
-	
-	public function processEqualityCondition(\Good\Manners\Storable $to)
-	{
-		$this->currentConditionWriter->processEqualityCondition($to);
-	}
-	public function processInequalityCondition(\Good\Manners\Storable $to)
-	{
-		$this->currentConditionWriter->processInequalityCondition($to);
-	}
-	public function processGreaterCondition(\Good\Manners\Storable $to)
-	{
-		$this->currentConditionWriter->processGreaterCondition($to);
-	}
-	public function processGreaterOrEqualsCondition(\Good\Manners\Storable $to)
-	{
-		$this->currentConditionWriter->processGreaterOrEqualsCondition($to);
-	}
-	public function processLessCondition(\Good\Manners\Storable $to)
-	{
-		$this->currentConditionWriter->processLessCondition($to);
-	}
-	public function processLessOrEqualsCondition(\Good\Manners\Storable $to)
-	{
-		$this->currentConditionWriter->processLessOrEqualsCondition($to);
-	}
-	public function processAndCondition(\Good\Manners\Condition $condition1, \Good\Manners\Condition $condition2)
-	{
-		$this->currentConditionWriter->processAndCondition($condition1, $condition2);
-	}
-	public function processOrCondition(\Good\Manners\Condition $condition1, \Good\Manners\Condition $condition2)
-	{
-		$this->currentConditionWriter->processOrCondition($condition1, $condition2);
 	}
 	
 	public function setCurrentPropertyVisitor(PropertyVisitor $value)

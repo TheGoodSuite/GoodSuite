@@ -4,9 +4,9 @@ namespace Good\Memory\SQL;
 
 use Good\Memory\SQLStore;
 use Good\Memory\PropertyVisitor;
-use Good\Memory\ConditionProcessor;
 use Good\Manners\Storable;
 use Good\Manners\Condition;
+use Good\Manners\ConditionProcessor;
 
 class ConditionWriter implements PropertyVisitor,
 								 ConditionProcessor
@@ -32,15 +32,11 @@ class ConditionWriter implements PropertyVisitor,
 	
 	public function writeCondition(Condition $condition)
 	{
-		$this->store->setCurrentConditionProcessor($this);
-		
-		$condition->process($this->store);
+		$condition->process($this);
 	}
 	
 	public function writeComparisonCondition(Storable $to, $comparison)
 	{
-		$this->store->setCurrentConditionProcessor($this);
-		
 		$this->comparison = $comparison;
 		$this->first = true;
 		$this->condition = '';
@@ -149,7 +145,6 @@ class ConditionWriter implements PropertyVisitor,
 				$subWriter = new ConditionWriter($this->store, $join);
 				$subWriter->writeComparisonCondition($value, $this->comparison);
 				
-				$this->store->setCurrentConditionProcessor($this);
 				$this->condition .= $subWriter->getCondition();
 			}
 		}

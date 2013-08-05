@@ -4,9 +4,9 @@ namespace Good\Memory\SQL;
 
 use Good\Memory\SQLStore;
 use Good\Memory\PropertyVisitor;
-use Good\Memory\ConditionProcessor;
 use Good\Manners\Storable;
 use Good\Manners\Condition;
+use Good\Manners\ConditionProcessor;
 
 class UpdateConditionWriter implements PropertyVisitor,
 									   ConditionProcessor
@@ -58,11 +58,10 @@ class UpdateConditionWriter implements PropertyVisitor,
 		$this->updatingTableNumber = $updatingTableNumber;
 		$this->updatingTableName = $updatingTableName;
 		$this->rootTableName = $rootTableName;
-		$this->store->setCurrentConditionProcessor($this);
 		
 		$this->first = true;
 		
-		$condition->process($this->store);
+		$condition->process($this);
 	}
 	
 	public function writeComparisonCondition(Storable $to, $comparison)
@@ -143,8 +142,6 @@ class UpdateConditionWriter implements PropertyVisitor,
 	
 	public function writeSimpleComparisonCondition(Storable $to, $comparison)
 	{
-		$this->store->setCurrentConditionProcessor($this);
-		
 		$this->comparison = $comparison;
 		$this->first = true;
 		$this->condition = '';
@@ -268,8 +265,6 @@ class UpdateConditionWriter implements PropertyVisitor,
 					
 					$subWriter = new UpdateConditionWriter($this->store, $join);
 					$subWriter->writeSimpleComparisonCondition($value, $this->comparison);
-					
-					$this->store->setCurrentConditionProcessor($this);
 					
 					if (!$this->phase2)
 					{
