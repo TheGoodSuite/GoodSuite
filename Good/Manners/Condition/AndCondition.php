@@ -10,7 +10,7 @@ class AndCondition extends Condition
 	private $condition1;
 	private $condition2;
 
-	public function __construct(\Good\Manners\BasicLogicStore $store, 
+	public function __construct(\Good\Manners\Store $store, 
 								    Condition $condition1, 
 								     Condition $condition2)
 	{

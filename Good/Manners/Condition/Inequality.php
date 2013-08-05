@@ -10,7 +10,7 @@ class Inequality extends Condition
 	private $store;
 	private $to;
 
-	public function __construct(\Good\Manners\ComparingStore $store, Storable $to)
+	public function __construct(\Good\Manners\Store $store, Storable $to)
 	{
 		parent::__construct($store);
 		

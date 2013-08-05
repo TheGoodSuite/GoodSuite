@@ -2,16 +2,12 @@
 
 namespace Good\Memory;
 
-use Good\Manners\ComparingStore;
-use Good\Manners\BasicLogicStore;
 use Good\Manners\Storable;
 use Good\Manners\Condition;
 use Good\Manners\Resolver;
 
 abstract class BaseSQLStore extends \GoodMannersStore // (generated so not namespaced)
-							implements ComparingStore,
-									   BasicLogicStore,
-									   SQLStore
+							implements SQLStore
 {
 	protected $db;
 	private $currentConditionWriter = null;
