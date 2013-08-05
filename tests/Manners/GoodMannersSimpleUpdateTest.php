@@ -217,7 +217,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
 		// At the moment we don't have a proper api to get any,
 		// but this trick does do the same
 		$type = new SimpleUpdateType();
-		$any = $this->store2->createGreaterCondition($type);
+		$any = new \Good\Manners\Condition\Greater($type);
 		
 		$resolver = new SimpleUpdateTypeResolver();
 		$resolver->resolveMyReference();
@@ -238,7 +238,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
 		// At the moment we don't have a proper api to get any,
 		// but this trick does do the same
 		$type = new SimpleUpdateType();
-		$any = $this->store1->createGreaterCondition($type);
+		$any = new \Good\Manners\Condition\Greater($type);
 		
 		$resolver = new SimpleUpdateTypeResolver();
 		$resolver->resolveMyReference();
@@ -309,7 +309,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
 		// At the moment we don't have a proper api to get any,
 		// but this trick does do the same
 		$type = new SimpleUpdateType();
-		$any = $this->store1->createGreaterCondition($type);
+		$any = new \Good\Manners\Condition\Greater($type);
 		
 		$resolver = new SimpleUpdateTypeResolver();
 		$resolver->resolveMyReference();
@@ -392,7 +392,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
 		// At the moment we don't have a proper api to get any,
 		// but this trick does do the same
 		$type = new SimpleUpdateType();
-		$any = $this->store1->createGreaterCondition($type);
+		$any = new \Good\Manners\Condition\Greater($type);
 		
 		$resolver = new SimpleUpdateTypeResolver();
 		$resolver->resolveMyReference();

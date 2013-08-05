@@ -183,7 +183,7 @@ abstract class GoodMannersDeleteTest extends PHPUnit_Framework_TestCase
 		// At the moment we don't have a proper api to get any,
 		// but this trick does do the same
 		$type = new DeleteType();
-		$any = $this->store2->createGreaterCondition($type);
+		$any = new \Good\Manners\Condition\Greater($type);
 		
 		$resolver = new DeleteTypeResolver();
 		
@@ -204,7 +204,7 @@ abstract class GoodMannersDeleteTest extends PHPUnit_Framework_TestCase
 		// At the moment we don't have a proper api to get any,
 		// but this trick does do the same
 		$type = new DeleteType();
-		$any = $this->store1->createGreaterCondition($type);
+		$any = new \Good\Manners\Condition\Greater($type);
 		
 		$collection = $this->store1->getDeleteTypeCollection($any, new DeleteTypeResolver());
 		

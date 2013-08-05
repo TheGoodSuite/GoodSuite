@@ -169,7 +169,7 @@ abstract class GoodMannersPersistenceTest extends PHPUnit_Framework_TestCase
 		// At the moment we don't have a proper api to get any,
 		// but this trick does do the same
 		$type = new PersistenceType();
-		$any = $store->createGreaterCondition($type);
+		$any = new \Good\Manners\Condition\Greater($type);
 		
 		$resolver = new PersistenceTypeResolver();
 		$collection = $store->getPersistenceTypeCollection($any, $resolver);

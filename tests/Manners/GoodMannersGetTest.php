@@ -227,7 +227,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		// At the moment we don't have a proper api to get any,
 		// but this trick does do the same
 		$type = new GetType();
-		$any = $this->store->createGreaterCondition($type);
+		$any = new \Good\Manners\Condition\Greater($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -302,7 +302,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 	{
 		$type = new GetType();
 		$type->setMyInt(5);
-		$any = $this->store->createLessCondition($type);
+		$any = new \Good\Manners\Condition\Less($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -335,7 +335,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 	{
 		$type = new GetType();
 		$type->setMyInt(5);
-		$any = $this->store->createLessOrEqualsCondition($type);
+		$any = new \Good\Manners\Condition\LessOrEquals($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -379,7 +379,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 	{
 		$type = new GetType();
 		$type->setMyInt(5);
-		$any = $this->store->createGreaterCondition($type);
+		$any = new \Good\Manners\Condition\Greater($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -421,7 +421,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 	{
 		$type = new GetType();
 		$type->setMyInt(5);
-		$any = $this->store->createGreaterOrEqualsCondition($type);
+		$any = new \Good\Manners\Condition\GreaterOrEquals($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -474,7 +474,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 	{
 		$type = new GetType();
 		$type->setMyInt(5);
-		$any = $this->store->createEqualityCondition($type);
+		$any = new \Good\Manners\Condition\Equality($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -507,7 +507,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 	{
 		$type = new GetType();
 		$type->setMyInt(5);
-		$any = $this->store->createInequalityCondition($type);
+		$any = new \Good\Manners\Condition\Inequality($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -568,7 +568,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		$otherType = new OtherType();
 		$otherType->setYourInt(80);
 		
-		$any = $this->store->createEqualityCondition($otherType);
+		$any = new \Good\Manners\Condition\Equality($otherType);
 		
 		$collection = $this->store->getOtherTypeCollection($any, new OtherTypeResolver());
 		
@@ -577,7 +577,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		// Then, we get the result with that reference	
 		$type = new GetType();
 		$type->setMyOtherType($referenced);
-		$any = $this->store->createEqualityCondition($type);
+		$any = new \Good\Manners\Condition\Equality($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -617,7 +617,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		// We still use the same ol' trick
 		$type = new GetType();
-		$any = $this->store->createEqualityCondition($type);
+		$any = new \Good\Manners\Condition\Equality($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -630,7 +630,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		// but this should do the trick
 		$type = new GetType();
 		$type->setId($idHolder->getId());
-		$any = $this->store->createEqualityCondition($type);
+		$any = new \Good\Manners\Condition\Equality($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -658,13 +658,13 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 	{
 		$type = new GetType();
 		$type->setMyInt(4);
-		$greater = $this->store->createGreaterCondition($type);
+		$greater = new \Good\Manners\Condition\Greater($type);
 		
 		$type = new GetType();
 		$type->setMyInt(10);
-		$less = $this->store->createLessCondition($type);
+		$less = new \Good\Manners\Condition\Less($type);
 		
-		$and = $this->store->createAndCondition($less, $greater);
+		$and = new \Good\Manners\Condition\AndCondition($less, $greater);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -712,15 +712,15 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 	{
 		$type = new GetType();
 		$type->setMyInt(5);
-		$greater = $this->store->createGreaterCondition($type);
+		$greater = new \Good\Manners\Condition\Greater($type);
 		
-		$less = $this->store->createLessCondition($type);
+		$less = new \Good\Manners\Condition\Less($type);
 		
 		$type = new GetType();
 		$type->setMyInt(8);
-		$greater = $this->store->createGreaterCondition($type);
+		$greater = new \Good\Manners\Condition\Greater($type);
 		
-		$and = $this->store->createOrCondition($less, $greater);
+		$and = new \Good\Manners\Condition\OrCondition($less, $greater);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -762,7 +762,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 	{
 		$type = new GetType();
 		$type->setMyOtherType(null);
-		$any = $this->store->createEqualityCondition($type);
+		$any = new \Good\Manners\Condition\Equality($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -793,7 +793,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 	{
 		$type = new GetType();
 		$type->setMyOtherType(null);
-		$any = $this->store->createInequalityCondition($type);
+		$any = new \Good\Manners\Condition\Inequality($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -863,7 +863,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		$type = new GetType();
 		$type->setMyOtherType(new OtherType());
 		$type->getMyOtherType()->setYourInt(85);
-		$any = $this->store->createLessCondition($type);
+		$any = new \Good\Manners\Condition\Less($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -926,7 +926,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		$type->setMyInt(4);
 		$type->setMyOtherType(new OtherType());
 		$type->getMyOtherType()->setYourInt(45);
-		$any = $this->store->createGreaterCondition($type);
+		$any = new \Good\Manners\Condition\Greater($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -963,7 +963,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		// Ints are already tested as we use them above everywhere
 		$type = new GetType();
 		$type->setMyFloat(6.0);
-		$any = $this->store->createGreaterCondition($type);
+		$any = new \Good\Manners\Condition\Greater($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -1019,7 +1019,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 	{
 		$type = new GetType();
 		$type->setMyText("Twenty");
-		$any = $this->store->createEqualityCondition($type);
+		$any = new \Good\Manners\Condition\Equality($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -1055,7 +1055,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 	{
 		$type = new GetType();
 		$type->setMyDatetime(new Datetime('2006-06-06'));
-		$any = $this->store->createGreaterCondition($type);
+		$any = new \Good\Manners\Condition\Greater($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -1100,7 +1100,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 	{
 		$type = new GetType();
 		$type->setMyInt(null);
-		$any = $this->store->createEqualityCondition($type);
+		$any = new \Good\Manners\Condition\Equality($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -1136,7 +1136,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 	{
 		$type = new GetType();
 		$type->setMyFloat(null);
-		$any = $this->store->createEqualityCondition($type);
+		$any = new \Good\Manners\Condition\Equality($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -1172,7 +1172,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 	{
 		$type = new GetType();
 		$type->setMyText(null);
-		$any = $this->store->createEqualityCondition($type);
+		$any = new \Good\Manners\Condition\Equality($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -1208,7 +1208,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 	{
 		$type = new GetType();
 		$type->setMyDatetime(null);
-		$any = $this->store->createEqualityCondition($type);
+		$any = new \Good\Manners\Condition\Equality($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -1246,7 +1246,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		// but this trick does do the same
 		$type = new GetType();
 		$type->setMyInt(null);
-		$any = $this->store->createInequalityCondition($type);
+		$any = new \Good\Manners\Condition\Inequality($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -1313,7 +1313,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 	{
 		$type = new GetType();
 		$type->setMyFloat(null);
-		$any = $this->store->createInequalityCondition($type);
+		$any = new \Good\Manners\Condition\Inequality($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -1380,7 +1380,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 	{
 		$type = new GetType();
 		$type->setMyText(null);
-		$any = $this->store->createInequalityCondition($type);
+		$any = new \Good\Manners\Condition\Inequality($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -1446,7 +1446,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 	{
 		$type = new GetType();
 		$type->setMyDatetime(null);
-		$any = $this->store->createInequalityCondition($type);
+		$any = new \Good\Manners\Condition\Inequality($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -1513,7 +1513,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 	{
 		// Still the get any trick
 		$type = new GetType();
-		$any = $this->store->createGreaterCondition($type);
+		$any = new \Good\Manners\Condition\Greater($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -1608,7 +1608,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 	{
 		// Still the get any trick
 		$type = new GetType();
-		$any = $this->store->createGreaterCondition($type);
+		$any = new \Good\Manners\Condition\Greater($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -1705,7 +1705,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 	{
 		// Still the get any trick
 		$type = new GetType();
-		$any = $this->store->createGreaterCondition($type);
+		$any = new \Good\Manners\Condition\Greater($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
@@ -1802,7 +1802,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 	{
 		// same ol' trick for getting any
 		$type = new GetType();
-		$any = $this->store->createGreaterCondition($type);
+		$any = new \Good\Manners\Condition\Greater($type);
 		
 		$resolver = new GetTypeResolver();
 		$collection = $this->store->getGetTypeCollection($any, $resolver);
@@ -1875,7 +1875,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 	{
 		// First, we need to create a circular reference:
 		$type = new GetType();
-		$any = $this->store->createGreaterCondition($type);
+		$any = new \Good\Manners\Condition\Greater($type);
 		$resolver = new GetTypeResolver();
 		$resolver->orderByMyIntAsc();
 		$collection = $this->store->getGetTypeCollection($any, $resolver);
@@ -1895,7 +1895,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		// same ol' trick for getting any
 		$type = new GetType();
-		$any = $this->store->createGreaterCondition($type);
+		$any = new \Good\Manners\Condition\Greater($type);
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyCircular();
