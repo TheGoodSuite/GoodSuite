@@ -167,9 +167,9 @@ abstract class BaseSQLStore extends \GoodMannersStore // (generated so not names
 		$this->numberOfJoins++;
 		
 		$join = new SQL\Join($tableNumberOrigin,
-							$this->fieldNamify($fieldNameOrigin),
-							$this->tableNamify($tableNameDestination),
-							$this->numberOfJoins);
+							 $fieldNameOrigin,
+							 $tableNameDestination,
+							 $this->numberOfJoins);
 		
 		$this->joins[$tableNumberOrigin][$fieldNameOrigin] = $join;
 		
