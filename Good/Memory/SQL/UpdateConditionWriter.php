@@ -45,11 +45,6 @@ class UpdateConditionWriter implements PropertyVisitor,
 		return $this->joining;
 	}
 	
-	private function getJoinedTables()
-	{
-		return $this->joinedTables;
-	}
-	
 	public function writeCondition(Condition $condition, 
 								   $rootTableName,
 								   $updatingTableNumber,
@@ -83,8 +78,7 @@ class UpdateConditionWriter implements PropertyVisitor,
 			{
 				$join = $this->store->getReverseJoin($this->updatingTableNumber);
 				
-				while ($join->tableNumberOrigin != 0 &&
-					    !\array_key_exists($join->tableNumberOrigin, $this->joinedTables))
+				while ($join->tableNumberOrigin != 0)
 				{
 					$join = $this->store->getReverseJoin($join->tableNumberOrigin);
 					
@@ -147,7 +141,6 @@ class UpdateConditionWriter implements PropertyVisitor,
 		$this->condition = '';
 		$this->joining = '';
 		$this->updatingTableFound = null;
-		$this->joinedTables = array();
 		$this->currentReference = 0;
 		
 		$this->store->setCurrentPropertyVisitor($this);
@@ -277,7 +270,6 @@ class UpdateConditionWriter implements PropertyVisitor,
 						$this->joining .= $subWriter->getJoining();
 						$this->writeBracketOrAnd();
 						$this->condition .= $subWriter->getCondition();
-						$this->joinedTables = \array_merge($this->joinedTables, $subWriter->getJoinedTables());
 					}
 					else
 					{
