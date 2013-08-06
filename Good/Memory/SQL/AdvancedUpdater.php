@@ -19,7 +19,6 @@ class AdvancedUpdater implements PropertyVisitor
 	private $sql;
 	private $first;
 	private $currentTable;
-	private $currentReference;
 	
 	private $condition;
 	private $rootTableName;
@@ -50,7 +49,6 @@ class AdvancedUpdater implements PropertyVisitor
 		$this->sql .= ' SET ';
 		
 		$this->first = true;
-		$this->currentReference = 0;
 		$this->store->setCurrentPropertyVisitor($this);
 		$value->acceptStore($this->store);
 		
@@ -88,7 +86,7 @@ class AdvancedUpdater implements PropertyVisitor
 		{
 			if ($value !== null && $value->isNew())
 			{
-				$join = $this->store->getJoin($this->currentTable, $this->currentReference);
+				$join = $this->store->getJoin($this->currentTable, $name);
 				
 				$updater = new AdvancedUpdater($this->store, $this->db, $join);
 				$updater->updateWithRootTableName($datatypeName, $this->condition, 
@@ -112,8 +110,6 @@ class AdvancedUpdater implements PropertyVisitor
 				}
 			}
 		}
-		
-		$this->currentReference++;
 	}
 	
 	public function visitTextProperty($name, $dirty, $value)

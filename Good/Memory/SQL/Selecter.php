@@ -18,7 +18,6 @@ class Selecter implements ResolverVisitor
 	
 	private $sql;
 	private $currentTable;
-	private $currentReference;
 	
 	private $order = array();
 	
@@ -34,7 +33,6 @@ class Selecter implements ResolverVisitor
 	{
 		$this->sql = "SELECT t0.id AS t0_id";
 		
-		$this->currentReference = 0;
 		$resolver->resolverAccept($this);
 		
 		$this->sql .= $this->writeQueryWithoutSelect($datatypeName, $condition);
@@ -101,13 +99,12 @@ class Selecter implements ResolverVisitor
 		$this->sql .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($name);
 		$this->sql .= ' AS t' . $this->currentTable . '_' . $this->store->fieldNamify($name);
 	
-		$join = $this->store->getJoin($this->currentTable, $this->currentReference);
+		$join = $this->store->getJoin($this->currentTable, $name);
 		
 		if ($join == -1)
 		{
 			$join = $this->store->createJoin($this->currentTable,
-											 $name, 
-											 $this->currentReference, 
+											 $name,
 											 $datatypeName);
 		}
 				
@@ -118,13 +115,10 @@ class Selecter implements ResolverVisitor
 		$this->currentTable = $join;
 		$resolver->resolverAccept($this);
 		$this->currentTable = $currentTable;
-		
-		$this->currentReference++;
 	}
 	
 	public function resolverVisitUnresolvedReferenceProperty($name)
 	{
-		$this->currentReference++;
 	}
 	
 	public function resolverVisitNonReferenceProperty($name)

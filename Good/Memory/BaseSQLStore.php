@@ -132,11 +132,11 @@ abstract class BaseSQLStore extends \GoodMannersStore // (generated so not names
 		$updater->update($datatypeName, $condition, $modifications);
 	}
 	
-	public function getJoin($table, $property)
+	public function getJoin($table, $field)
 	{
-		if (\array_key_exists($property, $this->joins[$table]))
+		if (\array_key_exists($field, $this->joins[$table]))
 		{
-			return $this->joins[$table][$property]->tableNumberDestination;
+			return $this->joins[$table][$field]->tableNumberDestination;
 		}
 		else
 		{
@@ -161,7 +161,7 @@ abstract class BaseSQLStore extends \GoodMannersStore // (generated so not names
 		return $this->joins;
 	}
 	
-	public function createJoin($tableNumberOrigin, $fieldNameOrigin, $fieldNumberOrigin, $tableNameDestination)
+	public function createJoin($tableNumberOrigin, $fieldNameOrigin, $tableNameDestination)
 	{
 		// we start off with increment because joins index is numberOfJoins + 1 (index 0 is for base table)
 		$this->numberOfJoins++;
@@ -171,7 +171,7 @@ abstract class BaseSQLStore extends \GoodMannersStore // (generated so not names
 							$this->tableNamify($tableNameDestination),
 							$this->numberOfJoins);
 		
-		$this->joins[$tableNumberOrigin][$fieldNumberOrigin] = $join;
+		$this->joins[$tableNumberOrigin][$fieldNameOrigin] = $join;
 		
 		$this->joins[$this->numberOfJoins] = array();
 		$this->joinsReverse[$this->numberOfJoins] = $join;

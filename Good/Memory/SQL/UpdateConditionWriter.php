@@ -17,7 +17,6 @@ class UpdateConditionWriter implements PropertyVisitor,
 	private $first;
 	
 	private $currentTable;
-	private $currentReference;
 	private $to;
 	
 	private $updatingTableNumber;
@@ -121,7 +120,6 @@ class UpdateConditionWriter implements PropertyVisitor,
 			$this->writeBracketOrAnd();
 			$this->first = true;
 			$this->currentTable = $this->updatingTableNumber;
-			$this->currentReference = 0;
 			
 			$this->updatingTableValue->acceptStore($this->store);
 		}
@@ -141,7 +139,6 @@ class UpdateConditionWriter implements PropertyVisitor,
 		$this->condition = '';
 		$this->joining = '';
 		$this->updatingTableFound = null;
-		$this->currentReference = 0;
 		
 		$this->store->setCurrentPropertyVisitor($this);
 		$to->acceptStore($this->store);
@@ -243,7 +240,7 @@ class UpdateConditionWriter implements PropertyVisitor,
 			}
 			else
 			{
-				$join = $this->store->getJoin($this->currentTable, $this->currentReference);
+				$join = $this->store->getJoin($this->currentTable, $name);
 				
 				if ($join == $this->updatingTableNumber)
 				{
@@ -253,7 +250,7 @@ class UpdateConditionWriter implements PropertyVisitor,
 				{
 					if ($join == -1)
 					{
-						$join = $this->store->createJoin($this->currentTable, $name, $this->currentReference, $datatypeName);
+						$join = $this->store->createJoin($this->currentTable, $name, $datatypeName);
 					}
 					
 					$subWriter = new UpdateConditionWriter($this->store, $join);
@@ -287,8 +284,6 @@ class UpdateConditionWriter implements PropertyVisitor,
 				}
 			}
 		}
-		
-		$this->currentReference++;
 	}
 	
 	public function visitTextProperty($name, $dirty, $value)

@@ -17,7 +17,6 @@ class ConditionWriter implements PropertyVisitor,
 	private $first;
 	
 	private $currentTable;
-	private $currentReference;
 	
 	public function __construct(SQLStore $store, $currentTable)
 	{	
@@ -135,11 +134,11 @@ class ConditionWriter implements PropertyVisitor,
 			}
 			else
 			{
-				$join = $this->store->getJoin($this->currentTable, $this->currentReference);
+				$join = $this->store->getJoin($this->currentTable, $name);
 				
 				if ($join == -1)
 				{
-					$join = $this->store->createJoin($this->currentTable, $name, $this->currentReference, $datatypeName);
+					$join = $this->store->createJoin($this->currentTable, $name, $datatypeName);
 				}
 				
 				$subWriter = new ConditionWriter($this->store, $join);
@@ -148,8 +147,6 @@ class ConditionWriter implements PropertyVisitor,
 				$this->condition .= $subWriter->getCondition();
 			}
 		}
-		
-		$this->currentReference++;
 	}
 	
 	public function visitTextProperty($name, $dirty, $value)

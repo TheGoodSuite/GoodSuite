@@ -9,7 +9,6 @@ class JoinDiscoverer implements PropertyVisitor
 {
 	private $store;
 	
-	private $currentReference;
 	private $currentTable;
 	
 	public function __construct($store, $currentTable)
@@ -20,8 +19,6 @@ class JoinDiscoverer implements PropertyVisitor
 	
 	public function discoverJoins(Storable $value)
 	{
-		$this->currentReference = 0;
-		
 		$this->store->setCurrentPropertyVisitor($this);
 		$value->acceptStore($this->store);
 	}
@@ -31,21 +28,18 @@ class JoinDiscoverer implements PropertyVisitor
 	{
 		if ($value !== null && $dirty && $value->isNew())
 		{
-			$join = $this->store->getJoin($this->currentTable, $this->currentReference);
+			$join = $this->store->getJoin($this->currentTable, $name);
 			
 			if ($join == -1)
 			{
 				$join = $this->store->createJoin($this->currentTable, 
 												 $name,
-												 $this->currentReference,
 												 $datatypeName);
 			}
 			
 			$recursionDiscoverer = new JoinDiscoverer($this->store, $join);
 			$recursionDiscoverer->discoverJoins($value);
 		}
-		
-		$this->currentReference++;
 	}
 	
 	public function visitTextProperty($name, $dirty, $value) {}
