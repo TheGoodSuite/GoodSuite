@@ -31,14 +31,6 @@ abstract class GoodMannersPersistenceTest extends PHPUnit_Framework_TestCase
 		
 		$service->requireClasses(array('PersistenceType'));
 		
-		$manners = new \Good\Manners\Manners();
-		$manners->compileStore($schema, dirname(__FILE__) . '/../generated/');
-		require dirname(__FILE__) . '/../generated/Store.php';
-
-		$memory = new \Good\Memory\Memory();
-		$memory->compileSQLStore($schema, dirname(__FILE__) . '/../generated/');
-		require dirname(__FILE__) . '/../generated/SQLStore.php';
-		
 		require dirname(__FILE__) . '/../generated/PersistenceTypeResolver.php';
 	}
 	
@@ -60,11 +52,8 @@ abstract class GoodMannersPersistenceTest extends PHPUnit_Framework_TestCase
 		unlink(dirname(__FILE__) . '/../testInputFiles/PersistenceType.datatype');
 		unlink(dirname(__FILE__) . '/../generated/BasePersistenceType.datatype.php');
 		unlink(dirname(__FILE__) . '/../generated/PersistenceType.datatype.php');
-		unlink(dirname(__FILE__) . '/../generated/PersistenceTypeCollection.php');
 		unlink(dirname(__FILE__) . '/../generated/PersistenceTypeResolver.php');
 		unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');
-		unlink(dirname(__FILE__) . '/../generated/Store.php');
-		unlink(dirname(__FILE__) . '/../generated/SQLStore.php');
 		
 		if (ini_get('zend.enable_gc'))
 		{
@@ -124,14 +113,14 @@ abstract class GoodMannersPersistenceTest extends PHPUnit_Framework_TestCase
 		$ins->setMyFloat(4.4);
 		$ins->setMyText("Four");
 		$ins->setMyDatetime(new \Datetime('2004-04-04'));
-		$store->insertPersistenceType($ins);
+		$store->insert($ins);
 		
 		$ins = new PersistenceType();
 		$ins->setMyInt(5);
 		$ins->setMyFloat(8.8);
 		$ins->setMyText("Ten");
 		$ins->setMyDatetime(new \Datetime('2012-12-12'));
-		$store->insertPersistenceType($ins);
+		$store->insert($ins);
 		
 		$expectedResults = array();
 		
@@ -172,7 +161,7 @@ abstract class GoodMannersPersistenceTest extends PHPUnit_Framework_TestCase
 		$any = new \Good\Manners\Condition\Greater($type);
 		
 		$resolver = new PersistenceTypeResolver();
-		$collection = $store->getPersistenceTypeCollection($any, $resolver);
+		$collection = $store->getCollection($any, $resolver);
 		
 		while ($type = $collection->getNext())
 		{

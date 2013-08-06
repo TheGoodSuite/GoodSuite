@@ -58,6 +58,7 @@ class AdvancedUpdater implements PropertyVisitor
 		if (!$this->first)
 		{
 			$conditionWriter = new UpdateConditionWriter($this->store, 0);
+			
 			$conditionWriter->writeCondition($condition, $rootTableName, $this->currentTable, $datatypeName);
 			
 			$this->sql .= ' WHERE ' . $conditionWriter->getCondition();

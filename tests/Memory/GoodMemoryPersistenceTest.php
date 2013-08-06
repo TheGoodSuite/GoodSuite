@@ -17,7 +17,7 @@ class GoodMemoryPersistenceTest extends GoodMannersPersistenceTest
 	
 	public function getNewStore()
 	{
-		return new GoodMemorySQLStore($this->getNewDb());
+		return new \Good\Memory\SQLStore($this->getNewDb());
 	}
 }
 

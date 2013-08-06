@@ -26,6 +26,7 @@ class JoinDiscoverer implements PropertyVisitor
 	public function visitReferenceProperty($name, $datatypeName, $dirty, 
 														Storable $value = null)
 	{
+		
 		if ($value !== null && $dirty && $value->isNew())
 		{
 			$join = $this->store->getJoin($this->currentTable, $name);

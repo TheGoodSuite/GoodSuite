@@ -41,14 +41,6 @@ abstract class GoodMannersDeleteTest extends PHPUnit_Framework_TestCase
 		
 		$service->requireClasses(array('DeleteType'));
 		
-		$manners = new \Good\Manners\Manners();
-		$manners->compileStore($schema, dirname(__FILE__) . '/../generated/');
-		require dirname(__FILE__) . '/../generated/Store.php';
-
-		$memory = new \Good\Memory\Memory();
-		$memory->compileSQLStore($schema, dirname(__FILE__) . '/../generated/');
-		require dirname(__FILE__) . '/../generated/SQLStore.php';
-		
 		require dirname(__FILE__) . '/../generated/DeleteTypeResolver.php';
 	}
 	
@@ -57,11 +49,8 @@ abstract class GoodMannersDeleteTest extends PHPUnit_Framework_TestCase
 		unlink(dirname(__FILE__) . '/../testInputFiles/DeleteType.datatype');
 		unlink(dirname(__FILE__) . '/../generated/BaseDeleteType.datatype.php');
 		unlink(dirname(__FILE__) . '/../generated/DeleteType.datatype.php');
-		unlink(dirname(__FILE__) . '/../generated/DeleteTypeCollection.php');
 		unlink(dirname(__FILE__) . '/../generated/DeleteTypeResolver.php');
 		unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');
-		unlink(dirname(__FILE__) . '/../generated/Store.php');
-		unlink(dirname(__FILE__) . '/../generated/SQLStore.php');
 		
 		if (ini_get('zend.enable_gc'))
 		{
@@ -85,35 +74,35 @@ abstract class GoodMannersDeleteTest extends PHPUnit_Framework_TestCase
 		$ins->setMyFloat(4.4);
 		$ins->setMyText("Four");
 		$ins->setMyDatetime(new \Datetime('2004-04-04'));
-		$store->insertDeleteType($ins);
+		$store->insert($ins);
 		
 		$ins = new DeleteType();
 		$ins->setMyInt(5);
 		$ins->setMyFloat(null);
 		$ins->setMyText("Five");
 		$ins->setMyDatetime(new \Datetime('2005-05-05'));
-		$store->insertDeleteType($ins);
+		$store->insert($ins);
 		
 		$ins = new DeleteType();
 		$ins->setMyInt(8);
 		$ins->setMyFloat(10.10);
 		$ins->setMyText(null);
 		$ins->setMyDatetime(new \Datetime('2008-08-08'));
-		$store->insertDeleteType($ins);
+		$store->insert($ins);
 		
 		$ins = new DeleteType();
 		$ins->setMyInt(10);
 		$ins->setMyFloat(10.10);
 		$ins->setMyText("Ten");
 		$ins->setMyDatetime(new \Datetime('2010-10-10'));
-		$store->insertDeleteType($ins);
+		$store->insert($ins);
 		
 		$ins = new DeleteType();
 		$ins->setMyInt(null);
 		$ins->setMyFloat(20.20);
 		$ins->setMyText("Twenty");
 		$ins->setMyDatetime(null);
-		$store->insertDeleteType($ins);
+		$store->insert($ins);
 		
 		$store->flush();
 		
@@ -166,10 +155,10 @@ abstract class GoodMannersDeleteTest extends PHPUnit_Framework_TestCase
 		if ($pos === false)
 		{
 			// We're always wrong here.
-			$this->assertContains($needle, $haystack);
+			//$this->assertContains($needle, $haystack);
 			
 			// I'd rather not have huge messages when running my entire test suite.
-			//$this->assertTrue(false);
+			$this->assertTrue(false);
 		}
 		
 		// To keep the assert count to what it actually is:
@@ -187,7 +176,7 @@ abstract class GoodMannersDeleteTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new DeleteTypeResolver();
 		
-		$collection = $this->store2->getDeleteTypeCollection($any, $resolver);
+		$collection = $this->store2->getCollection($any, $resolver);
 		
 		while ($type = $collection->getNext())
 		{
@@ -206,7 +195,7 @@ abstract class GoodMannersDeleteTest extends PHPUnit_Framework_TestCase
 		$type = new DeleteType();
 		$any = new \Good\Manners\Condition\Greater($type);
 		
-		$collection = $this->store1->getDeleteTypeCollection($any, new DeleteTypeResolver());
+		$collection = $this->store1->getCollection($any, new DeleteTypeResolver());
 		
 		while ($type = $collection->getNext())
 		{

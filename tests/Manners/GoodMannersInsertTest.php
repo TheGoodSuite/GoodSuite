@@ -41,13 +41,13 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
 		
 		$service->requireClasses(array('InsertType'));
 		
-		$manners = new \Good\Manners\Manners();
-		$manners->compileStore($schema, dirname(__FILE__) . '/../generated/');
-		require dirname(__FILE__) . '/../generated/Store.php';
+		// $manners = new \Good\Manners\Manners();
+		// $manners->compileStore($schema, dirname(__FILE__) . '/../generated/');
+		// require dirname(__FILE__) . '/../generated/Store.php';
 
-		$memory = new \Good\Memory\Memory();
-		$memory->compileSQLStore($schema, dirname(__FILE__) . '/../generated/');
-		require dirname(__FILE__) . '/../generated/SQLStore.php';
+		// $memory = new \Good\Memory\Memory();
+		// $memory->compileSQLStore($schema, dirname(__FILE__) . '/../generated/');
+		// require dirname(__FILE__) . '/../generated/SQLStore.php';
 		
 		require dirname(__FILE__) . '/../generated/InsertTypeResolver.php';
 	}
@@ -57,11 +57,8 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
 		unlink(dirname(__FILE__) . '/../testInputFiles/InsertType.datatype');
 		unlink(dirname(__FILE__) . '/../generated/BaseInsertType.datatype.php');
 		unlink(dirname(__FILE__) . '/../generated/InsertType.datatype.php');
-		unlink(dirname(__FILE__) . '/../generated/InsertTypeCollection.php');
 		unlink(dirname(__FILE__) . '/../generated/InsertTypeResolver.php');
 		unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');
-		unlink(dirname(__FILE__) . '/../generated/Store.php');
-		unlink(dirname(__FILE__) . '/../generated/SQLStore.php');
 		
 		if (ini_get('zend.enable_gc'))
 		{
@@ -155,7 +152,7 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new InsertTypeResolver();
 		$resolver->resolveMyCircularReference();
-		$collection = $this->store2->getInsertTypeCollection($any, $resolver);
+		$collection = $this->store2->getCollection($any, $resolver);
 		
 		while ($type = $collection->getNext())
 		{
@@ -175,7 +172,7 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
 		$ins->setMyText("Four");
 		$ins->setMyDatetime(new \Datetime('2004-04-04'));
 		$ins->setMyCircularReference(null);
-		$this->store1->insertInsertType($ins);
+		$this->store1->insert($ins);
 		
 		$expectedResults = array();
 		
@@ -211,8 +208,8 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
 		
 		$ins->setMyCircularReference($ins2);
 		
-		$this->store1->insertInsertType($ins);
-		$this->store1->insertInsertType($ins2);
+		$this->store1->insert($ins);
+		$this->store1->insert($ins2);
 		
 		$expectedResults = array();
 		
@@ -249,7 +246,7 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
 		$ins->setMyText(null);
 		$ins->setMyDatetime(null);
 		$ins->setMyCircularReference(null);
-		$this->store1->insertInsertType($ins);
+		$this->store1->insert($ins);
 		
 		$expectedResults = array();
 		

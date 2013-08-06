@@ -94,15 +94,15 @@ class Compiler implements \Good\Rolemodel\Visitor
 		
 		foreach ($this->modifiers as $modifier)
 		{
-			foreach($modifier->extraFiles() as $filename => $contents)
-			{
-				\file_put_contents($this->outputDir . $filename, $contents);
-			}
+			$modifier->visitSchemaEnd();
 		}
 		
 		foreach ($this->modifiers as $modifier)
 		{
-			$modifier->visitSchemaEnd();
+			foreach($modifier->extraFiles() as $filename => $contents)
+			{
+				\file_put_contents($this->outputDir . $filename, $contents);
+			}
 		}
 	}
 	

@@ -48,13 +48,13 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
 		
 		$service->requireClasses(array('SimpleUpdateType', 'AnotherType'));
 		
-		$manners = new \Good\Manners\Manners();
-		$manners->compileStore($schema, dirname(__FILE__) . '/../generated/');
-		require dirname(__FILE__) . '/../generated/Store.php';
+		// $manners = new \Good\Manners\Manners();
+		// $manners->compileStore($schema, dirname(__FILE__) . '/../generated/');
+		// require dirname(__FILE__) . '/../generated/Store.php';
 
-		$memory = new \Good\Memory\Memory();
-		$memory->compileSQLStore($schema, dirname(__FILE__) . '/../generated/');
-		require dirname(__FILE__) . '/../generated/SQLStore.php';
+		// $memory = new \Good\Memory\Memory();
+		// $memory->compileSQLStore($schema, dirname(__FILE__) . '/../generated/');
+		// require dirname(__FILE__) . '/../generated/SQLStore.php';
 		
 		require dirname(__FILE__) . '/../generated/SimpleUpdateTypeResolver.php';
 		require dirname(__FILE__) . '/../generated/AnotherTypeResolver.php';
@@ -68,13 +68,9 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
 		unlink(dirname(__FILE__) . '/../generated/BaseAnotherType.datatype.php');
 		unlink(dirname(__FILE__) . '/../generated/SimpleUpdateType.datatype.php');
 		unlink(dirname(__FILE__) . '/../generated/AnotherType.datatype.php');
-		unlink(dirname(__FILE__) . '/../generated/SimpleUpdateTypeCollection.php');
-		unlink(dirname(__FILE__) . '/../generated/AnotherTypeCollection.php');
 		unlink(dirname(__FILE__) . '/../generated/SimpleUpdateTypeResolver.php');
 		unlink(dirname(__FILE__) . '/../generated/AnotherTypeResolver.php');
 		unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');
-		unlink(dirname(__FILE__) . '/../generated/Store.php');
-		unlink(dirname(__FILE__) . '/../generated/SQLStore.php');
 		
 		if (ini_get('zend.enable_gc'))
 		{
@@ -102,7 +98,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
 		$ref = new AnotherType();
 		$ref->setYourInt(50);
 		$ins->setMyReference($ref);
-		$store->insertSimpleUpdateType($ins);
+		$store->insert($ins);
 		
 		$ins = new SimpleUpdateType();
 		$ins->setMyInt(5);
@@ -112,7 +108,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
 		$ref = new AnotherType();
 		$ref->setYourInt(40);
 		$ins->setMyReference($ref);
-		$store->insertSimpleUpdateType($ins);
+		$store->insert($ins);
 		
 		$ins = new SimpleUpdateType();
 		$ins->setMyInt(8);
@@ -122,7 +118,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
 		$ref = new AnotherType();
 		$ref->setYourInt(30);
 		$ins->setMyReference($ref);
-		$store->insertSimpleUpdateType($ins);
+		$store->insert($ins);
 		
 		$ins = new SimpleUpdateType();
 		$ins->setMyInt(10);
@@ -132,7 +128,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
 		$ref = new AnotherType();
 		$ref->setYourInt(20);
 		$ins->setMyReference($ref);
-		$store->insertSimpleUpdateType($ins);
+		$store->insert($ins);
 		
 		$ins = new SimpleUpdateType();
 		$ins->setMyInt(null);
@@ -142,7 +138,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
 		$ref = new AnotherType();
 		$ref->setYourInt(10);
 		$ins->setMyReference($ref);
-		$store->insertSimpleUpdateType($ins);
+		$store->insert($ins);
 		
 		$store->flush();
 		
@@ -221,7 +217,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new SimpleUpdateTypeResolver();
 		$resolver->resolveMyReference();
-		$collection = $this->store2->getSimpleUpdateTypeCollection($any, $resolver);
+		$collection = $this->store2->getCollection($any, $resolver);
 		
 		while ($type = $collection->getNext())
 		{
@@ -230,7 +226,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
 			array_splice($expected, $pos, 1);
 		}
 		
-		$this->assertSame(array(), $expected);		
+		$this->assertSame(array(), $expected);
 	}
 	
 	public function testSimpleUpdate()
@@ -242,7 +238,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new SimpleUpdateTypeResolver();
 		$resolver->resolveMyReference();
-		$collection = $this->store1->getSimpleUpdateTypeCollection($any, $resolver);
+		$collection = $this->store1->getCollection($any, $resolver);
 		
 		while ($type = $collection->getNext())
 		{
@@ -313,7 +309,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new SimpleUpdateTypeResolver();
 		$resolver->resolveMyReference();
-		$collection = $this->store1->getSimpleUpdateTypeCollection($any, $resolver);
+		$collection = $this->store1->getCollection($any, $resolver);
 		
 		while ($type = $collection->getNext())
 		{
@@ -397,7 +393,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
 		$resolver = new SimpleUpdateTypeResolver();
 		$resolver->resolveMyReference();
 		$resolver->orderByMyIntAsc();
-		$collection = $this->store1->getSimpleUpdateTypeCollection($any, $resolver);
+		$collection = $this->store1->getCollection($any, $resolver);
 		
 		$ref = null;
 		
@@ -421,7 +417,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
 				$type->setMyReference($myref);
 				
 				// todo: make this line unnecessary
-				$this->store1->insertAnotherType($myref);
+				$this->store1->insert($myref);
 			}
 		}
 		

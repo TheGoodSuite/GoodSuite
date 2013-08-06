@@ -8,6 +8,8 @@ use Good\Manners\Storable;
 use Good\Manners\Condition;
 use Good\Manners\ConditionProcessor;
 
+$started = false;
+
 class UpdateConditionWriter implements PropertyVisitor,
 									   ConditionProcessor
 {

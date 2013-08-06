@@ -17,7 +17,7 @@ class GoodMemoryInsertTest extends GoodMannersInsertTest
 	
 	public function getNewStore()
 	{
-		return new GoodMemorySQLStore($this->getNewDb());
+		return new \Good\Memory\SQLStore($this->getNewDb());
 	}
 }
 

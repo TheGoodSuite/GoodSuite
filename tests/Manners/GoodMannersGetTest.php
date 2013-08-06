@@ -47,14 +47,6 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		$service->requireClasses(array('GetType', 'OtherType'));
 		//require dirname(__FILE__) . '/../generated/GetType.datatype.php';
 		
-		$manners = new \Good\Manners\Manners();
-		$manners->compileStore($schema, dirname(__FILE__) . '/../generated/');
-		require dirname(__FILE__) . '/../generated/Store.php';
-
-		$memory = new \Good\Memory\Memory();
-		$memory->compileSQLStore($schema, dirname(__FILE__) . '/../generated/');
-		require dirname(__FILE__) . '/../generated/SQLStore.php';
-		
 		require dirname(__FILE__) . '/../generated/GetTypeResolver.php';
 		require dirname(__FILE__) . '/../generated/OtherTypeResolver.php';
 	}
@@ -67,13 +59,9 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		unlink(dirname(__FILE__) . '/../generated/BaseOtherType.datatype.php');
 		unlink(dirname(__FILE__) . '/../generated/GetType.datatype.php');
 		unlink(dirname(__FILE__) . '/../generated/OtherType.datatype.php');
-		unlink(dirname(__FILE__) . '/../generated/GetTypeCollection.php');
-		unlink(dirname(__FILE__) . '/../generated/OtherTypeCollection.php');
 		unlink(dirname(__FILE__) . '/../generated/GetTypeResolver.php');
 		unlink(dirname(__FILE__) . '/../generated/OtherTypeResolver.php');
 		unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');
-		unlink(dirname(__FILE__) . '/../generated/Store.php');
-		unlink(dirname(__FILE__) . '/../generated/SQLStore.php');
 		
 		if (ini_get('zend.enable_gc'))
 		{
@@ -102,7 +90,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		$ref->setYourInt(90);
 		$ins->setMyOtherType($ref);
 		$ins->setMyCircular(null);
-		$store->insertGetType($ins);
+		$store->insert($ins);
 		
 		$ins = new GetType();
 		$ins->setMyInt(5);
@@ -113,7 +101,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		$ref->setYourInt(80);
 		$ins->setMyOtherType($ref);
 		$ins->setMyCircular(null);
-		$store->insertGetType($ins);
+		$store->insert($ins);
 		
 		$ins = new GetType();
 		$ins->setMyInt(8);
@@ -124,7 +112,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		$ref->setYourInt(40);
 		$ins->setMyOtherType($ref);
 		$ins->setMyCircular(null);
-		$store->insertGetType($ins);
+		$store->insert($ins);
 		
 		$ins = new GetType();
 		$ins->setMyInt(10);
@@ -133,7 +121,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		$ins->setMyDatetime(new \Datetime('2010-10-10'));
 		$ins->setMyOtherType(null);
 		$ins->setMyCircular(null);
-		$store->insertGetType($ins);
+		$store->insert($ins);
 		
 		$ins = new GetType();
 		$ins->setMyInt(null);
@@ -144,7 +132,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		$ref->setYourInt(5);
 		$ins->setMyOtherType($ref);
 		$ins->setMyCircular(null);
-		$store->insertGetType($ins);
+		$store->insert($ins);
 		
 		$store->flush();
 		
@@ -231,7 +219,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		
@@ -306,7 +294,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		
@@ -339,7 +327,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		
@@ -383,7 +371,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		
@@ -425,7 +413,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		
@@ -478,7 +466,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		
@@ -511,7 +499,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		
@@ -570,7 +558,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		$any = new \Good\Manners\Condition\Equality($otherType);
 		
-		$collection = $this->store->getOtherTypeCollection($any, new OtherTypeResolver());
+		$collection = $this->store->getCollection($any, new OtherTypeResolver());
 		
 		$referenced = $collection->getNext();
 		
@@ -581,7 +569,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		
@@ -621,7 +609,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$collection->getNext();
 		$idHolder = $collection->getNext();
@@ -634,7 +622,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		
@@ -668,7 +656,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
-		$collection = $this->store->getGetTypeCollection($and, $resolver);
+		$collection = $this->store->getCollection($and, $resolver);
 		
 		$expectedResults = array();
 		
@@ -724,7 +712,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
-		$collection = $this->store->getGetTypeCollection($and, $resolver);
+		$collection = $this->store->getCollection($and, $resolver);
 		
 		$expectedResults = array();
 		
@@ -766,7 +754,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		
@@ -797,7 +785,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		
@@ -867,7 +855,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		
@@ -930,7 +918,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		
@@ -967,7 +955,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		
@@ -1023,7 +1011,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		
@@ -1059,7 +1047,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		
@@ -1104,7 +1092,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		
@@ -1140,7 +1128,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		
@@ -1176,7 +1164,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		
@@ -1212,7 +1200,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		
@@ -1250,7 +1238,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		
@@ -1317,7 +1305,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		
@@ -1384,7 +1372,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		
@@ -1450,7 +1438,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		
@@ -1518,7 +1506,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
 		$resolver->orderByMyIntAsc();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		
@@ -1613,7 +1601,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyOtherType();
 		$resolver->orderByMyIntDesc();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		
@@ -1711,7 +1699,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		$resolver->resolveMyOtherType();
 		$resolver->orderByMyFloatAsc();
 		$resolver->orderByMyIntDesc();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		
@@ -1805,7 +1793,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		$any = new \Good\Manners\Condition\Greater($type);
 		
 		$resolver = new GetTypeResolver();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		
@@ -1878,7 +1866,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		$any = new \Good\Manners\Condition\Greater($type);
 		$resolver = new GetTypeResolver();
 		$resolver->orderByMyIntAsc();
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		while ($type = $collection->getNext())
 		{
 			if ($type->getMyInt() == 4)
@@ -1900,7 +1888,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 		$resolver = new GetTypeResolver();
 		$resolver->resolveMyCircular();
 		
-		$collection = $this->store->getGetTypeCollection($any, $resolver);
+		$collection = $this->store->getCollection($any, $resolver);
 		
 		$expectedResults = array();
 		

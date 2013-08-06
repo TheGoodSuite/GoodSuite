@@ -17,7 +17,7 @@ class GoodMemoryAdvancedUpdateTest extends GoodMannersAdvancedUpdateTest
 	
 	public function getNewStore()
 	{
-		return new GoodMemorySQLStore($this->getNewDb());
+		return new \Good\Memory\SQLStore($this->getNewDb());
 	}
 }
 
