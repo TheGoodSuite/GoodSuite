@@ -138,7 +138,7 @@ class SQLStore extends Store
 			foreach ($modified as $storable)
 			{
 				$updater->update($storable->getType(), $storable);
-				$storable->makeDirty(false);
+				$storable->clean();
 			}
 		}
 		
@@ -321,7 +321,7 @@ class SQLStore extends Store
 		$ret->setId($data[$table]["id"]);
 		
 		$ret->setNew(false);
-		$ret->makeDirty(false);
+		$ret->clean();
 		$ret->setStore($this);
 		
 		$this->created[$type][$data[$table]["id"]] = $ret;

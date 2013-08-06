@@ -45,7 +45,7 @@ class Storable implements \Good\Service\Modifier
 		$res .= '	private $id = -1;' . "\n";
 		$res .= '	protected $dirty = false;' . "\n";
 		$res .= "	\n";
-		$res .= '	abstract protected function dirty();' . "\n";
+		$res .= '	abstract protected function makeDirty();' . "\n";
 		$res .= "	\n";
 		$res .= '	public function isDeleted()'. "\n";
 		$res .= "	{\n";
@@ -55,7 +55,7 @@ class Storable implements \Good\Service\Modifier
 		$res .= '	public function delete()'. "\n";
 		$res .= "	{\n";
 		$res .= '		$this->deleted = true;' . "\n";
-		$res .= '		$this->dirty();' . "\n";
+		$res .= '		$this->makeDirty();' . "\n";
 		$res .= "	}\n";
 		$res .= "	\n";
 		$res .= '	public function isNew()'. "\n";
@@ -83,7 +83,7 @@ class Storable implements \Good\Service\Modifier
 		$res .= '		return $this->dirty;' . "\n";
 		$res .= "	}\n";
 		$res .= "	\n";
-		$res .= '	abstract public function makeDirty($value = true);' . "\n";
+		$res .= '	abstract public function clean();' . "\n";
 		$res .= "	\n";
 		$res .= '	protected function checkValidationToken()' . "\n";
 		$res .= "	{\n";
@@ -342,11 +342,6 @@ class Storable implements \Good\Service\Modifier
 		// ucfirst: upper case first letter (it's a php built-in)
 		$res  = '	private $is' . \ucfirst($this->classVariable) . 'Dirty =  false;' . "\n";
 		$res .= "	\n";
-		$res .= '	public function make' . \ucfirst($this->classVariable) . 'Dirty($value = true)' . "\n";
-		$res .= "	{\n";
-		$res .= '		$this->is' . \ucfirst($this->classVariable) . 'Dirty = $value;' . "\n";
-		$res .= "	}\n";
-		$res .= "	\n";
 		
 		return $res;
 	}
@@ -368,8 +363,8 @@ class Storable implements \Good\Service\Modifier
 	{
 		$res  = "		\n";
 		// ucfirst: upper case first letter (it's a php built-in)
-		$res .= '		$this->make' . \ucfirst($this->classVariable) . 'Dirty();' . "\n";
-		$res .= '		$this->dirty();' . "\n";
+		$res .= '		$this->is' . \ucfirst($this->classVariable) . 'Dirty = true;' . "\n";
+		$res .= '		$this->makeDirty();' . "\n";
 		
 		return $res;
 	}
@@ -381,28 +376,24 @@ class Storable implements \Good\Service\Modifier
 	
 	public function classBody()
 	{
-		$res  = '	protected function dirty()' . "\n";
+		$res  = '	protected function makeDirty()' . "\n";
 		$res .= "	{\n";
 		$res .= '		if (!$this->isDirty() && $this->store != null)' . "\n";
 		$res .= "		{\n";
-		$res .= '			$this->makeDirty(true);' . "\n";
+		$res .= '			$this->dirty = true;' . "\n";
 		$res .= '			$this->store->dirtyStorable($this);' . "\n";
 		$res .= "		}\n";
 		$res .= "	}\n";
 		$res .= "	\n";
 		
-		$res .= '	public function makeDirty($value = true)' . "\n";
+		$res .= '	public function clean()' . "\n";
 		$res .= "	{\n";
-		$res .= '		$this->dirty = $value;' . "\n";
+		$res .= '		$this->dirty = false;' . "\n";
 		$res .= "		\n";
-		$res .= '		if ($value == false)' . "\n";
-		$res .= "		{\n";
 		foreach ($this->classMembers as $member)
 		{
-			$res .= '			$this->make' . ucfirst($member) . 'Dirty(false);' . "\n";
+			$res .= '		$this->is' . ucfirst($member) . 'Dirty = false;' . "\n";
 		}
-		$res .= '		' . "\n";
-		$res .= "		}\n";
 		$res .= "	}\n";
 		
 		$res .= '	public static function resolver()' . "\n";

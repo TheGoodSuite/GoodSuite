@@ -48,7 +48,7 @@ class Inserter implements PropertyVisitor
 		
 		$this->db->query($this->sql);
 		$value->setId($this->db->getLastInsertedId());
-		$value->makeDirty(false);
+		$value->clean();
 	}
 
 	private function comma()
