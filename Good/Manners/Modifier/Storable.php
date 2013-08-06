@@ -181,7 +181,7 @@ class Storable implements \Good\Service\Modifier
 		
 		$this->acceptStore .= '		$store->visitReferenceProperty("' . $member->getName() . '", ' .
 											'"' . $member->getReferencedType() . '", ' . 
-											'$this->is' . \ucfirst($member->getName()) . 'Dirty(), ' .
+											'$this->is' . \ucfirst($member->getName()) . 'Dirty, ' .
 											'$this->get' . \ucfirst($member->getName()) . '());' . "\n";
 		
 		$this->setFromArray .= '				case "' . $this->classVariable . '":' . "\n";
@@ -226,7 +226,7 @@ class Storable implements \Good\Service\Modifier
 		$this->classVariableIsReference = false;
 		
 		$this->acceptStore .= '		$store->visitTextProperty("' . $member->getName() . '", ' .
-											'$this->is' . \ucfirst($member->getName()) . 'Dirty(), ' . 
+											'$this->is' . \ucfirst($member->getName()) . 'Dirty, ' . 
 											'$this->get' . \ucfirst($member->getName()) . '());' . "\n";
 		
 		$this->setFromArray .= '				case "' . $this->classVariable . '":' . "\n";
@@ -243,7 +243,7 @@ class Storable implements \Good\Service\Modifier
 		$this->classVariableIsReference = false;
 		
 		$this->acceptStore .= '		$store->visitIntProperty("' . $member->getName() . '", ' .
-											'$this->is' . \ucfirst($member->getName()) . 'Dirty(), ' . 
+											'$this->is' . \ucfirst($member->getName()) . 'Dirty, ' . 
 											'$this->get' . \ucfirst($member->getName()) . '());' . "\n";
 		
 		$this->setFromArray .= '				case "' . $this->classVariable . '":' . "\n";
@@ -260,7 +260,7 @@ class Storable implements \Good\Service\Modifier
 		$this->classVariableIsReference = false;
 		
 		$this->acceptStore .= '		$store->visitFloatProperty("' . $member->getName() . '", ' .
-											'$this->is' . \ucfirst($member->getName()) . 'Dirty(), ' . 
+											'$this->is' . \ucfirst($member->getName()) . 'Dirty, ' . 
 											'$this->get' . \ucfirst($member->getName()) . '());' . "\n";
 		
 		$this->setFromArray .= '				case "' . $this->classVariable . '":' . "\n";
@@ -277,7 +277,7 @@ class Storable implements \Good\Service\Modifier
 		$this->classVariableIsReference = false;
 		
 		$this->acceptStore .= '		$store->visitDatetimeProperty("' . $member->getName() . '", ' .
-											'$this->is' . \ucfirst($member->getName()) . 'Dirty(), ' . 
+											'$this->is' . \ucfirst($member->getName()) . 'Dirty, ' . 
 											'$this->get' . \ucfirst($member->getName()) . '());' . "\n";
 		
 		$this->setFromArray .= '				case "' . $this->classVariable . '":' . "\n";
@@ -341,11 +341,6 @@ class Storable implements \Good\Service\Modifier
 	{
 		// ucfirst: upper case first letter (it's a php built-in)
 		$res  = '	private $is' . \ucfirst($this->classVariable) . 'Dirty =  false;' . "\n";
-		$res .= "	\n";
-		$res .= '	public function is' . \ucfirst($this->classVariable) . 'Dirty()' . "\n";
-		$res .= "	{\n";
-		$res .= '		return $this->is' . \ucfirst($this->classVariable) . 'Dirty;' . "\n";
-		$res .= "	}\n";
 		$res .= "	\n";
 		$res .= '	public function make' . \ucfirst($this->classVariable) . 'Dirty($value = true)' . "\n";
 		$res .= "	{\n";
