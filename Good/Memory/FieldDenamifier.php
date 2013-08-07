@@ -7,13 +7,13 @@ use Good\Manners\StorableVisitor;
 
 class FieldDenamifier implements StorableVisitor
 {
-    private $store;
+    private $storage;
     private $data;
     private $out;
     
-    public function __construct($store)
+    public function __construct($storage)
     {
-        $this->store = $store;
+        $this->storage = $storage;
     }
     
     public function denamifyFields(array $data, Storable $storable)
@@ -28,7 +28,7 @@ class FieldDenamifier implements StorableVisitor
     
     private function visitProperty($name)
     {
-        $fieldNamified = $this->store->fieldNamify($name);
+        $fieldNamified = $this->storage->fieldNamify($name);
         
         if (array_key_exists($fieldNamified, $this->data))
         {

@@ -5,7 +5,7 @@
  */
 abstract class GoodMannersPersistenceTest extends PHPUnit_Framework_TestCase
 {    
-    abstract public function getNewStore();
+    abstract public function getNewStorage();
     // this function should be removed, but is used for clearing the database at the moment
     abstract public function getNewDb();
     
@@ -106,21 +106,21 @@ abstract class GoodMannersPersistenceTest extends PHPUnit_Framework_TestCase
         $this->_setUpEachHalf();
         $this->_setUp();
         
-        $store = $this->getNewStore();
+        $storage = $this->getNewStorage();
     
         $ins = new PersistenceType();
         $ins->setMyInt(4);
         $ins->setMyFloat(4.4);
         $ins->setMyText("Four");
         $ins->setMyDatetime(new \Datetime('2004-04-04'));
-        $store->insert($ins);
+        $storage->insert($ins);
         
         $ins = new PersistenceType();
         $ins->setMyInt(5);
         $ins->setMyFloat(8.8);
         $ins->setMyText("Ten");
         $ins->setMyDatetime(new \Datetime('2012-12-12'));
-        $store->insert($ins);
+        $storage->insert($ins);
         
         $expectedResults = array();
         
@@ -137,7 +137,7 @@ abstract class GoodMannersPersistenceTest extends PHPUnit_Framework_TestCase
         // and this was an easy way to accomplish that.
         $this->_setUpEachHalf();
         
-        $store = $this->getNewStore();
+        $storage = $this->getNewStorage();
         
         $expectedResults = array();
         
@@ -161,7 +161,7 @@ abstract class GoodMannersPersistenceTest extends PHPUnit_Framework_TestCase
         $any = new \Good\Manners\Condition\Greater($type);
         
         $resolver = new PersistenceTypeResolver();
-        $collection = $store->getCollection($any, $resolver);
+        $collection = $storage->getCollection($any, $resolver);
         
         while ($type = $collection->getNext())
         {

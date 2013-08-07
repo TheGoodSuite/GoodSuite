@@ -5,7 +5,6 @@ namespace Good\Manners\Condition;
 use Good\Manners\Condition;
 use Good\Manners\ConditionProcessor;
 use Good\Manners\Storable;
-use Good\Manners\Store;
 
 class Less implements Condition
 {
@@ -16,9 +15,9 @@ class Less implements Condition
         $this->to = $to;
     }
     
-    public function process(ConditionProcessor $store)
+    public function process(ConditionProcessor $processor)
     {
-        $store->processLessCondition($this->to);
+        $processor->processLessCondition($this->to);
     }
 }
 

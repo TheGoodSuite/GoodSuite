@@ -5,17 +5,17 @@
  */
 abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
 {
-    private $store1;
-    private $store2;
+    private $storage1;
+    private $storage2;
     
-    abstract public function getNewStore();
+    abstract public function getNewStorage();
     // this function should be removed, but is used for clearing the database at the moment
     abstract public function getNewDb();
     
     // This could be done just once for all the tests and it would even be necessary
     // to run the tests in this class in a single process.
     // However, since we can't run these tests in the same process as those from other
-    // classes (we would have namespace collisions for Store and SQLStore)
+    // classes (we would have namespace collisions for Storage and SQLStorage)
     // we have to run every test in different class, and setUpBeforeClass doesn't
     // play well with that. As such, we'll have to call this function from
     // setUp instead of having PHPUnit do its magic.
@@ -93,7 +93,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $db->query('TRUNCATE yetanothertype');
         $db->query('TRUNCATE thirdtype');
         
-        $store = $this->getNewStore();
+        $storage = $this->getNewStorage();
         
         $ins = new AdvancedUpdateType();
         $ins->setMyInt(4);
@@ -102,7 +102,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $ins->setMyDatetime(new \Datetime('2004-04-04'));
         $ins->setMyReference(null);
         $ins->setRef(null);
-        $store->insert($ins);
+        $storage->insert($ins);
         
         $ins = new AdvancedUpdateType();
         $ins->setMyInt(5);
@@ -113,7 +113,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $ref->setYourInt(40);
         $ins->setMyReference($ref);
         $ins->setRef(null);
-        $store->insert($ins);
+        $storage->insert($ins);
         
         $ins = new AdvancedUpdateType();
         $ins->setMyInt(8);
@@ -124,7 +124,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $ref->setYourInt(30);
         $ins->setMyReference($ref);
         $ins->setRef(null);
-        $store->insert($ins);
+        $storage->insert($ins);
         
         $ins = new AdvancedUpdateType();
         $ins->setMyInt(10);
@@ -135,7 +135,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $ref->setYourInt(20);
         $ins->setMyReference($ref);
         $ins->setRef(null);
-        $store->insert($ins);
+        $storage->insert($ins);
         
         $ins = new AdvancedUpdateType();
         $ins->setMyInt(null);
@@ -146,13 +146,13 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $ref->setYourInt(10);
         $ins->setMyReference($ref);
         $ins->setRef(null);
-        $store->insert($ins);
+        $storage->insert($ins);
         
-        $store->flush();
+        $storage->flush();
         
-        // new Store, so communication will have to go through data storage
-        $this->store1 = $this->getNewStore();
-        $this->store2 = $this->getNewStore();
+        // new Storage, so communication will have to go through data storage
+        $this->storage1 = $this->getNewStorage();
+        $this->storage2 = $this->getNewStorage();
     }
     
     public function tearDown()
@@ -160,8 +160,8 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         // Just doing this already to make sure the deconstructor will hasve
         // side-effects at an unspecified moment...
         // (at which point the database will probably be in a wrong state for this)
-        $this->store1->flush();
-        $this->store2->flush();
+        $this->storage1->flush();
+        $this->storage2->flush();
         
         // this should be handled through the GoodManners API once that is implemented
         $db = $this->getNewDb();
@@ -270,7 +270,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $resolver->resolveMyReference();
         $resolver->resolveRef()->resolveRef();
         
-        $collection = $this->store2->getCollection($any, $resolver);
+        $collection = $this->storage2->getCollection($any, $resolver);
         
         while ($type = $collection->getNext())
         {
@@ -295,7 +295,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications->setMyText("Fifty-five");
         $modifications->setMyDatetime(new Datetime("2055-05-05"));
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
@@ -375,7 +375,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications->setMyText(null);
         $modifications->setMyDatetime(null);
         
-        $this->store1->modifyAny($and, $modifications);
+        $this->storage1->modifyAny($and, $modifications);
         
         $expectedResults = array();
         
@@ -444,7 +444,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications = new AdvancedUpdateType();
         $modifications->setMyReference(null);
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
@@ -511,7 +511,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         
         $resolver = new AdvancedUpdateTypeResolver();
         $resolver->resolveMyReference();
-        $collection = $this->store1->getCollection($any, $resolver);
+        $collection = $this->storage1->getCollection($any, $resolver);
         
         $type= $collection->getNext();
         $ref = $type->getMyReference();
@@ -523,7 +523,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications = new AdvancedUpdateType();
         $modifications->setMyReference($ref);
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
@@ -590,7 +590,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $type->setYourInt(20);
         $cond = new \Good\Manners\Condition\Equality($type);
         
-        $collection = $this->store2->getCollection($cond, new YetAnotherTypeResolver());
+        $collection = $this->storage2->getCollection($cond, new YetAnotherTypeResolver());
         
         $collection->getNext();
         
@@ -607,9 +607,9 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $ref = new YetAnotherType();
         $ref->setYourInt(144);
         $modifications->setMyReference($ref);
-        $this->store1->insert($ref);
+        $this->storage1->insert($ref);
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
@@ -679,7 +679,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $ref->setYourInt(42);
         $modifications->setMyReference($ref);
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
@@ -743,7 +743,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $type = new YetAnotherType();
         $cond = new \Good\Manners\Condition\Equality($type);
         
-        $collection = $this->store2->getCollection($cond, new YetAnotherTypeResolver());
+        $collection = $this->storage2->getCollection($cond, new YetAnotherTypeResolver());
         
         $i = 0;
         
@@ -765,7 +765,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications = new AdvancedUpdateType();
         $modifications->setMyInt(1);
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         // Inequality
         $type = new AdvancedUpdateType();
@@ -775,7 +775,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications = new AdvancedUpdateType();
         $modifications->setMyText("Hello World!");
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         // Less
         $type = new AdvancedUpdateType();
@@ -785,7 +785,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications = new AdvancedUpdateType();
         $modifications->setMyText("Goodbye");
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         // LessOrEquals
         $type = new AdvancedUpdateType();
@@ -795,7 +795,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications = new AdvancedUpdateType();
         $modifications->setMyFloat(47.47);
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         // Greater
         $type = new AdvancedUpdateType();
@@ -805,7 +805,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications = new AdvancedUpdateType();
         $modifications->setMyFloat(11.11);
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         // GreaterOrEquals
         $type = new AdvancedUpdateType();
@@ -815,7 +815,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications = new AdvancedUpdateType();
         $modifications->setMyDatetime(new Datetime('1989-04-11'));
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
@@ -889,7 +889,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications = new AdvancedUpdateType();
         $modifications->setMyFloat(66.67);
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         $type = new AdvancedUpdateType();
         $type->setMyInt(5);
@@ -904,7 +904,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications = new AdvancedUpdateType();
         $modifications->setMyText("My oh My");
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
@@ -976,7 +976,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications = new AdvancedUpdateType();
         $modifications->setMyText("Something else");
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
@@ -1046,7 +1046,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications = new AdvancedUpdateType();
         $modifications->setMyInt(-1);
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
@@ -1116,7 +1116,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications = new AdvancedUpdateType();
         $modifications->setMyInt(455);
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
@@ -1186,7 +1186,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications = new AdvancedUpdateType();
         $modifications->setMyFloat(666.666);
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         $type = new AdvancedUpdateType();
         $type->setMyFloat(null);
@@ -1196,7 +1196,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications = new AdvancedUpdateType();
         $modifications->setMyInt(666);
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         $type = new AdvancedUpdateType();
         $type->setMyText(null);
@@ -1206,7 +1206,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications = new AdvancedUpdateType();
         $modifications->setMyDatetime(new Datetime('2066-06-06'));
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         $type = new AdvancedUpdateType();
         $type->setMyDatetime(null);
@@ -1216,7 +1216,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications = new AdvancedUpdateType();
         $modifications->setMyText("Six Six Six");
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         $type = new AdvancedUpdateType();
         $type->setMyReference(null);
@@ -1226,7 +1226,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications = new AdvancedUpdateType();
         $modifications->setMyInt(777);
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
@@ -1296,7 +1296,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications = new AdvancedUpdateType();
         $modifications->setMyFloat(666.666);
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         $type = new AdvancedUpdateType();
         $type->setMyText(null);
@@ -1306,7 +1306,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications = new AdvancedUpdateType();
         $modifications->setMyDatetime(new Datetime('2066-06-06'));
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
@@ -1376,7 +1376,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications = new AdvancedUpdateType();
         $modifications->setMyInt(666);
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         $type = new AdvancedUpdateType();
         $type->setMyDatetime(null);
@@ -1386,7 +1386,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications = new AdvancedUpdateType();
         $modifications->setMyText("Six Six Six");
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
@@ -1456,7 +1456,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications = new AdvancedUpdateType();
         $modifications->setMyInt(777);
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
@@ -1524,21 +1524,21 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $any = new \Good\Manners\Condition\Equality($type);
         $modifications = new YetAnotherType();
         $modifications->setYourInt(42);
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         // one more change:
         $type = new AdvancedUpdateType();
         $type->setMyInt(8);
         $any = new \Good\Manners\Condition\Equality($type);
         $resolver = new AdvancedUpdateTypeResolver();
         $resolver->resolveMyReference();
-        $collection = $this->store1->getCollection($any, $resolver);
+        $collection = $this->storage1->getCollection($any, $resolver);
         $ref = $collection->getNext()->getMyReference();
         $type = new AdvancedUpdateType();
         $type->setMyInt(10);
         $any = new \Good\Manners\Condition\Equality($type);
         $modifications = new AdvancedUpdateType();
         $modifications->setMyReference($ref);
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         // Now we get our reference
         // (it's already in $ref, but it would be mixing of concerns if we relied on that)
@@ -1547,7 +1547,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $any = new \Good\Manners\Condition\Equality($type);
         $resolver = new AdvancedUpdateTypeResolver();
         $resolver->resolveMyReference();
-        $collection = $this->store1->getCollection($any, $resolver);
+        $collection = $this->storage1->getCollection($any, $resolver);
         $ref = $collection->getNext()->getMyReference();
         
         // And now we can finally do the real test
@@ -1559,7 +1559,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications = new AdvancedUpdateType();
         $modifications->setMyInt(1);
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
@@ -1639,7 +1639,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications->setMyReference(new YetAnotherType());
         $modifications->getMyReference()->setYourInt(100);
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
@@ -1706,7 +1706,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $any = new \Good\Manners\Condition\Equality($type);
         $resolver = new AdvancedUpdateTypeResolver();
         $resolver->resolveRef();
-        $collection = $this->store1->getCollection($any, $resolver);
+        $collection = $this->storage1->getCollection($any, $resolver);
         
         while ($type = $collection->getNext())
         {
@@ -1716,7 +1716,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
                 $refref = new YetAnotherType();
                 $refref->setYourInt(500);
                 $ref->setRef($refref);
-                $this->store1->insert($ref);
+                $this->storage1->insert($ref);
                 $type->setRef($ref);
             }
             else if ($type->getMyInt() == 5)
@@ -1725,7 +1725,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
                 $refref = new YetAnotherType();
                 $refref->setYourInt(300);
                 $ref->setRef($refref);
-                $this->store1->insert($ref);
+                $this->storage1->insert($ref);
                 $type->setRef($ref);
             }
             else if ($type->getMyInt() == 8)
@@ -1734,7 +1734,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
                 $refref = new YetAnotherType();
                 $refref->setYourInt(400);
                 $ref->setRef($refref);
-                $this->store1->insert($ref);
+                $this->storage1->insert($ref);
                 $type->setRef($ref);
             }
             else if ($type->getMyInt() == 10)
@@ -1743,7 +1743,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
                 $refref = new YetAnotherType();
                 $refref->setYourInt(200);
                 $ref->setRef($refref);
-                $this->store1->insert($ref);
+                $this->storage1->insert($ref);
                 $type->setRef($ref);
             }
         }
@@ -1758,7 +1758,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications = new AdvancedUpdateType();
         $modifications->setMyInt(99999);
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
@@ -1833,7 +1833,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $any = new \Good\Manners\Condition\Equality($type);
         $resolver = new AdvancedUpdateTypeResolver();
         $resolver->resolveRef();
-        $collection = $this->store1->getCollection($any, $resolver);
+        $collection = $this->storage1->getCollection($any, $resolver);
         
         while ($type = $collection->getNext())
         {
@@ -1843,7 +1843,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
                 $refref = new YetAnotherType();
                 $refref->setYourInt(500);
                 $ref->setRef($refref);
-                $this->store1->insert($ref);
+                $this->storage1->insert($ref);
                 $type->setRef($ref);
             }
             else if ($type->getMyInt() == 5)
@@ -1852,7 +1852,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
                 $refref = new YetAnotherType();
                 $refref->setYourInt(300);
                 $ref->setRef($refref);
-                $this->store1->insert($ref);
+                $this->storage1->insert($ref);
                 $type->setRef($ref);
             }
             else if ($type->getMyInt() == 8)
@@ -1861,7 +1861,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
                 $refref = new YetAnotherType();
                 $refref->setYourInt(400);
                 $ref->setRef($refref);
-                $this->store1->insert($ref);
+                $this->storage1->insert($ref);
                 $type->setRef($ref);
             }
             else if ($type->getMyInt() == 10)
@@ -1870,7 +1870,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
                 $refref = new YetAnotherType();
                 $refref->setYourInt(200);
                 $ref->setRef($refref);
-                $this->store1->insert($ref);
+                $this->storage1->insert($ref);
                 $type->setRef($ref);
             }
         }
@@ -1885,7 +1885,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications->getRef()->setRef(new YetAnotherType());
         $modifications->getRef()->getRef()->setYourInt(666);
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
@@ -1974,7 +1974,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $modifications->setMyReference(new YetAnotherType());
         $modifications->getMyReference()->setYourInt(1);
         
-        $this->store1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($any, $modifications);
         
         $ins = new AdvancedUpdateType();
         $ins->setMyInt(4);

@@ -5,7 +5,6 @@ namespace Good\Manners\Condition;
 use Good\Manners\Condition;
 use Good\Manners\ConditionProcessor;
 use Good\Manners\Storable;
-use Good\Manners\Store;
 
 class Inequality implements Condition
 {
@@ -16,9 +15,9 @@ class Inequality implements Condition
         $this->to = $to;
     }
     
-    public function process(ConditionProcessor $store)
+    public function process(ConditionProcessor $processor)
     {
-        $store->processInequalityCondition($this->to);
+        $processor->processInequalityCondition($this->to);
     }
 }
 

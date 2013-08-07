@@ -2,12 +2,12 @@
 
 namespace Good\Memory;
 
-use Good\Manners\Store;
+use Good\Manners\Storage;
 use Good\Manners\Storable;
 use Good\Manners\Condition;
 use Good\Manners\Resolver;
 
-class SQLStore extends Store
+class SQLStorage extends Storage
 {
     private $db;
     
@@ -321,7 +321,7 @@ class SQLStore extends Store
         
         $ret->setNew(false);
         $ret->clean();
-        $ret->setStore($this);
+        $ret->setStorage($this);
         
         $this->created[$type][$data[$table]["id"]] = $ret;
         

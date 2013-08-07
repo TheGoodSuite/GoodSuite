@@ -5,7 +5,6 @@ namespace Good\Manners\Condition;
 use Good\Manners\Condition;
 use Good\Manners\ConditionProcessor;
 use Good\Manners\Storable;
-use Good\Manners\Store;
 
 class Greater implements Condition
 {
@@ -16,9 +15,9 @@ class Greater implements Condition
         $this->to = $to;
     }
     
-    public function process(ConditionProcessor $store)
+    public function process(ConditionProcessor $processor)
     {
-        $store->processGreaterCondition($this->to);
+        $processor->processGreaterCondition($this->to);
     }
 }
 

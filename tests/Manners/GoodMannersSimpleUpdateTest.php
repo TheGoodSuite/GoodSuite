@@ -5,17 +5,17 @@
  */
 abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
 {
-    private $store1;
-    private $store2;
+    private $storage1;
+    private $storage2;
     
-    abstract public function getNewStore();
+    abstract public function getNewStorage();
     // this function should be removed, but is used for clearing the database at the moment
     abstract public function getNewDb();
     
     // This could be done just once for all the tests and it would even be necessary
     // to run the tests in this class in a single process.
     // However, since we can't run these tests in the same process as those from other
-    // classes (we would have namespace collisions for Store and SQLStore)
+    // classes (we would have namespace collisions for Storage and SQLStorage)
     // we have to run every test in different class, and setUpBeforeClass doesn't
     // play well with that. As such, we'll have to call this function from
     // setUp instead of having PHPUnit do its magic.
@@ -47,14 +47,6 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         require dirname(__FILE__) . '/../generated/BaseAnotherType.datatype.php';
         
         $service->requireClasses(array('SimpleUpdateType', 'AnotherType'));
-        
-        // $manners = new \Good\Manners\Manners();
-        // $manners->compileStore($schema, dirname(__FILE__) . '/../generated/');
-        // require dirname(__FILE__) . '/../generated/Store.php';
-
-        // $memory = new \Good\Memory\Memory();
-        // $memory->compileSQLStore($schema, dirname(__FILE__) . '/../generated/');
-        // require dirname(__FILE__) . '/../generated/SQLStore.php';
         
         require dirname(__FILE__) . '/../generated/SimpleUpdateTypeResolver.php';
         require dirname(__FILE__) . '/../generated/AnotherTypeResolver.php';
@@ -88,7 +80,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $db->query('TRUNCATE simpleupdatetype');
         $db->query('TRUNCATE anothertype');
         
-        $store = $this->getNewStore();
+        $storage = $this->getNewStorage();
         
         $ins = new SimpleUpdateType();
         $ins->setMyInt(4);
@@ -98,7 +90,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $ref = new AnotherType();
         $ref->setYourInt(50);
         $ins->setMyReference($ref);
-        $store->insert($ins);
+        $storage->insert($ins);
         
         $ins = new SimpleUpdateType();
         $ins->setMyInt(5);
@@ -108,7 +100,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $ref = new AnotherType();
         $ref->setYourInt(40);
         $ins->setMyReference($ref);
-        $store->insert($ins);
+        $storage->insert($ins);
         
         $ins = new SimpleUpdateType();
         $ins->setMyInt(8);
@@ -118,7 +110,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $ref = new AnotherType();
         $ref->setYourInt(30);
         $ins->setMyReference($ref);
-        $store->insert($ins);
+        $storage->insert($ins);
         
         $ins = new SimpleUpdateType();
         $ins->setMyInt(10);
@@ -128,7 +120,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $ref = new AnotherType();
         $ref->setYourInt(20);
         $ins->setMyReference($ref);
-        $store->insert($ins);
+        $storage->insert($ins);
         
         $ins = new SimpleUpdateType();
         $ins->setMyInt(null);
@@ -138,13 +130,13 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $ref = new AnotherType();
         $ref->setYourInt(10);
         $ins->setMyReference($ref);
-        $store->insert($ins);
+        $storage->insert($ins);
         
-        $store->flush();
+        $storage->flush();
         
-        // new Store, so communication will have to go through data storage
-        $this->store1 = $this->getNewStore();
-        $this->store2 = $this->getNewStore();
+        // new Storage, so communication will have to go through data storage
+        $this->storage1 = $this->getNewStorage();
+        $this->storage2 = $this->getNewStorage();
     }
     
     public function tearDown()
@@ -152,8 +144,8 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         // Just doing this already to make sure the deconstructor will hasve
         // side-effects at an unspecified moment...
         // (at which point the database will probably be in a wrong state for this)
-        $this->store1->flush();
-        $this->store2->flush();
+        $this->storage1->flush();
+        $this->storage2->flush();
         
         // this should be handled through the GoodManners API once that is implemented
         $db = $this->getNewDb();
@@ -217,7 +209,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         
         $resolver = new SimpleUpdateTypeResolver();
         $resolver->resolveMyReference();
-        $collection = $this->store2->getCollection($any, $resolver);
+        $collection = $this->storage2->getCollection($any, $resolver);
         
         while ($type = $collection->getNext())
         {
@@ -238,7 +230,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         
         $resolver = new SimpleUpdateTypeResolver();
         $resolver->resolveMyReference();
-        $collection = $this->store1->getCollection($any, $resolver);
+        $collection = $this->storage1->getCollection($any, $resolver);
         
         while ($type = $collection->getNext())
         {
@@ -248,7 +240,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
             $type->setMyDatetime(new Datetime('1999-12-31'));
         }
         
-        $this->store1->flush();
+        $this->storage1->flush();
         
         $expectedResults = array();
         
@@ -309,7 +301,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         
         $resolver = new SimpleUpdateTypeResolver();
         $resolver->resolveMyReference();
-        $collection = $this->store1->getCollection($any, $resolver);
+        $collection = $this->storage1->getCollection($any, $resolver);
         
         while ($type = $collection->getNext())
         {
@@ -326,7 +318,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
             }
         }
         
-        $this->store1->flush();
+        $this->storage1->flush();
         
         $expectedResults = array();
         
@@ -393,7 +385,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $resolver = new SimpleUpdateTypeResolver();
         $resolver->resolveMyReference();
         $resolver->orderByMyIntAsc();
-        $collection = $this->store1->getCollection($any, $resolver);
+        $collection = $this->storage1->getCollection($any, $resolver);
         
         $ref = null;
         
@@ -417,11 +409,11 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
                 $type->setMyReference($myref);
                 
                 // todo: make this line unnecessary
-                $this->store1->insert($myref);
+                $this->storage1->insert($myref);
             }
         }
         
-        $this->store1->flush();
+        $this->storage1->flush();
         
         $expectedResults = array();
         

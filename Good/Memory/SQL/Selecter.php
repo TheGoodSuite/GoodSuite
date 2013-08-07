@@ -4,7 +4,7 @@ namespace Good\Memory\SQL;
 
 use Good\Memory\Database as Database;
 
-use Good\Memory\SQLStore;
+use Good\Memory\SQLStorage;
 use Good\Manners\Condition;
 use Good\Manners\Resolver;
 use Good\Manners\ResolverVisitor;
@@ -12,7 +12,7 @@ use Good\Manners\ResolverVisitor;
 class Selecter implements ResolverVisitor
 {
     private $db;
-    private $store;
+    private $storage;
     
     private $subquery;
     
@@ -21,10 +21,10 @@ class Selecter implements ResolverVisitor
     
     private $order = array();
     
-    public function __construct(SQLStore $store, Database\Database $db, $currentTable)
+    public function __construct(SQLStorage $storage, Database\Database $db, $currentTable)
     {
         $this->db = $db;
-        $this->store = $store;
+        $this->storage = $storage;
         $this->currentTable = $currentTable;
     }
     
@@ -45,19 +45,19 @@ class Selecter implements ResolverVisitor
     public function writeQueryWithoutSelect($datatypeName, 
                                             Condition $condition)
     {
-        $sql  = " FROM " . $this->store->tableNamify($datatypeName) . " AS t0";
+        $sql  = " FROM " . $this->storage->tableNamify($datatypeName) . " AS t0";
         
-        $conditionWriter = new ConditionWriter($this->store, 0);
+        $conditionWriter = new ConditionWriter($this->storage, 0);
         $conditionWriter->writeCondition($condition);
         
-        foreach ($this->store->getJoins() as $somejoins)
+        foreach ($this->storage->getJoins() as $somejoins)
         {
             foreach ($somejoins as $join)
             {
-                $sql .= ' LEFT JOIN ' . $this->store->tableNamify($join->tableNameDestination) . 
+                $sql .= ' LEFT JOIN ' . $this->storage->tableNamify($join->tableNameDestination) . 
                                                             ' AS t' . $join->tableNumberDestination;
                 $sql .= ' ON t' . $join->tableNumberOrigin . '.' . 
-                                            $this->store->fieldNamify($join->fieldNameOrigin);
+                                            $this->storage->fieldNamify($join->fieldNameOrigin);
                 $sql .= ' = t' . $join->tableNumberDestination . '.id';
             }
         }
@@ -96,16 +96,16 @@ class Selecter implements ResolverVisitor
         }
         
         $this->sql .= ', ';
-        $this->sql .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($name);
-        $this->sql .= ' AS t' . $this->currentTable . '_' . $this->store->fieldNamify($name);
+        $this->sql .= 't' . $this->currentTable . '.' . $this->storage->fieldNamify($name);
+        $this->sql .= ' AS t' . $this->currentTable . '_' . $this->storage->fieldNamify($name);
     
-        $join = $this->store->getJoin($this->currentTable, $name);
+        $join = $this->storage->getJoin($this->currentTable, $name);
         
         if ($join == -1)
         {
-            $join = $this->store->createJoin($this->currentTable,
-                                             $name,
-                                             $datatypeName);
+            $join = $this->storage->createJoin($this->currentTable,
+                                               $name,
+                                               $datatypeName);
         }
                 
         $this->sql .= ', ';
@@ -125,21 +125,21 @@ class Selecter implements ResolverVisitor
     {
         $this->sql .= ', ';
         
-        $this->sql .= 't' . $this->currentTable . '.' . $this->store->fieldNamify($name);
-        $this->sql .= ' AS t' . $this->currentTable . '_' . $this->store->fieldNamify($name);
+        $this->sql .= 't' . $this->currentTable . '.' . $this->storage->fieldNamify($name);
+        $this->sql .= ' AS t' . $this->currentTable . '_' . $this->storage->fieldNamify($name);
 
     }
     
     public function resolverVisitOrderAsc($number, $name)
     {
         $this->order[$number] = 't' . $this->currentTable . '_' . 
-                        $this->store->fieldnamify($name) . ' ASC';
+                        $this->storage->fieldnamify($name) . ' ASC';
     }
     
     public function resolverVisitOrderDesc($number, $name)
     {
         $this->order[$number] = 't' . $this->currentTable . '_' . 
-                        $this->store->fieldnamify($name) . ' DESC';
+                        $this->storage->fieldnamify($name) . ' DESC';
     }
 }
 

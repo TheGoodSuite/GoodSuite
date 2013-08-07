@@ -336,10 +336,10 @@ class Storable implements \Good\Service\Modifier
         $res .= "    \n";
         $res .= '    private function makeDirty()' . "\n";
         $res .= "    {\n";
-        $res .= '        if (!$this->isDirty() && $this->store != null)' . "\n";
+        $res .= '        if (!$this->isDirty() && $this->storage != null)' . "\n";
         $res .= "        {\n";
         $res .= '            $this->dirty = true;' . "\n";
-        $res .= '            $this->store->dirtyStorable($this);' . "\n";
+        $res .= '            $this->storage->dirtyStorable($this);' . "\n";
         $res .= "        }\n";
         $res .= "    }\n";
         $res .= "    \n";
@@ -366,7 +366,7 @@ class Storable implements \Good\Service\Modifier
         $res .= "        {\n";
                         // TODO: turn this into decent error handling
         $res .= '            throw new \\Exception("Tried to acces an invalid Storable. It was probably made invalid by actions" .' . "\n";
-        $res .= '                 " on its store (like doing a modify, which invalidates all its Storables).");' . "\n";
+        $res .= '                 " on its storage (like doing a modify, which invalidates all its Storables).");' . "\n";
         $res .= "        }\n";
         $res .= "    }\n";
         $res .= "    \n";
@@ -375,11 +375,11 @@ class Storable implements \Good\Service\Modifier
         $res .= '        $this->validationToken = $token;' . "\n";
         $res .= "    }\n";
         $res .= "    \n";
-        $res .= '    private $store = null;' . "\n";
+        $res .= '    private $storage = null;' . "\n";
         $res .= "    \n";
-        $res .= '    public function setStore(\\Good\\Manners\\Store $store)' . "\n";
+        $res .= '    public function setStorage(\\Good\\Manners\\Storage $storage)' . "\n";
         $res .= "    {\n";
-        $res .= '        $this->store = $store;' . "\n";
+        $res .= '        $this->storage = $storage;' . "\n";
         $res .= "    }\n";
         $res .= "    \n";
         $res .= '    private $deleted = false;' . "\n";

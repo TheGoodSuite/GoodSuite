@@ -4,16 +4,17 @@ namespace Good\Memory\SQL;
 
 use Good\Manners\Storable;
 use Good\Manners\StorableVisitor;
+use Good\Memory\SQLStorage;
 
 class JoinDiscoverer implements StorableVisitor
 {
-    private $store;
+    private $storage;
     
     private $currentTable;
     
-    public function __construct($store, $currentTable)
+    public function __construct(SQLStorage $storage, $currentTable)
     {
-        $this->store = $store;
+        $this->storage = $storage;
         $this->currentTable = $currentTable;
     }
     
@@ -28,16 +29,16 @@ class JoinDiscoverer implements StorableVisitor
         
         if ($value !== null && $dirty && $value->isNew())
         {
-            $join = $this->store->getJoin($this->currentTable, $name);
+            $join = $this->storage->getJoin($this->currentTable, $name);
             
             if ($join == -1)
             {
-                $join = $this->store->createJoin($this->currentTable, 
+                $join = $this->storage->createJoin($this->currentTable, 
                                                  $name,
                                                  $datatypeName);
             }
             
-            $recursionDiscoverer = new JoinDiscoverer($this->store, $join);
+            $recursionDiscoverer = new JoinDiscoverer($this->storage, $join);
             $recursionDiscoverer->discoverJoins($value);
         }
     }

@@ -2,7 +2,7 @@
 
 namespace Good\Memory\SQL;
 
-use Good\Memory\SQLStore;
+use Good\Memory\SQLStorage;
 use Good\Manners\Storable;
 use Good\Manners\StorableVisitor;
 use Good\Manners\Condition;
@@ -13,7 +13,7 @@ $started = false;
 class UpdateConditionWriter implements StorableVisitor,
                                        ConditionProcessor
 {
-    private $store;
+    private $storage;
     private $comparison;
     private $condition;
     private $first;
@@ -30,9 +30,9 @@ class UpdateConditionWriter implements StorableVisitor,
     private $phase2;
     private $rootTableName;
     
-    public function __construct(SQLStore $store, $currentTable)
+    public function __construct(SQLStorage $storage, $currentTable)
     {    
-        $this->store = $store;
+        $this->storage = $storage;
         $this->currentTable = $currentTable;
     }
     
@@ -77,16 +77,16 @@ class UpdateConditionWriter implements StorableVisitor,
             
             if ($this->updatingTableValue == null)
             {
-                $join = $this->store->getReverseJoin($this->updatingTableNumber);
+                $join = $this->storage->getReverseJoin($this->updatingTableNumber);
                 
                 while ($join->tableNumberOrigin != 0)
                 {
-                    $join = $this->store->getReverseJoin($join->tableNumberOrigin);
+                    $join = $this->storage->getReverseJoin($join->tableNumberOrigin);
                     
-                    $sql = ' JOIN ' . $this->store->tableNamify($join->tableNameDestination) . 
+                    $sql = ' JOIN ' . $this->storage->tableNamify($join->tableNameDestination) . 
                                                                 ' AS t' . $join->tableNumberDestination;
                     $sql .= ' ON t' . $join->tableNumberOrigin . '.' . 
-                                                $this->store->fieldNamify($join->fieldNameOrigin);
+                                                $this->storage->fieldNamify($join->fieldNameOrigin);
                     $sql .= ' = t' . $join->tableNumberDestination . '.id';
                     
                     // They need to be added to the sql in reverse as well, or else
@@ -95,12 +95,12 @@ class UpdateConditionWriter implements StorableVisitor,
                 }
             }
             
-            $join = $this->store->getReverseJoin($this->updatingTableNumber);
+            $join = $this->storage->getReverseJoin($this->updatingTableNumber);
             
-            $sql  = $this->store->tableNamify($join->tableNameDestination) . '.id'; 
+            $sql  = $this->storage->tableNamify($join->tableNameDestination) . '.id'; 
             $sql .= ' IN (SELECT t' . $join->tableNumberOrigin . '.' .
-                                        $this->store->fieldNamify($join->fieldNameOrigin);
-            $sql .= ' FROM ' . $this->store->tableNamify($this->rootTableName) . 
+                                        $this->storage->fieldNamify($join->fieldNameOrigin);
+            $sql .= ' FROM ' . $this->storage->tableNamify($this->rootTableName) . 
                                                         ' AS t0';
                     
             $sql .= $joins;
@@ -115,7 +115,7 @@ class UpdateConditionWriter implements StorableVisitor,
         // part of $it's tree after it either
         if ($this->updatingTableValue != null)
         {
-            $this->tableName = $this->store->tableNamify($this->updatingTableName);
+            $this->tableName = $this->storage->tableNamify($this->updatingTableName);
             $this->phase2 = true;
             $this->comparison = $comparison;
             $this->writeBracketOrAnd();
@@ -221,11 +221,11 @@ class UpdateConditionWriter implements StorableVisitor,
                 
                 if ($this->comparison == '=')
                 {
-                    $this->condition .= '.' . $this->store->fieldNamify($name) . ' IS NULL';
+                    $this->condition .= '.' . $this->storage->fieldNamify($name) . ' IS NULL';
                 }
                 else // if ($this->comparison == '<>')
                 {
-                    $this->condition .= '.' . $this->store->fieldNamify($name) . ' IS NOT NULL';
+                    $this->condition .= '.' . $this->storage->fieldNamify($name) . ' IS NOT NULL';
                 }
                 
                 // todo: error out if another comparison
@@ -235,12 +235,12 @@ class UpdateConditionWriter implements StorableVisitor,
                 $this->writeBracketOrAnd();
                 
                 $this->writeTableName();
-                $this->condition .= '.' . $this->store->fieldNamify($name) . 
+                $this->condition .= '.' . $this->storage->fieldNamify($name) . 
                                             $this->comparison . ' ' . intval($value->getId());
             }
             else
             {
-                $join = $this->store->getJoin($this->currentTable, $name);
+                $join = $this->storage->getJoin($this->currentTable, $name);
                 
                 if ($join == $this->updatingTableNumber)
                 {
@@ -250,18 +250,18 @@ class UpdateConditionWriter implements StorableVisitor,
                 {
                     if ($join == -1)
                     {
-                        $join = $this->store->createJoin($this->currentTable, $name, $datatypeName);
+                        $join = $this->storage->createJoin($this->currentTable, $name, $datatypeName);
                     }
                     
-                    $subWriter = new UpdateConditionWriter($this->store, $join);
+                    $subWriter = new UpdateConditionWriter($this->storage, $join);
                     $subWriter->writeSimpleComparisonCondition($value, $this->comparison);
                     
                     if (!$this->phase2)
                     {
-                        $this->joining .= ' JOIN ' . $this->store->tableNamify($datatypeName) . 
+                        $this->joining .= ' JOIN ' . $this->storage->tableNamify($datatypeName) . 
                                                                                 ' AS t' . $join;
                         $this->joining .= ' ON t' . $this->currentTable . '.' . 
-                                                                $this->store->fieldNamify($name);
+                                                                $this->storage->fieldNamify($name);
                         $this->joining .= ' = t' . $join . '.id';
                         
                         $this->joining .= $subWriter->getJoining();
@@ -272,9 +272,9 @@ class UpdateConditionWriter implements StorableVisitor,
                     {
                         $this->writeBracketOrAnd();
                         $this->condition .= ' ' . $this->tableName . '.' . 
-                                                                $this->store->fieldNamify($name);
+                                                                $this->storage->fieldNamify($name);
                         $this->condition .= ' IN (SELECT t' . $join . '.id';
-                        $this->condition .= ' FROM ' . $this->store->tableNamify($datatypeName) . 
+                        $this->condition .= ' FROM ' . $this->storage->tableNamify($datatypeName) . 
                                                                     ' AS t' . $join;
                                 
                         $this->condition .= $subWriter->getJoining();
@@ -293,7 +293,7 @@ class UpdateConditionWriter implements StorableVisitor,
             $this->writeBracketOrAnd();
             $this->writeTableName();
             
-            $this->condition .=  '.' . $this->store->fieldNamify($name) . ' ';
+            $this->condition .=  '.' . $this->storage->fieldNamify($name) . ' ';
             
             if ($value === null)
             {
@@ -310,7 +310,7 @@ class UpdateConditionWriter implements StorableVisitor,
             }
             else
             {
-                $this->condition .=  $this->comparison . ' ' . $this->store->parseText($value);
+                $this->condition .=  $this->comparison . ' ' . $this->storage->parseText($value);
             }
             
         }
@@ -322,7 +322,7 @@ class UpdateConditionWriter implements StorableVisitor,
             $this->writeBracketOrAnd();
             $this->writeTableName();
             
-            $this->condition .=  '.' . $this->store->fieldNamify($name) . ' ';
+            $this->condition .=  '.' . $this->storage->fieldNamify($name) . ' ';
             
             if ($value === null)
             {
@@ -339,7 +339,7 @@ class UpdateConditionWriter implements StorableVisitor,
             }
             else
             {
-                $this->condition .= $this->comparison .' ' . $this->store->parseInt($value);
+                $this->condition .= $this->comparison .' ' . $this->storage->parseInt($value);
             }
         }
     }
@@ -350,7 +350,7 @@ class UpdateConditionWriter implements StorableVisitor,
             $this->writeBracketOrAnd();
             $this->writeTableName();
             
-            $this->condition .=  '.' . $this->store->fieldNamify($name) . ' ';
+            $this->condition .=  '.' . $this->storage->fieldNamify($name) . ' ';
             
             if ($value === null)
             {
@@ -367,7 +367,7 @@ class UpdateConditionWriter implements StorableVisitor,
             }
             else
             {
-                $this->condition .= $this->comparison . ' ' . $this->store->parseFloat($value);
+                $this->condition .= $this->comparison . ' ' . $this->storage->parseFloat($value);
             }
         }
     }
@@ -378,7 +378,7 @@ class UpdateConditionWriter implements StorableVisitor,
             $this->writeBracketOrAnd();
             $this->writeTableName();
             
-            $this->condition .=  '.' . $this->store->fieldNamify($name) . ' ';
+            $this->condition .=  '.' . $this->storage->fieldNamify($name) . ' ';
             if ($value === null)
             {
                 if ($this->comparison == '=')
@@ -394,7 +394,7 @@ class UpdateConditionWriter implements StorableVisitor,
             }
             else
             {
-                $this->condition .= $this->comparison . ' ' . $this->store->parseDatetime($value);
+                $this->condition .= $this->comparison . ' ' . $this->storage->parseDatetime($value);
             }
         }
     }

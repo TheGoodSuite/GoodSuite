@@ -15,9 +15,9 @@ class GoodMemoryDeleteTest extends GoodMannersDeleteTest
                                     $dbconfig['port'], $dbconfig['user'], $dbconfig['pass'], '');
     }
     
-    public function getNewStore()
+    public function getNewStorage()
     {
-        return new \Good\Memory\SQLStore($this->getNewDb());
+        return new \Good\Memory\SQLStorage($this->getNewDb());
     }
 }
 

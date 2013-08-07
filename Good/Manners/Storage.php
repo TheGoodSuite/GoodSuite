@@ -2,7 +2,7 @@
 
 namespace Good\Manners;
 
-abstract class Store
+abstract class Storage
 {
     private $validationToken;
     

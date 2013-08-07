@@ -4,7 +4,7 @@ namespace Good\Memory\SQL;
 
 use Good\Memory\Database as Database;
 
-use Good\Memory\SQLStore;
+use Good\Memory\SQLStorage;
 use Good\Memory\SQLPostponedForeignKey;
 use Good\Manners\Storable;
 use Good\Manners\StorableVisitor;
@@ -12,7 +12,7 @@ use Good\Manners\StorableVisitor;
 class Inserter implements StorableVisitor
 {
     private $db;
-    private $store;
+    private $storage;
     
     private $sql;
     private $values;
@@ -21,24 +21,24 @@ class Inserter implements StorableVisitor
     private $inserting;
     private $postponed;
     
-    public function __construct(SQLStore $store, Database\Database $db)
+    public function __construct(SQLStorage $storage, Database\Database $db)
     {
         $this->db = $db;
-        $this->store = $store;
+        $this->storage = $storage;
         $this->postponed = array();
     }
     
     
     public function insert($datatypeName, Storable $value)
     {
-        $this->sql = 'INSERT INTO ' . $this->store->tableNamify($datatypeName) . ' (';
+        $this->sql = 'INSERT INTO ' . $this->storage->tableNamify($datatypeName) . ' (';
         $this->values = 'VALUES (';
         $this->first = true;
         
         $this->inserting = $value;
         
         $value->setNew(false);
-        $value->setStore($this->store);
+        $value->setStorage($this->storage);
         
         $value->acceptStorableVisitor($this);
         
@@ -76,7 +76,7 @@ class Inserter implements StorableVisitor
         {
             $this->comma();
             
-            $this->sql .= $this->store->fieldNamify($name);
+            $this->sql .= $this->storage->fieldNamify($name);
         
             if ($value === null)
             {
@@ -86,7 +86,7 @@ class Inserter implements StorableVisitor
             {
                 if ($value->isNew())
                 {
-                    $inserter = new Inserter($this->store, $this->db);
+                    $inserter = new Inserter($this->storage, $this->db);
                     $inserter->insert($datatypeName, $value);
                     $this->postponed = \array_merge($this->postponed, $inserter->getPostponed());
                 }
@@ -114,7 +114,7 @@ class Inserter implements StorableVisitor
         {
             $this->comma();
             
-            $this->sql .= $this->store->fieldNamify($name);
+            $this->sql .= $this->storage->fieldNamify($name);
             
             if ($value === null)
             {
@@ -122,7 +122,7 @@ class Inserter implements StorableVisitor
             }
             else
             {
-                $this->values .= $this->store->parseText($value);
+                $this->values .= $this->storage->parseText($value);
             }
         }
     }
@@ -134,7 +134,7 @@ class Inserter implements StorableVisitor
         {
             $this->comma();
             
-            $this->sql .= $this->store->fieldNamify($name);
+            $this->sql .= $this->storage->fieldNamify($name);
             
             if ($value === null)
             {
@@ -142,7 +142,7 @@ class Inserter implements StorableVisitor
             }
             else
             {
-                $this->values .= $this->store->parseInt($value);
+                $this->values .= $this->storage->parseInt($value);
             }
         }
     }
@@ -154,7 +154,7 @@ class Inserter implements StorableVisitor
         {
             $this->comma();
             
-            $this->sql .= $this->store->fieldNamify($name);
+            $this->sql .= $this->storage->fieldNamify($name);
         
             if ($value === null)
             {
@@ -162,7 +162,7 @@ class Inserter implements StorableVisitor
             }
             else
             {
-                $this->values .= $this->store->parseFloat($value);
+                $this->values .= $this->storage->parseFloat($value);
             }
         }
     }
@@ -174,7 +174,7 @@ class Inserter implements StorableVisitor
         {
             $this->comma();
             
-            $this->sql .= $this->store->fieldNamify($name);
+            $this->sql .= $this->storage->fieldNamify($name);
         
             if ($value === null)
             {
@@ -182,7 +182,7 @@ class Inserter implements StorableVisitor
             }
             else
             {
-                $this->values .= $this->store->parseDatetime($value);
+                $this->values .= $this->storage->parseDatetime($value);
             }
         }
     }

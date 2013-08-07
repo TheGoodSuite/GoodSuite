@@ -3,7 +3,7 @@
 namespace Good\Memory\SQL;
 
 use Good\Memory\Database;
-use Good\Memory\SQLStore;
+use Good\Memory\SQLStorage;
 use Good\Manners\Storable;
 use Good\Manners\StorableVisitor;
 use Good\Manners\Condition;
@@ -11,7 +11,7 @@ use Good\Manners\Condition;
 class AdvancedUpdater implements StorableVisitor
 {
     private $db;
-    private $store;
+    private $storage;
     
     private $subquery;
     
@@ -22,10 +22,10 @@ class AdvancedUpdater implements StorableVisitor
     private $condition;
     private $rootTableName;
     
-    public function __construct(SQLStore $store, Database\Database $db, $currentTable)
+    public function __construct(SQLStorage $storage, Database\Database $db, $currentTable)
     {
         $this->db = $db;
-        $this->store = $store;
+        $this->storage = $storage;
         $this->currentTable = $currentTable;
     }
     
@@ -41,10 +41,10 @@ class AdvancedUpdater implements StorableVisitor
         $this->condition = $condition;
         $this->rootTableName = $rootTableName;
     
-        $joinDiscoverer = new JoinDiscoverer($this->store, 0);
+        $joinDiscoverer = new JoinDiscoverer($this->storage, 0);
         $joinDiscoverer->discoverJoins($value);
         
-        $this->sql = 'UPDATE ' . $this->store->tableNamify($datatypeName);
+        $this->sql = 'UPDATE ' . $this->storage->tableNamify($datatypeName);
         $this->sql .= ' SET ';
         
         $this->first = true;
@@ -55,7 +55,7 @@ class AdvancedUpdater implements StorableVisitor
         //  table is only used in the ON clause)
         if (!$this->first)
         {
-            $conditionWriter = new UpdateConditionWriter($this->store, 0);
+            $conditionWriter = new UpdateConditionWriter($this->storage, 0);
             
             $conditionWriter->writeCondition($condition, $rootTableName, $this->currentTable, $datatypeName);
             
@@ -85,9 +85,9 @@ class AdvancedUpdater implements StorableVisitor
         {
             if ($value !== null && $value->isNew())
             {
-                $join = $this->store->getJoin($this->currentTable, $name);
+                $join = $this->storage->getJoin($this->currentTable, $name);
                 
-                $updater = new AdvancedUpdater($this->store, $this->db, $join);
+                $updater = new AdvancedUpdater($this->storage, $this->db, $join);
                 $updater->updateWithRootTableName($datatypeName, $this->condition, 
                                                                 $value, $this->rootTableName);
             }
@@ -95,7 +95,7 @@ class AdvancedUpdater implements StorableVisitor
             {
                 $this->comma();
                 
-                $this->sql .= $this->store->fieldNamify($name);
+                $this->sql .= $this->storage->fieldNamify($name);
                 $this->sql .= ' = ';
             
                 if ($value === null)
@@ -116,7 +116,7 @@ class AdvancedUpdater implements StorableVisitor
         {
             $this->comma();
             
-            $this->sql .= $this->store->fieldNamify($name);
+            $this->sql .= $this->storage->fieldNamify($name);
             $this->sql .= ' = ';
             
             if ($value === null)
@@ -125,7 +125,7 @@ class AdvancedUpdater implements StorableVisitor
             }
             else
             {
-                $this->sql .= $this->store->parseText($value);
+                $this->sql .= $this->storage->parseText($value);
             }
         }
     }
@@ -136,7 +136,7 @@ class AdvancedUpdater implements StorableVisitor
         {
             $this->comma();
             
-            $this->sql .= $this->store->fieldNamify($name);
+            $this->sql .= $this->storage->fieldNamify($name);
             $this->sql .= ' = ';
             
             if ($value === null)
@@ -145,7 +145,7 @@ class AdvancedUpdater implements StorableVisitor
             }
             else
             {
-                $this->sql .= $this->store->parseInt($value);
+                $this->sql .= $this->storage->parseInt($value);
             }
         }
     }
@@ -157,7 +157,7 @@ class AdvancedUpdater implements StorableVisitor
         {
             $this->comma();
             
-            $this->sql .= $this->store->fieldNamify($name);
+            $this->sql .= $this->storage->fieldNamify($name);
             $this->sql .= ' = ';
             
             if ($value === null)
@@ -166,7 +166,7 @@ class AdvancedUpdater implements StorableVisitor
             }
             else
             {
-                $this->sql .= $this->store->parseFloat($value);
+                $this->sql .= $this->storage->parseFloat($value);
             }
         }
     }
@@ -177,7 +177,7 @@ class AdvancedUpdater implements StorableVisitor
         {
             $this->comma();
             
-            $this->sql .= $this->store->fieldNamify($name);
+            $this->sql .= $this->storage->fieldNamify($name);
             $this->sql .= ' = ';
             
             if ($value === null)
@@ -186,7 +186,7 @@ class AdvancedUpdater implements StorableVisitor
             }
             else
             {
-                $this->sql .= $this->store->parseDatetime($value);
+                $this->sql .= $this->storage->parseDatetime($value);
             }
         }
     }

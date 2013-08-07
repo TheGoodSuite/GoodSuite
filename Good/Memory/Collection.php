@@ -4,14 +4,14 @@ namespace Good\Memory;
 
 class Collection
 {
-    protected $store;
+    protected $storage;
     protected $dbresult;
     private $joins;
     private $type;
 
-    public function __construct($store, $dbresult, $joins, $type)
+    public function __construct($storage, $dbresult, $joins, $type)
     {
-        $this->store = $store;
+        $this->storage = $storage;
         $this->dbresult = $dbresult;
         $this->joins = $joins;
         $this->type = $type;
@@ -21,7 +21,7 @@ class Collection
     {
         if ($row = $this->dbresult->fetch())
         {
-            return $this->store->createStorable($row, $this->joins, $this->type);
+            return $this->storage->createStorable($row, $this->joins, $this->type);
         }
         else
         {

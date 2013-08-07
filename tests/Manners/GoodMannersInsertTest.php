@@ -5,17 +5,17 @@
  */
 abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
 {
-    private $store1;
-    private $store2;
+    private $storage1;
+    private $storage2;
     
-    abstract public function getNewStore();
+    abstract public function getNewStorage();
     // this function should be removed, but is used for clearing the database at the moment
     abstract public function getNewDb();
     
     // This could be done just once for all the tests and it would even be necessary
     // to run the tests in this class in a single process.
     // However, since we can't run these tests in the same process as those from other
-    // classes (we would have namespace collisions for Store and SQLStore)
+    // classes (we would have namespace collisions for Storage and SQLStorage)
     // we have to run every test in different class, and setUpBeforeClass doesn't
     // play well with that. As such, we'll have to call this function from
     // setUp instead of having PHPUnit do its magic.
@@ -40,14 +40,6 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         require dirname(__FILE__) . '/../generated/BaseInsertType.datatype.php';
         
         $service->requireClasses(array('InsertType'));
-        
-        // $manners = new \Good\Manners\Manners();
-        // $manners->compileStore($schema, dirname(__FILE__) . '/../generated/');
-        // require dirname(__FILE__) . '/../generated/Store.php';
-
-        // $memory = new \Good\Memory\Memory();
-        // $memory->compileSQLStore($schema, dirname(__FILE__) . '/../generated/');
-        // require dirname(__FILE__) . '/../generated/SQLStore.php';
         
         require dirname(__FILE__) . '/../generated/InsertTypeResolver.php';
     }
@@ -75,9 +67,9 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         $db = $this->getNewDb();
         $db->query('TRUNCATE inserttype');
         
-        // two stores, so communication will have to go through data storage
-        $this->store1 = $this->getNewStore();
-        $this->store2 = $this->getNewStore();
+        // two storages, so communication will have to go through data storage
+        $this->storage1 = $this->getNewStorage();
+        $this->storage2 = $this->getNewStorage();
     }
     
     public function tearDown()
@@ -85,8 +77,8 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         // Just doing this already to make sure the deconstructor will hasve
         // side-effects at an unspecified moment...
         // (at which point the database will probably be in a wrong state for this)
-        $this->store1->flush();
-        $this->store2->flush();
+        $this->storage1->flush();
+        $this->storage2->flush();
         
         // this should be handled through the GoodManners API once that is implemented
         $db = $this->getNewDb();
@@ -152,7 +144,7 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         
         $resolver = new InsertTypeResolver();
         $resolver->resolveMyCircularReference();
-        $collection = $this->store2->getCollection($any, $resolver);
+        $collection = $this->storage2->getCollection($any, $resolver);
         
         while ($type = $collection->getNext())
         {
@@ -172,12 +164,12 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         $ins->setMyText("Four");
         $ins->setMyDatetime(new \Datetime('2004-04-04'));
         $ins->setMyCircularReference(null);
-        $this->store1->insert($ins);
+        $this->storage1->insert($ins);
         
         $expectedResults = array();
         
         // we create another copy, so we can't be influenced by
-        // the store changing the object
+        // the storage changing the object
         $ins = new InsertType();
         $ins->setMyInt(4);
         $ins->setMyFloat(4.4);
@@ -186,7 +178,7 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircularReference(null);
         $expectedResults[] = $ins;
         
-        $this->store1->flush();
+        $this->storage1->flush();
         
         $this->checkInsertion($expectedResults);
     }
@@ -208,13 +200,13 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         
         $ins->setMyCircularReference($ins2);
         
-        $this->store1->insert($ins);
-        $this->store1->insert($ins2);
+        $this->storage1->insert($ins);
+        $this->storage1->insert($ins2);
         
         $expectedResults = array();
         
         // we create another copy, so we can't be influenced by
-        // the store changing the object
+        // the storage changing the object
         $ins = new InsertType();
         $ins->setMyInt(4);
         $ins->setMyFloat(4.4);
@@ -233,7 +225,7 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         $expectedResults[] = $ins;
         $expectedResults[] = $ins2;
         
-        $this->store1->flush();
+        $this->storage1->flush();
         
         $this->checkInsertion($expectedResults);
     }
@@ -246,12 +238,12 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         $ins->setMyText(null);
         $ins->setMyDatetime(null);
         $ins->setMyCircularReference(null);
-        $this->store1->insert($ins);
+        $this->storage1->insert($ins);
         
         $expectedResults = array();
         
         // we create another copy, so we can't be influenced by
-        // the store changing the object
+        // the storage changing the object
         $ins = new InsertType();
         $ins->setMyInt(null);
         $ins->setMyFloat(null);
@@ -260,7 +252,7 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircularReference(null);
         $expectedResults[] = $ins;
         
-        $this->store1->flush();
+        $this->storage1->flush();
         
         $this->checkInsertion($expectedResults);
     }
