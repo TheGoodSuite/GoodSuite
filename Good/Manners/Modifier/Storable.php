@@ -38,25 +38,8 @@ class Storable implements \Good\Service\Modifier
 	public function baseClassBody()
 	{
 		$res  = "	// Storable\n";
-		$res .= '	private $deleted = false;' . "\n";
 		$res .= '	private $isNew = true;' . "\n";
-		$res .= '	protected $store = null;' . "\n";
-		$res .= '	private $validationToken = null;' . "\n";
 		$res .= '	private $id = -1;' . "\n";
-		$res .= '	protected $dirty = false;' . "\n";
-		$res .= "	\n";
-		$res .= '	abstract protected function makeDirty();' . "\n";
-		$res .= "	\n";
-		$res .= '	public function isDeleted()'. "\n";
-		$res .= "	{\n";
-		$res .= '		return $this->deleted;' . "\n";
-		$res .= "	}\n";
-		$res .= "	\n";
-		$res .= '	public function delete()'. "\n";
-		$res .= "	{\n";
-		$res .= '		$this->deleted = true;' . "\n";
-		$res .= '		$this->makeDirty();' . "\n";
-		$res .= "	}\n";
 		$res .= "	\n";
 		$res .= '	public function isNew()'. "\n";
 		$res .= "	{\n";
@@ -66,33 +49,6 @@ class Storable implements \Good\Service\Modifier
 		$res .= '	public function setNew($value)'. "\n";
 		$res .= "	{\n";
 		$res .= '		$this->isNew = $value;' . "\n";
-		$res .= "	}\n";
-		$res .= "	\n";
-		$res .= '	public function setStore(\\Good\\Manners\\Store $store)' . "\n";
-		$res .= "	{\n";
-		$res .= '		$this->store = $store;' . "\n";
-		$res .= "	}\n";
-		$res .= "	\n";
-		$res .= '	public function setValidationToken(\\Good\\Manners\\ValidationToken $token)' . "\n";
-		$res .= "	{\n";
-		$res .= '		$this->validationToken = $token;' . "\n";
-		$res .= "	}\n";
-		$res .= "	\n";
-		$res .= '	public function isDirty()' . "\n";
-		$res .= "	{\n";
-		$res .= '		return $this->dirty;' . "\n";
-		$res .= "	}\n";
-		$res .= "	\n";
-		$res .= '	abstract public function clean();' . "\n";
-		$res .= "	\n";
-		$res .= '	protected function checkValidationToken()' . "\n";
-		$res .= "	{\n";
-		$res .= '		if ($this->validationToken != null && !$this->validationToken->value())' . "\n";
-		$res .= "		{\n";
-						// TODO: turn this into decent error handling
-		$res .= '			throw new \\Exception("Tried to acces an invalid Storable. It was probably made invalid by actions" .' . "\n";
-		$res .= '		 	    " on its store (like doing a modify, which invalidates all its Storables).");' . "\n";
-		$res .= "		}\n";
 		$res .= "	}\n";
 		$res .= "	\n";
 		$res .= '	public function getId()' . "\n";
@@ -376,7 +332,9 @@ class Storable implements \Good\Service\Modifier
 	
 	public function classBody()
 	{
-		$res  = '	protected function makeDirty()' . "\n";
+		$res  = '	private $dirty = false;' . "\n";
+		$res .= "	\n";
+		$res .= '	private function makeDirty()' . "\n";
 		$res .= "	{\n";
 		$res .= '		if (!$this->isDirty() && $this->store != null)' . "\n";
 		$res .= "		{\n";
@@ -385,7 +343,6 @@ class Storable implements \Good\Service\Modifier
 		$res .= "		}\n";
 		$res .= "	}\n";
 		$res .= "	\n";
-		
 		$res .= '	public function clean()' . "\n";
 		$res .= "	{\n";
 		$res .= '		$this->dirty = false;' . "\n";
@@ -394,6 +351,48 @@ class Storable implements \Good\Service\Modifier
 		{
 			$res .= '		$this->is' . ucfirst($member) . 'Dirty = false;' . "\n";
 		}
+		$res .= "	}\n";
+		$res .= "	\n";
+		$res .= '	public function isDirty()' . "\n";
+		$res .= "	{\n";
+		$res .= '		return $this->dirty;' . "\n";
+		$res .= "	}\n";
+		$res .= "	\n";
+		$res .= '	private $validationToken = null;' . "\n";
+		$res .= "	\n";
+		$res .= '	private function checkValidationToken()' . "\n";
+		$res .= "	{\n";
+		$res .= '		if ($this->validationToken != null && !$this->validationToken->value())' . "\n";
+		$res .= "		{\n";
+						// TODO: turn this into decent error handling
+		$res .= '			throw new \\Exception("Tried to acces an invalid Storable. It was probably made invalid by actions" .' . "\n";
+		$res .= '		 	    " on its store (like doing a modify, which invalidates all its Storables).");' . "\n";
+		$res .= "		}\n";
+		$res .= "	}\n";
+		$res .= "	\n";
+		$res .= '	public function setValidationToken(\\Good\\Manners\\ValidationToken $token)' . "\n";
+		$res .= "	{\n";
+		$res .= '		$this->validationToken = $token;' . "\n";
+		$res .= "	}\n";
+		$res .= "	\n";
+		$res .= '	private $store = null;' . "\n";
+		$res .= "	\n";
+		$res .= '	public function setStore(\\Good\\Manners\\Store $store)' . "\n";
+		$res .= "	{\n";
+		$res .= '		$this->store = $store;' . "\n";
+		$res .= "	}\n";
+		$res .= "	\n";
+		$res .= '	private $deleted = false;' . "\n";
+		$res .= "	\n";
+		$res .= '	public function isDeleted()'. "\n";
+		$res .= "	{\n";
+		$res .= '		return $this->deleted;' . "\n";
+		$res .= "	}\n";
+		$res .= "	\n";
+		$res .= '	public function delete()'. "\n";
+		$res .= "	{\n";
+		$res .= '		$this->deleted = true;' . "\n";
+		$res .= '		$this->makeDirty();' . "\n";
 		$res .= "	}\n";
 		
 		$res .= '	public static function resolver()' . "\n";
