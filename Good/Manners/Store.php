@@ -2,7 +2,7 @@
 
 namespace Good\Manners;
 
-abstract class Store implements StorableVisitor
+abstract class Store
 {
 	private $validationToken;
 	
@@ -29,14 +29,6 @@ abstract class Store implements StorableVisitor
 	abstract public function flush();
 	
 	abstract public function dirtyStorable(Storable $storable);
-	
-	abstract public function visitReferenceProperty($name, $datatypeName, $dirty, Storable $value = null);
-	abstract public function visitTextProperty($name, $dirty, $value);
-	abstract public function visitIntProperty($name, $dirty, $value);
-	abstract public function visitFloatProperty($name, $dirty, $value);
-	abstract public function visitDatetimeProperty($name, $dirty, $value);
-	
-	
 }
 
 ?>

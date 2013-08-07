@@ -3,14 +3,14 @@
 namespace Good\Memory\SQL;
 
 use Good\Memory\SQLStore;
-use Good\Memory\PropertyVisitor;
 use Good\Manners\Storable;
+use Good\Manners\StorableVisitor;
 use Good\Manners\Condition;
 use Good\Manners\ConditionProcessor;
 
 $started = false;
 
-class UpdateConditionWriter implements PropertyVisitor,
+class UpdateConditionWriter implements StorableVisitor,
 									   ConditionProcessor
 {
 	private $store;
@@ -117,13 +117,12 @@ class UpdateConditionWriter implements PropertyVisitor,
 		{
 			$this->tableName = $this->store->tableNamify($this->updatingTableName);
 			$this->phase2 = true;
-			$this->store->setCurrentPropertyVisitor($this);
 			$this->comparison = $comparison;
 			$this->writeBracketOrAnd();
 			$this->first = true;
 			$this->currentTable = $this->updatingTableNumber;
 			
-			$this->updatingTableValue->acceptStorableVisitor($this->store);
+			$this->updatingTableValue->acceptStorableVisitor($this);
 		}
 		
 		if ($this->first)
@@ -142,8 +141,7 @@ class UpdateConditionWriter implements PropertyVisitor,
 		$this->joining = '';
 		$this->updatingTableFound = null;
 		
-		$this->store->setCurrentPropertyVisitor($this);
-		$to->acceptStorableVisitor($this->store);
+		$to->acceptStorableVisitor($this);
 		
 		if ($this->first)
 		{

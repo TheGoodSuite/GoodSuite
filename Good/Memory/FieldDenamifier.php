@@ -3,8 +3,9 @@
 namespace Good\Memory;
 
 use Good\Manners\Storable;
+use Good\Manners\StorableVisitor;
 
-class FieldDenamifier implements PropertyVisitor
+class FieldDenamifier implements StorableVisitor
 {
 	private $store;
 	private $data;
@@ -18,10 +19,9 @@ class FieldDenamifier implements PropertyVisitor
 	public function denamifyFields(array $data, Storable $storable)
 	{
 		$this->data = $data;
-		$this->store->setCurrentPropertyVisitor($this);
 		$this->out = array();
 		
-		$storable->acceptStorableVisitor($this->store);
+		$storable->acceptStorableVisitor($this);
 		
 		return $this->out;
 	}

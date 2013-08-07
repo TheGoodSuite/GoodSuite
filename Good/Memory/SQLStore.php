@@ -10,7 +10,6 @@ use Good\Manners\Resolver;
 class SQLStore extends Store
 {
 	private $db;
-	private $currentPropertyVisitor = null;
 	
 	private $joins = array();
 	private $joinsReverse = array();
@@ -327,33 +326,6 @@ class SQLStore extends Store
 		$this->created[$type][$data[$table]["id"]] = $ret;
 		
 		return $ret;
-	}
-	
-	public function setCurrentPropertyVisitor(PropertyVisitor $value)
-	{
-		$this->currentPropertyVisitor = $value;
-	}
-	
-	public function visitReferenceProperty($name, $datatypeName, $dirty, 
-													\Good\Manners\Storable $value = null)
-	{
-		$this->currentPropertyVisitor->visitReferenceProperty($name, $datatypeName, $dirty, $value);
-	}
-	public function visitTextProperty($name, $dirty, $value)
-	{
-		$this->currentPropertyVisitor->visitTextProperty($name, $dirty, $value);
-	}
-	public function visitIntProperty($name, $dirty, $value)
-	{
-		$this->currentPropertyVisitor->visitIntProperty($name,$dirty, $value);
-	}
-	public function visitFloatProperty($name, $dirty, $value)
-	{
-		$this->currentPropertyVisitor->visitFloatProperty($name, $dirty, $value);
-	}
-	public function visitDatetimeProperty($name, $dirty, $value)
-	{
-		$this->currentPropertyVisitor->visitDatetimeProperty($name, $dirty, $value);
 	}
 }
 

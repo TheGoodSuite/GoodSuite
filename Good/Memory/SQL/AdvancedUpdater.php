@@ -2,14 +2,13 @@
 
 namespace Good\Memory\SQL;
 
-use Good\Memory\Database as Database;
-
+use Good\Memory\Database;
 use Good\Memory\SQLStore;
-use Good\Memory\PropertyVisitor;
 use Good\Manners\Storable;
+use Good\Manners\StorableVisitor;
 use Good\Manners\Condition;
 
-class AdvancedUpdater implements PropertyVisitor
+class AdvancedUpdater implements StorableVisitor
 {
 	private $db;
 	private $store;
@@ -49,8 +48,7 @@ class AdvancedUpdater implements PropertyVisitor
 		$this->sql .= ' SET ';
 		
 		$this->first = true;
-		$this->store->setCurrentPropertyVisitor($this);
-		$value->acceptStorableVisitor($this->store);
+		$value->acceptStorableVisitor($this);
 		
 		// if we haven't got a single entry to update, we don't do anything
 		// (there is no reason for alarm, though, it may just be that this
@@ -92,7 +90,6 @@ class AdvancedUpdater implements PropertyVisitor
 				$updater = new AdvancedUpdater($this->store, $this->db, $join);
 				$updater->updateWithRootTableName($datatypeName, $this->condition, 
 																$value, $this->rootTableName);
-				$this->store->setCurrentPropertyVisitor($this);
 			}
 			else
 			{

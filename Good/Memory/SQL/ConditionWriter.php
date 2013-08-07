@@ -3,12 +3,12 @@
 namespace Good\Memory\SQL;
 
 use Good\Memory\SQLStore;
-use Good\Memory\PropertyVisitor;
 use Good\Manners\Storable;
+use Good\Manners\StorableVisitor;
 use Good\Manners\Condition;
 use Good\Manners\ConditionProcessor;
 
-class ConditionWriter implements PropertyVisitor,
+class ConditionWriter implements StorableVisitor,
 								 ConditionProcessor
 {
 	private $store;
@@ -40,8 +40,7 @@ class ConditionWriter implements PropertyVisitor,
 		$this->first = true;
 		$this->condition = '';
 		
-		$this->store->setCurrentPropertyVisitor($this);
-		$to->acceptStorableVisitor($this->store);
+		$to->acceptStorableVisitor($this);
 		
 		if ($this->first)
 		{

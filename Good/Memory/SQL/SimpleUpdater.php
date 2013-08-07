@@ -5,10 +5,10 @@ namespace Good\Memory\SQL;
 use Good\Memory\Database as Database;
 
 use Good\Memory\SQLStore;
-use Good\Memory\PropertyVisitor;
 use Good\Manners\Storable;
+use Good\Manners\StorableVisitor;
 
-class SimpleUpdater implements PropertyVisitor
+class SimpleUpdater implements StorableVisitor
 {
 	private $db;
 	private $store;
@@ -29,8 +29,7 @@ class SimpleUpdater implements PropertyVisitor
 		$this->sql .= ' SET ';
 		
 		$this->first = true;
-		$this->store->setCurrentPropertyVisitor($this);
-		$value->acceptStorableVisitor($this->store);
+		$value->acceptStorableVisitor($this);
 		
 		$this->sql .= " WHERE id = " . intval($value->getId()) . "";
 		

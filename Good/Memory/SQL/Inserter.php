@@ -6,10 +6,10 @@ use Good\Memory\Database as Database;
 
 use Good\Memory\SQLStore;
 use Good\Memory\SQLPostponedForeignKey;
-use Good\Memory\PropertyVisitor;
 use Good\Manners\Storable;
+use Good\Manners\StorableVisitor;
 
-class Inserter implements PropertyVisitor
+class Inserter implements StorableVisitor
 {
 	private $db;
 	private $store;
@@ -40,8 +40,7 @@ class Inserter implements PropertyVisitor
 		$value->setNew(false);
 		$value->setStore($this->store);
 		
-		$this->store->setCurrentPropertyVisitor($this);
-		$value->acceptStorableVisitor($this->store);
+		$value->acceptStorableVisitor($this);
 		
 		$this->sql .= ') ';
 		$this->sql .= $this->values . ')';
@@ -90,7 +89,6 @@ class Inserter implements PropertyVisitor
 					$inserter = new Inserter($this->store, $this->db);
 					$inserter->insert($datatypeName, $value);
 					$this->postponed = \array_merge($this->postponed, $inserter->getPostponed());
-					$this->store->setCurrentPropertyVisitor($this);
 				}
 				
 				if (!$value->isNew() && $value->getId() == -1)

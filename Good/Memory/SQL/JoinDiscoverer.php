@@ -2,10 +2,10 @@
 
 namespace Good\Memory\SQL;
 
-use Good\Memory\PropertyVisitor;
 use Good\Manners\Storable;
+use Good\Manners\StorableVisitor;
 
-class JoinDiscoverer implements PropertyVisitor
+class JoinDiscoverer implements StorableVisitor
 {
 	private $store;
 	
@@ -19,8 +19,7 @@ class JoinDiscoverer implements PropertyVisitor
 	
 	public function discoverJoins(Storable $value)
 	{
-		$this->store->setCurrentPropertyVisitor($this);
-		$value->acceptStorableVisitor($this->store);
+		$value->acceptStorableVisitor($this);
 	}
 	
 	public function visitReferenceProperty($name, $datatypeName, $dirty, 
