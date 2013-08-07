@@ -2,7 +2,7 @@
 
 namespace Good\Service;
 
-interface Modifier extends \Good\Rolemodel\Visitor
+interface Modifier extends \Good\Rolemodel\SchemaVisitor
 {
     public function baseClassTopOfFile();
     public function implementingInterfaces();

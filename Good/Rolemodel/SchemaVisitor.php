@@ -10,7 +10,7 @@ namespace Good\Rolemodel;
 // does just that.
 // 
 
-interface Visitor
+interface SchemaVisitor
 {
     public function visitSchema(Schema $dataModel);
     public function visitSchemaEnd();

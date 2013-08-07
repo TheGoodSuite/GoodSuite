@@ -4,7 +4,7 @@ namespace Good\Service;
 
 use Good\Rolemodel\Schema;
 
-class Compiler implements \Good\Rolemodel\Visitor
+class Compiler implements \Good\Rolemodel\SchemaVisitor
 {
     // TODO: prevent namespace collisions between things between
     //       modifiers and generated variables / accessors

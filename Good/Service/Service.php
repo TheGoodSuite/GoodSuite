@@ -12,7 +12,7 @@ class Service
         
         $compiler = new Compiler($modifiers, $outputDir);
         
-        $model->accept($compiler);
+        $model->acceptSchemaVisitor($compiler);
     }
     
     public function requireClasses(array $classes)

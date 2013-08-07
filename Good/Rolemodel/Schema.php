@@ -2,7 +2,7 @@
 
 namespace Good\Rolemodel;
 
-class Schema implements Visitable
+class Schema implements VisitableSchema
 {
     private $dataTypes;
     
@@ -34,7 +34,7 @@ class Schema implements Visitable
         }
     }
         
-    public function accept(Visitor $visitor)
+    public function acceptSchemaVisitor(SchemaVisitor $visitor)
     {
         // visit this
         $visitor->visitSchema($this);
@@ -42,7 +42,7 @@ class Schema implements Visitable
         // and move the visitor to your children
         foreach ($this->dataTypes as $dataType)
         {
-            $dataType->accept($visitor);
+            $dataType->acceptSchemaVisitor($visitor);
         }
         
         $visitor->visitSchemaEnd();

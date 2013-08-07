@@ -2,7 +2,7 @@
 
 namespace Good\Rolemodel\Schema;
 
-use Good\Rolemodel\Visitor;
+use Good\Rolemodel\SchemaVisitor;
 
 class ReferenceMember extends Member
 {
@@ -15,7 +15,7 @@ class ReferenceMember extends Member
         $this->referencedType = $referencedType;
     }
     
-    public function accept(Visitor $visitor)
+    public function acceptSchemaVisitor(SchemaVisitor $visitor)
     {
         // visit this, there are no children to pass visitor on to
         $visitor->visitReferenceMember($this);

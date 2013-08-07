@@ -33,7 +33,7 @@ class Selecter implements ResolverVisitor
     {
         $this->sql = "SELECT t0.id AS t0_id";
         
-        $resolver->resolverAccept($this);
+        $resolver->acceptResolverVisitor($this);
         
         $this->sql .= $this->writeQueryWithoutSelect($datatypeName, $condition);
         
@@ -113,7 +113,7 @@ class Selecter implements ResolverVisitor
         
         $currentTable = $this->currentTable;
         $this->currentTable = $join;
-        $resolver->resolverAccept($this);
+        $resolver->acceptResolverVisitor($this);
         $this->currentTable = $currentTable;
     }
     

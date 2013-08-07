@@ -109,7 +109,7 @@ class Storable implements \Good\Service\Modifier
         $this->resolver .= "    }\n";
         $this->resolver .= "    \n";
         
-        $this->resolverVisit  = '    public function resolverAccept' . 
+        $this->resolverVisit  = '    public function acceptResolverVisitor' . 
                                                 '(\\Good\\Manners\\ResolverVisitor $visitor)' . "\n";
         $this->resolverVisit .= "    {\n";
     }

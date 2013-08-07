@@ -2,9 +2,9 @@
 
 namespace Good\Rolemodel\Schema;
 
-use Good\Rolemodel\Visitable;
+use Good\Rolemodel\VisitableSchema;
 
-abstract class Member implements Visitable
+abstract class Member implements VisitableSchema
 {
     private $attributes;
     private $name;

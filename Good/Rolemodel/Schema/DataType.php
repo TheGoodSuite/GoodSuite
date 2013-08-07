@@ -2,7 +2,7 @@
 
 namespace Good\Rolemodel\Schema;
 
-use Good\Rolemodel\Visitor;
+use Good\Rolemodel\SchemaVisitor;
 
 class DataType
 {
@@ -18,7 +18,7 @@ class DataType
         $this->members = $members;
     }
     
-    public function accept(Visitor $visitor)
+    public function acceptSchemaVisitor(SchemaVisitor $visitor)
     {
         // visit this
         $visitor->visitDataType($this);
@@ -26,7 +26,7 @@ class DataType
         // and move the visitor to your children
         foreach ($this->members as $member)
         {
-            $member->accept($visitor);
+            $member->acceptSchemaVisitor($visitor);
         }
     }
     

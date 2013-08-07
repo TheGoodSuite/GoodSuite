@@ -37,7 +37,7 @@ use Good\Rolemodel\Schema;
 // NOTE: If a given Storable contains a circular reference, this script will
 //       not terminate
 
-class LookingWithMannersCompiler implements \Good\Rolemodel\Visitor
+class LookingWithMannersCompiler implements \Good\Rolemodel\SchemaVisitor
 {
     private $outputDir;
     private $output = null;
@@ -47,7 +47,7 @@ class LookingWithMannersCompiler implements \Good\Rolemodel\Visitor
     {
         $this->outputDir = $outputDir;
         
-        $model->accept($this);
+        $model->acceptSchemaVisitor($this);
     }
     
     public function visitSchema(Schema $schema)

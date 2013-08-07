@@ -10,9 +10,9 @@ namespace Good\Rolemodel;
 // does just that.
 // 
 
-interface Visitable
+interface VisitableSchema
 {
-    public function accept(Visitor $visitor);
+    public function acceptSchemaVisitor(SchemaVisitor $visitor);
 }
 
 ?>
