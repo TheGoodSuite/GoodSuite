@@ -2,7 +2,7 @@
 
 namespace Good\Manners;
 
-abstract class AbstractResolver implements Resolver
+abstract class BaseResolver implements Resolver
 {
 	const ORDER_DIRECTION_ASC = 0;
 	const ORDER_DIRECTION_DESC = 1;
@@ -11,7 +11,7 @@ abstract class AbstractResolver implements Resolver
 	
 	private $orderCount = 0;
 	
-	public function __construct(AbstractResolver $root = null)
+	public function __construct(BaseResolver $root = null)
 	{
 		if ($root == null)
 		{

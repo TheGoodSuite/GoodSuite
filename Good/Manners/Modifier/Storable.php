@@ -101,7 +101,7 @@ class Storable implements \Good\Service\Modifier
 		
 		$this->resolver  = "<?php\n";
 		$this->resolver .= "\n";
-		$this->resolver .= 'class ' . $dataType->getName() . 'Resolver extends \\Good\\Manners\\AbstractResolver' . "\n";
+		$this->resolver .= 'class ' . $dataType->getName() . 'Resolver extends \\Good\\Manners\\BaseResolver' . "\n";
 		$this->resolver .= "{\n";
 		$this->resolver .= '	public function getType()' . "\n";
 		$this->resolver .= "	{\n";
