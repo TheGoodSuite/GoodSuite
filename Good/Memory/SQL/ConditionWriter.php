@@ -41,7 +41,7 @@ class ConditionWriter implements PropertyVisitor,
 		$this->condition = '';
 		
 		$this->store->setCurrentPropertyVisitor($this);
-		$to->acceptStore($this->store);
+		$to->acceptStorableVisitor($this->store);
 		
 		if ($this->first)
 		{

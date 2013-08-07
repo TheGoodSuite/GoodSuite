@@ -21,7 +21,7 @@ class FieldDenamifier implements PropertyVisitor
 		$this->store->setCurrentPropertyVisitor($this);
 		$this->out = array();
 		
-		$storable->acceptStore($this->store);
+		$storable->acceptStorableVisitor($this->store);
 		
 		return $this->out;
 	}

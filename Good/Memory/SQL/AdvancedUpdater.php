@@ -50,7 +50,7 @@ class AdvancedUpdater implements PropertyVisitor
 		
 		$this->first = true;
 		$this->store->setCurrentPropertyVisitor($this);
-		$value->acceptStore($this->store);
+		$value->acceptStorableVisitor($this->store);
 		
 		// if we haven't got a single entry to update, we don't do anything
 		// (there is no reason for alarm, though, it may just be that this

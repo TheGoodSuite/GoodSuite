@@ -123,7 +123,7 @@ class UpdateConditionWriter implements PropertyVisitor,
 			$this->first = true;
 			$this->currentTable = $this->updatingTableNumber;
 			
-			$this->updatingTableValue->acceptStore($this->store);
+			$this->updatingTableValue->acceptStorableVisitor($this->store);
 		}
 		
 		if ($this->first)
@@ -143,7 +143,7 @@ class UpdateConditionWriter implements PropertyVisitor,
 		$this->updatingTableFound = null;
 		
 		$this->store->setCurrentPropertyVisitor($this);
-		$to->acceptStore($this->store);
+		$to->acceptStorableVisitor($this->store);
 		
 		if ($this->first)
 		{

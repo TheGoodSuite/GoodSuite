@@ -11,7 +11,7 @@ class Storable implements \Good\Service\Modifier
 	private $classVariable;
 	private $classVariableIsReference;
 	private $firstClass;
-	private $acceptStore;
+	private $accept;
 	
 	private $resolver = null;
 	private $resolverVisit = null;
@@ -89,8 +89,8 @@ class Storable implements \Good\Service\Modifier
 		$this->className = $dataType->getName();
 		$this->classMembers = array();
 		
-		$this->acceptStore  = '	public function acceptStore(\\Good\\Manners\\Store $store)' . "\n";
-		$this->acceptStore .= "	{\n";
+		$this->accept  = '	public function acceptStorableVisitor(\\Good\\Manners\\StorableVisitor $visitor)' . "\n";
+		$this->accept .= "	{\n";
 		
 		$this->setFromArray  = '	public function setFromArray(array $data)' . "\n";
 		$this->setFromArray .= "	{\n";
@@ -135,7 +135,7 @@ class Storable implements \Good\Service\Modifier
 		
 		$this->classVariableIsReference = true;
 		
-		$this->acceptStore .= '		$store->visitReferenceProperty("' . $member->getName() . '", ' .
+		$this->accept .= '		$visitor->visitReferenceProperty("' . $member->getName() . '", ' .
 											'"' . $member->getReferencedType() . '", ' . 
 											'$this->is' . \ucfirst($member->getName()) . 'Dirty, ' .
 											'$this->get' . \ucfirst($member->getName()) . '());' . "\n";
@@ -181,7 +181,7 @@ class Storable implements \Good\Service\Modifier
 		
 		$this->classVariableIsReference = false;
 		
-		$this->acceptStore .= '		$store->visitTextProperty("' . $member->getName() . '", ' .
+		$this->accept .= '		$visitor->visitTextProperty("' . $member->getName() . '", ' .
 											'$this->is' . \ucfirst($member->getName()) . 'Dirty, ' . 
 											'$this->get' . \ucfirst($member->getName()) . '());' . "\n";
 		
@@ -198,7 +198,7 @@ class Storable implements \Good\Service\Modifier
 		
 		$this->classVariableIsReference = false;
 		
-		$this->acceptStore .= '		$store->visitIntProperty("' . $member->getName() . '", ' .
+		$this->accept .= '		$visitor->visitIntProperty("' . $member->getName() . '", ' .
 											'$this->is' . \ucfirst($member->getName()) . 'Dirty, ' . 
 											'$this->get' . \ucfirst($member->getName()) . '());' . "\n";
 		
@@ -215,7 +215,7 @@ class Storable implements \Good\Service\Modifier
 		
 		$this->classVariableIsReference = false;
 		
-		$this->acceptStore .= '		$store->visitFloatProperty("' . $member->getName() . '", ' .
+		$this->accept .= '		$visitor->visitFloatProperty("' . $member->getName() . '", ' .
 											'$this->is' . \ucfirst($member->getName()) . 'Dirty, ' . 
 											'$this->get' . \ucfirst($member->getName()) . '());' . "\n";
 		
@@ -232,7 +232,7 @@ class Storable implements \Good\Service\Modifier
 		
 		$this->classVariableIsReference = false;
 		
-		$this->acceptStore .= '		$store->visitDatetimeProperty("' . $member->getName() . '", ' .
+		$this->accept .= '		$visitor->visitDatetimeProperty("' . $member->getName() . '", ' .
 											'$this->is' . \ucfirst($member->getName()) . 'Dirty, ' . 
 											'$this->get' . \ucfirst($member->getName()) . '());' . "\n";
 		
@@ -406,10 +406,10 @@ class Storable implements \Good\Service\Modifier
 		$res .= "	}\n";
 		$res .= "	\n";
 		
-		$this->acceptStore .= "	}\n";
-		$this->acceptStore .= "	\n";
+		$this->accept .= "	}\n";
+		$this->accept .= "	\n";
 		
-		$res .= $this->acceptStore;
+		$res .= $this->accept;
 		
 		$this->setFromArray .= '				default:' . "\n";
 		$this->setFromArray .= '					throw new Exception("Unrecognised field in setFromArray array.");' . "\n";

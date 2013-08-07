@@ -30,7 +30,7 @@ class SimpleUpdater implements PropertyVisitor
 		
 		$this->first = true;
 		$this->store->setCurrentPropertyVisitor($this);
-		$value->acceptStore($this->store);
+		$value->acceptStorableVisitor($this->store);
 		
 		$this->sql .= " WHERE id = " . intval($value->getId()) . "";
 		

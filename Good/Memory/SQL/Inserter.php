@@ -41,7 +41,7 @@ class Inserter implements PropertyVisitor
 		$value->setStore($this->store);
 		
 		$this->store->setCurrentPropertyVisitor($this);
-		$value->acceptStore($this->store);
+		$value->acceptStorableVisitor($this->store);
 		
 		$this->sql .= ') ';
 		$this->sql .= $this->values . ')';

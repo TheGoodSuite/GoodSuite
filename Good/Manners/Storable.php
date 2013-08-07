@@ -22,7 +22,7 @@ interface Storable
 	public function isDirty();
 	public function clean();
 	public function getType();
-	public function acceptStore(Store $store);
+	public function acceptStorableVisitor(StorableVisitor $store);
 	public function setFromArray(array $values);
 	
 	public static function resolver();

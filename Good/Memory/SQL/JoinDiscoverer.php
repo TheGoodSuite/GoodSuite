@@ -20,7 +20,7 @@ class JoinDiscoverer implements PropertyVisitor
 	public function discoverJoins(Storable $value)
 	{
 		$this->store->setCurrentPropertyVisitor($this);
-		$value->acceptStore($this->store);
+		$value->acceptStorableVisitor($this->store);
 	}
 	
 	public function visitReferenceProperty($name, $datatypeName, $dirty, 
