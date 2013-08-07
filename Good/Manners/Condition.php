@@ -4,7 +4,7 @@ namespace Good\Manners;
 
 interface Condition
 {
-	public function process(ConditionProcessor $store);
+    public function process(ConditionProcessor $store);
 }
 
 ?>

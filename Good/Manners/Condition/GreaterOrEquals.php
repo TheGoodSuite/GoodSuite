@@ -9,17 +9,17 @@ use Good\Manners\Store;
 
 class GreaterOrEquals implements Condition
 {
-	private $to;
+    private $to;
 
-	public function __construct(Storable $to)
-	{
-		$this->to = $to;
-	}
-	
-	public function process(ConditionProcessor $store)
-	{
-		$store->processGreaterOrEqualsCondition($this->to);
-	}
+    public function __construct(Storable $to)
+    {
+        $this->to = $to;
+    }
+    
+    public function process(ConditionProcessor $store)
+    {
+        $store->processGreaterOrEqualsCondition($this->to);
+    }
 }
 
 ?>

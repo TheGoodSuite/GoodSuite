@@ -4,7 +4,7 @@ namespace Good\Memory\Database;
 
 interface Result
 {
-	public function fetch();
+    public function fetch();
 }
 
 ?>

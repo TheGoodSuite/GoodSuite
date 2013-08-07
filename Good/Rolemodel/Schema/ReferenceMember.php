@@ -6,30 +6,30 @@ use Good\Rolemodel\Visitor;
 
 class ReferenceMember extends Member
 {
-	private $referencedType;
-	
-	public function __construct(array $attributes, $name, $referencedType)
-	{
-		parent::__construct($attributes, $name);
-		
-		$this->referencedType = $referencedType;
-	}
-	
-	public function accept(Visitor $visitor)
-	{
-		// visit this, there are no children to pass visitor on to
-		$visitor->visitReferenceMember($this);
-	}
-	
-	public function getReferencedType()
-	{
-		return $this->referencedType;
-	}
-	
-	public function getReferencedTypeIfAny()
-	{
-		return $this->referencedType;
-	}
+    private $referencedType;
+    
+    public function __construct(array $attributes, $name, $referencedType)
+    {
+        parent::__construct($attributes, $name);
+        
+        $this->referencedType = $referencedType;
+    }
+    
+    public function accept(Visitor $visitor)
+    {
+        // visit this, there are no children to pass visitor on to
+        $visitor->visitReferenceMember($this);
+    }
+    
+    public function getReferencedType()
+    {
+        return $this->referencedType;
+    }
+    
+    public function getReferencedTypeIfAny()
+    {
+        return $this->referencedType;
+    }
 }
 
 ?>

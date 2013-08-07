@@ -6,11 +6,11 @@ use Good\Rolemodel\Visitor;
 
 class IntMember extends PrimitiveMember
 {
-	public function accept(Visitor $visitor)
-	{
-		// visit this, there are no children to pass visitor on to
-		$visitor->visitIntMember($this);
-	}
+    public function accept(Visitor $visitor)
+    {
+        // visit this, there are no children to pass visitor on to
+        $visitor->visitIntMember($this);
+    }
 }
 
 ?>

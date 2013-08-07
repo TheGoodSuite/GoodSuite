@@ -12,7 +12,7 @@ namespace Good\Rolemodel;
 
 interface Visitable
 {
-	public function accept(Visitor $visitor);
+    public function accept(Visitor $visitor);
 }
 
 ?>

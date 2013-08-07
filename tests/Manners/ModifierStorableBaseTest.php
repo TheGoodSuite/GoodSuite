@@ -13,19 +13,19 @@ require_once dirname(__FILE__) . '/../Service/GoodServiceBaseTest.php';
  */
 abstract class GoodMannersModifierStorableBaseTest extends GoodServiceBaseTest
 {
-	protected function compile($types, $modifiers = null)
-	{
-		if ($modifiers == null)
-		{
-			parent::compile($types, array(new \Good\Manners\Modifier\Storable()));
-		}
-		else
-		{
-			parent::compile($types, $modifiers);
-		}
-	}
-	
-	// todo
+    protected function compile($types, $modifiers = null)
+    {
+        if ($modifiers == null)
+        {
+            parent::compile($types, array(new \Good\Manners\Modifier\Storable()));
+        }
+        else
+        {
+            parent::compile($types, $modifiers);
+        }
+    }
+    
+    // todo
 }
 
 ?>

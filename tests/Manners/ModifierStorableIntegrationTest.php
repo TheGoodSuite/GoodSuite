@@ -12,19 +12,19 @@ require_once dirname(__FILE__) . '/ModifierStorableBaseTest.php';
  */
 class GoodMannersModifierStorableIntegrationTest extends GoodMannersModifierStorableBaseTest
 {
-	protected function compile($types, $modifiers = null)
-	{
-		global $allModifiers;
-		
-		if ($modifiers == null)
-		{
-			parent::compile($types, $allModifiers);
-		}
-		else
-		{
-			parent::compile($types, $modifiers);
-		}
-	}
+    protected function compile($types, $modifiers = null)
+    {
+        global $allModifiers;
+        
+        if ($modifiers == null)
+        {
+            parent::compile($types, $allModifiers);
+        }
+        else
+        {
+            parent::compile($types, $modifiers);
+        }
+    }
 }
 
 ?>

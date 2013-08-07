@@ -4,18 +4,18 @@ namespace Good\Service;
 
 interface Modifier extends \Good\Rolemodel\Visitor
 {
-	public function baseClassTopOfFile();
-	public function implementingInterfaces();
-	public function baseClassBody();
-	public function baseClassConstructor();
-	public function getterBegin();
-	public function setterBegin();
-	public function setterEnd();
-	public function varDefinitionBefore();
-	public function varDefinitionAfter();
-	public function topOfFile();
-	public function bottomOfFile();
-	public function extraFiles();
+    public function baseClassTopOfFile();
+    public function implementingInterfaces();
+    public function baseClassBody();
+    public function baseClassConstructor();
+    public function getterBegin();
+    public function setterBegin();
+    public function setterEnd();
+    public function varDefinitionBefore();
+    public function varDefinitionAfter();
+    public function topOfFile();
+    public function bottomOfFile();
+    public function extraFiles();
 }
 
 ?>

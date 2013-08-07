@@ -7,18 +7,18 @@ require_once dirname(__FILE__) . '/../Manners/GoodMannersDeleteTest.php';
  */
 class GoodMemoryDeleteTest extends GoodMannersDeleteTest
 {
-	public function getNewDb()
-	{
-		require dirname(__FILE__) . '/dbconfig.php';
-		
-		return new \Good\Memory\Database\MySQL($dbconfig['name'], $dbconfig['host'], 
-									$dbconfig['port'], $dbconfig['user'], $dbconfig['pass'], '');
-	}
-	
-	public function getNewStore()
-	{
-		return new \Good\Memory\SQLStore($this->getNewDb());
-	}
+    public function getNewDb()
+    {
+        require dirname(__FILE__) . '/dbconfig.php';
+        
+        return new \Good\Memory\Database\MySQL($dbconfig['name'], $dbconfig['host'], 
+                                    $dbconfig['port'], $dbconfig['user'], $dbconfig['pass'], '');
+    }
+    
+    public function getNewStore()
+    {
+        return new \Good\Memory\SQLStore($this->getNewDb());
+    }
 }
 
 ?>

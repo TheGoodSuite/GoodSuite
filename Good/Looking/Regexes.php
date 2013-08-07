@@ -8,83 +8,83 @@ namespace Good\Looking;
     // depth of an array, unlike str_replace
 function str_replace_once($search, $replace, $subject)
 {
-	if (\is_array($subject))
-	{
-		foreach ($subject as &$newSubject)
-		{
-			$newSubject = \str_replace($search, $replace, $newSubject);
-		}
-		
-		return $subject;
-	}
-	
-	if (\is_array($search))
-	{
-		foreach ($search as $newSearch)
-		{
-			if (\is_array($replace))
-			{
-				list($key, $newReplace) = \each($replace);
-				
-				if ($key == null && $newReplace == null)
-				{
-					$newReplace = '';
-				}
-			}
-			else
-			{
-				$newReplace = $replace;
-			}
-			
-			$subject = str_replace_once($newSearch, $newReplace, $subject);
-		}
-		
-		if (\is_array($replace))
-		{
-			\reset($replace);
-		}
-		
-		return $subject;
-	}
-	
-	return \substr($subject, 0, \strpos($subject, $search)) . 
-			$replace . 
-			 \substr($subject, \strpos($subject, $search) + \strlen($search));
+    if (\is_array($subject))
+    {
+        foreach ($subject as &$newSubject)
+        {
+            $newSubject = \str_replace($search, $replace, $newSubject);
+        }
+        
+        return $subject;
+    }
+    
+    if (\is_array($search))
+    {
+        foreach ($search as $newSearch)
+        {
+            if (\is_array($replace))
+            {
+                list($key, $newReplace) = \each($replace);
+                
+                if ($key == null && $newReplace == null)
+                {
+                    $newReplace = '';
+                }
+            }
+            else
+            {
+                $newReplace = $replace;
+            }
+            
+            $subject = str_replace_once($newSearch, $newReplace, $subject);
+        }
+        
+        if (\is_array($replace))
+        {
+            \reset($replace);
+        }
+        
+        return $subject;
+    }
+    
+    return \substr($subject, 0, \strpos($subject, $search)) . 
+            $replace . 
+             \substr($subject, \strpos($subject, $search) + \strlen($search));
 }
 
 Class Regexes
 {
-	// independent regexes
-	static public $varName;
-	static public $controlStructure;
-	static public $scriptDelimiterLeft;
-	static public $scriptDelimiterRight;
-	static public $statementEnder;
-	static public $commentDelimiterLeft;
-	static public $commentDelimiterRight;
-	static public $stringSingle;
-	static public $stringDouble;
-	static public $literalNumber;
-	static public $literalBoolean;
-	static public $operator;
-	
-	static public $allControlStructures;
-	static public $startingControlStructures;
-	static public $branchingControlStructures;
-	static public $endingControlStructures;
-	
-	// concatenated regexes
-	static public $script;
-	static public $comment;
-	static public $literalString;
-	
-	static public $controlStructureConditions = array(); // holds one regex per CS that has a condition
-	
-	// monkey dancers
-	static public $variable;
-	static public $func;
-	static public $term;
-	static public $expression;
+    // independent regexes
+    static public $varName;
+    static public $controlStructure;
+    static public $scriptDelimiterLeft;
+    static public $scriptDelimiterRight;
+    static public $statementEnder;
+    static public $commentDelimiterLeft;
+    static public $commentDelimiterRight;
+    static public $stringSingle;
+    static public $stringDouble;
+    static public $literalNumber;
+    static public $literalBoolean;
+    static public $operator;
+    
+    static public $allControlStructures;
+    static public $startingControlStructures;
+    static public $branchingControlStructures;
+    static public $endingControlStructures;
+    
+    // concatenated regexes
+    static public $script;
+    static public $comment;
+    static public $literalString;
+    
+    static public $controlStructureConditions = array(); // holds one regex per CS that has a condition
+    
+    // monkey dancers
+    static public $variable;
+    static public $func;
+    static public $term;
+    static public $expression;
 }
 
 
@@ -126,40 +126,40 @@ Regexes::$controlStructureConditions['foreach'] = '^\\s*(?P<varName>' . Regexes:
 
 Regexes::$script = Regexes::$scriptDelimiterLeft . '[\\s\\S]*?' . Regexes::$scriptDelimiterRight;
 Regexes::$comment = Regexes::$commentDelimiterLeft . '[\\s\\S]*?' . 
-										Regexes::$commentDelimiterRight;
+                                        Regexes::$commentDelimiterRight;
 Regexes::$literalString = '(?:' . Regexes::$stringDouble . ')|(?:' . 
-						Regexes::$stringSingle . ')';
+                        Regexes::$stringSingle . ')';
 
 // regexes that are going to do the monkey dance (preventing double definitions in
 // circular references). Here they are stored in their pre-monkey dance variables
 
 $pre_variable = '(?P<variable>(?P<varName>' . Regexes::$varName . 
-									')(?P<arrayItemSelector>(?:\\[(?P>expression)\\])*))';
+                                    ')(?P<arrayItemSelector>(?:\\[(?P>expression)\\])*))';
 $pre_func = '(?P<function>\\b[a-zA-Z][a-zA-Z0-9_]*\\((?P<arguments>(?P>expression)(?:,(?P>expression))*)?\\))';
 
 $pre_term = '(?P<term>\\s*(?:(?:' . Regexes::$literalNumber . 
-					 ')|(?P>function)|' . Regexes::$literalBoolean .
-					  '|(?P>variable)|(?:' . Regexes::$literalString . 
-					   ')|\\((?P>expression)\\)))';
+                     ')|(?P>function)|' . Regexes::$literalBoolean .
+                      '|(?P>variable)|(?:' . Regexes::$literalString . 
+                       ')|\\((?P>expression)\\)))';
 
 $pre_expression = '(?P<expression>(?P>term)\\s*(?:' . 
-									Regexes::$operator .
-										'\\s*(?P>term)\\s*)*)';
+                                    Regexes::$operator .
+                                        '\\s*(?P>term)\\s*)*)';
 
 // DA MONKEY DANCE!!
 
 Regexes::$variable = str_replace_once(array('(?P>expression)', '(?P>term)', '(?P>function)'),
-									array($pre_expression,   $pre_term,   $pre_func),
-									$pre_variable);
+                                    array($pre_expression,   $pre_term,   $pre_func),
+                                    $pre_variable);
 
 Regexes::$func = str_replace_once(array('(?P>expression)', '(?P>term)', '(?P>variable)'),
-								array($pre_expression,   $pre_term,   $pre_variable),
-								$pre_func);
+                                array($pre_expression,   $pre_term,   $pre_variable),
+                                $pre_func);
 
 Regexes::$term = str_replace_once(array('(?P>function)', '(?P>expression)', '(?P>variable)'),
-								array($pre_func,       $pre_expression,   $pre_variable),
-								$pre_term);
+                                array($pre_func,       $pre_expression,   $pre_variable),
+                                $pre_term);
 
 Regexes::$expression = str_replace_once(array('(?P>term)', '(?P>function)', '(?P>variable)'),
-									  array($pre_term,   $pre_func,       $pre_variable),
-									  $pre_expression);
+                                      array($pre_term,   $pre_func,       $pre_variable),
+                                      $pre_expression);

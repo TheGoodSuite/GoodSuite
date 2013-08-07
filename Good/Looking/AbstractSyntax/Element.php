@@ -4,7 +4,7 @@ namespace Good\Looking\AbstractSyntax;
 
 interface Element
 {
-	public function execute(Environment $environment);
+    public function execute(Environment $environment);
 }
 
 ?>

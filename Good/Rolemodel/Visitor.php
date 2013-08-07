@@ -12,14 +12,14 @@ namespace Good\Rolemodel;
 
 interface Visitor
 {
-	public function visitSchema(Schema $dataModel);
-	public function visitSchemaEnd();
-	public function visitDataType(Schema\DataType $dataType);
-	public function visitReferenceMember(Schema\ReferenceMember $type);
-	public function visitTextMember(Schema\TextMember $type);
-	public function visitIntMember(Schema\IntMember $type);
-	public function visitFloatMember(Schema\FloatMember $type);
-	public function visitDatetimeMember(Schema\DatetimeMember $type);
+    public function visitSchema(Schema $dataModel);
+    public function visitSchemaEnd();
+    public function visitDataType(Schema\DataType $dataType);
+    public function visitReferenceMember(Schema\ReferenceMember $type);
+    public function visitTextMember(Schema\TextMember $type);
+    public function visitIntMember(Schema\IntMember $type);
+    public function visitFloatMember(Schema\FloatMember $type);
+    public function visitDatetimeMember(Schema\DatetimeMember $type);
 }
 
 ?>

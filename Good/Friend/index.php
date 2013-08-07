@@ -4,12 +4,12 @@ private $installed;
 
 if (!file_exists('installed'))
 {
-	require 'install.php';
+    require 'install.php';
 }
 
 if (!file_exists('../installed'))
 {
-	require 'installGood.php';
+    require 'installGood.php';
 }
 
 $good = new Good();

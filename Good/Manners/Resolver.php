@@ -4,8 +4,8 @@ namespace Good\Manners;
 
 interface Resolver
 {
-	public function resolverAccept(ResolverVisitor $visitor);
-	public function getType();
+    public function resolverAccept(ResolverVisitor $visitor);
+    public function getType();
 }
 
 ?>
