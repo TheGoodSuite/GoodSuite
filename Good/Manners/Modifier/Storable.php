@@ -303,14 +303,14 @@ class Storable implements \Good\Service\Modifier
     }
     public function getterBegin()
     {
-        $res  = '        $this->checkValidationToken();' . "\n";
+        $res  = '        $this->GMMStorable_checkValidationToken();' . "\n";
         $res .= "        \n";
         
         return $res;
     }
     public function setterBegin()
     {
-        $res  = '        $this->checkValidationToken();' . "\n";
+        $res  = '        $this->GMMStorable_checkValidationToken();' . "\n";
         $res .= "        \n";
         
         return $res;
@@ -320,7 +320,7 @@ class Storable implements \Good\Service\Modifier
         $res  = "        \n";
         // ucfirst: upper case first letter (it's a php built-in)
         $res .= '        $this->is' . \ucfirst($this->classVariable) . 'Dirty = true;' . "\n";
-        $res .= '        $this->makeDirty();' . "\n";
+        $res .= '        $this->GMMStorable_makeDirty();' . "\n";
         
         return $res;
     }
@@ -334,7 +334,7 @@ class Storable implements \Good\Service\Modifier
     {
         $res  = '    private $dirty = false;' . "\n";
         $res .= "    \n";
-        $res .= '    private function makeDirty()' . "\n";
+        $res .= '    private function GMMStorable_makeDirty()' . "\n";
         $res .= "    {\n";
         $res .= '        if (!$this->isDirty() && $this->storage != null)' . "\n";
         $res .= "        {\n";
@@ -360,7 +360,7 @@ class Storable implements \Good\Service\Modifier
         $res .= "    \n";
         $res .= '    private $validationToken = null;' . "\n";
         $res .= "    \n";
-        $res .= '    private function checkValidationToken()' . "\n";
+        $res .= '    private function GMMStorable_checkValidationToken()' . "\n";
         $res .= "    {\n";
         $res .= '        if ($this->validationToken != null && !$this->validationToken->value())' . "\n";
         $res .= "        {\n";
@@ -392,7 +392,7 @@ class Storable implements \Good\Service\Modifier
         $res .= '    public function delete()'. "\n";
         $res .= "    {\n";
         $res .= '        $this->deleted = true;' . "\n";
-        $res .= '        $this->makeDirty();' . "\n";
+        $res .= '        $this->GMMStorable_makeDirty();' . "\n";
         $res .= "    }\n";
         
         $res .= '    public static function resolver()' . "\n";

@@ -47,7 +47,7 @@ class Observable implements \Good\Service\Modifier
     public function setterEnd()
     {
         $res  = "        \n";
-        $res .= '        $this->notifyObservers();' . "\n";
+        $res .= '        $this->GSMObservable_notifyObservers();' . "\n";
         
         return $res;
     }
@@ -72,7 +72,7 @@ class Observable implements \Good\Service\Modifier
         $res .= "        }\n";
         $res .= "    }\n";
         $res .= "    \n";
-        $res .= "    private function notifyObservers()\n";
+        $res .= "    private function GSMObservable_notifyObservers()\n";
         $res .= "    {\n";
         $res .= '        foreach ($this->observers as $observer)' . "\n";
         $res .= "        {\n";
