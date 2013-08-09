@@ -26,33 +26,7 @@ class Observable implements \Good\Service\Modifier
     }
     public function baseClassBody()
     {
-        $res  = "    // Observer pattern (Observable)\n";
-        $res .= '    private $observers = array();' . "\n";
-        $res .= "    \n";
-        $res .= '    public function registerObserver(\\Good\\Service\\Observer $observer)'. "\n";
-        $res .= "    {\n";
-        $res .= '        $this->observers[] = $observer;' . "\n";
-        $res .= "    }\n";
-        $res .= "    \n";
-        $res .= '    public function unregisterObserver(\\Good\\Service\\Observer $observer)'. "\n";
-        $res .= "    {\n";
-        $res .= '        $pos = \\array_search($observer, $this->observers);' . "\n";
-        $res .= '        if ($pos !== FALSE)' . "\n";
-        $res .= "        {\n";
-        $res .= '            \array_splice($this->observers, $pos, 1);' . "\n";
-        $res .= "        }\n";
-        $res .= "    }\n";
-        $res .= "    \n";
-        $res .= "    protected function notifyObservers()\n";
-        $res .= "    {\n";
-        $res .= '        foreach ($this->observers as $observer)' . "\n";
-        $res .= "        {\n";
-        $res .= '            $observer->notifyObserver($this);' . "\n";
-        $res .= "        }\n";
-        $res .= "    }\n";
-        $res .= "    \n";
-        
-        return $res;
+        return '';
     }
     
     public function visitSchema(Schema $schema) {}
@@ -79,7 +53,37 @@ class Observable implements \Good\Service\Modifier
     }
     
     public function topOfFile() {return '';}
-    public function classBody() {return '';}
+    public function classBody()
+    {
+        $res  = "    // Observer pattern (Observable)\n";
+        $res .= '    private $observers = array();' . "\n";
+        $res .= "    \n";
+        $res .= '    public function registerObserver(\\Good\\Service\\Observer $observer)'. "\n";
+        $res .= "    {\n";
+        $res .= '        $this->observers[] = $observer;' . "\n";
+        $res .= "    }\n";
+        $res .= "    \n";
+        $res .= '    public function unregisterObserver(\\Good\\Service\\Observer $observer)'. "\n";
+        $res .= "    {\n";
+        $res .= '        $pos = \\array_search($observer, $this->observers);' . "\n";
+        $res .= '        if ($pos !== FALSE)' . "\n";
+        $res .= "        {\n";
+        $res .= '            \array_splice($this->observers, $pos, 1);' . "\n";
+        $res .= "        }\n";
+        $res .= "    }\n";
+        $res .= "    \n";
+        $res .= "    private function notifyObservers()\n";
+        $res .= "    {\n";
+        $res .= '        foreach ($this->observers as $observer)' . "\n";
+        $res .= "        {\n";
+        $res .= '            $observer->notifyObserver($this);' . "\n";
+        $res .= "        }\n";
+        $res .= "    }\n";
+        $res .= "    \n";
+        
+        return $res;
+    }
+    
     public function bottomOfFile() {return '';}
     public function extraFiles() {return array();}
 }
