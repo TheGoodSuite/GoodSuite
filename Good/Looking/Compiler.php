@@ -6,7 +6,7 @@ Class Compiler
 {
     public function __construct()
     {
-    } // __construct
+    }
     
     public function compile($input, $output)
     {
@@ -16,13 +16,10 @@ Class Compiler
         \fwrite($file, $compiledTemplate);
         \fclose($file);
         
-    } // compile
+    }
     
     private function compileTemplate($input)
     {
-        // for testing I really want to know how long this function takes to be executed
-        $executionTime = \microtime(true);
-        
         $factory = new AbstractSyntax\Factory();
         $parser = new Parser($factory);
         
@@ -32,11 +29,6 @@ Class Compiler
         
         $output = $document->execute($environment);
         
-        // for testing I wanna know how long this function outputs how long it took
-        global $compileTime;
-         $compileTime = \microtime(true)-$executionTime;
-        
         return $output;
-        
-    } // compileTemplate
+    }
 }

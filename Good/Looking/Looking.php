@@ -4,16 +4,13 @@ namespace Good\Looking;
 
 class Looking
 {
-    // the name of the template file (is set in constructor)
     private $templateFileName;
-    // the variables that the calling file registers with this class
     private $registeredVars = array();
     
     public function __construct($fileName)
     {
         $this->templateFileName = $fileName;
-        
-    } // __construct
+    }
     
     public function registerVar($varName, $varValue)
     {
@@ -29,8 +26,7 @@ class Looking
         {
             return false;
         }
-        
-    } // registerVar
+    }
     
     public function registerMultipleVars($array)
     {
@@ -38,7 +34,7 @@ class Looking
         {
             $this->registerVar($key, $value);
         }
-    } //registerMultipleVariables
+    }
     
     public function display()
     {
@@ -58,6 +54,5 @@ class Looking
                                        $this->registeredVars);
         
         $interpreter->interpret();
-        
-    } // display
-} // GoodLooking
+    }
+}
