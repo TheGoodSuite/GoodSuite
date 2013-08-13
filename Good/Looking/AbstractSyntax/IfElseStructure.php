@@ -2,7 +2,7 @@
 
 namespace Good\Looking\AbstractSyntax;
 
-use Good\Looking\Regexes;
+use Good\Looking\Grammar;
 
 class IfElseStructure extends ElementWithStatements
 {
@@ -12,7 +12,9 @@ class IfElseStructure extends ElementWithStatements
     
     public function __construct($condition, $statements, $elseStatements)
     {
-        if (\preg_match('/^\s*' . Regexes::$expression . '\s*$/', $condition) === 0)
+        parent::__construct();
+        
+        if (\preg_match('/^\s*' . self::$grammar->expression . '\s*$/', $condition) === 0)
         {
             throw new \Exception('Error: Unable to parse if condition.');
         }

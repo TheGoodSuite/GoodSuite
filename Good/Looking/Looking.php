@@ -6,16 +6,18 @@ class Looking
 {
     private $templateFileName;
     private $registeredVars = array();
+    private $grammar;
     
     public function __construct($fileName)
     {
         $this->templateFileName = $fileName;
+        $this->grammar = new Grammar();
     }
     
     public function registerVar($varName, $varValue)
     {
-        if (\preg_match('/'. Regexes::$varName .'/', $varName) > 0 &&
-             \preg_match('/'. Regexes::$controlStructure .'/', $varName) == 0)
+        if (\preg_match('/'. $this->grammar->varName .'/', $varName) > 0 &&
+             \preg_match('/'. $this->grammar->controlStructure .'/', $varName) == 0)
         // if the varName matches variable syntax and does not match a control structure
         {
             $this->registeredVars[$varName] = $varValue;

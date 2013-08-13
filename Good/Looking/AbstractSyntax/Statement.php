@@ -8,6 +8,8 @@ class Statement extends ElementWithStatements
     
     public function __construct($code)
     {
+        parent::__construct();
+        
         $this->code = $code;
     }
     

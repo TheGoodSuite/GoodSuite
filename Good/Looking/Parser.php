@@ -6,15 +6,17 @@ class Parser
 {
     protected $factory;
     protected $inTextMode;
+    private $grammar;
     
     public function __construct(AbstractSyntax\Factory $factory)
     {
         $this->factory = $factory;
+        $this->grammar = new Grammar();
     }
     
     public function parseDocument($input)
     {
-        $input = \preg_replace('/' . Regexes::$comment . '/', '', $input);
+        $input = \preg_replace('/' . $this->grammar->comment . '/', '', $input);
         
         $this->inTextMode = true;
         
@@ -33,8 +35,8 @@ class Parser
         $statements = $this->parseStatementCollection($input);
         
         if (\preg_match('/^\\s*else\\s*(?<terminator>' . 
-                            Regexes::$statementEnder . '|' .
-                                Regexes::$scriptDelimiterRight . '|$)/', $input, $matches) === 1)
+                            $this->grammar->statementEnder . '|' .
+                                $this->grammar->scriptDelimiterRight . '|$)/', $input, $matches) === 1)
         {
             $else = true;
             
@@ -52,8 +54,8 @@ class Parser
         }
         
         if (\preg_match('/^\\s*end\\s*if\\s*(?<terminator>' . 
-                            Regexes::$statementEnder . '|' .
-                                Regexes::$scriptDelimiterRight . '|$)/', $input, $matches) === 1)
+                            $this->grammar->statementEnder . '|' .
+                                $this->grammar->scriptDelimiterRight . '|$)/', $input, $matches) === 1)
         {
             // remove the processed part
             $this->removeFromStart($input, $matches[0]);
@@ -75,7 +77,7 @@ class Parser
         {
             throw new \Exception('Error: End of document found though there was still an "if" that needed to be closed.');
         }
-        else if (\preg_match('/^\\s*' . Regexes::$endingControlStructures . '\\s*$/', $input, $matched))
+        else if (\preg_match('/^\\s*' . $this->grammar->endingControlStructures . '\\s*$/', $input, $matched))
         {
             throw new \Exception('Error: Control structure mismatch, found <i>' . $matches[0] . '</i> while parsing an if.');
         }
@@ -90,8 +92,8 @@ class Parser
         $statements = $this->parseStatementCollection($input);
         
         if (\preg_match('/^\\s*end\\s*for\\s*(?<terminator>' . 
-                            Regexes::$statementEnder . '|' .
-                                Regexes::$scriptDelimiterRight . '|$)/', $input, $matches) === 1)
+                            $this->grammar->statementEnder . '|' .
+                                $this->grammar->scriptDelimiterRight . '|$)/', $input, $matches) === 1)
         {
             // remove the processed part
             $this->removeFromStart($input, $matches[0]);
@@ -106,7 +108,7 @@ class Parser
         {
             throw new \Exception('Error: End of document found though there was still a "for" that needed to be closed.');
         }
-        else if (\preg_match('/^s*' . Regexes::$endingControlStructures, $input, $matched))
+        else if (\preg_match('/^s*' . $this->grammar->endingControlStructures, $input, $matched))
         {
             throw new \Exception('Error: Control structure mismatch, found <i>' . $matches[0] . '</i> while parsing a for.');
         }
@@ -121,8 +123,8 @@ class Parser
         $statements = $this->parseStatementCollection($input);
         
         if (\preg_match('/^\\s*end\\s*foreach\\s*(?<terminator>' . 
-                            Regexes::$statementEnder . '|' .
-                                Regexes::$scriptDelimiterRight . '|$)/', $input, $matches) === 1)
+                            $this->grammar->statementEnder . '|' .
+                                $this->grammar->scriptDelimiterRight . '|$)/', $input, $matches) === 1)
         {
             // remove the processed part
             $this->removeFromStart($input, $matches[0]);
@@ -137,7 +139,7 @@ class Parser
         {
             throw new \Exception('Error: End of document found though there was still a "foreach" that needed to be closed.');
         }
-        else if (\preg_match('/^\\s*' . Regexes::$endingControlStructures . '\\s*$/', $input, $matched))
+        else if (\preg_match('/^\\s*' . $this->grammar->endingControlStructures . '\\s*$/', $input, $matched))
         {
             throw new \Exception('Error: Control structure mismatch, found <i>' . $matches[0] . '</i> while parsing a foreach.');
         }
@@ -161,7 +163,7 @@ class Parser
         
     private function determineIfNextModeIsText($terminator)
     {
-        if (\preg_match('/' . Regexes::$scriptDelimiterRight . '/', $terminator) == 1)
+        if (\preg_match('/' . $this->grammar->scriptDelimiterRight . '/', $terminator) == 1)
         {
             $this->inTextMode = true;
         }
@@ -175,14 +177,14 @@ class Parser
         // a statement or nothing anchored to the begin of $input 
         // (with whitespace in front of and behind it) followed by
         // a statement ender (;), script delimiter (:>) or the end of the string
-        $regexExpression = '/^\\s*(' . Regexes::$expression . '|)\\s*(?<terminator>' . 
-                                        Regexes::$statementEnder . '|' .
-                                            Regexes::$scriptDelimiterRight . '|$)/';
+        $regexExpression = '/^\\s*(' . $this->grammar->expression . '|)\\s*(?<terminator>' . 
+                                        $this->grammar->statementEnder . '|' .
+                                            $this->grammar->scriptDelimiterRight . '|$)/';
                                             
         // Same idea as above, but for control structures
-        $regexControlStructure = '/^\\s*' . Regexes::$startingControlStructures . '\\s*(?<terminator>' . 
-                                            Regexes::$statementEnder . '|' .
-                                                Regexes::$scriptDelimiterRight . '|$)/';
+        $regexControlStructure = '/^\\s*' . $this->grammar->startingControlStructures . '\\s*(?<terminator>' . 
+                                            $this->grammar->statementEnder . '|' .
+                                                $this->grammar->scriptDelimiterRight . '|$)/';
         
         $parseable = true;
         
@@ -195,7 +197,7 @@ class Parser
                 {
                     // Everthing before delimiter is text
                     // Everything after is for the next iteration of parsing
-                    $parts = \preg_split('/' . Regexes::$scriptDelimiterLeft . '/', $input, 2);
+                    $parts = \preg_split('/' . $this->grammar->scriptDelimiterLeft . '/', $input, 2);
                     
                     if ($parts[0] != '')
                     {

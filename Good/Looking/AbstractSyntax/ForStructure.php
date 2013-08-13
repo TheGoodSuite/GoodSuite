@@ -2,7 +2,7 @@
 
 namespace Good\Looking\AbstractSyntax;
 
-use Good\Looking\Regexes;
+use Good\Looking\Grammar;
 
 class ForStructure extends ElementWithStatements
 {
@@ -12,18 +12,20 @@ class ForStructure extends ElementWithStatements
     
     public function __construct($condition, $statements)
     {
-        if (\preg_match('/^\s*' . Regexes::$controlStructureConditions['for'] . 
+        parent::__construct();
+        
+        if (\preg_match('/^\s*' . self::$grammar->controlStructureConditionFor . 
                                                             '\s*$/', $condition, $matches) !== 1)
         {
             throw new \Exception('Error: Unable to parse for condition.');
         }
         
-        if (\preg_match('/^s*' . Regexes::$expression . '\s*$/', $matches['term1']) !== 1)
+        if (\preg_match('/^s*' . self::$grammar->expression . '\s*$/', $matches['term1']) !== 1)
         {
             throw new \Exception('Error: first term in for condition is invalid.');
         }
         
-        if (\preg_match('/^s*' . Regexes::$expression . '\s*$/', $matches['term2']) !== 1)
+        if (\preg_match('/^s*' . self::$grammar->expression . '\s*$/', $matches['term2']) !== 1)
         {
             throw new \Exception('Error: first term in for condition is invalid.');
         }

@@ -2,7 +2,7 @@
 
 namespace Good\Looking\AbstractSyntax;
 
-use Good\Looking\Regexes;
+use Good\Looking\Grammar;
 
 // This class provides the functionality of parsing statements to child classes
 // This class exists only because out parser only partally parses and leaves
@@ -11,6 +11,16 @@ use Good\Looking\Regexes;
 
 abstract class ElementWithStatements implements Element
 {
+    protected static $grammar = null;
+    
+    public function __construct()
+    {
+        if (self::$grammar == null)
+        {
+            self::$grammar = new Grammar();
+        }
+    }
+    
     protected function evaluate($evaluateString)
     {
         //  w00t! finally did this function
@@ -20,7 +30,7 @@ abstract class ElementWithStatements implements Element
             throw new Exception('Empty statement is not a statement at all.');
         }
         
-        if (\preg_match('/' . Regexes::$expression . '/', $evaluateString) == 0)
+        if (\preg_match('/' . self::$grammar->expression . '/', $evaluateString) == 0)
         {
             throw new \Exception("Syntax error");
         }
@@ -29,28 +39,28 @@ abstract class ElementWithStatements implements Element
         
         while ($evaluateString != '')
         {
-            if (\preg_match('/^\s*' . Regexes::$term . 
+            if (\preg_match('/^\s*' . self::$grammar->term . 
                     '\s*(?P<op>(?P>operator))?\s*/', $evaluateString, $matches) == 0)
             {
                 throw new \Exception("Syntax Error");
             }
             
-            $evaluateString = \preg_replace('/^\s*' . Regexes::$term . 
+            $evaluateString = \preg_replace('/^\s*' . self::$grammar->term . 
                     '\s*(?P<op>(?P>operator))?\s*/', '', $evaluateString);
             
             $term = $matches['term'];
             $operator = \array_key_exists('op', $matches) ? $matches['op'] : '';
             
-            if (\preg_match('/^\(' . Regexes::$expression . '\)$/', $term) != 0)
+            if (\preg_match('/^\(' . self::$grammar->expression . '\)$/', $term) != 0)
             {
                 $output .= '(' . $this->evaluate(substr($term, 1, -1)) . ')';
             }
-            else if (\preg_match('/^' . Regexes::$literalBoolean . '$/',
+            else if (\preg_match('/^' . self::$grammar->literalBoolean . '$/',
                                                         $term, $matches) != 0)
             {
                 $output .= $matches['boolean'];
             }
-            else if (\preg_match('/^' . Regexes::$variable . '$/', 
+            else if (\preg_match('/^' . self::$grammar->variable . '$/', 
                                                         $term, $matches) != 0)
             {
                 $templateVariable = '$this->getVar(\'' . $matches['varName'] . '\')';
@@ -59,10 +69,10 @@ abstract class ElementWithStatements implements Element
                 
                 while ($arrayItemSelector != '')
                 {
-                    \preg_match('/^\[' .Regexes::$expression . '\]/',
+                    \preg_match('/^\[' . self::$grammar->expression . '\]/',
                                             $arrayItemSelector, $matches);
                     $arrayItemSelector = \preg_replace('/^\[' 
-                                                . Regexes::$expression . '\]/',
+                                                . self::$grammar->expression . '\]/',
                                                  '', $arrayItemSelector);
                     
                     $templateVariable = '$this->arrayItem(' . $templateVariable . ', ' .
@@ -71,15 +81,15 @@ abstract class ElementWithStatements implements Element
                 
                 $output .= $templateVariable;
             }
-            else if (preg_match('/^' . Regexes::$literalString . '$/', $term) != 0)
+            else if (preg_match('/^' . self::$grammar->literalString . '$/', $term) != 0)
             {
                 $output .= $term;
             }
-            else if (preg_match('/^' . Regexes::$literalNumber . '$/', $term) != 0)
+            else if (preg_match('/^' . self::$grammar->literalNumber . '$/', $term) != 0)
             {
                 $output .= $term;
             }
-            else if (preg_match('/^' . Regexes::$func . '$/', $term) != 0)
+            else if (preg_match('/^' . self::$grammar->func . '$/', $term) != 0)
             {
                 // as of yet, functions are unsupported
                 throw new \Exception("Function call found while functions are currently unsupported");
