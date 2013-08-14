@@ -4,8 +4,11 @@ namespace Good\Looking;
 
 Class Compiler
 {
-    public function __construct()
+    private $grammar;
+    
+    public function __construct(Grammar $grammar)
     {
+        $this->grammar = $grammar;
     }
     
     public function compile($input, $output)
@@ -20,8 +23,8 @@ Class Compiler
     
     private function compileTemplate($input)
     {
-        $factory = new AbstractSyntax\Factory();
-        $parser = new Parser($factory);
+        $factory = new AbstractSyntax\Factory($this->grammar);
+        $parser = new Parser($this->grammar, $factory);
         
         $document = $parser->parseDocument($input);
         

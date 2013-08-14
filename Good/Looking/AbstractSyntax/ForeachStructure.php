@@ -10,9 +10,9 @@ class ForeachStructure extends ElementWithStatements
     private $arrayStatement;
     private $statements;
     
-    public function __construct($array, $varName, $statements)
+    public function __construct($grammar, $array, $varName, $statements)
     {
-        parent::__construct();
+        parent::__construct($grammar);
         
         $this->statements = $statements;
         $this->arrayStatement = $array;

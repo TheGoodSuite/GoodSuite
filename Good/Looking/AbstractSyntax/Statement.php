@@ -6,9 +6,9 @@ class Statement extends ElementWithStatements
 {
     private $code;
     
-    public function __construct($code)
+    public function __construct($grammar, $code)
     {
-        parent::__construct();
+        parent::__construct($grammar);
         
         $this->code = $code;
     }

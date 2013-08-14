@@ -8,10 +8,10 @@ class Parser
     protected $inTextMode;
     private $grammar;
     
-    public function __construct(AbstractSyntax\Factory $factory)
+    public function __construct(Grammar $grammar, AbstractSyntax\Factory $factory)
     {
         $this->factory = $factory;
-        $this->grammar = new Grammar();
+        $this->grammar = $grammar;
     }
     
     public function parseDocument($input)

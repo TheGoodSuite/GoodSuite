@@ -10,9 +10,9 @@ class IfElseStructure extends ElementWithStatements
     private $statements;
     private $elseStatements;
     
-    public function __construct($condition, $statements, $elseStatements)
+    public function __construct($grammar, $condition, $statements, $elseStatements)
     {
-        parent::__construct();
+        parent::__construct($grammar);
         
         $this->condition = $condition;
         $this->statements = $statements;

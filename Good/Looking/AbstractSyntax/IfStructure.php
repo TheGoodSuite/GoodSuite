@@ -9,9 +9,9 @@ class IfStructure extends ElementWithStatements
     private $condition;
     private $statements;
     
-    public function __construct($condition, $statements)
+    public function __construct($grammar, $condition, $statements)
     {
-        parent::__construct();
+        parent::__construct($grammar);
         
         $this->condition = $condition;
         $this->statements = $statements;

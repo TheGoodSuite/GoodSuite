@@ -17,7 +17,7 @@ class Looking
     public function registerVar($varName, $varValue)
     {
         if (\preg_match('/'. $this->grammar->varName .'/', $varName) === 1)
-        // if the varName matches variable syntax and does not match a control structure
+        // if the varName matches variable syntax (and does not match a keyword)
         {
             $this->registeredVars[$varName] = $varValue;
             
@@ -47,7 +47,7 @@ class Looking
         if (!\file_exists($this->templateFileName . '.compiledTemplate') ||
                     \filemtime($this->templateFileName) > \filemtime($this->templateFileName . '.compiledTemplate'))
         {
-            $compiler = new Compiler();
+            $compiler = new Compiler($this->grammar);
             $compiler->compile($this->templateFileName, $this->templateFileName . '.compiledTemplate');
         }
         

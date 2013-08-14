@@ -10,9 +10,9 @@ class ForStructure extends ElementWithStatements
     private $to;
     private $statements;
     
-    public function __construct($from, $to, $statements)
+    public function __construct($grammar, $from, $to, $statements)
     {
-        parent::__construct();
+        parent::__construct($grammar);
         
         $this->statements = $statements;
         $this->from = $from;
