@@ -56,27 +56,27 @@ class ConditionWriter implements StorableVisitor,
         }
     }
     
-    public function processEqualityCondition(Storable $to)
+    public function processEqualToCondition(Storable $to)
     {
         $this->writeComparisonCondition($to, '=');
     }
-    public function processInequalityCondition(Storable $to)
+    public function processNotEqualToCondition(Storable $to)
     {
         $this->writeComparisonCondition($to, '<>');
     }
-    public function processGreaterCondition(Storable $to)
+    public function processGreaterThanCondition(Storable $to)
     {
         $this->writeComparisonCondition($to, '>');
     }
-    public function processGreaterOrEqualsCondition(Storable $to)
+    public function processGreaterOrEqualCondition(Storable $to)
     {
         $this->writeComparisonCondition($to, '>=');
     }
-    public function processLessCondition(Storable $to)
+    public function processLessThanCondition(Storable $to)
     {
         $this->writeComparisonCondition($to, '<');
     }
-    public function processLessOrEqualsCondition(Storable $to)
+    public function processLessOrEqualCondition(Storable $to)
     {
         $this->writeComparisonCondition($to, '<=');
     }
@@ -122,14 +122,14 @@ class ConditionWriter implements StorableVisitor,
                                                 ' IS NOT NULL';
                 }
                 
-                // todo: error out if not equality or inequality
+                // todo: error out if not EqualTo or NotEqualTo
             }
             else if (!$value->isNew())
             {
                 $this->condition .= 't' . $this->currentTable . '.' . $this->storage->fieldNamify($name) . 
                                             $this->comparison . ' ' . \intval($value->getId());
                 
-                // todo: error out if not equality or inequality
+                // todo: error out if not EqualTo or NotEqualTo
             }
             else
             {
@@ -166,7 +166,7 @@ class ConditionWriter implements StorableVisitor,
                     $this->condition .= ' IS NOT NULL';
                 }
                 
-                // todo: error out if not equality or inequality
+                // todo: error out if not EqualTo or NotEqualTo
             }
             else
             {
@@ -193,7 +193,7 @@ class ConditionWriter implements StorableVisitor,
                     $this->condition .= ' IS NOT NULL';
                 }
                 
-                // todo: error out if not equality or inequality
+                // todo: error out if not EqualTo or NotEqualTo
             }
             else
             {
@@ -219,7 +219,7 @@ class ConditionWriter implements StorableVisitor,
                     $this->condition .= ' IS NOT NULL';
                 }
                 
-                // todo: error out if not equality or inequality
+                // todo: error out if not EqualTo or NotEqualTo
             }
             else
             {
@@ -245,7 +245,7 @@ class ConditionWriter implements StorableVisitor,
                     $this->condition .= ' IS NOT NULL';
                 }
                 
-                // todo: error out if not equality or inequality
+                // todo: error out if not equality or NotEqualTo
             }
             else
             {

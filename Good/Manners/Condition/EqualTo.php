@@ -6,7 +6,7 @@ use Good\Manners\Condition;
 use Good\Manners\ConditionProcessor;
 use Good\Manners\Storable;
 
-class GreaterOrEquals implements Condition
+class EqualTo implements Condition
 {
     private $to;
 
@@ -17,7 +17,7 @@ class GreaterOrEquals implements Condition
     
     public function process(ConditionProcessor $processor)
     {
-        $processor->processGreaterOrEqualsCondition($this->to);
+        $processor->processEqualToCondition($this->to);
     }
 }
 

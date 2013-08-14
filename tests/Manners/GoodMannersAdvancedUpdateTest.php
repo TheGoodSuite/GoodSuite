@@ -264,7 +264,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         // At the moment we don't have a proper api to get any,
         // but this trick does do the same
         $type = new AdvancedUpdateType();
-        $any = new \Good\Manners\Condition\Greater($type);
+        $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $resolver = new AdvancedUpdateTypeResolver();
         $resolver->resolveMyReference();
@@ -287,7 +287,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         // At the moment we don't have a proper api to get any,
         // but this trick does do the same
         $type = new AdvancedUpdateType();
-        $any = new \Good\Manners\Condition\Greater($type);
+        $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $modifications = new AdvancedUpdateType();
         $modifications->setMyInt(55);
@@ -361,11 +361,11 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         // but this trick does do the same
         $type = new AdvancedUpdateType();
         $type->setMyInt(5);
-        $greater = new \Good\Manners\Condition\Greater($type);
+        $greater = new \Good\Manners\Condition\GreaterThan($type);
         
         $type = new AdvancedUpdateType();
         $type->setMyFloat(20.0);
-        $less = new \Good\Manners\Condition\Less($type);
+        $less = new \Good\Manners\Condition\LessThan($type);
         
         $and = new \Good\Manners\Condition\AndCondition($greater, $less);
         
@@ -439,7 +439,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
     {
         $type = new AdvancedUpdateType();
         $type->setMyInt(8);
-        $any = new \Good\Manners\Condition\Equality($type);
+        $any = new \Good\Manners\Condition\EqualTo($type);
         
         $modifications = new AdvancedUpdateType();
         $modifications->setMyReference(null);
@@ -507,7 +507,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         // first, we're fetching the object
         $type = new AdvancedUpdateType();
         $type->setMyInt(10);
-        $any = new \Good\Manners\Condition\Equality($type);
+        $any = new \Good\Manners\Condition\EqualTo($type);
         
         $resolver = new AdvancedUpdateTypeResolver();
         $resolver->resolveMyReference();
@@ -518,7 +518,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         
         $type = new AdvancedUpdateType();
         $type->setMyInt(8);
-        $any = new \Good\Manners\Condition\Less($type);
+        $any = new \Good\Manners\Condition\LessThan($type);
         
         $modifications = new AdvancedUpdateType();
         $modifications->setMyReference($ref);
@@ -588,7 +588,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         
         $type = new YetAnotherType();
         $type->setYourInt(20);
-        $cond = new \Good\Manners\Condition\Equality($type);
+        $cond = new \Good\Manners\Condition\EqualTo($type);
         
         $collection = $this->storage2->getCollection($cond, new YetAnotherTypeResolver());
         
@@ -601,7 +601,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
     {
         $type = new AdvancedUpdateType();
         $type->setMyInt(8);
-        $any = new \Good\Manners\Condition\Equality($type);
+        $any = new \Good\Manners\Condition\EqualTo($type);
         
         $modifications = new AdvancedUpdateType();
         $ref = new YetAnotherType();
@@ -672,7 +672,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
     public function testAdvancedUpdateSetPropertyOfReference()
     {
         $type = new AdvancedUpdateType();
-        $any = new \Good\Manners\Condition\Equality($type);
+        $any = new \Good\Manners\Condition\EqualTo($type);
         
         $modifications = new AdvancedUpdateType();
         $ref = new YetAnotherType();
@@ -741,7 +741,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         // Check there are still 4 separate YetAnotherType objects
         
         $type = new YetAnotherType();
-        $cond = new \Good\Manners\Condition\Equality($type);
+        $cond = new \Good\Manners\Condition\EqualTo($type);
         
         $collection = $this->storage2->getCollection($cond, new YetAnotherTypeResolver());
         
@@ -757,60 +757,60 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
     
     public function testAdvancedUpdateComparisons()
     {
-        // Equality
+        // EqualTo
         $type = new AdvancedUpdateType();
         $type->setMyInt(4);
-        $any = new \Good\Manners\Condition\Equality($type);
+        $any = new \Good\Manners\Condition\EqualTo($type);
         
         $modifications = new AdvancedUpdateType();
         $modifications->setMyInt(1);
         
         $this->storage1->modifyAny($any, $modifications);
         
-        // Inequality
+        // NotEqualTo
         $type = new AdvancedUpdateType();
         $type->setMyInt(1);
-        $any = new \Good\Manners\Condition\Inequality($type);
+        $any = new \Good\Manners\Condition\NotEqualTo($type);
         
         $modifications = new AdvancedUpdateType();
         $modifications->setMyText("Hello World!");
         
         $this->storage1->modifyAny($any, $modifications);
         
-        // Less
+        // LessThan
         $type = new AdvancedUpdateType();
         $type->setMyInt(5);
-        $any = new \Good\Manners\Condition\Less($type);
+        $any = new \Good\Manners\Condition\LessThan($type);
         
         $modifications = new AdvancedUpdateType();
         $modifications->setMyText("Goodbye");
         
         $this->storage1->modifyAny($any, $modifications);
         
-        // LessOrEquals
+        // LessOrEqual
         $type = new AdvancedUpdateType();
         $type->setMyInt(5);
-        $any = new \Good\Manners\Condition\LessOrEquals($type);
+        $any = new \Good\Manners\Condition\LessOrEqual($type);
         
         $modifications = new AdvancedUpdateType();
         $modifications->setMyFloat(47.47);
         
         $this->storage1->modifyAny($any, $modifications);
         
-        // Greater
+        // GreaterThan
         $type = new AdvancedUpdateType();
         $type->setMyInt(8);
-        $any = new \Good\Manners\Condition\Greater($type);
+        $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $modifications = new AdvancedUpdateType();
         $modifications->setMyFloat(11.11);
         
         $this->storage1->modifyAny($any, $modifications);
         
-        // GreaterOrEquals
+        // GreaterOrEqual
         $type = new AdvancedUpdateType();
         $type->setMyInt(8);
-        $any = new \Good\Manners\Condition\GreaterOrEquals($type);
+        $any = new \Good\Manners\Condition\GreaterOrEqual($type);
         
         $modifications = new AdvancedUpdateType();
         $modifications->setMyDatetime(new Datetime('1989-04-11'));
@@ -878,11 +878,11 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
     {
         $type = new AdvancedUpdateType();
         $type->setMyInt(10);
-        $less = new \Good\Manners\Condition\Less($type);
+        $less = new \Good\Manners\Condition\LessThan($type);
         
         $type = new AdvancedUpdateType();
         $type->setMyInt(4);
-        $greater = new \Good\Manners\Condition\Greater($type);
+        $greater = new \Good\Manners\Condition\GreaterThan($type);
         
         $any = new \Good\Manners\Condition\AndCondition($less, $greater);
         
@@ -893,11 +893,11 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         
         $type = new AdvancedUpdateType();
         $type->setMyInt(5);
-        $less = new \Good\Manners\Condition\Less($type);
+        $less = new \Good\Manners\Condition\LessThan($type);
         
         $type = new AdvancedUpdateType();
         $type->setMyInt(8);
-        $greater = new \Good\Manners\Condition\Greater($type);
+        $greater = new \Good\Manners\Condition\GreaterThan($type);
         
         $any = new \Good\Manners\Condition\OrCondition($less, $greater);
         
@@ -971,7 +971,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $type->setMyReference(new YetAnotherType());
         $type->getMyReference()->setYourInt(10);
         
-        $any = new \Good\Manners\Condition\Greater($type);
+        $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $modifications = new AdvancedUpdateType();
         $modifications->setMyText("Something else");
@@ -1041,7 +1041,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $type = new AdvancedUpdateType();
         $type->setMyDatetime(new Datetime('2005-05-05'));
         
-        $any = new \Good\Manners\Condition\Greater($type);
+        $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $modifications = new AdvancedUpdateType();
         $modifications->setMyInt(-1);
@@ -1111,7 +1111,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $type = new AdvancedUpdateType();
         $type->setMyText("Four");
         
-        $any = new \Good\Manners\Condition\Equality($type);
+        $any = new \Good\Manners\Condition\EqualTo($type);
         
         $modifications = new AdvancedUpdateType();
         $modifications->setMyInt(455);
@@ -1181,7 +1181,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $type = new AdvancedUpdateType();
         $type->setMyInt(null);
         
-        $any = new \Good\Manners\Condition\Equality($type);
+        $any = new \Good\Manners\Condition\EqualTo($type);
         
         $modifications = new AdvancedUpdateType();
         $modifications->setMyFloat(666.666);
@@ -1191,7 +1191,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $type = new AdvancedUpdateType();
         $type->setMyFloat(null);
         
-        $any = new \Good\Manners\Condition\Equality($type);
+        $any = new \Good\Manners\Condition\EqualTo($type);
         
         $modifications = new AdvancedUpdateType();
         $modifications->setMyInt(666);
@@ -1201,7 +1201,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $type = new AdvancedUpdateType();
         $type->setMyText(null);
         
-        $any = new \Good\Manners\Condition\Equality($type);
+        $any = new \Good\Manners\Condition\EqualTo($type);
         
         $modifications = new AdvancedUpdateType();
         $modifications->setMyDatetime(new Datetime('2066-06-06'));
@@ -1211,7 +1211,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $type = new AdvancedUpdateType();
         $type->setMyDatetime(null);
         
-        $any = new \Good\Manners\Condition\Equality($type);
+        $any = new \Good\Manners\Condition\EqualTo($type);
         
         $modifications = new AdvancedUpdateType();
         $modifications->setMyText("Six Six Six");
@@ -1221,7 +1221,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $type = new AdvancedUpdateType();
         $type->setMyReference(null);
         
-        $any = new \Good\Manners\Condition\Equality($type);
+        $any = new \Good\Manners\Condition\EqualTo($type);
         
         $modifications = new AdvancedUpdateType();
         $modifications->setMyInt(777);
@@ -1291,7 +1291,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $type = new AdvancedUpdateType();
         $type->setMyInt(null);
         
-        $any = new \Good\Manners\Condition\Inequality($type);
+        $any = new \Good\Manners\Condition\NotEqualTo($type);
         
         $modifications = new AdvancedUpdateType();
         $modifications->setMyFloat(666.666);
@@ -1301,7 +1301,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $type = new AdvancedUpdateType();
         $type->setMyText(null);
         
-        $any = new \Good\Manners\Condition\Inequality($type);
+        $any = new \Good\Manners\Condition\NotEqualTo($type);
         
         $modifications = new AdvancedUpdateType();
         $modifications->setMyDatetime(new Datetime('2066-06-06'));
@@ -1371,7 +1371,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $type = new AdvancedUpdateType();
         $type->setMyFloat(null);
         
-        $any = new \Good\Manners\Condition\Inequality($type);
+        $any = new \Good\Manners\Condition\NotEqualTo($type);
         
         $modifications = new AdvancedUpdateType();
         $modifications->setMyInt(666);
@@ -1381,7 +1381,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $type = new AdvancedUpdateType();
         $type->setMyDatetime(null);
         
-        $any = new \Good\Manners\Condition\Inequality($type);
+        $any = new \Good\Manners\Condition\NotEqualTo($type);
         
         $modifications = new AdvancedUpdateType();
         $modifications->setMyText("Six Six Six");
@@ -1451,7 +1451,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $type = new AdvancedUpdateType();
         $type->setMyReference(null);
         
-        $any = new \Good\Manners\Condition\Inequality($type);
+        $any = new \Good\Manners\Condition\NotEqualTo($type);
         
         $modifications = new AdvancedUpdateType();
         $modifications->setMyInt(777);
@@ -1521,21 +1521,21 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         // Let's firt mess up the data a little, so we can test
         // it changes exactly as much as it should
         $type = new YetAnotherType();
-        $any = new \Good\Manners\Condition\Equality($type);
+        $any = new \Good\Manners\Condition\EqualTo($type);
         $modifications = new YetAnotherType();
         $modifications->setYourInt(42);
         $this->storage1->modifyAny($any, $modifications);
         // one more change:
         $type = new AdvancedUpdateType();
         $type->setMyInt(8);
-        $any = new \Good\Manners\Condition\Equality($type);
+        $any = new \Good\Manners\Condition\EqualTo($type);
         $resolver = new AdvancedUpdateTypeResolver();
         $resolver->resolveMyReference();
         $collection = $this->storage1->getCollection($any, $resolver);
         $ref = $collection->getNext()->getMyReference();
         $type = new AdvancedUpdateType();
         $type->setMyInt(10);
-        $any = new \Good\Manners\Condition\Equality($type);
+        $any = new \Good\Manners\Condition\EqualTo($type);
         $modifications = new AdvancedUpdateType();
         $modifications->setMyReference($ref);
         $this->storage1->modifyAny($any, $modifications);
@@ -1544,7 +1544,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         // (it's already in $ref, but it would be mixing of concerns if we relied on that)
         $type = new AdvancedUpdateType();
         $type->setMyInt(10);
-        $any = new \Good\Manners\Condition\Equality($type);
+        $any = new \Good\Manners\Condition\EqualTo($type);
         $resolver = new AdvancedUpdateTypeResolver();
         $resolver->resolveMyReference();
         $collection = $this->storage1->getCollection($any, $resolver);
@@ -1554,7 +1554,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $type = new AdvancedUpdateType();
         $type->setMyReference($ref);
         
-        $any = new \Good\Manners\Condition\Equality($type);
+        $any = new \Good\Manners\Condition\EqualTo($type);
         
         $modifications = new AdvancedUpdateType();
         $modifications->setMyInt(1);
@@ -1624,13 +1624,13 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $type = new AdvancedUpdateType();
         $type->setMyInt(5);
         
-        $cond1 = new \Good\Manners\Condition\Greater($type);
+        $cond1 = new \Good\Manners\Condition\GreaterThan($type);
         
         $type = new AdvancedUpdateType();
         $type->setMyReference(new YetAnotherType());
         $type->getMyReference()->setYourInt(10);
         
-        $cond2 = new \Good\Manners\Condition\Greater($type);
+        $cond2 = new \Good\Manners\Condition\GreaterThan($type);
         
         $any = new \Good\Manners\Condition\AndCondition($cond1, $cond2);
         
@@ -1703,7 +1703,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
     {
         // First insert a couple ThirdTypes into our dataset
         $type = new AdvancedUpdateType();
-        $any = new \Good\Manners\Condition\Equality($type);
+        $any = new \Good\Manners\Condition\EqualTo($type);
         $resolver = new AdvancedUpdateTypeResolver();
         $resolver->resolveRef();
         $collection = $this->storage1->getCollection($any, $resolver);
@@ -1753,7 +1753,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $type->getRef()->setRef(new YetAnotherType());
         $type->getRef()->getRef()->setYourInt(300);
         
-        $any = new \Good\Manners\Condition\Greater($type);
+        $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $modifications = new AdvancedUpdateType();
         $modifications->setMyInt(99999);
@@ -1830,7 +1830,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
     {
         // First insert a couple ThirdTypes into our dataset
         $type = new AdvancedUpdateType();
-        $any = new \Good\Manners\Condition\Equality($type);
+        $any = new \Good\Manners\Condition\EqualTo($type);
         $resolver = new AdvancedUpdateTypeResolver();
         $resolver->resolveRef();
         $collection = $this->storage1->getCollection($any, $resolver);
@@ -1878,7 +1878,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $type = new AdvancedUpdateType();
         $type->setMyInt(5);
         
-        $any = new \Good\Manners\Condition\Greater($type);
+        $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $modifications = new AdvancedUpdateType();
         $modifications->setRef(new ThirdType());
@@ -1959,13 +1959,13 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $type = new AdvancedUpdateType();
         $type->setMyInt(5);
         
-        $cond1 = new \Good\Manners\Condition\Greater($type);
+        $cond1 = new \Good\Manners\Condition\GreaterThan($type);
         
         $type = new AdvancedUpdateType();
         $type->setMyReference(new YetAnotherType());
         $type->getMyReference()->setYourInt(10);
         
-        $cond2 = new \Good\Manners\Condition\Greater($type);
+        $cond2 = new \Good\Manners\Condition\GreaterThan($type);
         
         $any = new \Good\Manners\Condition\AndCondition($cond1, $cond2);
         

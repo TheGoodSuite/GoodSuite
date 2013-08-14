@@ -150,27 +150,27 @@ class UpdateConditionWriter implements StorableVisitor,
     }
     
     
-    public function processEqualityCondition(Storable $to)
+    public function processEqualToCondition(Storable $to)
     {
         $this->writeComparisonCondition($to, '=');
     }
-    public function processInequalityCondition(Storable $to)
+    public function processNotEqualToCondition(Storable $to)
     {
         $this->writeComparisonCondition($to, '<>');
     }
-    public function processGreaterCondition(Storable $to)
+    public function processGreaterThanCondition(Storable $to)
     {
         $this->writeComparisonCondition($to, '>');
     }
-    public function processGreaterOrEqualsCondition(Storable $to)
+    public function processGreaterOrEqualCondition(Storable $to)
     {
         $this->writeComparisonCondition($to, '>=');
     }
-    public function processLessCondition(Storable $to)
+    public function processLessThanCondition(Storable $to)
     {
         $this->writeComparisonCondition($to, '<');
     }
-    public function processLessOrEqualsCondition(Storable $to)
+    public function processLessOrEqualCondition(Storable $to)
     {
         $this->writeComparisonCondition($to, '<=');
     }

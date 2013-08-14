@@ -6,7 +6,7 @@ use Good\Manners\Condition;
 use Good\Manners\ConditionProcessor;
 use Good\Manners\Storable;
 
-class Inequality implements Condition
+class LessThan implements Condition
 {
     private $to;
 
@@ -17,7 +17,7 @@ class Inequality implements Condition
     
     public function process(ConditionProcessor $processor)
     {
-        $processor->processInequalityCondition($this->to);
+        $processor->processLessThanCondition($this->to);
     }
 }
 

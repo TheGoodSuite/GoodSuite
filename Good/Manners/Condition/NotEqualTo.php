@@ -6,7 +6,7 @@ use Good\Manners\Condition;
 use Good\Manners\ConditionProcessor;
 use Good\Manners\Storable;
 
-class LessOrEquals implements Condition
+class NotEqualTo implements Condition
 {
     private $to;
 
@@ -17,7 +17,7 @@ class LessOrEquals implements Condition
     
     public function process(ConditionProcessor $processor)
     {
-        $processor->processLessOrEqualsCondition($this->to);
+        $processor->processNotEqualToCondition($this->to);
     }
 }
 

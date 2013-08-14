@@ -205,7 +205,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         // At the moment we don't have a proper api to get any,
         // but this trick does do the same
         $type = new SimpleUpdateType();
-        $any = new \Good\Manners\Condition\Greater($type);
+        $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $resolver = new SimpleUpdateTypeResolver();
         $resolver->resolveMyReference();
@@ -226,7 +226,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         // At the moment we don't have a proper api to get any,
         // but this trick does do the same
         $type = new SimpleUpdateType();
-        $any = new \Good\Manners\Condition\Greater($type);
+        $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $resolver = new SimpleUpdateTypeResolver();
         $resolver->resolveMyReference();
@@ -297,7 +297,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         // At the moment we don't have a proper api to get any,
         // but this trick does do the same
         $type = new SimpleUpdateType();
-        $any = new \Good\Manners\Condition\Greater($type);
+        $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $resolver = new SimpleUpdateTypeResolver();
         $resolver->resolveMyReference();
@@ -380,7 +380,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         // At the moment we don't have a proper api to get any,
         // but this trick does do the same
         $type = new SimpleUpdateType();
-        $any = new \Good\Manners\Condition\Greater($type);
+        $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $resolver = new SimpleUpdateTypeResolver();
         $resolver->resolveMyReference();

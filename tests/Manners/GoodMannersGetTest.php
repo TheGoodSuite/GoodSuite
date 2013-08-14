@@ -215,7 +215,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         // At the moment we don't have a proper api to get any,
         // but this trick does do the same
         $type = new GetType();
-        $any = new \Good\Manners\Condition\Greater($type);
+        $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
@@ -286,11 +286,11 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(), $expectedResults);        
     }
     
-    public function testGetLess()
+    public function testGetLessThan()
     {
         $type = new GetType();
         $type->setMyInt(5);
-        $any = new \Good\Manners\Condition\Less($type);
+        $any = new \Good\Manners\Condition\LessThan($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
@@ -319,11 +319,11 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(), $expectedResults);
     }
     
-    public function testGetLessOrEquals()
+    public function testGetLessOrEqual()
     {
         $type = new GetType();
         $type->setMyInt(5);
-        $any = new \Good\Manners\Condition\LessOrEquals($type);
+        $any = new \Good\Manners\Condition\LessOrEqual($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
@@ -363,11 +363,11 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(), $expectedResults);
     }
     
-    public function testGetGreater()
+    public function testGetGreaterThan()
     {
         $type = new GetType();
         $type->setMyInt(5);
-        $any = new \Good\Manners\Condition\Greater($type);
+        $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
@@ -405,11 +405,11 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(), $expectedResults);
     }
     
-    public function testGetGreaterOrEquals()
+    public function testGetGreaterOrEqual()
     {
         $type = new GetType();
         $type->setMyInt(5);
-        $any = new \Good\Manners\Condition\GreaterOrEquals($type);
+        $any = new \Good\Manners\Condition\GreaterOrEqual($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
@@ -458,11 +458,11 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(), $expectedResults);
     }
     
-    public function testGetEquality()
+    public function testGetEqualTo()
     {
         $type = new GetType();
         $type->setMyInt(5);
-        $any = new \Good\Manners\Condition\Equality($type);
+        $any = new \Good\Manners\Condition\EqualTo($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
@@ -491,11 +491,11 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(), $expectedResults);
     }
     
-    public function testGetInequality()
+    public function testGetNotEqualTo()
     {
         $type = new GetType();
         $type->setMyInt(5);
-        $any = new \Good\Manners\Condition\Inequality($type);
+        $any = new \Good\Manners\Condition\NotEqualTo($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
@@ -545,7 +545,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testGetEquality
+     * @depends testGetEqualTo
      */
     public function testGetEqualToReference()
     {
@@ -556,7 +556,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $otherType = new OtherType();
         $otherType->setYourInt(80);
         
-        $any = new \Good\Manners\Condition\Equality($otherType);
+        $any = new \Good\Manners\Condition\EqualTo($otherType);
         
         $collection = $this->storage->getCollection($any, new OtherTypeResolver());
         
@@ -565,7 +565,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         // Then, we get the result with that reference    
         $type = new GetType();
         $type->setMyOtherType($referenced);
-        $any = new \Good\Manners\Condition\Equality($type);
+        $any = new \Good\Manners\Condition\EqualTo($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
@@ -605,7 +605,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         
         // We still use the same ol' trick
         $type = new GetType();
-        $any = new \Good\Manners\Condition\Equality($type);
+        $any = new \Good\Manners\Condition\EqualTo($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
@@ -618,7 +618,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         // but this should do the trick
         $type = new GetType();
         $type->setId($idHolder->getId());
-        $any = new \Good\Manners\Condition\Equality($type);
+        $any = new \Good\Manners\Condition\EqualTo($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
@@ -639,18 +639,18 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testGetLess
-     * @depends testGetGreater
+     * @depends testGetLessThan
+     * @depends testGetGreaterThan
      */
     public function testGetAnd()
     {
         $type = new GetType();
         $type->setMyInt(4);
-        $greater = new \Good\Manners\Condition\Greater($type);
+        $greater = new \Good\Manners\Condition\GreaterThan($type);
         
         $type = new GetType();
         $type->setMyInt(10);
-        $less = new \Good\Manners\Condition\Less($type);
+        $less = new \Good\Manners\Condition\LessThan($type);
         
         $and = new \Good\Manners\Condition\AndCondition($less, $greater);
         
@@ -693,20 +693,20 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testGetLess
-     * @depends testGetGreater
+     * @depends testGetLessThan
+     * @depends testGetGreaterThan
      */
     public function testGetOr()
     {
         $type = new GetType();
         $type->setMyInt(5);
-        $greater = new \Good\Manners\Condition\Greater($type);
+        $greater = new \Good\Manners\Condition\GreaterThan($type);
         
-        $less = new \Good\Manners\Condition\Less($type);
+        $less = new \Good\Manners\Condition\LessThan($type);
         
         $type = new GetType();
         $type->setMyInt(8);
-        $greater = new \Good\Manners\Condition\Greater($type);
+        $greater = new \Good\Manners\Condition\GreaterThan($type);
         
         $and = new \Good\Manners\Condition\OrCondition($less, $greater);
         
@@ -750,7 +750,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     {
         $type = new GetType();
         $type->setMyOtherType(null);
-        $any = new \Good\Manners\Condition\Equality($type);
+        $any = new \Good\Manners\Condition\EqualTo($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
@@ -781,7 +781,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     {
         $type = new GetType();
         $type->setMyOtherType(null);
-        $any = new \Good\Manners\Condition\Inequality($type);
+        $any = new \Good\Manners\Condition\NotEqualTo($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
@@ -844,14 +844,14 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testGetLess
+     * @depends testGetLessThan
      */
     public function testGetByPropertyOfReference()
     {
         $type = new GetType();
         $type->setMyOtherType(new OtherType());
         $type->getMyOtherType()->setYourInt(85);
-        $any = new \Good\Manners\Condition\Less($type);
+        $any = new \Good\Manners\Condition\LessThan($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
@@ -903,7 +903,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testGetGreater
+     * @depends testGetGreaterThan
      * @depends testGetByPropertyOfReference
      */
     public function testGetByTwoValuesInOneCondition()
@@ -914,7 +914,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $type->setMyInt(4);
         $type->setMyOtherType(new OtherType());
         $type->getMyOtherType()->setYourInt(45);
-        $any = new \Good\Manners\Condition\Greater($type);
+        $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
@@ -944,14 +944,14 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testGetGreater
+     * @depends testGetGreaterThan
      */
     public function testGetByFloat()
     {
         // Ints are already tested as we use them above everywhere
         $type = new GetType();
         $type->setMyFloat(6.0);
-        $any = new \Good\Manners\Condition\Greater($type);
+        $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
@@ -1001,13 +1001,13 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testGetEquality
+     * @depends testGetEqualTo
      */
     public function testGetByText()
     {
         $type = new GetType();
         $type->setMyText("Twenty");
-        $any = new \Good\Manners\Condition\Equality($type);
+        $any = new \Good\Manners\Condition\EqualTo($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
@@ -1037,13 +1037,13 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testGetGreater
+     * @depends testGetGreaterThan
      */
     public function testGetByDatetime()
     {
         $type = new GetType();
         $type->setMyDatetime(new Datetime('2006-06-06'));
-        $any = new \Good\Manners\Condition\Greater($type);
+        $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
@@ -1082,13 +1082,13 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testGetEquality
+     * @depends testGetEqualTo
      */
     public function testGetByIntIsNull()
     {
         $type = new GetType();
         $type->setMyInt(null);
-        $any = new \Good\Manners\Condition\Equality($type);
+        $any = new \Good\Manners\Condition\EqualTo($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
@@ -1118,13 +1118,13 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testGetEquality
+     * @depends testGetEqualTo
      */
     public function testGetByFloatIsNull()
     {
         $type = new GetType();
         $type->setMyFloat(null);
-        $any = new \Good\Manners\Condition\Equality($type);
+        $any = new \Good\Manners\Condition\EqualTo($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
@@ -1154,13 +1154,13 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testGetEquality
+     * @depends testGetEqualTo
      */
     public function testGetByTextIsNull()
     {
         $type = new GetType();
         $type->setMyText(null);
-        $any = new \Good\Manners\Condition\Equality($type);
+        $any = new \Good\Manners\Condition\EqualTo($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
@@ -1190,13 +1190,13 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testGetEquality
+     * @depends testGetEqualTo
      */
     public function testGetByDatetimeIsNull()
     {
         $type = new GetType();
         $type->setMyDatetime(null);
-        $any = new \Good\Manners\Condition\Equality($type);
+        $any = new \Good\Manners\Condition\EqualTo($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
@@ -1226,7 +1226,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testGetInequality
+     * @depends testGetNotEqualTo
      */
     public function testGetByIntIsNotNull()
     {
@@ -1234,7 +1234,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         // but this trick does do the same
         $type = new GetType();
         $type->setMyInt(null);
-        $any = new \Good\Manners\Condition\Inequality($type);
+        $any = new \Good\Manners\Condition\NotEqualTo($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
@@ -1295,13 +1295,13 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testGetInequality
+     * @depends testGetNotEqualTo
      */
     public function testGetByFloatIsNotNull()
     {
         $type = new GetType();
         $type->setMyFloat(null);
-        $any = new \Good\Manners\Condition\Inequality($type);
+        $any = new \Good\Manners\Condition\NotEqualTo($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
@@ -1362,13 +1362,13 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testGetInequality
+     * @depends testGetNotEqualTo
      */
     public function testGetByTextIsNotNull()
     {
         $type = new GetType();
         $type->setMyText(null);
-        $any = new \Good\Manners\Condition\Inequality($type);
+        $any = new \Good\Manners\Condition\NotEqualTo($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
@@ -1428,13 +1428,13 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testGetInequality
+     * @depends testGetNotEqualTo
      */
     public function testGetByDatetimeIsNotNull()
     {
         $type = new GetType();
         $type->setMyDatetime(null);
-        $any = new \Good\Manners\Condition\Inequality($type);
+        $any = new \Good\Manners\Condition\NotEqualTo($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
@@ -1501,7 +1501,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     {
         // Still the get any trick
         $type = new GetType();
-        $any = new \Good\Manners\Condition\Greater($type);
+        $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
@@ -1596,7 +1596,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     {
         // Still the get any trick
         $type = new GetType();
-        $any = new \Good\Manners\Condition\Greater($type);
+        $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
@@ -1693,7 +1693,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     {
         // Still the get any trick
         $type = new GetType();
-        $any = new \Good\Manners\Condition\Greater($type);
+        $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
@@ -1790,7 +1790,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     {
         // same ol' trick for getting any
         $type = new GetType();
-        $any = new \Good\Manners\Condition\Greater($type);
+        $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $resolver = new GetTypeResolver();
         $collection = $this->storage->getCollection($any, $resolver);
@@ -1863,7 +1863,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     {
         // First, we need to create a circular reference:
         $type = new GetType();
-        $any = new \Good\Manners\Condition\Greater($type);
+        $any = new \Good\Manners\Condition\GreaterThan($type);
         $resolver = new GetTypeResolver();
         $resolver->orderByMyIntAsc();
         $collection = $this->storage->getCollection($any, $resolver);
@@ -1883,7 +1883,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         
         // same ol' trick for getting any
         $type = new GetType();
-        $any = new \Good\Manners\Condition\Greater($type);
+        $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $resolver = new GetTypeResolver();
         $resolver->resolveMyCircular();
