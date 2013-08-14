@@ -29,14 +29,14 @@ class Factory
         return new IfElseStructure($condition, $statements, $elseStatements);
     }
     
-    public function createForStructure($condition, $statements)
+    public function createForStructure($from, $to, $statements)
     {
-        return new ForStructure($condition, $statements);
+        return new ForStructure($from, $to, $statements);
     }
     
-    public function createForeachStructure($condition, $statements)
+    public function createForeachStructure($array, $varName, $statements)
     {
-        return new ForeachStructure($condition, $statements);
+        return new ForeachStructure($array, $varName, $statements);
     }
 }
 

@@ -30,11 +30,11 @@ class Parser
         return $out;
     }
     
-    private function parseIfStructure(&$input, $condition)
+    private function parseIfStructure($condition, &$input)
     {
         $statements = $this->parseStatementCollection($input);
         
-        if (\preg_match('/^\\s*else\\s*(?<terminator>' . 
+        if (\preg_match('/^\\s*' . $this->grammar->controlStructureElse . '\\s*(?<terminator>' . 
                             $this->grammar->statementEnder . '|' .
                                 $this->grammar->scriptDelimiterRight . '|$)/', $input, $matches) === 1)
         {
@@ -53,7 +53,7 @@ class Parser
             $else = false;
         }
         
-        if (\preg_match('/^\\s*end\\s*if\\s*(?<terminator>' . 
+        if (\preg_match('/^\\s*' . $this->grammar->controlStructureEndIf . '\\s*(?<terminator>' . 
                             $this->grammar->statementEnder . '|' .
                                 $this->grammar->scriptDelimiterRight . '|$)/', $input, $matches) === 1)
         {
@@ -75,11 +75,15 @@ class Parser
         
         if ($input == '')
         {
-            throw new \Exception('Error: End of document found though there was still an "if" that needed to be closed.');
+            ob_start();
+            var_dump($condition);
+            var_dump($statements);
+            throw new \Exception('Error: End of document found though there was still an "if" that needed to be closed.' . ob_get_clean());
         }
-        else if (\preg_match('/^\\s*' . $this->grammar->endingControlStructures . '\\s*$/', $input, $matched))
+        else if (\preg_match('/^\\s*(?<controlStructure>' . $this->grammar->controlStructureEndFor . '|' .
+                                        $this->grammar->controlStructureEndForeach . ')\\s*$/', $input, $matched) === 1)
         {
-            throw new \Exception('Error: Control structure mismatch, found <i>' . $matches[0] . '</i> while parsing an if.');
+            throw new \Exception('Error: Control structure mismatch, found <i>' . $matches['controlStructure'] . '</i> while parsing an if.');
         }
         else
         {
@@ -87,11 +91,11 @@ class Parser
         }
     }
     
-    private function parseForStructure(&$input, $condition)
+    private function parseForStructure($from, $to, &$input)
     {
         $statements = $this->parseStatementCollection($input);
         
-        if (\preg_match('/^\\s*end\\s*for\\s*(?<terminator>' . 
+        if (\preg_match('/^\\s*' . $this->grammar->controlStructureEndFor . '\\s*(?<terminator>' . 
                             $this->grammar->statementEnder . '|' .
                                 $this->grammar->scriptDelimiterRight . '|$)/', $input, $matches) === 1)
         {
@@ -101,16 +105,18 @@ class Parser
             // determine next mode
             $this->determineIfNextModeIsText($matches['terminator']);
             
-            return $this->factory->createForStructure($condition, $statements);
+            return $this->factory->createForStructure($from, $to, $statements);
         }
         
         if ($input == '')
         {
             throw new \Exception('Error: End of document found though there was still a "for" that needed to be closed.');
         }
-        else if (\preg_match('/^s*' . $this->grammar->endingControlStructures, $input, $matched))
+        else if (\preg_match('/^\\s*(?<controlStructure>' . $this->grammar->controlStructureEndIf . '|' .
+                                        $this->grammar->controlStructureElse . '|' .
+                                        $this->grammar->controlStructureEndForeach . ')\\s*$/', $input, $matched) === 1)
         {
-            throw new \Exception('Error: Control structure mismatch, found <i>' . $matches[0] . '</i> while parsing a for.');
+            throw new \Exception('Error: Control structure mismatch, found <i>' . $matches['controlStructure'] . '</i> while parsing a for.');
         }
         else
         {
@@ -118,11 +124,11 @@ class Parser
         }
     }
     
-    private function parseForeachStructure(&$input, $condition)
+    private function parseForeachStructure($array, $varName, &$input)
     {
         $statements = $this->parseStatementCollection($input);
         
-        if (\preg_match('/^\\s*end\\s*foreach\\s*(?<terminator>' . 
+        if (\preg_match('/^\\s' . $this->grammar->controlStructureEndForeach . '\\s*(?<terminator>' . 
                             $this->grammar->statementEnder . '|' .
                                 $this->grammar->scriptDelimiterRight . '|$)/', $input, $matches) === 1)
         {
@@ -132,16 +138,18 @@ class Parser
             // determine next mode
             $this->determineIfNextModeIsText($matches['terminator']);
             
-            return $this->factory->createForeachStructure($condition, $statements);
+            return $this->factory->createForeachStructure($array, $varName, $statements);
         }
         
         if ($input == '')
         {
             throw new \Exception('Error: End of document found though there was still a "foreach" that needed to be closed.');
         }
-        else if (\preg_match('/^\\s*' . $this->grammar->endingControlStructures . '\\s*$/', $input, $matched))
+        else if (\preg_match('/^\\s*(?<controlStructure>' . $this->grammar->controlStructureEndIf . '|' .
+                                        $this->grammar->controlStructureElse . '|' .
+                                        $this->grammar->controlStructureEndFor . ')\\s*$/', $input, $matched) === 1)
         {
-            throw new \Exception('Error: Control structure mismatch, found <i>' . $matches[0] . '</i> while parsing a foreach.');
+            throw new \Exception('Error: Control structure mismatch, found <i>' . $matches['controlStructure'] . '</i> while parsing a foreach.');
         }
         else
         {
@@ -173,25 +181,17 @@ class Parser
     {
         $statements = array();
         
-        // regex for:
-        // a statement or nothing anchored to the begin of $input 
-        // (with whitespace in front of and behind it) followed by
+        // regex for: finding the end of a statement:
         // a statement ender (;), script delimiter (:>) or the end of the string
-        $regexExpression = '/^\\s*(' . $this->grammar->expression . '|)\\s*(?<terminator>' . 
-                                        $this->grammar->statementEnder . '|' .
-                                            $this->grammar->scriptDelimiterRight . '|$)/';
-                                            
-        // Same idea as above, but for control structures
-        $regexControlStructure = '/^\\s*' . $this->grammar->startingControlStructures . '\\s*(?<terminator>' . 
-                                            $this->grammar->statementEnder . '|' .
-                                                $this->grammar->scriptDelimiterRight . '|$)/';
+        $regexTerminator = '(?<terminator>' . $this->grammar->statementEnder . 
+                                        '|'. $this->grammar->scriptDelimiterRight . '|$)';
         
         $parseable = true;
         
         while ($parseable && $input != '')
         {
             while ($input !== '' && ($this->inTextMode ||
-                      \preg_match($regexExpression, $input, $matches) === 1))
+                      \preg_match('/^\\s*(?:' . $this->grammar->expression . '|\\s*)' . $regexTerminator . '/', $input, $matches) === 1))
             {
                 if ($this->inTextMode)
                 {
@@ -219,44 +219,47 @@ class Parser
                 }
                 else
                 {
-                    // Make a statment out of entire match except the terminating symbol 
-                    // (= statement ender, script delimiter or end of input)
-                    $statements[] = $this->factory->createStatement(
-                                \substr($matches[0], 0, -1 * strlen($matches['terminator'])));
+                    // if $matches['expression'] does not exist, this is
+                    // an empty statement (only whitespace), which means we only have to discard
+                    if (array_key_exists('expression', $matches))
+                    {
+                        // Make a statment out of entire match except the terminating symbol 
+                        // (= statement ender, script delimiter or end of input)
+                        $statements[] = $this->factory->createStatement(
+                                    \substr($matches[0], 0, -1 * strlen($matches['terminator'])));
+                        
+                        // determine next mode
+                        $this->determineIfNextModeIsText($matches['terminator']);
+                    }
                     
                     // remove the processed part
                     $this->removeFromStart($input, $matches[0]);
-                    
-                    // determine next mode
-                    $this->determineIfNextModeIsText($matches['terminator']);
                 }
             }
             
-            if ($input != '' && preg_match($regexControlStructure, $input, $matches) === 1)
+            if ($input != '' && preg_match('/^\\s*' . $this->grammar->controlStructureIf . '\\s*' . $regexTerminator . '/', $input, $matches) === 1)
             {
-                    
-                // remove the processed part
+                // remove the processed part and determine next mode
                 $this->removeFromStart($input, $matches[0]);
-                
-                // determine next mode
                 $this->determineIfNextModeIsText($matches['terminator']);
                 
-                if ($matches['structure'] == 'if')
-                {
-                    $statements[] = $this->parseIfStructure($input, $matches['condition']);
-                }
-                else if ($matches['structure'] == 'for')
-                {
-                    $statements[] = $this->parseForStructure($input, $matches['condition']);
-                }
-                else if ($matches['structure'] == 'foreach')
-                {
-                    $statements[] = $this->parseForeachStructure($input, $matches['condition']);
-                }
-                else
-                {
-                    throw new \Exception('Unrecognized Control Structure');
-                }
+                $statements[] = $this->parseIfStructure($matches['condition'], $input);
+            }
+            else if ($input != '' && preg_match('/^\\s*' . $this->grammar->controlStructureFor . '\\s*' . $regexTerminator . '/', $input, $matches) === 1)
+            {
+                // remove the processed part and determine next mode
+                $this->removeFromStart($input, $matches[0]);
+                $this->determineIfNextModeIsText($matches['terminator']);
+                
+                $statements[] = $this->parseForStructure($matches['from'], $matches['to'], $input);
+            }
+            else if ($input != '' && preg_match('/^\\s*' . $this->grammar->controlStructureForeach . '\\s*' . $regexTerminator . '/', $input, $matches) === 1)
+            {
+                // remove the processed part and determine next mode
+                $this->removeFromStart($input, $matches[0]);
+                $this->determineIfNextModeIsText($matches['terminator']);
+                
+                $statements[] = $this->parseForeachStructure($matches['array'], $matches['foreachVariable'], $input);
             }
             else
             {

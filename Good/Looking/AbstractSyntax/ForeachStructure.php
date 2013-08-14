@@ -10,24 +10,13 @@ class ForeachStructure extends ElementWithStatements
     private $arrayStatement;
     private $statements;
     
-    public function __construct($condition, $statements)
+    public function __construct($array, $varName, $statements)
     {
         parent::__construct();
         
-        if (\preg_match('/^\s*' . self::$grammar->controlStructureConditionForeach . 
-                                                            '\s*$/', $condition, $matches) !== 1)
-        {
-            throw new \Exception('Error: Unable to parse foreach condition.');
-        }
-        
-        if (\preg_match('/^s*' . self::$grammar->expression . '\s*$/', $matches['array']) !== 1)
-        {
-            throw new \Exception('Error: array term in foreach condition is invalid.');
-        }
-        
         $this->statements = $statements;
-        $this->arrayStatement = $matches['array'];
-        $this->varName = $matches['varName'];
+        $this->arrayStatement = $array;
+        $this->varName = $varName;
     }
     
     public function execute(Environment $environment)

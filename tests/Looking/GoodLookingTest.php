@@ -161,7 +161,8 @@ class GoodLookingTest extends PHPUnit_Framework_TestCase
      */
     public function testDoubleIfOnOneLine()
     {
-        // issue #29
+        // issue #29  (now fixed)
+        
         $this->expectOutputString('YES');
         
         file_put_contents($this->template, '<: if (true) :>YES<: endif:><: if (false):>NO<: end if :>');

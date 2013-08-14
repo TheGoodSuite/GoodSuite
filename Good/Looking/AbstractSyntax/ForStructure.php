@@ -6,33 +6,17 @@ use Good\Looking\Grammar;
 
 class ForStructure extends ElementWithStatements
 {
-    private $term1;
-    private $term2;
+    private $from;
+    private $to;
     private $statements;
     
-    public function __construct($condition, $statements)
+    public function __construct($from, $to, $statements)
     {
         parent::__construct();
         
-        if (\preg_match('/^\s*' . self::$grammar->controlStructureConditionFor . 
-                                                            '\s*$/', $condition, $matches) !== 1)
-        {
-            throw new \Exception('Error: Unable to parse for condition.');
-        }
-        
-        if (\preg_match('/^s*' . self::$grammar->expression . '\s*$/', $matches['term1']) !== 1)
-        {
-            throw new \Exception('Error: first term in for condition is invalid.');
-        }
-        
-        if (\preg_match('/^s*' . self::$grammar->expression . '\s*$/', $matches['term2']) !== 1)
-        {
-            throw new \Exception('Error: first term in for condition is invalid.');
-        }
-        
         $this->statements = $statements;
-        $this->term1 = $matches['term1'];
-        $this->term2 = $matches['term2'];
+        $this->from = $from;
+        $this->to = $to;
     }
     
     public function execute(Environment $environment)
@@ -42,8 +26,8 @@ class ForStructure extends ElementWithStatements
         $to = $environment->getTemplateVar();
         $delta = $environment->getTemplateVar();
         
-        $out  = '$this->templateVars[' . $from . '] = ' . $this->evaluate($this->term1) . '; ';
-        $out .= '$this->templateVars[' . $to . '] = ' . $this->evaluate($this->term2) . '; ';
+        $out  = '$this->templateVars[' . $from . '] = ' . $this->evaluate($this->from) . '; ';
+        $out .= '$this->templateVars[' . $to . '] = ' . $this->evaluate($this->to) . '; ';
         $out .= '$this->templateVars[' . $delta . '] = $this->templateVars[' . $from . '] < ' .
                     '$this->templateVars[' . $to . '] ? 1 : -1; ';
         $out .= 'for ($this->templateVars[' . $counter . '] = $this->templateVars[' . $from . ']; ' . 

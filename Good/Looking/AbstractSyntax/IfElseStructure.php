@@ -14,11 +14,6 @@ class IfElseStructure extends ElementWithStatements
     {
         parent::__construct();
         
-        if (\preg_match('/^\s*' . self::$grammar->expression . '\s*$/', $condition) === 0)
-        {
-            throw new \Exception('Error: Unable to parse if condition.');
-        }
-        
         $this->condition = $condition;
         $this->statements = $statements;
         $this->elseStatements = $elseStatements;

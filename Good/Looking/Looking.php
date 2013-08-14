@@ -16,8 +16,7 @@ class Looking
     
     public function registerVar($varName, $varValue)
     {
-        if (\preg_match('/'. $this->grammar->varName .'/', $varName) > 0 &&
-             \preg_match('/'. $this->grammar->controlStructure .'/', $varName) == 0)
+        if (\preg_match('/'. $this->grammar->varName .'/', $varName) === 1)
         // if the varName matches variable syntax and does not match a control structure
         {
             $this->registeredVars[$varName] = $varValue;

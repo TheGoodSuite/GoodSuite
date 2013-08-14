@@ -10,7 +10,7 @@ namespace Good\Looking;
 Class Grammar
 {
     // independent regexes
-    public $controlStructure;
+    public $keywords;
     public $scriptDelimiterLeft;
     public $scriptDelimiterRight;
     public $statementEnder;
@@ -27,11 +27,8 @@ Class Grammar
     public $branchingControlStructures;
     public $endingControlStructures;
     
-    public $controlStructureConditionFor;
-    
     // concatenated regexes
     public $varName;
-    public $controlStructureConditionForeach;
     public $script;
     public $comment;
     public $literalString;
@@ -42,12 +39,22 @@ Class Grammar
     public $term;
     public $expression;
     
+    // control structures
+    public $controlStructureIf;
+    public $controlStructureElse;
+    public $controlStructureEndIf;
+    public $controlStructureFor;
+    public $controlStructureEndFor;
+    public $controlStructureForeach;
+    public $controlStructureEndForeach;
+    
+    
     public function __construct()
     {
         // defining the regexes!
         
         // regexes not relying on any others
-        $this->controlStructure = '\\b(?:(?:(?:end\\s*)?(if|for|foreach))|else)\\b';
+        $this->keywords = '\\b(?:end|if|for|foreach|else|endif|endfor|endforeach)\\b';
         $this->scriptDelimiterLeft = '<:';
         $this->scriptDelimiterRight = ':>';
         $this->statementEnder = ';';
@@ -58,28 +65,19 @@ Class Grammar
         $this->literalNumber = '\\b[0-9]+\\b';
         $this->literalBoolean = '(?P<boolean>true|false)';
         $this->operator = '(?P<operator>\\+|-|\\/|\\*|\\|\\||\\bor\\b|\\bxor\\b|&&|\\band\\b|==|=|!=|>=|<=|>|<|\.)';
-
-        $this->allControlStructures = '(?P<structure>(?:(?:end\\s*)?(?:if|for|foreach))|else)(?:\\s*\((?P<condition>.*)\))?';
-        $this->startingControlStructures = '(?P<structure>if|for|foreach)\\s*\((?P<condition>.*)\)';
-        $this->branchingControlStructures = '(?P<structure>else)';
-        $this->endingControlStructures = '^\\s*(?P<structure>end\\s*(?:if|for|foreach))\\s*$';
-
-        // for for-regex \\term1 should contain first term, \\term2 the last term
-        $this->controlStructureConditionFor = '^(?P<term1>[\\s\\S]*)-->(?P<term2>[\\s\\S]*)$';
-
-
+        
         // regexes that use others through concatenation
         
-        $this->varName = '\\b(?!' . $this->controlStructure . ')[A-Za-z][A-Za-z0-9_]*\\b';
+        $this->varName = '\\b(?!' . $this->keywords . ')[A-Za-z][A-Za-z0-9_]*\\b';
         // for foreach-regex \\varName should contain variable name, \\array the array
-        $this->controlStructureConditionForeach = '^\\s*(?P<varName>' . $this->varName . ')\\s+in\\s(?P<array>[\\s\\S]*)$';
+        $this->controlStructureForeach = '^\\s*(?P<varName>' . $this->varName . ')\\s+in\\s(?P<array>[\\s\\S]*)$';
 
         $this->script = $this->scriptDelimiterLeft . '[\\s\\S]*?' . $this->scriptDelimiterRight;
         $this->comment = $this->commentDelimiterLeft . '[\\s\\S]*?' . 
                                                 $this->commentDelimiterRight;
         $this->literalString = '(?:' . $this->stringDouble . ')|(?:' . 
                                 $this->stringSingle . ')';
-
+        
         // regexes that are going to do the monkey dance (preventing double definitions in
         // circular references). Here they are stored in their pre-monkey dance variables
 
@@ -116,6 +114,19 @@ Class Grammar
                                                     array($preTerm,    $preFunc,        $preVariable),
                                                     $preExpression);
         
+        // and finally, we need to do some post-monkey dance concatenation
+        // (in other words, these use one or more regexes from created in the
+        //  monkey dance as apart of them, but are not used by them, so do
+        //  not introduce any addtional circular references)
+    
+        $this->controlStructureIf = '(?:if\s*\((?<condition>' . $this->expression . ')\))';
+        $this->controlStructureElse = 'else';
+        $this->controlStructureEndIf = 'end\s*if';
+        $this->controlStructureFor = '(?:for\s*\((?P<from>' . $this->expression . ')-->(?P<to>(?P>expression))\))';
+        $this->controlStructureEndFor = 'end\\s*for';
+        $this->controlStructureForeach = '(?:foreach\s*\(\\s*(?P<foreachVariable>' . $this->varName . 
+                                                ')\\s+in\\s(?P<array>' . $this->expression . ')\))';
+        $this->controlStructureEndForeach = 'end\\s*foreach';
     }
     
     private function str_replace_once($search, $replace, $subject)
