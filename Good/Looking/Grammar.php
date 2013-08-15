@@ -64,7 +64,7 @@ Class Grammar
         $this->commentDelimiterRight = '-:>';
         $this->stringSingle = "'(?:[^\\\\']|\\\\'|\\\\)*(?<!\\\\)'";
         $this->stringDouble = '"(?:[^\\\\"]|\\\\"|\\\\)*(?<!\\\\)"';
-        $this->literalInt = '\\b[0-9]+\\b';
+        $this->literalInt = '\\b([0]+|[1-9][0-9]*)\\b';
         $this->literalFloat = '\\b[0-9]+\\.[0-9]+\\b';
         $this->literalBoolean = '(?P<boolean>true|false)';
         $this->operator = '(?P<operator>\\+|-|\\/|\\*|\\|\\||\\bor\\b|\\bxor\\b|&&|\\band\\b|==|=|!=|>=|<=|>|<|\.)';
