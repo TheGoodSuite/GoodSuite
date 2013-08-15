@@ -18,7 +18,8 @@ Class Grammar
     public $commentDelimiterRight;
     public $stringSingle;
     public $stringDouble;
-    public $literalNumber;
+    public $literalInteger;
+    public $literalFloat;
     public $literalBoolean;
     public $operator;
     
@@ -28,6 +29,7 @@ Class Grammar
     public $endingControlStructures;
     
     // concatenated regexes
+    public $literalNumber;
     public $varName;
     public $script;
     public $comment;
@@ -62,11 +64,15 @@ Class Grammar
         $this->commentDelimiterRight = '-:>';
         $this->stringSingle = "'(?:[^\\\\']|\\\\'|\\\\)*(?<!\\\\)'";
         $this->stringDouble = '"(?:[^\\\\"]|\\\\"|\\\\)*(?<!\\\\)"';
-        $this->literalNumber = '\\b[0-9]+\\b';
+        $this->literalInt = '\\b[0-9]+\\b';
+        $this->literalFloat = '\\b[0-9]+\\.[0-9]+\\b';
         $this->literalBoolean = '(?P<boolean>true|false)';
         $this->operator = '(?P<operator>\\+|-|\\/|\\*|\\|\\||\\bor\\b|\\bxor\\b|&&|\\band\\b|==|=|!=|>=|<=|>|<|\.)';
         
         // regexes that use others through concatenation
+        
+        // note: float should go first, else it will think the dot is an operator
+        $this->literalNumber = '(?:' . $this->literalFloat . '|' . $this->literalInt . ')';
         
         $this->varName = '\\b(?!' . $this->keywords . ')[A-Za-z][A-Za-z0-9_]*\\b';
         // for foreach-regex \\varName should contain variable name, \\array the array
