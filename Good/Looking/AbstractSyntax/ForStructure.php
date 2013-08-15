@@ -26,8 +26,8 @@ class ForStructure extends ElementWithStatements
         $to = $environment->getTemplateVar();
         $delta = $environment->getTemplateVar();
         
-        $out  = '$this->templateVars[' . $from . '] = ' . $this->evaluate($this->from) . '; ';
-        $out .= '$this->templateVars[' . $to . '] = ' . $this->evaluate($this->to) . '; ';
+        $out  = '$this->templateVars[' . $from . '] = intval(' . $this->evaluate($this->from) . '); ';
+        $out .= '$this->templateVars[' . $to . '] = intval(' . $this->evaluate($this->to) . '); ';
         $out .= '$this->templateVars[' . $delta . '] = $this->templateVars[' . $from . '] < ' .
                     '$this->templateVars[' . $to . '] ? 1 : -1; ';
         $out .= 'for ($this->templateVars[' . $counter . '] = $this->templateVars[' . $from . ']; ' . 
