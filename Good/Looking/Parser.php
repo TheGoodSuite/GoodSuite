@@ -128,7 +128,7 @@ class Parser
     {
         $statements = $this->parseStatementCollection($input);
         
-        if (\preg_match('/^\\s' . $this->grammar->controlStructureEndForeach . '\\s*(?<terminator>' . 
+        if (\preg_match('/^\\s*' . $this->grammar->controlStructureEndForeach . '\\s*(?<terminator>' . 
                             $this->grammar->statementEnder . '|' .
                                 $this->grammar->scriptDelimiterRight . '|$)/', $input, $matches) === 1)
         {
