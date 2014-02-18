@@ -211,7 +211,7 @@ class GoodLookingTest extends PHPUnit_Framework_TestCase
     {
         $this->expectOutputString('YES NO MAYBE ');
         
-        file_put_contents($this->template, '<: foreach ($word in $words):><: $word :> <: end foreach :>');
+        file_put_contents($this->template, '<: foreach ($words as $word):><: $word :> <: end foreach :>');
         
         $goodLooking = new \Good\Looking\Looking($this->template);
         $goodLooking->registerVar('words', array('YES', 'NO', 'MAYBE'));

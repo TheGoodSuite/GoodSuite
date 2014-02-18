@@ -76,7 +76,7 @@ Class Grammar
         
         $this->varName = '\\b[A-Za-z][A-Za-z0-9_]*\\b';
         // for foreach-regex \\varName should contain variable name, \\array the array
-        $this->controlStructureForeach = '^\\s*\$(?P<varName>' . $this->varName . ')\\s+in\\s(?P<array>[\\s\\S]*)$';
+        $this->controlStructureForeach = '^\\s*(?P<array>[\\s\\S]*)\\s+as\\s+\$(?P<varName>' . $this->varName . ')$';
 
         $this->script = $this->scriptDelimiterLeft . '[\\s\\S]*?' . $this->scriptDelimiterRight;
         $this->comment = $this->commentDelimiterLeft . '[\\s\\S]*?' . 
@@ -130,8 +130,8 @@ Class Grammar
         $this->controlStructureEndIf = 'end\s*if';
         $this->controlStructureFor = '(?:for\s*\((?P<from>' . $this->expression . ')-->(?P<to>(?P>expression))\))';
         $this->controlStructureEndFor = 'end\\s*for';
-        $this->controlStructureForeach = '(?:foreach\s*\(\\s*\$(?P<foreachVariable>' . $this->varName . 
-                                                ')\\s+in\\s(?P<array>' . $this->expression . ')\))';
+        $this->controlStructureForeach = '(?:foreach\s*\(\\s*(?P<array>' . $this->expression . 
+                                                ')\\s+as\\s+\$(?P<foreachVariable>' . $this->varName . ')\))';
         $this->controlStructureEndForeach = 'end\\s*foreach';
     }
     
