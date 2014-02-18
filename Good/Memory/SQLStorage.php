@@ -59,7 +59,7 @@ class SQLStorage extends Storage
         //  but even if it does, it makes for confusing code to rely on it)
         $resultset = $selecter->select($resolver->getType(), $condition, $resolver);
         
-        return new Collection($this, $resultset, $this->joins, $resolver->getType());
+        return new StorableCollection($this, $resultset, $this->joins, $resolver->getType());
     }
     
     public function dirtyStorable(Storable $storable)

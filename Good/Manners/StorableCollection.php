@@ -2,7 +2,7 @@
 
 namespace Good\Manners;
 
-interface Collection
+interface StorableCollection
 {
     function getNext();
 }

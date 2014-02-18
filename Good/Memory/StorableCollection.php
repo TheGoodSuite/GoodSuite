@@ -2,7 +2,7 @@
 
 namespace Good\Memory;
 
-class Collection implements \Good\Manners\Collection
+class StorableCollection implements \Good\Manners\StorableCollection
 {
     protected $storage;
     protected $dbresult;
