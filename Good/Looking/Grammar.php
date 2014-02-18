@@ -56,7 +56,7 @@ Class Grammar
         // defining the regexes!
         
         // regexes not relying on any others
-        $this->keywords = '\\b(?:end|if|for|foreach|else|endif|endfor|endforeach)\\b';
+        $this->keywords = '\\b(?:(?i)if|for|foreach|else|endif|endfor|endforeach)\\b';
         $this->scriptDelimiterLeft = '<:';
         $this->scriptDelimiterRight = ':>';
         $this->statementEnder = ';';
@@ -66,7 +66,7 @@ Class Grammar
         $this->stringDouble = '"(?:[^\\\\"]|\\\\"|\\\\)*(?<!\\\\)"';
         $this->literalInt = '\\b([0]+|[1-9][0-9]*)\\b';
         $this->literalFloat = '\\b[0-9]+\\.[0-9]+\\b';
-        $this->literalBoolean = '(?P<boolean>true|false)';
+        $this->literalBoolean = '(?P<boolean>(?i)true|false)';
         $this->operator = '(?P<operator>\\+|-|\\/|\\*|\\|\\||\\bor\\b|\\bxor\\b|&&|\\band\\b|==|=|!=|>=|<=|>|<|\.)';
         
         // regexes that use others through concatenation
@@ -74,6 +74,7 @@ Class Grammar
         // note: float should go first, else it will think the dot is an operator
         $this->literalNumber = '(?:' . $this->literalFloat . '|' . $this->literalInt . ')';
         
+        // note: dollar sign will (generally) need to be prepended to this.
         $this->varName = '\\b[A-Za-z][A-Za-z0-9_]*\\b';
 
         $this->script = $this->scriptDelimiterLeft . '[\\s\\S]*?' . $this->scriptDelimiterRight;
@@ -123,14 +124,14 @@ Class Grammar
         //  monkey dance as apart of them, but are not used by them, so do
         //  not introduce any addtional circular references)
     
-        $this->controlStructureIf = '(?:if\s*\((?<condition>' . $this->expression . ')\))';
-        $this->controlStructureElse = 'else';
-        $this->controlStructureEndIf = 'end\s*if';
-        $this->controlStructureFor = '(?:for\s*\((?P<from>' . $this->expression . ')-->(?P<to>(?P>expression))\))';
-        $this->controlStructureEndFor = 'end\\s*for';
-        $this->controlStructureForeach = '(?:foreach\s*\(\\s*(?P<array>' . $this->expression . 
-                                                ')\\s+as\\s+\$(?P<foreachVariable>' . $this->varName . ')\))';
-        $this->controlStructureEndForeach = 'end\\s*foreach';
+        $this->controlStructureIf = '(?:(?i:if)\s*\((?<condition>' . $this->expression . ')\))\s*:';
+        $this->controlStructureElse = '(?i:else)\s*:';
+        $this->controlStructureEndIf = '(?i:endif)';
+        $this->controlStructureFor = '(?:(?i:for)\s*\((?P<from>' . $this->expression . ')-->(?P<to>(?P>expression))\))\s*:';
+        $this->controlStructureEndFor = '(?i:endfor)';
+        $this->controlStructureForeach = '(?:(?i:foreach)\s*\(\\s*(?P<array>' . $this->expression . 
+                                                ')\\s+(?i:as)\\s+\$(?P<foreachVariable>' . $this->varName . ')\))\s*:';
+        $this->controlStructureEndForeach = '(?i:endforeach)';
     }
     
     private function str_replace_once($search, $replace, $subject)
