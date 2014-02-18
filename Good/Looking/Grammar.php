@@ -75,8 +75,6 @@ Class Grammar
         $this->literalNumber = '(?:' . $this->literalFloat . '|' . $this->literalInt . ')';
         
         $this->varName = '\\b[A-Za-z][A-Za-z0-9_]*\\b';
-        // for foreach-regex \\varName should contain variable name, \\array the array
-        $this->controlStructureForeach = '^\\s*(?P<array>[\\s\\S]*)\\s+as\\s+\$(?P<varName>' . $this->varName . ')$';
 
         $this->script = $this->scriptDelimiterLeft . '[\\s\\S]*?' . $this->scriptDelimiterRight;
         $this->comment = $this->commentDelimiterLeft . '[\\s\\S]*?' . 
