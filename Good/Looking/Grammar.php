@@ -74,9 +74,9 @@ Class Grammar
         // note: float should go first, else it will think the dot is an operator
         $this->literalNumber = '(?:' . $this->literalFloat . '|' . $this->literalInt . ')';
         
-        $this->varName = '\\b(?!' . $this->keywords . ')[A-Za-z][A-Za-z0-9_]*\\b';
+        $this->varName = '\\b[A-Za-z][A-Za-z0-9_]*\\b';
         // for foreach-regex \\varName should contain variable name, \\array the array
-        $this->controlStructureForeach = '^\\s*(?P<varName>' . $this->varName . ')\\s+in\\s(?P<array>[\\s\\S]*)$';
+        $this->controlStructureForeach = '^\\s*\$(?P<varName>' . $this->varName . ')\\s+in\\s(?P<array>[\\s\\S]*)$';
 
         $this->script = $this->scriptDelimiterLeft . '[\\s\\S]*?' . $this->scriptDelimiterRight;
         $this->comment = $this->commentDelimiterLeft . '[\\s\\S]*?' . 
@@ -87,7 +87,7 @@ Class Grammar
         // regexes that are going to do the monkey dance (preventing double definitions in
         // circular references). Here they are stored in their pre-monkey dance variables
 
-        $preVariable = '(?P<variable>(?P<varName>' . $this->varName . 
+        $preVariable = '(?P<variable>\$(?P<varName>' . $this->varName . 
                                             ')(?P<arrayItemSelector>(?:\\[(?P>expression)\\])*))';
         $preFunc = '(?P<function>\\b[a-zA-Z][a-zA-Z0-9_]*\\((?P<arguments>(?P>expression)(?:,(?P>expression))*)?\\))';
 
@@ -130,7 +130,7 @@ Class Grammar
         $this->controlStructureEndIf = 'end\s*if';
         $this->controlStructureFor = '(?:for\s*\((?P<from>' . $this->expression . ')-->(?P<to>(?P>expression))\))';
         $this->controlStructureEndFor = 'end\\s*for';
-        $this->controlStructureForeach = '(?:foreach\s*\(\\s*(?P<foreachVariable>' . $this->varName . 
+        $this->controlStructureForeach = '(?:foreach\s*\(\\s*\$(?P<foreachVariable>' . $this->varName . 
                                                 ')\\s+in\\s(?P<array>' . $this->expression . ')\))';
         $this->controlStructureEndForeach = 'end\\s*foreach';
     }
