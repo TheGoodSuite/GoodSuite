@@ -75,10 +75,7 @@ class Parser
         
         if ($input == '')
         {
-            ob_start();
-            var_dump($condition);
-            var_dump($statements);
-            throw new \Exception('Error: End of document found though there was still an "if" that needed to be closed.' . ob_get_clean());
+            throw new \Exception('Error: End of document found though there was still an "if" that needed to be closed.');
         }
         else if (\preg_match('/^\\s*(?<controlStructure>' . $this->grammar->controlStructureEndFor . '|' .
                                         $this->grammar->controlStructureEndForeach . ')\\s*$/', $input, $matched) === 1)
