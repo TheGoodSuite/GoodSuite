@@ -163,7 +163,7 @@ abstract class GoodMannersPersistenceTest extends PHPUnit_Framework_TestCase
         $resolver = new PersistenceTypeResolver();
         $collection = $storage->getCollection($any, $resolver);
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
             

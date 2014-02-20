@@ -276,7 +276,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircular(null);
         $expectedResults[] = $ins;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
             
@@ -309,7 +309,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircular(null);
         $expectedResults[] = $ins;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
             
@@ -353,7 +353,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircular(null);
         $expectedResults[] = $ins;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
             
@@ -395,7 +395,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircular(null);
         $expectedResults[] = $ins;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
             
@@ -448,7 +448,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircular(null);
         $expectedResults[] = $ins;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
             
@@ -481,7 +481,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircular(null);
         $expectedResults[] = $ins;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
             
@@ -534,7 +534,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircular(null);
         $expectedResults[] = $ins;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
             
@@ -584,7 +584,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircular(null);
         $expectedResults[] = $ins;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
             
@@ -628,7 +628,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         
         $expectedResults[] = $idHolder;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
             
@@ -682,7 +682,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircular(null);
         $expectedResults[] = $ins;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
             
@@ -736,7 +736,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircular(null);
         $expectedResults[] = $ins;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
             
@@ -767,7 +767,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircular(null);
         $expectedResults[] = $ins;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
             
@@ -833,7 +833,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircular(null);
         $expectedResults[] = $ins;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
             
@@ -892,7 +892,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircular(null);
         $expectedResults[] = $ins;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
             
@@ -933,7 +933,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircular(null);
         $expectedResults[] = $ins;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
             
@@ -990,7 +990,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircular(null);
         $expectedResults[] = $ins;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
             
@@ -1026,7 +1026,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircular(null);
         $expectedResults[] = $ins;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
             
@@ -1071,7 +1071,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircular(null);
         $expectedResults[] = $ins;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
             
@@ -1107,7 +1107,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircular(null);
         $expectedResults[] = $ins;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
             
@@ -1143,7 +1143,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircular(null);
         $expectedResults[] = $ins;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
             
@@ -1179,7 +1179,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircular(null);
         $expectedResults[] = $ins;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
             
@@ -1215,7 +1215,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircular(null);
         $expectedResults[] = $ins;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
             
@@ -1284,7 +1284,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircular(null);
         $expectedResults[] = $ins;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
             
@@ -1351,7 +1351,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircular(null);
         $expectedResults[] = $ins;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
             
@@ -1417,7 +1417,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircular(null);
         $expectedResults[] = $ins;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
             
@@ -1484,7 +1484,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircular(null);
         $expectedResults[] = $ins;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
             
@@ -1842,7 +1842,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircular(null);
         $expectedResults[] = $ins;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             // do an isResolved check here
             // and then set to null (because you can't access unresolved properties)
@@ -1867,7 +1867,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $resolver = new GetTypeResolver();
         $resolver->orderByMyIntAsc();
         $collection = $this->storage->getCollection($any, $resolver);
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             if ($type->getMyInt() == 4)
             {
@@ -1938,7 +1938,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->setMyCircular(null);
         $expectedResults[] = $ins;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             // do an isResolved check here
             // and then set to null (because you can't access unresolved properties)
@@ -1950,6 +1950,98 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         }
         
         $this->assertSame(array(), $expectedResults);
+    }
+    
+    /**
+     * @depends testGetAll
+     */
+    public function testNestedForeachOnStorableCollection()
+    {
+        // Still the get any trick
+        $type = new GetType();
+        $any = new \Good\Manners\Condition\GreaterThan($type);
+        
+        $resolver = new GetTypeResolver();
+        $resolver->resolveMyOtherType();
+        $resolver->orderByMyIntDesc();
+        $collection = $this->storage->getCollection($any, $resolver);
+        
+        $expectedResults = array();
+        
+        $ins = new GetType();
+        $ins->setMyInt(10);
+        $ins->setMyFloat(10.10);
+        $ins->setMyText("Ten");
+        $ins->setMyDatetime(new \Datetime('2010-10-10'));
+        $ins->setMyOtherType(null);
+        $ins->setMyCircular(null);
+        $expectedResults[] = $ins;
+        
+        $ins = new GetType();
+        $ins->setMyInt(8);
+        $ins->setMyFloat(10.10);
+        $ins->setMyText(null);
+        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ref = new OtherType();
+        $ref->setYourInt(40);
+        $ins->setMyOtherType($ref);
+        $ins->setMyCircular(null);
+        $expectedResults[] = $ins;
+        
+        $ins = new GetType();
+        $ins->setMyInt(5);
+        $ins->setMyFloat(null);
+        $ins->setMyText("Five");
+        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ref = new OtherType();
+        $ref->setYourInt(80);
+        $ins->setMyOtherType($ref);
+        $ins->setMyCircular(null);
+        $expectedResults[] = $ins;
+        
+        $ins = new GetType();
+        $ins->setMyInt(4);
+        $ins->setMyFloat(4.4);
+        $ins->setMyText("Four");
+        $ins->setMyDatetime(new \Datetime('2004-04-04'));
+        $ref = new OtherType();
+        $ref->setYourInt(90);
+        $ins->setMyOtherType($ref);
+        $ins->setMyCircular(null);
+        $expectedResults[] = $ins;
+        
+        $ins = new GetType();
+        $ins->setMyInt(null);
+        $ins->setMyFloat(20.20);
+        $ins->setMyText("Twenty");
+        $ins->setMyDatetime(null);
+        $ref = new OtherType();
+        $ref->setYourInt(5);
+        $ins->setMyOtherType($ref);
+        $ins->setMyCircular(null);
+        $expectedResults[] = $ins;
+        
+        $exp1 = $expectedResults;
+        
+        foreach ($collection as $type)
+        {
+            $pos = $this->assertContainsAndReturnIndex_specific($type, $exp1);
+            
+            array_splice($exp1, $pos, 1);
+            
+            $exp2 = $expectedResults;
+            
+            foreach ($collection as $type)
+            {
+                $pos = $this->assertContainsAndReturnIndex_specific($type, $exp2);
+                
+                array_splice($exp2, $pos, 1);
+            }
+        
+            $this->assertSame(array(), $exp2);
+        }
+        
+        $this->assertSame(array(), $exp1);
     }
 }
 

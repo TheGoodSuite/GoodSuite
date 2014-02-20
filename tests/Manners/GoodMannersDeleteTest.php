@@ -178,7 +178,7 @@ abstract class GoodMannersDeleteTest extends PHPUnit_Framework_TestCase
         
         $collection = $this->storage2->getCollection($any, $resolver);
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expected);
             
@@ -197,7 +197,7 @@ abstract class GoodMannersDeleteTest extends PHPUnit_Framework_TestCase
         
         $collection = $this->storage1->getCollection($any, new DeleteTypeResolver());
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             if ($type->getMyInt() == 5 || $type->getMyInt() == 10)
             {

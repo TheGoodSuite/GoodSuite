@@ -272,7 +272,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         
         $collection = $this->storage2->getCollection($any, $resolver);
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expected);
             
@@ -747,7 +747,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         
         $i = 0;
         
-        while ($collection->getNext())
+        foreach ($collection as $elem)
         {
             $i++;
         }
@@ -1708,7 +1708,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $resolver->resolveRef();
         $collection = $this->storage1->getCollection($any, $resolver);
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             if ($type->getMyInt() == 4)
             {
@@ -1835,7 +1835,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $resolver->resolveRef();
         $collection = $this->storage1->getCollection($any, $resolver);
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             if ($type->getMyInt() == 4)
             {

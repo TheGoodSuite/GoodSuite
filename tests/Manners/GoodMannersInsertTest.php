@@ -146,7 +146,7 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         $resolver->resolveMyCircularReference();
         $collection = $this->storage2->getCollection($any, $resolver);
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expected);
             

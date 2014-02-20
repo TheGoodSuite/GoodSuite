@@ -211,7 +211,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $resolver->resolveMyReference();
         $collection = $this->storage2->getCollection($any, $resolver);
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expected);
             
@@ -232,7 +232,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $resolver->resolveMyReference();
         $collection = $this->storage1->getCollection($any, $resolver);
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             $type->setMyInt(2);
             $type->setMyFloat(1.1);
@@ -303,7 +303,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $resolver->resolveMyReference();
         $collection = $this->storage1->getCollection($any, $resolver);
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             if ($type->getMyInt() == 5)
             {
@@ -389,7 +389,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         
         $ref = null;
         
-        while ($type = $collection->getNext())
+        foreach ($collection as $type)
         {
             if ($type->getMyInt() == 8)
             {
