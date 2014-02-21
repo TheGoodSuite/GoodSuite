@@ -22,11 +22,7 @@ Class Grammar
     public $literalFloat;
     public $literalBoolean;
     public $operator;
-    
-    public $allControlStructures;
-    public $startingControlStructures;
-    public $branchingControlStructures;
-    public $endingControlStructures;
+    public $propertyAccess;
     
     // concatenated regexes
     public $literalNumber;
@@ -40,6 +36,7 @@ Class Grammar
     public $func;
     public $term;
     public $expression;
+    public $arrayAccess;
     
     // control structures
     public $controlStructureIf;
@@ -68,6 +65,7 @@ Class Grammar
         $this->literalFloat = '\\b[0-9]+\\.[0-9]+\\b';
         $this->literalBoolean = '(?P<boolean>(?i)true|false)';
         $this->operator = '(?P<operator>\\+|-|\\/|\\*|\\|\\||\\bor\\b|\\bxor\\b|&&|\\band\\b|==|=|!=|>=|<=|>|<|\.)';
+        $this->propertyAccess = '->\s*(?P<propertyName>[a-zA-Z_][0-9a-zA-Z_]*)\b';
         
         // regexes that use others through concatenation
         
@@ -85,9 +83,11 @@ Class Grammar
         
         // regexes that are going to do the monkey dance (preventing double definitions in
         // circular references). Here they are stored in their pre-monkey dance variables
-
+        
+        $preArrayAccess = '(?P<arrayAccess>\[\s*(?P>expression)\s*\])';
+        
         $preVariable = '(?P<variable>\$(?P<varName>' . $this->varName . 
-                                            ')(?P<arrayItemSelector>(?:\\[(?P>expression)\\])*))';
+                                            ')(?P<varModifiers>(\s*((?P>arrayAccess)|' . $this->propertyAccess . '))*))';
         $preFunc = '(?P<function>\\b[a-zA-Z][a-zA-Z0-9_]*\\((?P<arguments>(?P>expression)(?:,(?P>expression))*)?\\))';
 
         $preTerm = '(?P<term>\\s*(?:(?:' . $this->literalNumber . 
@@ -103,33 +103,37 @@ Class Grammar
         // note that even things as silly as the order of the search & replace array elements
         // matters a lot
 
-        $this->variable = $this->str_replace_once(array('(?P>expression)', '(?P>term)', '(?P>function)'),
-                                                  array($preExpression,    $preTerm,    $preFunc),
+        $this->variable = $this->str_replace_once(array('(?P>arrayAccess)', '(?P>expression)', '(?P>term)', '(?P>function)'),
+                                                  array($preArrayAccess,    $preExpression,    $preTerm,    $preFunc),
                                                   $preVariable);
 
-        $this->func = $this->str_replace_once(array('(?P>expression)', '(?P>term)', '(?P>variable)'),
-                                              array($preExpression,    $preTerm,    $preVariable),
+        $this->func = $this->str_replace_once(array('(?P>expression)', '(?P>term)', '(?P>variable)', '(?P>arrayAccess)'),
+                                              array($preExpression,    $preTerm,    $preVariable,        $preArrayAccess),
                                               $preFunc);
 
-        $this->term = $this->str_replace_once(array('(?P>function)', '(?P>expression)', '(?P>variable)'),
-                                              array($preFunc,        $preExpression,   $preVariable),
+        $this->term = $this->str_replace_once(array('(?P>function)', '(?P>expression)', '(?P>variable)', '(?P>arrayAccess)'),
+                                              array($preFunc,        $preExpression,   $preVariable,        $preArrayAccess),
                                               $preTerm);
 
-        $this->expression = $this->str_replace_once(array('(?P>term)', '(?P>function)', '(?P>variable)'),
-                                                    array($preTerm,    $preFunc,        $preVariable),
+        $this->expression = $this->str_replace_once(array('(?P>term)', '(?P>function)', '(?P>variable)', '(?P>arrayAccess)'),
+                                                    array($preTerm,    $preFunc,        $preVariable,        $preArrayAccess),
                                                     $preExpression);
+        
+        $this->arrayAccess = $this->str_replace_once(array('(?P>expression)', '(?P>term)', '(?P>function)', '(?P>variable)'),
+                                                     array($preExpression,   $preTerm,    $preFunc,        $preVariable),
+                                                     $preArrayAccess);
         
         // and finally, we need to do some post-monkey dance concatenation
         // (in other words, these use one or more regexes from created in the
         //  monkey dance as apart of them, but are not used by them, so do
         //  not introduce any addtional circular references)
     
-        $this->controlStructureIf = '(?:(?i:if)\s*\((?<condition>' . $this->expression . ')\))\s*:';
+        $this->controlStructureIf = '(?:(?i:if)\s*\((?P<condition>' . $this->expression . ')\))\s*:';
         $this->controlStructureElse = '(?i:else)\s*:';
         $this->controlStructureEndIf = '(?i:endif)';
         $this->controlStructureFor = '(?:(?i:for)\s*\((?P<from>' . $this->expression . ')-->(?P<to>(?P>expression))\))\s*:';
         $this->controlStructureEndFor = '(?i:endfor)';
-        $this->controlStructureForeach = '(?:(?i:foreach)\s*\(\\s*(?P<array>' . $this->expression . 
+        $this->controlStructureForeach = '(?:(?i:foreach)\s*\(\\s*(?P<foreachArray>' . $this->expression . 
                                                 ')\\s+(?i:as)\\s+\$(?P<foreachVariable>' . $this->varName . ')\))\s*:';
         $this->controlStructureEndForeach = '(?i:endforeach)';
     }

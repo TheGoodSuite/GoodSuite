@@ -881,6 +881,93 @@ class GoodLookingTest extends PHPUnit_Framework_TestCase
         
         $goodLooking->display();
     }
+    
+    /**
+     * @depends testOutputStringVariable
+     */
+    public function testPropertyAccess()
+    {
+        $this->expectOutputString('bla');
+        
+        file_put_contents($this->template, '<: $var->prop :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $var = new stdClass();
+        $var->prop = 'bla';
+        $goodLooking->registerVar('var', $var);
+        $goodLooking->display();
+    }
+    
+    /**
+     * @depends testPropertyAccess
+     */
+    public function testPropertyWhitespace1Access()
+    {
+        $this->expectOutputString('bla');
+        
+        file_put_contents($this->template, '<: $var ->prop :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $var = new stdClass();
+        $var->prop = 'bla';
+        $goodLooking->registerVar('var', $var);
+        $goodLooking->display();
+    }
+    
+    /**
+     * @depends testPropertyAccess
+     */
+    public function testPropertyWhitespace2Access()
+    {
+        $this->expectOutputString('bla');
+        
+        file_put_contents($this->template, '<: $var-> prop :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $var = new stdClass();
+        $var->prop = 'bla';
+        $goodLooking->registerVar('var', $var);
+        $goodLooking->display();
+    }
+    
+    /**
+     * @depends testPropertyWhitespace1Access
+     * @depends testPropertyWhitespace2Access
+     */
+    public function testPropertyWhitespace3Access()
+    {
+        $this->expectOutputString('bla');
+        
+        file_put_contents($this->template, '<: $var -> prop :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $var = new stdClass();
+        $var->prop = 'bla';
+        $goodLooking->registerVar('var', $var);
+        $goodLooking->display();
+    }
+    
+    /**
+     * @depends testPropertyAccess
+     * @depends testArrayAccessIntKey
+     */
+    public function testPropertyAndArrayAccessMixed()
+    {
+        $this->expectOutputString('bla');
+        
+        file_put_contents($this->template, '<: $var[0]->prop[0]->prop :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $var = new stdClass();
+        $var->prop = 'bla';
+        $var = array($var);
+        $var2 = new stdClass();
+        $var2->prop = $var;
+        $var2 = array($var2);
+        
+        $goodLooking->registerVar('var', $var2);
+        $goodLooking->display();
+    }
 }
 
 ?>

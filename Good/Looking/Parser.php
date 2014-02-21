@@ -256,7 +256,7 @@ class Parser
                 $this->removeFromStart($input, $matches[0]);
                 $this->determineIfNextModeIsText($matches['terminator']);
                 
-                $statements[] = $this->parseForeachStructure($matches['array'], $matches['foreachVariable'], $input);
+                $statements[] = $this->parseForeachStructure($matches['foreachArray'], $matches['foreachVariable'], $input);
             }
             else
             {

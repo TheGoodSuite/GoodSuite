@@ -60,20 +60,34 @@ abstract class ElementWithStatements implements Element
             else if (\preg_match('/^' . $this->grammar->variable . '$/', 
                                                         $term, $matches) != 0)
             {
+                
                 $templateVariable = '$this->getVar(\'' . $matches['varName'] . '\')';
                 
-                $arrayItemSelector = $matches['arrayItemSelector'];
+                $varModifiers = $matches['varModifiers'];
                 
-                while ($arrayItemSelector != '')
+                while (preg_match('/^\\s*$/', $varModifiers) != 1)
                 {
-                    \preg_match('/^\[' . $this->grammar->expression . '\]/',
-                                            $arrayItemSelector, $matches);
-                    $arrayItemSelector = \preg_replace('/^\[' 
-                                                . $this->grammar->expression . '\]/',
-                                                 '', $arrayItemSelector);
+                    $array = '/^\s*(?P<array>' . $this->grammar->arrayAccess . ')/';
+                    $property = '/^\s*(?P<property>' . $this->grammar->propertyAccess . ')/';
                     
-                    $templateVariable = '$this->arrayItem(' . $templateVariable . ', ' .
+                    
+                    if (preg_match($array, $varModifiers, $matches) == 1) 
+                    {
+                        $templateVariable = '$this->arrayItem(' . $templateVariable . ', ' .
                                     $this->evaluate($matches['expression']) . ')';
+                        
+                        $varModifiers = \preg_replace($array, '', $varModifiers);
+                    }
+                    else if (preg_match($property, $varModifiers, $matches) == 1)
+                    {
+                        $templateVariable = $templateVariable . '->' . $matches['propertyName'];
+                        
+                        $varModifiers = \preg_replace($property, '', $varModifiers);
+                    }
+                    else
+                    {
+                        throw new \Exception("Internal Parser error");
+                    }
                 }
                 
                 $output .= $templateVariable;
