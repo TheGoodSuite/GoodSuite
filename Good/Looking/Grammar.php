@@ -129,6 +129,7 @@ Class Grammar
         //  not introduce any addtional circular references)
     
         $this->controlStructureIf = '(?:(?i:if)\s*\((?P<condition>' . $this->expression . ')\))\s*:';
+        $this->controlStructureElseif = '(?:(?i:elseif)\s*\((?P<condition>' . $this->expression . ')\))\s*:';
         $this->controlStructureElse = '(?i:else)\s*:';
         $this->controlStructureEndIf = '(?i:endif)';
         $this->controlStructureFor = '(?:(?i:for)\s*\((?P<from>' . $this->expression . ')-->(?P<to>(?P>expression))\))\s*:';

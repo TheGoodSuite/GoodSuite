@@ -30,7 +30,7 @@ class Parser
         return $out;
     }
     
-    private function parseIfStructure($condition, &$input)
+    private function parseIfStructure($condition, &$input, $consumesEndif = true)
     {
         $statements = $this->parseStatementCollection($input);
         
@@ -48,6 +48,20 @@ class Parser
             
             $elseStatements = $this->parseStatementCollection($input);
         }
+        else if (\preg_match('/^\\s*' . $this->grammar->controlStructureElseif . '\\s*(?<terminator>' . 
+                            $this->grammar->statementEnder . '|' .
+                                $this->grammar->scriptDelimiterRight . '|$)/', $input, $matches) === 1)
+        {
+            $else = true;
+            
+            // remove the processed part
+            $this->removeFromStart($input, $matches[0]);
+            
+            // determine next mode
+            $this->determineIfNextModeIsText($matches['terminator']);
+            
+            $elseStatements = array($this->parseIfStructure($matches['condition'], $input, false));
+        }
         else
         {
             $else = false;
@@ -57,11 +71,14 @@ class Parser
                             $this->grammar->statementEnder . '|' .
                                 $this->grammar->scriptDelimiterRight . '|$)/', $input, $matches) === 1)
         {
-            // remove the processed part
-            $this->removeFromStart($input, $matches[0]);
+            if ($consumesEndif)
+            {
+                // remove the processed part
+                $this->removeFromStart($input, $matches[0]);
             
-            // determine next mode
-            $this->determineIfNextModeIsText($matches['terminator']);
+                // determine next mode
+                $this->determineIfNextModeIsText($matches['terminator']);
+            }
             
             if ($else)
             {

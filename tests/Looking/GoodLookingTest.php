@@ -968,6 +968,78 @@ class GoodLookingTest extends PHPUnit_Framework_TestCase
         $goodLooking->registerVar('var', $var2);
         $goodLooking->display();
     }
+    
+    public function testElseifFF()
+    {
+        $this->expectOutputString('C');
+        
+        file_put_contents($this->template, '<: if (false): :>A<: elseif (false): :>B<: else: :>C<: endif :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking->display();
+    }
+    
+    public function testElseifFT()
+    {
+        $this->expectOutputString('B');
+        
+        file_put_contents($this->template, '<: if (false): :>A<: elseif (true): :>B<: else: :>C<: endif :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking->display();
+    }
+    
+    public function testElseifTF()
+    {
+        $this->expectOutputString('A');
+        
+        file_put_contents($this->template, '<: if (true): :>A<: elseif (false): :>B<: else: :>C<: endif :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking->display();
+    }
+    
+    public function testElseifTT()
+    {
+        $this->expectOutputString('A');
+        
+        file_put_contents($this->template, '<: if (true): :>A<: elseif (true): :>B<: else: :>C<: endif :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking->display();
+    }
+    
+    public function testElseifMany()
+    {
+        $this->expectOutputString('G');
+        
+        file_put_contents($this->template, '<: if (false): :>A' . 
+                                           '<: elseif (false): :>B' . 
+                                           '<: elseif (false): :>C' . 
+                                           '<: elseif (false): :>D' . 
+                                           '<: elseif (false): :>E' . 
+                                           '<: elseif (false): :>F' . 
+                                           '<: elseif (true): :>G' . 
+                                           '<: elseif (false): :>H' . 
+                                           '<: elseif (true): :>I' . 
+                                           '<: else: :>J<: endif :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking->display();
+    }
+    
+    public function testElseifWithoutElse()
+    {
+        $this->expectOutputString('C');
+        
+        file_put_contents($this->template, '<: if (false): :>A' . 
+                                           '<: elseif (false): :>B' . 
+                                           '<: elseif (true): :>C' . 
+                                           '<: elseif (false): :>D<: endif :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking->display();
+    }
 }
 
 ?>
