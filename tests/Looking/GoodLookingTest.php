@@ -1040,6 +1040,18 @@ class GoodLookingTest extends PHPUnit_Framework_TestCase
         $goodLooking = new \Good\Looking\Looking($this->template);
         $goodLooking->display();
     }
+    
+    public function testInlineControlStructures()
+    {
+        // control structures without dropping out of code mode, no semicolons
+        
+        $this->expectOutputString('AAA');
+        
+        file_put_contents($this->template, '<: for(1 --> 3): if (true): "A"; endif; endfor; :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking->display();
+    }
 }
 
 ?>

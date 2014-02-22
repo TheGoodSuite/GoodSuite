@@ -34,31 +34,21 @@ class Parser
     {
         $statements = $this->parseStatementCollection($input);
         
-        if (\preg_match('/^\\s*' . $this->grammar->controlStructureElse . '\\s*(?<terminator>' . 
-                            $this->grammar->statementEnder . '|' .
-                                $this->grammar->scriptDelimiterRight . '|$)/', $input, $matches) === 1)
+        if (\preg_match('/^\\s*' . $this->grammar->controlStructureElse . '/', $input, $matches) === 1)
         {
             $else = true;
             
             // remove the processed part
             $this->removeFromStart($input, $matches[0]);
-            
-            // determine next mode
-            $this->determineIfNextModeIsText($matches['terminator']);
             
             $elseStatements = $this->parseStatementCollection($input);
         }
-        else if (\preg_match('/^\\s*' . $this->grammar->controlStructureElseif . '\\s*(?<terminator>' . 
-                            $this->grammar->statementEnder . '|' .
-                                $this->grammar->scriptDelimiterRight . '|$)/', $input, $matches) === 1)
+        else if (\preg_match('/^\\s*' . $this->grammar->controlStructureElseif . '/', $input, $matches) === 1)
         {
             $else = true;
             
             // remove the processed part
             $this->removeFromStart($input, $matches[0]);
-            
-            // determine next mode
-            $this->determineIfNextModeIsText($matches['terminator']);
             
             $elseStatements = array($this->parseIfStructure($matches['condition'], $input, false));
         }
@@ -251,27 +241,24 @@ class Parser
                 }
             }
             
-            if ($input != '' && preg_match('/^\\s*' . $this->grammar->controlStructureIf . '\\s*' . $regexTerminator . '/', $input, $matches) === 1)
+            if ($input != '' && preg_match('/^\\s*' . $this->grammar->controlStructureIf . '/', $input, $matches) === 1)
             {
                 // remove the processed part and determine next mode
                 $this->removeFromStart($input, $matches[0]);
-                $this->determineIfNextModeIsText($matches['terminator']);
                 
                 $statements[] = $this->parseIfStructure($matches['condition'], $input);
             }
-            else if ($input != '' && preg_match('/^\\s*' . $this->grammar->controlStructureFor . '\\s*' . $regexTerminator . '/', $input, $matches) === 1)
+            else if ($input != '' && preg_match('/^\\s*' . $this->grammar->controlStructureFor . '/', $input, $matches) === 1)
             {
                 // remove the processed part and determine next mode
                 $this->removeFromStart($input, $matches[0]);
-                $this->determineIfNextModeIsText($matches['terminator']);
                 
                 $statements[] = $this->parseForStructure($matches['from'], $matches['to'], $input);
             }
-            else if ($input != '' && preg_match('/^\\s*' . $this->grammar->controlStructureForeach . '\\s*' . $regexTerminator . '/', $input, $matches) === 1)
+            else if ($input != '' && preg_match('/^\\s*' . $this->grammar->controlStructureForeach . '/', $input, $matches) === 1)
             {
                 // remove the processed part and determine next mode
                 $this->removeFromStart($input, $matches[0]);
-                $this->determineIfNextModeIsText($matches['terminator']);
                 
                 $statements[] = $this->parseForeachStructure($matches['foreachArray'], $matches['foreachVariable'], $input);
             }
