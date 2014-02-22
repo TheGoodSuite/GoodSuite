@@ -53,7 +53,7 @@ Class Grammar
         // defining the regexes!
         
         // regexes not relying on any others
-        $this->keywords = '\\b(?:(?i)if|for|foreach|else|endif|endfor|endforeach)\\b';
+        $this->keywords = '\\b(?:(?i)if|for|foreach|else|elseif|endif|endfor|endforeach)\\b';
         $this->scriptDelimiterLeft = '<:';
         $this->scriptDelimiterRight = ':>';
         $this->statementEnder = ';';
