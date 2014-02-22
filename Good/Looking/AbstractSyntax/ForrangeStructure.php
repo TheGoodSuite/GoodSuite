@@ -4,7 +4,7 @@ namespace Good\Looking\AbstractSyntax;
 
 use Good\Looking\Grammar;
 
-class ForStructure extends ElementWithStatements
+class ForrangeStructure extends ElementWithStatements
 {
     private $from;
     private $to;

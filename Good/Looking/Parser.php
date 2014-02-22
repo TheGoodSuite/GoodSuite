@@ -95,11 +95,11 @@ class Parser
         }
     }
     
-    private function parseForStructure($from, $to, &$input)
+    private function parseForrangeStructure($from, $to, &$input)
     {
         $statements = $this->parseStatementCollection($input);
         
-        if (\preg_match('/^\\s*' . $this->grammar->controlStructureEndFor . '\\s*(?<terminator>' . 
+        if (\preg_match('/^\\s*' . $this->grammar->controlStructureEndForrange . '\\s*(?<terminator>' . 
                             $this->grammar->statementEnder . '|' .
                                 $this->grammar->scriptDelimiterRight . '|$)/', $input, $matches) === 1)
         {
@@ -109,7 +109,7 @@ class Parser
             // determine next mode
             $this->determineIfNextModeIsText($matches['terminator']);
             
-            return $this->factory->createForStructure($from, $to, $statements);
+            return $this->factory->createForrangeStructure($from, $to, $statements);
         }
         
         if ($input == '')
@@ -248,12 +248,12 @@ class Parser
                 
                 $statements[] = $this->parseIfStructure($matches['condition'], $input);
             }
-            else if ($input != '' && preg_match('/^\\s*' . $this->grammar->controlStructureFor . '/', $input, $matches) === 1)
+            else if ($input != '' && preg_match('/^\\s*' . $this->grammar->controlStructureForrange . '/', $input, $matches) === 1)
             {
                 // remove the processed part and determine next mode
                 $this->removeFromStart($input, $matches[0]);
                 
-                $statements[] = $this->parseForStructure($matches['from'], $matches['to'], $input);
+                $statements[] = $this->parseForrangeStructure($matches['from'], $matches['to'], $input);
             }
             else if ($input != '' && preg_match('/^\\s*' . $this->grammar->controlStructureForeach . '/', $input, $matches) === 1)
             {

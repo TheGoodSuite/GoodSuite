@@ -38,9 +38,9 @@ class Factory
         return new IfElseStructure($this->grammar, $condition, $statements, $elseStatements);
     }
     
-    public function createForStructure($from, $to, $statements)
+    public function createForrangeStructure($from, $to, $statements)
     {
-        return new ForStructure($this->grammar, $from, $to, $statements);
+        return new ForrangeStructure($this->grammar, $from, $to, $statements);
     }
     
     public function createForeachStructure($array, $varName, $statements)

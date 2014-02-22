@@ -42,8 +42,8 @@ Class Grammar
     public $controlStructureIf;
     public $controlStructureElse;
     public $controlStructureEndIf;
-    public $controlStructureFor;
-    public $controlStructureEndFor;
+    public $controlStructureForrange;
+    public $controlStructureEndForrange;
     public $controlStructureForeach;
     public $controlStructureEndForeach;
     
@@ -53,7 +53,7 @@ Class Grammar
         // defining the regexes!
         
         // regexes not relying on any others
-        $this->keywords = '\\b(?:(?i)if|for|foreach|else|elseif|endif|endfor|endforeach)\\b';
+        $this->keywords = '\\b(?:(?i)if|forrange|foreach|else|elseif|endif|endforrange|endforeach)\\b';
         $this->scriptDelimiterLeft = '<:';
         $this->scriptDelimiterRight = ':>';
         $this->statementEnder = ';';
@@ -132,8 +132,8 @@ Class Grammar
         $this->controlStructureElseif = '(?:(?i:elseif)\s*\((?P<condition>' . $this->expression . ')\))\s*:';
         $this->controlStructureElse = '(?i:else)\s*:';
         $this->controlStructureEndIf = '(?i:endif)';
-        $this->controlStructureFor = '(?:(?i:for)\s*\((?P<from>' . $this->expression . ')-->(?P<to>(?P>expression))\))\s*:';
-        $this->controlStructureEndFor = '(?i:endfor)';
+        $this->controlStructureForrange = '(?:(?i:forrange)\s*\((?P<from>' . $this->expression . ')-->(?P<to>(?P>expression))\))\s*:';
+        $this->controlStructureEndForrange = '(?i:endforrange)';
         $this->controlStructureForeach = '(?:(?i:foreach)\s*\(\\s*(?P<foreachArray>' . $this->expression . 
                                                 ')\\s+(?i:as)\\s+\$(?P<foreachVariable>' . $this->varName . ')\))\s*:';
         $this->controlStructureEndForeach = '(?i:endforeach)';

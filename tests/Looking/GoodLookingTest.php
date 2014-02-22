@@ -183,11 +183,11 @@ class GoodLookingTest extends PHPUnit_Framework_TestCase
         $goodLooking->display();
     }
     
-    public function testForUpwards()
+    public function testForrangeUpwards()
     {
         $this->expectOutputString('YES YES YES YES YES ');
         
-        file_put_contents($this->template, '<: for ($a --> $b): :>YES <: endfor :>');
+        file_put_contents($this->template, '<: forrange ($a --> $b): :>YES <: endforrange :>');
         
         $goodLooking = new \Good\Looking\Looking($this->template);
         $goodLooking->registerVar('a', 1);
@@ -195,11 +195,11 @@ class GoodLookingTest extends PHPUnit_Framework_TestCase
         $goodLooking->display();
     }
     
-    public function testForDownwards()
+    public function testForrangeDownwards()
     {
         $this->expectOutputString('YES YES YES YES YES ');
         
-        file_put_contents($this->template, '<: for ($a --> $b): :>YES <: endfor :>');
+        file_put_contents($this->template, '<: forrange ($a --> $b): :>YES <: endforrange :>');
         
         $goodLooking = new \Good\Looking\Looking($this->template);
         $goodLooking->registerVar('a', 5);
@@ -869,9 +869,9 @@ class GoodLookingTest extends PHPUnit_Framework_TestCase
         $this->expectOutputString('ABBCC');
         
         file_put_contents($this->template, '<: IF (tRuE)    :;;; "A"; endIF :>' . 
-                                            '<: fOr (1 --> 2)
+                                            '<: fOrRange (1 --> 2)
                                             ::>B<:
-                                            Endfor
+                                            Endforrange
                                             :>' .
                                             '<: ForeacH($bla As $b)::>C<:eNdFoReAcH:>');
         
@@ -1047,7 +1047,7 @@ class GoodLookingTest extends PHPUnit_Framework_TestCase
         
         $this->expectOutputString('AAA');
         
-        file_put_contents($this->template, '<: for(1 --> 3): if (true): "A"; endif; endfor; :>');
+        file_put_contents($this->template, '<: forrange(1 --> 3): if (true): "A"; endif; endforrange; :>');
         
         $goodLooking = new \Good\Looking\Looking($this->template);
         $goodLooking->display();
