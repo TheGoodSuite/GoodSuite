@@ -77,56 +77,56 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $storage = $this->getNewStorage();
         
         $ins = new GetType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
         $ref = new OtherType();
-        $ref->setYourInt(90);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 90;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $storage->insert($ins);
         
         $ins = new GetType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new OtherType();
-        $ref->setYourInt(80);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 80;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $storage->insert($ins);
         
         $ins = new GetType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new OtherType();
-        $ref->setYourInt(40);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 40;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $storage->insert($ins);
         
         $ins = new GetType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
-        $ins->setMyOtherType(null);
-        $ins->setMyCircular(null);
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myOtherType = null;
+        $ins->myCircular = null;
         $storage->insert($ins);
         
         $ins = new GetType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new OtherType();
-        $ref->setYourInt(5);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 5;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $storage->insert($ins);
         
         $storage->flush();
@@ -160,25 +160,25 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
             // all the values from the database are strings, so that's
             // not very useful.
             // I hope one day this'll be fixed, though.
-            if ($hay->getMyInt() == $needle->getMyInt() &&
-                $hay->getMyFloat() == $needle->getMyFloat() &&
-                $hay->getMyText() == $needle->getMyText() &&
-                $hay->getMyDatetime() == $needle->getMyDatetime() &&
+            if ($hay->myInt == $needle->myInt &&
+                $hay->myFloat == $needle->myFloat &&
+                $hay->myText == $needle->myText &&
+                $hay->myDatetime == $needle->myDatetime &&
                 // they are both null
-                (($hay->getMyOtherType() === null && $needle->getMyOtherType() === null) ||
+                (($hay->myOtherType === null && $needle->myOtherType === null) ||
                 // or neither is null (so we won't be calling functions on null)
                 // and they are the same
-                 ($hay->getMyOtherType() !== null && $needle->getMyOtherType() !== null &&
-                  $hay->getMyOtherType()->getYourInt() == $needle->getMyOtherType()->getYourInt())) &&
+                 ($hay->myOtherType !== null && $needle->myOtherType !== null &&
+                  $hay->myOtherType->yourInt == $needle->myOtherType->yourInt)) &&
                 // they are both null
-                (($hay->getMyCircular() === null && $needle->getMyCircular() === null) ||
+                (($hay->myCircular === null && $needle->myCircular === null) ||
                 // or neither is null (so we won't be calling functions on null)
                 // and they are the same
-                 ($hay->getMyCircular() !== null && $needle->getMyCircular() !== null &&
-                  $hay->getMyCircular()->getMyInt() == $needle->getMyCircular()->getMyInt() &&
-                  $hay->getMyCircular()->getMyFloat() == $needle->getMyCircular()->getMyFloat() &&
-                  $hay->getMyCircular()->getMyText() == $needle->getMyCircular()->getMyText() &&
-                  $hay->getMyCircular()->getMyDatetime() == $needle->getMyCircular()->getMyDatetime())))
+                 ($hay->myCircular !== null && $needle->myCircular !== null &&
+                  $hay->myCircular->myInt == $needle->myCircular->myInt &&
+                  $hay->myCircular->myFloat == $needle->myCircular->myFloat &&
+                  $hay->myCircular->myText == $needle->myCircular->myText &&
+                  $hay->myCircular->myDatetime == $needle->myCircular->myDatetime)))
             {
                 return $key;
             }
@@ -219,56 +219,56 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
         $ref = new OtherType();
-        $ref->setYourInt(90);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 90;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new OtherType();
-        $ref->setYourInt(80);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 80;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new OtherType();
-        $ref->setYourInt(40);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 40;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
-        $ins->setMyOtherType(null);
-        $ins->setMyCircular(null);
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myOtherType = null;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new OtherType();
-        $ref->setYourInt(5);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 5;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         foreach ($collection as $type)
@@ -284,7 +284,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     public function testGetLessThan()
     {
         $type = new GetType();
-        $type->setMyInt(5);
+        $type->myInt = 5;
         $any = new \Good\Manners\Condition\LessThan($type);
         
         $resolver = new GetTypeResolver();
@@ -294,14 +294,14 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
         $ref = new OtherType();
-        $ref->setYourInt(90);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 90;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         foreach ($collection as $type)
@@ -317,7 +317,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     public function testGetLessOrEqual()
     {
         $type = new GetType();
-        $type->setMyInt(5);
+        $type->myInt = 5;
         $any = new \Good\Manners\Condition\LessOrEqual($type);
         
         $resolver = new GetTypeResolver();
@@ -327,25 +327,25 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
         $ref = new OtherType();
-        $ref->setYourInt(90);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 90;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new OtherType();
-        $ref->setYourInt(80);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 80;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         foreach ($collection as $type)
@@ -361,7 +361,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     public function testGetGreaterThan()
     {
         $type = new GetType();
-        $type->setMyInt(5);
+        $type->myInt = 5;
         $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $resolver = new GetTypeResolver();
@@ -371,23 +371,23 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new OtherType();
-        $ref->setYourInt(40);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 40;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
-        $ins->setMyOtherType(null);
-        $ins->setMyCircular(null);
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myOtherType = null;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         foreach ($collection as $type)
@@ -403,7 +403,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     public function testGetGreaterOrEqual()
     {
         $type = new GetType();
-        $type->setMyInt(5);
+        $type->myInt = 5;
         $any = new \Good\Manners\Condition\GreaterOrEqual($type);
         
         $resolver = new GetTypeResolver();
@@ -413,34 +413,34 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new OtherType();
-        $ref->setYourInt(80);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 80;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new OtherType();
-        $ref->setYourInt(40);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 40;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
-        $ins->setMyOtherType(null);
-        $ins->setMyCircular(null);
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myOtherType = null;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         foreach ($collection as $type)
@@ -456,7 +456,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     public function testGetEqualTo()
     {
         $type = new GetType();
-        $type->setMyInt(5);
+        $type->myInt = 5;
         $any = new \Good\Manners\Condition\EqualTo($type);
         
         $resolver = new GetTypeResolver();
@@ -466,14 +466,14 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new OtherType();
-        $ref->setYourInt(80);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 80;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         foreach ($collection as $type)
@@ -489,7 +489,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     public function testGetNotEqualTo()
     {
         $type = new GetType();
-        $type->setMyInt(5);
+        $type->myInt = 5;
         $any = new \Good\Manners\Condition\NotEqualTo($type);
         
         $resolver = new GetTypeResolver();
@@ -499,34 +499,34 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
         $ref = new OtherType();
-        $ref->setYourInt(90);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 90;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new OtherType();
-        $ref->setYourInt(40);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 40;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
-        $ins->setMyOtherType(null);
-        $ins->setMyCircular(null);
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myOtherType = null;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         foreach ($collection as $type)
@@ -549,7 +549,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         //  which is used when we compare to the specific reference,
         //  which is exactly what the whole point of this test is)
         $otherType = new OtherType();
-        $otherType->setYourInt(80);
+        $otherType->yourInt = 80;
         
         $any = new \Good\Manners\Condition\EqualTo($otherType);
         
@@ -559,7 +559,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         
         // Then, we get the result with that reference    
         $type = new GetType();
-        $type->setMyOtherType($referenced);
+        $type->myOtherType = $referenced;
         $any = new \Good\Manners\Condition\EqualTo($type);
         
         $resolver = new GetTypeResolver();
@@ -569,14 +569,14 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new OtherType();
-        $ref->setYourInt(80);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 80;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         foreach ($collection as $type)
@@ -640,11 +640,11 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     public function testGetAnd()
     {
         $type = new GetType();
-        $type->setMyInt(4);
+        $type->myInt = 4;
         $greater = new \Good\Manners\Condition\GreaterThan($type);
         
         $type = new GetType();
-        $type->setMyInt(10);
+        $type->myInt = 10;
         $less = new \Good\Manners\Condition\LessThan($type);
         
         $and = new \Good\Manners\Condition\AndCondition($less, $greater);
@@ -656,25 +656,25 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new OtherType();
-        $ref->setYourInt(80);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 80;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new OtherType();
-        $ref->setYourInt(40);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 40;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         foreach ($collection as $type)
@@ -694,13 +694,13 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     public function testGetOr()
     {
         $type = new GetType();
-        $type->setMyInt(5);
+        $type->myInt = 5;
         $greater = new \Good\Manners\Condition\GreaterThan($type);
         
         $less = new \Good\Manners\Condition\LessThan($type);
         
         $type = new GetType();
-        $type->setMyInt(8);
+        $type->myInt = 8;
         $greater = new \Good\Manners\Condition\GreaterThan($type);
         
         $and = new \Good\Manners\Condition\OrCondition($less, $greater);
@@ -712,23 +712,23 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
         $ref = new OtherType();
-        $ref->setYourInt(90);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 90;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
-        $ins->setMyOtherType(null);
-        $ins->setMyCircular(null);
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myOtherType = null;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         foreach ($collection as $type)
@@ -744,7 +744,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     public function testGetReferenceIsNull()
     {
         $type = new GetType();
-        $type->setMyOtherType(null);
+        $type->myOtherType = null;
         $any = new \Good\Manners\Condition\EqualTo($type);
         
         $resolver = new GetTypeResolver();
@@ -754,12 +754,12 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
-        $ins->setMyOtherType(null);
-        $ins->setMyCircular(null);
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myOtherType = null;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         foreach ($collection as $type)
@@ -775,7 +775,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     public function testGetReferenceIsNotNull()
     {
         $type = new GetType();
-        $type->setMyOtherType(null);
+        $type->myOtherType = null;
         $any = new \Good\Manners\Condition\NotEqualTo($type);
         
         $resolver = new GetTypeResolver();
@@ -785,47 +785,47 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
         $ref = new OtherType();
-        $ref->setYourInt(90);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 90;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new OtherType();
-        $ref->setYourInt(80);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 80;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new OtherType();
-        $ref->setYourInt(40);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 40;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new OtherType();
-        $ref->setYourInt(5);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 5;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         foreach ($collection as $type)
@@ -844,8 +844,8 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     public function testGetByPropertyOfReference()
     {
         $type = new GetType();
-        $type->setMyOtherType(new OtherType());
-        $type->getMyOtherType()->setYourInt(85);
+        $type->myOtherType = new OtherType();
+        $type->myOtherType->yourInt = 85;
         $any = new \Good\Manners\Condition\LessThan($type);
         
         $resolver = new GetTypeResolver();
@@ -855,36 +855,36 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new OtherType();
-        $ref->setYourInt(80);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 80;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new OtherType();
-        $ref->setYourInt(40);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 40;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new OtherType();
-        $ref->setYourInt(5);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 5;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         foreach ($collection as $type)
@@ -906,9 +906,9 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         // At the moment we don't have a proper api to get any,
         // but this trick does do the same
         $type = new GetType();
-        $type->setMyInt(4);
-        $type->setMyOtherType(new OtherType());
-        $type->getMyOtherType()->setYourInt(45);
+        $type->myInt = 4;
+        $type->myOtherType = new OtherType();
+        $type->myOtherType->yourInt = 45;
         $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $resolver = new GetTypeResolver();
@@ -918,14 +918,14 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new OtherType();
-        $ref->setYourInt(80);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 80;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         foreach ($collection as $type)
@@ -945,7 +945,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     {
         // Ints are already tested as we use them above everywhere
         $type = new GetType();
-        $type->setMyFloat(6.0);
+        $type->myFloat = 6.0;
         $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $resolver = new GetTypeResolver();
@@ -955,34 +955,34 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new OtherType();
-        $ref->setYourInt(40);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 40;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
-        $ins->setMyOtherType(null);
-        $ins->setMyCircular(null);
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myOtherType = null;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new OtherType();
-        $ref->setYourInt(5);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 5;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         foreach ($collection as $type)
@@ -1001,7 +1001,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     public function testGetByText()
     {
         $type = new GetType();
-        $type->setMyText("Twenty");
+        $type->myText = "Twenty";
         $any = new \Good\Manners\Condition\EqualTo($type);
         
         $resolver = new GetTypeResolver();
@@ -1011,14 +1011,14 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new OtherType();
-        $ref->setYourInt(5);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 5;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         foreach ($collection as $type)
@@ -1037,7 +1037,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     public function testGetByDatetime()
     {
         $type = new GetType();
-        $type->setMyDatetime(new Datetime('2006-06-06'));
+        $type->myDatetime = new Datetime('2006-06-06');
         $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $resolver = new GetTypeResolver();
@@ -1047,23 +1047,23 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new OtherType();
-        $ref->setYourInt(40);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 40;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
-        $ins->setMyOtherType(null);
-        $ins->setMyCircular(null);
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myOtherType = null;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         foreach ($collection as $type)
@@ -1082,7 +1082,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     public function testGetByIntIsNull()
     {
         $type = new GetType();
-        $type->setMyInt(null);
+        $type->myInt = null;
         $any = new \Good\Manners\Condition\EqualTo($type);
         
         $resolver = new GetTypeResolver();
@@ -1092,14 +1092,14 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new OtherType();
-        $ref->setYourInt(5);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 5;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         foreach ($collection as $type)
@@ -1118,7 +1118,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     public function testGetByFloatIsNull()
     {
         $type = new GetType();
-        $type->setMyFloat(null);
+        $type->myFloat = null;
         $any = new \Good\Manners\Condition\EqualTo($type);
         
         $resolver = new GetTypeResolver();
@@ -1128,14 +1128,14 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new OtherType();
-        $ref->setYourInt(80);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 80;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         foreach ($collection as $type)
@@ -1154,7 +1154,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     public function testGetByTextIsNull()
     {
         $type = new GetType();
-        $type->setMyText(null);
+        $type->myText = null;
         $any = new \Good\Manners\Condition\EqualTo($type);
         
         $resolver = new GetTypeResolver();
@@ -1164,14 +1164,14 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new OtherType();
-        $ref->setYourInt(40);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 40;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         foreach ($collection as $type)
@@ -1190,7 +1190,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     public function testGetByDatetimeIsNull()
     {
         $type = new GetType();
-        $type->setMyDatetime(null);
+        $type->myDatetime = null;
         $any = new \Good\Manners\Condition\EqualTo($type);
         
         $resolver = new GetTypeResolver();
@@ -1200,14 +1200,14 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new OtherType();
-        $ref->setYourInt(5);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 5;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         foreach ($collection as $type)
@@ -1228,7 +1228,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         // At the moment we don't have a proper api to get any,
         // but this trick does do the same
         $type = new GetType();
-        $type->setMyInt(null);
+        $type->myInt = null;
         $any = new \Good\Manners\Condition\NotEqualTo($type);
         
         $resolver = new GetTypeResolver();
@@ -1238,45 +1238,45 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
         $ref = new OtherType();
-        $ref->setYourInt(90);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 90;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new OtherType();
-        $ref->setYourInt(80);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 80;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new OtherType();
-        $ref->setYourInt(40);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 40;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
-        $ins->setMyOtherType(null);
-        $ins->setMyCircular(null);
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myOtherType = null;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         foreach ($collection as $type)
@@ -1295,7 +1295,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     public function testGetByFloatIsNotNull()
     {
         $type = new GetType();
-        $type->setMyFloat(null);
+        $type->myFloat = null;
         $any = new \Good\Manners\Condition\NotEqualTo($type);
         
         $resolver = new GetTypeResolver();
@@ -1305,45 +1305,45 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
         $ref = new OtherType();
-        $ref->setYourInt(90);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 90;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new OtherType();
-        $ref->setYourInt(40);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 40;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
-        $ins->setMyOtherType(null);
-        $ins->setMyCircular(null);
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myOtherType = null;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new OtherType();
-        $ref->setYourInt(5);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 5;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         foreach ($collection as $type)
@@ -1362,7 +1362,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     public function testGetByTextIsNotNull()
     {
         $type = new GetType();
-        $type->setMyText(null);
+        $type->myText = null;
         $any = new \Good\Manners\Condition\NotEqualTo($type);
         
         $resolver = new GetTypeResolver();
@@ -1372,44 +1372,44 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
         $ref = new OtherType();
-        $ref->setYourInt(90);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 90;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new OtherType();
-        $ref->setYourInt(80);
-        $ins->setMyOtherType($ref);
+        $ref->yourInt = 80;
+        $ins->myOtherType = $ref;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
-        $ins->setMyOtherType(null);
-        $ins->setMyCircular(null);
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myOtherType = null;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new OtherType();
-        $ref->setYourInt(5);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 5;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         foreach ($collection as $type)
@@ -1428,7 +1428,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     public function testGetByDatetimeIsNotNull()
     {
         $type = new GetType();
-        $type->setMyDatetime(null);
+        $type->myDatetime = null;
         $any = new \Good\Manners\Condition\NotEqualTo($type);
         
         $resolver = new GetTypeResolver();
@@ -1438,45 +1438,45 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
         $ref = new OtherType();
-        $ref->setYourInt(90);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 90;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new OtherType();
-        $ref->setYourInt(80);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 80;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new OtherType();
-        $ref->setYourInt(40);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 40;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
-        $ins->setMyOtherType(null);
-        $ins->setMyCircular(null);
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myOtherType = null;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         foreach ($collection as $type)
@@ -1506,14 +1506,14 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new OtherType();
-        $ref->setYourInt(5);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 5;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $type = $collection->getNext();
@@ -1522,14 +1522,14 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
         $ref = new OtherType();
-        $ref->setYourInt(90);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 90;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $type = $collection->getNext();
@@ -1538,14 +1538,14 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new OtherType();
-        $ref->setYourInt(80);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 80;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $type = $collection->getNext();
@@ -1554,14 +1554,14 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new OtherType();
-        $ref->setYourInt(40);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 40;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $type = $collection->getNext();
@@ -1570,12 +1570,12 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
-        $ins->setMyOtherType(null);
-        $ins->setMyCircular(null);
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myOtherType = null;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $type = $collection->getNext();
@@ -1601,12 +1601,12 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
-        $ins->setMyOtherType(null);
-        $ins->setMyCircular(null);
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myOtherType = null;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $type = $collection->getNext();
@@ -1615,14 +1615,14 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new OtherType();
-        $ref->setYourInt(40);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 40;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $type = $collection->getNext();
@@ -1631,14 +1631,14 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new OtherType();
-        $ref->setYourInt(80);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 80;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $type = $collection->getNext();
@@ -1647,14 +1647,14 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
         $ref = new OtherType();
-        $ref->setYourInt(90);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 90;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $type = $collection->getNext();
@@ -1663,14 +1663,14 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new OtherType();
-        $ref->setYourInt(5);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 5;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $type = $collection->getNext();
@@ -1699,14 +1699,14 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new OtherType();
-        $ref->setYourInt(80);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 80;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $type = $collection->getNext();
@@ -1715,14 +1715,14 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
         $ref = new OtherType();
-        $ref->setYourInt(90);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 90;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $type = $collection->getNext();
@@ -1731,12 +1731,12 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
-        $ins->setMyOtherType(null);
-        $ins->setMyCircular(null);
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myOtherType = null;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $type = $collection->getNext();
@@ -1745,13 +1745,13 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new OtherType();
-        $ref->setYourInt(40);
-        $ins->setMyOtherType($ref);
+        $ref->yourInt = 40;
+        $ins->myOtherType = $ref;
         $expectedResults[] = $ins;
         
         $type = $collection->getNext();
@@ -1760,14 +1760,14 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new OtherType();
-        $ref->setYourInt(5);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 5;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $type = $collection->getNext();
@@ -1793,48 +1793,48 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
-        $ins->setMyOtherType(null);
-        $ins->setMyCircular(null);
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myOtherType = null;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
-        $ins->setMyOtherType(null);
-        $ins->setMyCircular(null);
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myOtherType = null;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
-        $ins->setMyOtherType(null);
-        $ins->setMyCircular(null);
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myOtherType = null;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
-        $ins->setMyOtherType(null);
-        $ins->setMyCircular(null);
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myOtherType = null;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
-        $ins->setMyOtherType(null);
-        $ins->setMyCircular(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
+        $ins->myOtherType = null;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         foreach ($collection as $type)
@@ -1864,14 +1864,14 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $collection = $this->storage->getCollection($any, $resolver);
         foreach ($collection as $type)
         {
-            if ($type->getMyInt() == 4)
+            if ($type->myInt == 4)
             {
                 $ref = $type;
             }
-            else if ($type->getMyInt() == 10)
+            else if ($type->myInt == 10)
             {
-                $ref->setMyCircular($type);
-                $type->setMyCircular($ref);
+                $ref->myCircular = $type;
+                $type->myCircular = $ref;
             }
         }
         $this->storage->flush();
@@ -1888,49 +1888,49 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
-        $ins->setMyOtherType(null);
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myOtherType = null;
         $expectedResults[] = $ins;
         $int4 = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
-        $ins->setMyOtherType(null);
-        $ins->setMyCircular(null);
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myOtherType = null;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
-        $ins->setMyOtherType(null);
-        $ins->setMyCircular(null);
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myOtherType = null;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
-        $ins->setMyOtherType(null);
-        $ins->setMyCircular($int4);
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myOtherType = null;
+        $ins->myCircular = $int4;
         $expectedResults[] = $ins;
-        $int4->setMyCircular($ins);
+        $int4->myCircular = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
-        $ins->setMyOtherType(null);
-        $ins->setMyCircular(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
+        $ins->myOtherType = null;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         foreach ($collection as $type)
@@ -1964,56 +1964,56 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new GetType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
-        $ins->setMyOtherType(null);
-        $ins->setMyCircular(null);
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myOtherType = null;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new OtherType();
-        $ref->setYourInt(40);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 40;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new OtherType();
-        $ref->setYourInt(80);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 80;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
         $ref = new OtherType();
-        $ref->setYourInt(90);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 90;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $ins = new GetType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new OtherType();
-        $ref->setYourInt(5);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 5;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $expectedResults[] = $ins;
         
         $exp1 = $expectedResults;

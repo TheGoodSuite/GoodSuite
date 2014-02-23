@@ -173,58 +173,58 @@ abstract class GoodMannersChildTypesTest extends PHPUnit_Framework_TestCase
         $storage = $this->getNewStorage();
         
         $ins = new ParentType1();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
         $ref = new ParentType2();
-        $ref->setYourInt(90);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 90;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $storage->insert($ins);
         $first = $ins;
         
         $ins = new ParentType1();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new ParentType2();
-        $ref->setYourInt(80);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 80;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $storage->insert($ins);
         
         $ins = new ParentType1();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new ParentType2();
         $ref = new ParentType2();
-        $ref->setYourInt(40);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular(null);
+        $ref->yourInt = 40;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
         $storage->insert($ins);
         
         $ins = new ParentType1();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
-        $ins->setMyOtherType(null);
-        $ins->setMyCircular(null);
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myOtherType = null;
+        $ins->myCircular = null;
         $storage->insert($ins);
         
         $ins = new ParentType1();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new ParentType2();
-        $ref->setYourInt(5);
-        $ins->setMyOtherType($ref);
-        $ins->setMyCircular($first);
+        $ref->yourInt = 5;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = $first;
         $storage->insert($ins);
         
         $storage->flush();
@@ -263,14 +263,14 @@ abstract class GoodMannersChildTypesTest extends PHPUnit_Framework_TestCase
         {
             $this->assertInstanceOf($type1, $obj);
             
-            if ($obj->getMyOtherType() != null)
+            if ($obj->myOtherType != null)
             {
-                $this->assertInstanceOf($type2, $obj->getMyOtherType());
+                $this->assertInstanceOf($type2, $obj->myOtherType);
             }
             
-            if ($obj->getMyCircular() != null)
+            if ($obj->myCircular != null)
             {
-                $this->assertInstanceOf($type1, $obj->getMyCircular());
+                $this->assertInstanceOf($type1, $obj->myCircular);
             }
         }
     }

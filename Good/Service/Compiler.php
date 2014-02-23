@@ -19,6 +19,8 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
     private $output = null;
     private $includes = null;
     private $className = null;
+    private $getters = null;
+    private $setters = null;
     
     public function __construct($modifiers, $outputDir)
     {
@@ -131,10 +133,34 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
         // Note: This was previously based on the input file namespace
         //       But I changed it to dataType name instead
         $this->outputFile = $this->outputDir . $dataType->getName() . '.datatype.php';
+        
+        $this->getters  = '    public function __get($property)' . "\n";
+        $this->getters .= "    {\n";
+        $this->getters .= '        switch ($property)' . "\n";
+        $this->getters .= "        {\n";
+        
+        $this->setters  = '    public function __set($property, $value)' . "\n";
+        $this->setters .= "    {\n";
+        $this->setters .= '        switch ($property)' . "\n";
+        $this->setters .= "        {\n";
     }
     
     private function saveOutput()
     {
+        $this->getters .= '            default:' . "\n";
+        $this->getters .= '                throw new \Exception("Unknown property");' . "\n";
+        $this->getters .= "        }\n";
+        $this->getters .= "    }\n";
+        
+        $this->setters .= '            default:' . "\n";
+        $this->setters .= '                throw new \Exception("Unknown property");' . "\n";
+        $this->setters .= "        }\n";
+        $this->setters .= "    }\n";
+        
+        $this->output .= $this->getters;
+        
+        $this->output .= $this->setters;
+        
         foreach ($this->modifiers as $modifier)
         {
             $this->output .= $modifier->classBody();
@@ -300,39 +326,34 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
         // accessors
         
         //getter
-        // ucfirst = upper case first letter (it's a php built-in)
-        $this->output .= '    ' . $access . ' function get' . \ucfirst($member->getName()) . "()\n";
-        $this->output .= "    {\n";
+        $this->getters .= '            case \'' . $member->getName() . "':\n";
         
         foreach ($this->modifiers as $modifier)
         {
-            $this->output .= $modifier->getterBegin();
+            $this->getters .= $modifier->getterBegin();
         }
         
-        $this->output .= '        return $this->' . $member->getName() . ";\n";
+        $this->getters .= '                return $this->' . $member->getName() . ";\n";
         
-        $this->output .= "    }\n";
-        $this->output .= "    \n";
+        $this->getters .= "            \n";
         
         //setter
-        // ucfirst = upper case first letter (it's a php built-in)
-        $this->output .= '    ' . $access . ' function set' . \ucfirst($member->getName()) . '($value)' . "\n";
-        $this->output .= "    {\n";
+        $this->setters .= '            case \'' . $member->getName() . "':\n";
         
         foreach ($this->modifiers as $modifier)
         {
-            $this->output .= $modifier->setterBegin();
+            $this->setters .= $modifier->setterBegin();
         }
         
-        $this->output .= '        $this->' . $member->getName() . ' = $value;' . "\n";
+        $this->setters .= '                $this->' . $member->getName() . ' = $value;' . "\n";
         
         foreach ($this->modifiers as $modifier)
         {
-            $this->output .= $modifier->setterEnd();
+            $this->setters .= $modifier->setterEnd();
         }
         
-        $this->output .= "    }\n";
-        $this->output .= "    \n";
+        $this->setters .= "                break;\n";
+        $this->setters .= "            \n";
     }
 }
 

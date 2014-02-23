@@ -91,56 +91,56 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $storage = $this->getNewStorage();
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
-        $ins->setMyReference(null);
-        $ins->setRef(null);
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myReference = null;
+        $ins->ref = null;
         $storage->insert($ins);
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new YetAnotherType();
-        $ref->setYourInt(40);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 40;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $storage->insert($ins);
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new YetAnotherType();
-        $ref->setYourInt(30);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 30;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $storage->insert($ins);
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
         $ref = new YetAnotherType();
-        $ref->setYourInt(20);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 20;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $storage->insert($ins);
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new YetAnotherType();
-        $ref->setYourInt(10);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 10;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $storage->insert($ins);
         
         $storage->flush();
@@ -177,22 +177,22 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
             // all the values from the database are strings, so that's
             // not very useful.
             // I hope one day this'll be fixed, though.
-            if ($hay->getMyInt() == $needle->getMyInt() &&
-                $hay->getMyFloat() == $needle->getMyFloat() &&
-                $hay->getMyText() == $needle->getMyText() &&
-                $hay->getMyDatetime() == $needle->getMyDatetime() &&
+            if ($hay->myInt == $needle->myInt &&
+                $hay->myFloat == $needle->myFloat &&
+                $hay->myText == $needle->myText &&
+                $hay->myDatetime == $needle->myDatetime &&
                 // they are both null
-                (($hay->getMyReference() === null && $needle->getMyReference() === null) ||
+                (($hay->myReference === null && $needle->myReference === null) ||
                 // or neither is null (so we won't be calling functions on null)
                 // and they are the same
-                 ($hay->getMyReference() !== null && $needle->getMyReference() !== null &&
-                  $hay->getMyReference()->getYourInt() == $needle->getMyReference()->getYourInt())) &&
+                 ($hay->myReference !== null && $needle->myReference !== null &&
+                  $hay->myReference->yourInt == $needle->myReference->yourInt)) &&
                 // they are both null
-                (($hay->getRef() === null && $needle->getRef() === null) ||
+                (($hay->ref === null && $needle->ref === null) ||
                 // or neither is null (so we won't be calling functions on null)
                 // and they are the same
-                 ($hay->getRef() !== null && $needle->getRef() !== null &&
-                  $hay->getRef()->getRef()->getYourInt() == $needle->getRef()->getRef()->getYourInt())))
+                 ($hay->ref !== null && $needle->ref !== null &&
+                  $hay->ref->ref->yourInt == $needle->ref->ref->yourInt)))
             {
                 return $key;
             }
@@ -210,31 +210,31 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
             /*
             ob_start();
             echo "myInt: ";
-            var_dump($needle->getMyInt());
+            var_dump($needle->myInt);
             echo "myFloat: ";
-            var_dump($needle->getMyFloat());
+            var_dump($needle->myFloat);
             echo "myText: ";
-            var_dump($needle->getMyText());
+            var_dump($needle->myText);
             echo "myDatetime: ";
-            var_dump($needle->getMyDatetime());
+            var_dump($needle->myDatetime);
             echo "myReference->yourInt: ";
-            if ($needle->getRef() === null)
+            if ($needle->ref === null)
             {
                 echo "myReference: NULL\n";
             }
             else
             {
                 echo "myReference->yourInt: ";
-                var_dump($needle->getMyReference()->getYourInt());
+                var_dump($needle->myReference->yourInt);
             }
-            if ($needle->getRef() === null)
+            if ($needle->ref() === null)
             {
                 echo "ref: NULL\n";
             }
             else
             {
                 echo "ref->ref->yourInt: ";
-                var_dump($needle->getRef()->getRef()->getYourInt());
+                var_dump($needle->ref->ref->yourInt);
             }
             $out = ob_get_clean();
             
@@ -285,66 +285,66 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyInt(55);
-        $modifications->setMyFloat(55.55);
-        $modifications->setMyText("Fifty-five");
-        $modifications->setMyDatetime(new Datetime("2055-05-05"));
+        $modifications->myInt = 55;
+        $modifications->myFloat = 55.55;
+        $modifications->myText = "Fifty-five";
+        $modifications->myDatetime = new Datetime("2055-05-05");
         
         $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(55);
-        $ins->setMyFloat(55.55);
-        $ins->setMyText("Fifty-five");
-        $ins->setMyDatetime(new Datetime("2055-05-05"));
-        $ins->setMyReference(null);
-        $ins->setRef(null);
+        $ins->myInt = 55;
+        $ins->myFloat = 55.55;
+        $ins->myText = "Fifty-five";
+        $ins->myDatetime = new Datetime("2055-05-05");
+        $ins->myReference = null;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(55);
-        $ins->setMyFloat(55.55);
-        $ins->setMyText("Fifty-five");
-        $ins->setMyDatetime(new Datetime("2055-05-05"));
+        $ins->myInt = 55;
+        $ins->myFloat = 55.55;
+        $ins->myText = "Fifty-five";
+        $ins->myDatetime = new Datetime("2055-05-05");
         $ref = new YetAnotherType();
-        $ref->setYourInt(40);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 40;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(55);
-        $ins->setMyFloat(55.55);
-        $ins->setMyText("Fifty-five");
-        $ins->setMyDatetime(new Datetime("2055-05-05"));
+        $ins->myInt = 55;
+        $ins->myFloat = 55.55;
+        $ins->myText = "Fifty-five";
+        $ins->myDatetime = new Datetime("2055-05-05");
         $ref = new YetAnotherType();
-        $ref->setYourInt(30);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 30;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(55);
-        $ins->setMyFloat(55.55);
-        $ins->setMyText("Fifty-five");
-        $ins->setMyDatetime(new Datetime("2055-05-05"));
+        $ins->myInt = 55;
+        $ins->myFloat = 55.55;
+        $ins->myText = "Fifty-five";
+        $ins->myDatetime = new Datetime("2055-05-05");
         $ref = new YetAnotherType();
-        $ref->setYourInt(20);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 20;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(55);
-        $ins->setMyFloat(55.55);
-        $ins->setMyText("Fifty-five");
-        $ins->setMyDatetime(new Datetime("2055-05-05"));
+        $ins->myInt = 55;
+        $ins->myFloat = 55.55;
+        $ins->myText = "Fifty-five";
+        $ins->myDatetime = new Datetime("2055-05-05");
         $ref = new YetAnotherType();
-        $ref->setYourInt(10);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 10;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $this->checkResults($expectedResults);
@@ -355,76 +355,76 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         // At the moment we don't have a proper api to get any,
         // but this trick does do the same
         $type = new AdvancedUpdateType();
-        $type->setMyInt(5);
+        $type->myInt = 5;
         $greater = new \Good\Manners\Condition\GreaterThan($type);
         
         $type = new AdvancedUpdateType();
-        $type->setMyFloat(20.0);
+        $type->myFloat = 20.0;
         $less = new \Good\Manners\Condition\LessThan($type);
         
         $and = new \Good\Manners\Condition\AndCondition($greater, $less);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyInt(null);
-        $modifications->setMyFloat(null);
-        $modifications->setMyText(null);
-        $modifications->setMyDatetime(null);
+        $modifications->myInt = null;
+        $modifications->myFloat = null;
+        $modifications->myText = null;
+        $modifications->myDatetime = null;
         
         $this->storage1->modifyAny($and, $modifications);
         
         $expectedResults = array();
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
-        $ins->setMyReference(null);
-        $ins->setRef(null);
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myReference = null;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new YetAnotherType();
-        $ref->setYourInt(40);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 40;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(null);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = null;
+        $ins->myText = null;
+        $ins->myDatetime = null;
         $ref = new YetAnotherType();
-        $ref->setYourInt(30);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 30;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(null);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = null;
+        $ins->myText = null;
+        $ins->myDatetime = null;
         $ref = new YetAnotherType();
-        $ref->setYourInt(20);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 20;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new YetAnotherType();
-        $ref->setYourInt(10);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 10;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $this->checkResults($expectedResults);
@@ -433,65 +433,65 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
     public function testAdvancedUpdateSetReferenceToNull()
     {
         $type = new AdvancedUpdateType();
-        $type->setMyInt(8);
+        $type->myInt = 8;
         $any = new \Good\Manners\Condition\EqualTo($type);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyReference(null);
+        $modifications->myReference = null;
         
         $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
-        $ins->setMyReference(null);
-        $ins->setRef(null);
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myReference = null;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new YetAnotherType();
-        $ref->setYourInt(40);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 40;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
-        $ins->setMyReference(null);
-        $ins->setRef(null);
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myReference = null;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
         $ref = new YetAnotherType();
-        $ref->setYourInt(20);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 20;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new YetAnotherType();
-        $ref->setYourInt(10);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 10;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $this->checkResults($expectedResults);
@@ -501,7 +501,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
     {
         // first, we're fetching the object
         $type = new AdvancedUpdateType();
-        $type->setMyInt(10);
+        $type->myInt = 10;
         $any = new \Good\Manners\Condition\EqualTo($type);
         
         $resolver = new AdvancedUpdateTypeResolver();
@@ -509,72 +509,72 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $collection = $this->storage1->getCollection($any, $resolver);
         
         $type= $collection->getNext();
-        $ref = $type->getMyReference();
+        $ref = $type->myReference;
         
         $type = new AdvancedUpdateType();
-        $type->setMyInt(8);
+        $type->myInt = 8;
         $any = new \Good\Manners\Condition\LessThan($type);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyReference($ref);
+        $modifications->myReference = $ref;
         
         $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
         $ref = new YetAnotherType();
-        $ref->setYourInt(20);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 20;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new YetAnotherType();
-        $ref->setYourInt(20);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 20;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new YetAnotherType();
-        $ref->setYourInt(30);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 30;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
         $ref = new YetAnotherType();
-        $ref->setYourInt(20);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 20;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new YetAnotherType();
-        $ref->setYourInt(10);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 10;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $this->checkResults($expectedResults);
@@ -582,7 +582,7 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         // Check the object wasn't duplicated
         
         $type = new YetAnotherType();
-        $type->setYourInt(20);
+        $type->yourInt = 20;
         $cond = new \Good\Manners\Condition\EqualTo($type);
         
         $collection = $this->storage2->getCollection($cond, new YetAnotherTypeResolver());
@@ -595,13 +595,13 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
     public function testAdvancedUpdateSetReferenceToNewObject()
     {
         $type = new AdvancedUpdateType();
-        $type->setMyInt(8);
+        $type->myInt = 8;
         $any = new \Good\Manners\Condition\EqualTo($type);
         
         $modifications = new AdvancedUpdateType();
         $ref = new YetAnotherType();
-        $ref->setYourInt(144);
-        $modifications->setMyReference($ref);
+        $ref->yourInt = 144;
+        $modifications->myReference = $ref;
         $this->storage1->insert($ref);
         
         $this->storage1->modifyAny($any, $modifications);
@@ -609,56 +609,56 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
-        $ins->setMyReference(null);
-        $ins->setRef(null);
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myReference = null;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new YetAnotherType();
-        $ref->setYourInt(40);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 40;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new YetAnotherType();
-        $ref->setYourInt(144);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 144;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
         $ref = new YetAnotherType();
-        $ref->setYourInt(20);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 20;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new YetAnotherType();
-        $ref->setYourInt(10);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 10;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $this->checkResults($expectedResults);
@@ -671,64 +671,64 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         
         $modifications = new AdvancedUpdateType();
         $ref = new YetAnotherType();
-        $ref->setYourInt(42);
-        $modifications->setMyReference($ref);
+        $ref->yourInt = 42;
+        $modifications->myReference = $ref;
         
         $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
-        $ins->setMyReference(null);
-        $ins->setRef(null);
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myReference = null;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new YetAnotherType();
-        $ref->setYourInt(42);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 42;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new YetAnotherType();
-        $ref->setYourInt(42);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 42;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
         $ref = new YetAnotherType();
-        $ref->setYourInt(42);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 42;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new YetAnotherType();
-        $ref->setYourInt(42);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 42;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $this->checkResults($expectedResults);
@@ -754,116 +754,116 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
     {
         // EqualTo
         $type = new AdvancedUpdateType();
-        $type->setMyInt(4);
+        $type->myInt = 4;
         $any = new \Good\Manners\Condition\EqualTo($type);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyInt(1);
+        $modifications->myInt = 1;
         
         $this->storage1->modifyAny($any, $modifications);
         
         // NotEqualTo
         $type = new AdvancedUpdateType();
-        $type->setMyInt(1);
+        $type->myInt = 1;
         $any = new \Good\Manners\Condition\NotEqualTo($type);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyText("Hello World!");
+        $modifications->myText = "Hello World!";
         
         $this->storage1->modifyAny($any, $modifications);
         
         // LessThan
         $type = new AdvancedUpdateType();
-        $type->setMyInt(5);
+        $type->myInt = 5;
         $any = new \Good\Manners\Condition\LessThan($type);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyText("Goodbye");
+        $modifications->myText = "Goodbye";
         
         $this->storage1->modifyAny($any, $modifications);
         
         // LessOrEqual
         $type = new AdvancedUpdateType();
-        $type->setMyInt(5);
+        $type->myInt = 5;
         $any = new \Good\Manners\Condition\LessOrEqual($type);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyFloat(47.47);
+        $modifications->myFloat = 47.47;
         
         $this->storage1->modifyAny($any, $modifications);
         
         // GreaterThan
         $type = new AdvancedUpdateType();
-        $type->setMyInt(8);
+        $type->myInt = 8;
         $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyFloat(11.11);
+        $modifications->myFloat = 11.11;
         
         $this->storage1->modifyAny($any, $modifications);
         
         // GreaterOrEqual
         $type = new AdvancedUpdateType();
-        $type->setMyInt(8);
+        $type->myInt = 8;
         $any = new \Good\Manners\Condition\GreaterOrEqual($type);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyDatetime(new Datetime('1989-04-11'));
+        $modifications->myDatetime = new Datetime('1989-04-11');
         
         $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(1);
-        $ins->setMyFloat(47.47);
-        $ins->setMyText("Goodbye");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
-        $ins->setMyReference(null);
-        $ins->setRef(null);
+        $ins->myInt = 1;
+        $ins->myFloat = 47.47;
+        $ins->myText = "Goodbye";
+        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myReference = null;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(47.47);
-        $ins->setMyText("Hello World!");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = 47.47;
+        $ins->myText = "Hello World!";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new YetAnotherType();
-        $ref->setYourInt(40);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 40;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Hello World!");
-        $ins->setMyDatetime(new Datetime('1989-04-11'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Hello World!";
+        $ins->myDatetime = new Datetime('1989-04-11');
         $ref = new YetAnotherType();
-        $ref->setYourInt(30);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 30;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(11.11);
-        $ins->setMyText("Hello World!");
-        $ins->setMyDatetime(new Datetime('1989-04-11'));
+        $ins->myInt = 10;
+        $ins->myFloat = 11.11;
+        $ins->myText = "Hello World!";
+        $ins->myDatetime = new Datetime('1989-04-11');
         $ref = new YetAnotherType();
-        $ref->setYourInt(20);
-        $ins->setMyReference($ref);
+        $ref->yourInt = 20;
+        $ins->myReference = $ref;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new YetAnotherType();
-        $ref->setYourInt(10);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 10;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $this->checkResults($expectedResults);
@@ -872,88 +872,88 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
     public function testAdvancedUpdateAndOr()
     {
         $type = new AdvancedUpdateType();
-        $type->setMyInt(10);
+        $type->myInt = 10;
         $less = new \Good\Manners\Condition\LessThan($type);
         
         $type = new AdvancedUpdateType();
-        $type->setMyInt(4);
+        $type->myInt = 4;
         $greater = new \Good\Manners\Condition\GreaterThan($type);
         
         $any = new \Good\Manners\Condition\AndCondition($less, $greater);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyFloat(66.67);
+        $modifications->myFloat = 66.67;
         
         $this->storage1->modifyAny($any, $modifications);
         
         $type = new AdvancedUpdateType();
-        $type->setMyInt(5);
+        $type->myInt = 5;
         $less = new \Good\Manners\Condition\LessThan($type);
         
         $type = new AdvancedUpdateType();
-        $type->setMyInt(8);
+        $type->myInt = 8;
         $greater = new \Good\Manners\Condition\GreaterThan($type);
         
         $any = new \Good\Manners\Condition\OrCondition($less, $greater);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyText("My oh My");
+        $modifications->myText = "My oh My";
         
         $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("My oh My");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
-        $ins->setMyReference(null);
-        $ins->setRef(null);
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "My oh My";
+        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myReference = null;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(66.67);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = 66.67;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new YetAnotherType();
-        $ref->setYourInt(40);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 40;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(66.67);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 66.67;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new YetAnotherType();
-        $ref->setYourInt(30);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 30;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("My oh My");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "My oh My";
+        $ins->myDatetime = new \Datetime('2010-10-10');
         $ref = new YetAnotherType();
-        $ref->setYourInt(20);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 20;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new YetAnotherType();
-        $ref->setYourInt(10);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 10;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $this->checkResults($expectedResults);
@@ -962,70 +962,70 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
     public function testAdvancedUpdateMultipleInOneCondition()
     {
         $type = new AdvancedUpdateType();
-        $type->setMyInt(5);
-        $type->setMyReference(new YetAnotherType());
-        $type->getMyReference()->setYourInt(10);
+        $type->myInt = 5;
+        $type->myReference = new YetAnotherType();
+        $type->myReference->yourInt = 10;
         
         $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyText("Something else");
+        $modifications->myText = "Something else";
         
         $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
-        $ins->setMyReference(null);
-        $ins->setRef(null);
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myReference = null;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new YetAnotherType();
-        $ref->setYourInt(40);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 40;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Something else");
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Something else";
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new YetAnotherType();
-        $ref->setYourInt(30);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 30;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Something else");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Something else";
+        $ins->myDatetime = new \Datetime('2010-10-10');
         $ref = new YetAnotherType();
-        $ref->setYourInt(20);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 20;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new YetAnotherType();
-        $ref->setYourInt(10);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 10;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $this->checkResults($expectedResults);
@@ -1034,68 +1034,68 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
     public function testAdvancedUpdateByDate()
     {
         $type = new AdvancedUpdateType();
-        $type->setMyDatetime(new Datetime('2005-05-05'));
+        $type->myDatetime = new Datetime('2005-05-05');
         
         $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyInt(-1);
+        $modifications->myInt = -1;
         
         $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
-        $ins->setMyReference(null);
-        $ins->setRef(null);
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myReference = null;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new YetAnotherType();
-        $ref->setYourInt(40);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 40;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(-1);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = -1;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new YetAnotherType();
-        $ref->setYourInt(30);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 30;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(-1);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
+        $ins->myInt = -1;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
         $ref = new YetAnotherType();
-        $ref->setYourInt(20);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 20;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new YetAnotherType();
-        $ref->setYourInt(10);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 10;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $this->checkResults($expectedResults);
@@ -1104,68 +1104,68 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
     public function testAdvancedUpdateByText()
     {
         $type = new AdvancedUpdateType();
-        $type->setMyText("Four");
+        $type->myText = "Four";
         
         $any = new \Good\Manners\Condition\EqualTo($type);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyInt(455);
+        $modifications->myInt = 455;
         
         $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(455);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
-        $ins->setMyReference(null);
-        $ins->setRef(null);
+        $ins->myInt = 455;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myReference = null;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new YetAnotherType();
-        $ref->setYourInt(40);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 40;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new YetAnotherType();
-        $ref->setYourInt(30);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 30;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
         $ref = new YetAnotherType();
-        $ref->setYourInt(20);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 20;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new YetAnotherType();
-        $ref->setYourInt(10);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 10;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $this->checkResults($expectedResults);
@@ -1174,108 +1174,108 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
     public function testAdvancedUpdateEqualsNull()
     {
         $type = new AdvancedUpdateType();
-        $type->setMyInt(null);
+        $type->myInt = null;
         
         $any = new \Good\Manners\Condition\EqualTo($type);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyFloat(666.666);
+        $modifications->myFloat = 666.666;
         
         $this->storage1->modifyAny($any, $modifications);
         
         $type = new AdvancedUpdateType();
-        $type->setMyFloat(null);
+        $type->myFloat = null;
         
         $any = new \Good\Manners\Condition\EqualTo($type);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyInt(666);
+        $modifications->myInt = 666;
         
         $this->storage1->modifyAny($any, $modifications);
         
         $type = new AdvancedUpdateType();
-        $type->setMyText(null);
+        $type->myText = null;
         
         $any = new \Good\Manners\Condition\EqualTo($type);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyDatetime(new Datetime('2066-06-06'));
+        $modifications->myDatetime = new Datetime('2066-06-06');
         
         $this->storage1->modifyAny($any, $modifications);
         
         $type = new AdvancedUpdateType();
-        $type->setMyDatetime(null);
+        $type->myDatetime = null;
         
         $any = new \Good\Manners\Condition\EqualTo($type);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyText("Six Six Six");
+        $modifications->myText = "Six Six Six";
         
         $this->storage1->modifyAny($any, $modifications);
         
         $type = new AdvancedUpdateType();
-        $type->setMyReference(null);
+        $type->myReference = null;
         
         $any = new \Good\Manners\Condition\EqualTo($type);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyInt(777);
+        $modifications->myInt = 777;
         
         $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(777);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
-        $ins->setMyReference(null);
-        $ins->setRef(null);
+        $ins->myInt = 777;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myReference = null;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(666);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 666;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new YetAnotherType();
-        $ref->setYourInt(40);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 40;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2066-06-06'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2066-06-06');
         $ref = new YetAnotherType();
-        $ref->setYourInt(30);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 30;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
         $ref = new YetAnotherType();
-        $ref->setYourInt(20);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 20;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(666.666);
-        $ins->setMyText("Six Six Six");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 666.666;
+        $ins->myText = "Six Six Six";
+        $ins->myDatetime = null;
         $ref = new YetAnotherType();
-        $ref->setYourInt(10);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 10;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $this->checkResults($expectedResults);
@@ -1284,78 +1284,78 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
     public function testAdvancedUpdateDoesNotEqualNullIntAndText()
     {
         $type = new AdvancedUpdateType();
-        $type->setMyInt(null);
+        $type->myInt = null;
         
         $any = new \Good\Manners\Condition\NotEqualTo($type);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyFloat(666.666);
+        $modifications->myFloat = 666.666;
         
         $this->storage1->modifyAny($any, $modifications);
         
         $type = new AdvancedUpdateType();
-        $type->setMyText(null);
+        $type->myText = null;
         
         $any = new \Good\Manners\Condition\NotEqualTo($type);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyDatetime(new Datetime('2066-06-06'));
+        $modifications->myDatetime = new Datetime('2066-06-06');
         
         $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(666.666);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2066-06-06'));
-        $ins->setMyReference(null);
-        $ins->setRef(null);
+        $ins->myInt = 4;
+        $ins->myFloat = 666.666;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2066-06-06');
+        $ins->myReference = null;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(666.666);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2066-06-06'));
+        $ins->myInt = 5;
+        $ins->myFloat = 666.666;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2066-06-06');
         $ref = new YetAnotherType();
-        $ref->setYourInt(40);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 40;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(666.666);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 666.666;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new YetAnotherType();
-        $ref->setYourInt(30);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 30;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(666.666);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2066-06-06'));
+        $ins->myInt = 10;
+        $ins->myFloat = 666.666;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2066-06-06');
         $ref = new YetAnotherType();
-        $ref->setYourInt(20);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 20;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(new \Datetime('2066-06-06'));
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = new \Datetime('2066-06-06');
         $ref = new YetAnotherType();
-        $ref->setYourInt(10);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 10;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $this->checkResults($expectedResults);
@@ -1364,78 +1364,78 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
     public function testAdvancedUpdateDoesNotEqualNullFloatAndDate()
     {
         $type = new AdvancedUpdateType();
-        $type->setMyFloat(null);
+        $type->myFloat = null;
         
         $any = new \Good\Manners\Condition\NotEqualTo($type);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyInt(666);
+        $modifications->myInt = 666;
         
         $this->storage1->modifyAny($any, $modifications);
         
         $type = new AdvancedUpdateType();
-        $type->setMyDatetime(null);
+        $type->myDatetime = null;
         
         $any = new \Good\Manners\Condition\NotEqualTo($type);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyText("Six Six Six");
+        $modifications->myText = "Six Six Six";
         
         $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(666);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Six Six Six");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
-        $ins->setMyReference(null);
-        $ins->setRef(null);
+        $ins->myInt = 666;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Six Six Six";
+        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myReference = null;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Six Six Six");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Six Six Six";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new YetAnotherType();
-        $ref->setYourInt(40);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 40;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(666);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Six Six Six");
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 666;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Six Six Six";
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new YetAnotherType();
-        $ref->setYourInt(30);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 30;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(666);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Six Six Six");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
+        $ins->myInt = 666;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Six Six Six";
+        $ins->myDatetime = new \Datetime('2010-10-10');
         $ref = new YetAnotherType();
-        $ref->setYourInt(20);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 20;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(666);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = 666;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new YetAnotherType();
-        $ref->setYourInt(10);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 10;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $this->checkResults($expectedResults);
@@ -1444,68 +1444,68 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
     public function testAdvancedUpdateDoesNotEqualNullReference()
     {
         $type = new AdvancedUpdateType();
-        $type->setMyReference(null);
+        $type->myReference = null;
         
         $any = new \Good\Manners\Condition\NotEqualTo($type);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyInt(777);
+        $modifications->myInt = 777;
         
         $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
-        $ins->setMyReference(null);
-        $ins->setRef(null);
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myReference = null;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(777);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 777;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new YetAnotherType();
-        $ref->setYourInt(40);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 40;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(777);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 777;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new YetAnotherType();
-        $ref->setYourInt(30);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 30;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(777);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
+        $ins->myInt = 777;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
         $ref = new YetAnotherType();
-        $ref->setYourInt(20);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 20;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(777);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = 777;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new YetAnotherType();
-        $ref->setYourInt(10);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 10;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $this->checkResults($expectedResults);
@@ -1518,97 +1518,97 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $type = new YetAnotherType();
         $any = new \Good\Manners\Condition\EqualTo($type);
         $modifications = new YetAnotherType();
-        $modifications->setYourInt(42);
+        $modifications->yourInt = 42;
         $this->storage1->modifyAny($any, $modifications);
         // one more change:
         $type = new AdvancedUpdateType();
-        $type->setMyInt(8);
+        $type->myInt = 8;
         $any = new \Good\Manners\Condition\EqualTo($type);
         $resolver = new AdvancedUpdateTypeResolver();
         $resolver->resolveMyReference();
         $collection = $this->storage1->getCollection($any, $resolver);
-        $ref = $collection->getNext()->getMyReference();
+        $ref = $collection->getNext()->myReference;
         $type = new AdvancedUpdateType();
-        $type->setMyInt(10);
+        $type->myInt = 10;
         $any = new \Good\Manners\Condition\EqualTo($type);
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyReference($ref);
+        $modifications->myReference = $ref;
         $this->storage1->modifyAny($any, $modifications);
         
         // Now we get our reference
         // (it's already in $ref, but it would be mixing of concerns if we relied on that)
         $type = new AdvancedUpdateType();
-        $type->setMyInt(10);
+        $type->myInt = 10;
         $any = new \Good\Manners\Condition\EqualTo($type);
         $resolver = new AdvancedUpdateTypeResolver();
         $resolver->resolveMyReference();
         $collection = $this->storage1->getCollection($any, $resolver);
-        $ref = $collection->getNext()->getMyReference();
+        $ref = $collection->getNext()->myReference;
         
         // And now we can finally do the real test
         $type = new AdvancedUpdateType();
-        $type->setMyReference($ref);
+        $type->myReference = $ref;
         
         $any = new \Good\Manners\Condition\EqualTo($type);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyInt(1);
+        $modifications->myInt = 1;
         
         $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
-        $ins->setMyReference(null);
-        $ins->setRef(null);
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myReference = null;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new YetAnotherType();
-        $ref->setYourInt(42);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 42;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(1);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 1;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new YetAnotherType();
-        $ref->setYourInt(42);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 42;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(1);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
+        $ins->myInt = 1;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
         $ref = new YetAnotherType();
-        $ref->setYourInt(42);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 42;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new YetAnotherType();
-        $ref->setYourInt(42);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 42;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $this->checkResults($expectedResults);
@@ -1617,78 +1617,78 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
     public function testAdvancedUpdateObjectAndReference()
     {
         $type = new AdvancedUpdateType();
-        $type->setMyInt(5);
+        $type->myInt = 5;
         
         $cond1 = new \Good\Manners\Condition\GreaterThan($type);
         
         $type = new AdvancedUpdateType();
-        $type->setMyReference(new YetAnotherType());
-        $type->getMyReference()->setYourInt(10);
+        $type->myReference = new YetAnotherType();
+        $type->myReference->yourInt = 10;
         
         $cond2 = new \Good\Manners\Condition\GreaterThan($type);
         
         $any = new \Good\Manners\Condition\AndCondition($cond1, $cond2);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyInt(100);
-        $modifications->setMyReference(new YetAnotherType());
-        $modifications->getMyReference()->setYourInt(100);
+        $modifications->myInt = 100;
+        $modifications->myReference = new YetAnotherType();
+        $modifications->myReference->yourInt = 100;
         
         $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
-        $ins->setMyReference(null);
-        $ins->setRef(null);
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myReference = null;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new YetAnotherType();
-        $ref->setYourInt(40);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 40;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(100);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 100;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new YetAnotherType();
-        $ref->setYourInt(100);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 100;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(100);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
+        $ins->myInt = 100;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
         $ref = new YetAnotherType();
-        $ref->setYourInt(100);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 100;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new YetAnotherType();
-        $ref->setYourInt(10);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 10;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $this->checkResults($expectedResults);
@@ -1705,117 +1705,117 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         
         foreach ($collection as $type)
         {
-            if ($type->getMyInt() == 4)
+            if ($type->myInt == 4)
             {
                 $ref = new ThirdType();
                 $refref = new YetAnotherType();
-                $refref->setYourInt(500);
-                $ref->setRef($refref);
+                $refref->yourInt = 500;
+                $ref->ref = $refref;
                 $this->storage1->insert($ref);
-                $type->setRef($ref);
+                $type->ref = $ref;
             }
-            else if ($type->getMyInt() == 5)
+            else if ($type->myInt == 5)
             {
                 $ref = new ThirdType();
                 $refref = new YetAnotherType();
-                $refref->setYourInt(300);
-                $ref->setRef($refref);
+                $refref->yourInt = 300;
+                $ref->ref = $refref;
                 $this->storage1->insert($ref);
-                $type->setRef($ref);
+                $type->ref = $ref;
             }
-            else if ($type->getMyInt() == 8)
+            else if ($type->myInt == 8)
             {
                 $ref = new ThirdType();
                 $refref = new YetAnotherType();
-                $refref->setYourInt(400);
-                $ref->setRef($refref);
+                $refref->yourInt = 400;
+                $ref->ref = $refref;
                 $this->storage1->insert($ref);
-                $type->setRef($ref);
+                $type->ref = $ref;
             }
-            else if ($type->getMyInt() == 10)
+            else if ($type->myInt == 10)
             {
                 $ref = new ThirdType();
                 $refref = new YetAnotherType();
-                $refref->setYourInt(200);
-                $ref->setRef($refref);
+                $refref->yourInt = 200;
+                $ref->ref = $refref;
                 $this->storage1->insert($ref);
-                $type->setRef($ref);
+                $type->ref = $ref;
             }
         }
         
         $type = new AdvancedUpdateType();
-        $type->setRef(new ThirdType());
-        $type->getRef()->setRef(new YetAnotherType());
-        $type->getRef()->getRef()->setYourInt(300);
+        $type->ref = new ThirdType();
+        $type->ref->ref = new YetAnotherType();
+        $type->ref->ref->yourInt = 300;
         
         $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyInt(99999);
+        $modifications->myInt = 99999;
         
         $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(99999);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
-        $ins->setMyReference(null);
-        $ins->setRef(new ThirdType());
-        $ins->getRef()->setRef(new YetAnotherType());
-        $ins->getRef()->getRef()->setYourInt(500);
+        $ins->myInt = 99999;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myReference = null;
+        $ins->ref = new ThirdType();
+        $ins->ref->ref = new YetAnotherType();
+        $ins->ref->ref->yourInt = 500;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new YetAnotherType();
-        $ref->setYourInt(40);
-        $ins->setMyReference($ref);
-        $ins->setRef(new ThirdType());
-        $ins->getRef()->setRef(new YetAnotherType());
-        $ins->getRef()->getRef()->setYourInt(300);
+        $ref->yourInt = 40;
+        $ins->myReference = $ref;
+        $ins->ref = new ThirdType();
+        $ins->ref->ref = new YetAnotherType();
+        $ins->ref->ref->yourInt = 300;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(99999);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 99999;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new YetAnotherType();
-        $ref->setYourInt(30);
-        $ins->setMyReference($ref);
-        $ins->setRef(new ThirdType());
-        $ins->getRef()->setRef(new YetAnotherType());
-        $ins->getRef()->getRef()->setYourInt(400);
+        $ref->yourInt = 30;
+        $ins->myReference = $ref;
+        $ins->ref = new ThirdType();
+        $ins->ref->ref = new YetAnotherType();
+        $ins->ref->ref->yourInt = 400;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
         $ref = new YetAnotherType();
-        $ref->setYourInt(20);
-        $ins->setMyReference($ref);
-        $ins->setRef(new ThirdType());
-        $ins->getRef()->setRef(new YetAnotherType());
-        $ins->getRef()->getRef()->setYourInt(200);
+        $ref->yourInt = 20;
+        $ins->myReference = $ref;
+        $ins->ref = new ThirdType();
+        $ins->ref->ref = new YetAnotherType();
+        $ins->ref->ref->yourInt = 200;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new YetAnotherType();
-        $ref->setYourInt(10);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 10;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $this->checkResults($expectedResults);
@@ -1832,117 +1832,117 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         
         foreach ($collection as $type)
         {
-            if ($type->getMyInt() == 4)
+            if ($type->myInt == 4)
             {
                 $ref = new ThirdType();
                 $refref = new YetAnotherType();
-                $refref->setYourInt(500);
-                $ref->setRef($refref);
+                $refref->yourInt = 500;
+                $ref->ref = $refref;
                 $this->storage1->insert($ref);
-                $type->setRef($ref);
+                $type->ref = $ref;
             }
-            else if ($type->getMyInt() == 5)
+            else if ($type->myInt == 5)
             {
                 $ref = new ThirdType();
                 $refref = new YetAnotherType();
-                $refref->setYourInt(300);
-                $ref->setRef($refref);
+                $refref->yourInt = 300;
+                $ref->ref = $refref;
                 $this->storage1->insert($ref);
-                $type->setRef($ref);
+                $type->ref = $ref;
             }
-            else if ($type->getMyInt() == 8)
+            else if ($type->myInt == 8)
             {
                 $ref = new ThirdType();
                 $refref = new YetAnotherType();
-                $refref->setYourInt(400);
-                $ref->setRef($refref);
+                $refref->yourInt = 400;
+                $ref->ref = $refref;
                 $this->storage1->insert($ref);
-                $type->setRef($ref);
+                $type->ref = $ref;
             }
-            else if ($type->getMyInt() == 10)
+            else if ($type->myInt == 10)
             {
                 $ref = new ThirdType();
                 $refref = new YetAnotherType();
-                $refref->setYourInt(200);
-                $ref->setRef($refref);
+                $refref->yourInt = 200;
+                $ref->ref = $refref;
                 $this->storage1->insert($ref);
-                $type->setRef($ref);
+                $type->ref = $ref;
             }
         }
         
         $type = new AdvancedUpdateType();
-        $type->setMyInt(5);
+        $type->myInt = 5;
         
         $any = new \Good\Manners\Condition\GreaterThan($type);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setRef(new ThirdType());
-        $modifications->getRef()->setRef(new YetAnotherType());
-        $modifications->getRef()->getRef()->setYourInt(666);
+        $modifications->ref = new ThirdType();
+        $modifications->ref->ref = new YetAnotherType();
+        $modifications->ref->ref->yourInt = 666;
         
         $this->storage1->modifyAny($any, $modifications);
         
         $expectedResults = array();
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
-        $ins->setMyReference(null);
-        $ins->setRef(new ThirdType());
-        $ins->getRef()->setRef(new YetAnotherType());
-        $ins->getRef()->getRef()->setYourInt(500);
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myReference = null;
+        $ins->ref = new ThirdType();
+        $ins->ref->ref = new YetAnotherType();
+        $ins->ref->ref->yourInt = 500;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new YetAnotherType();
-        $ref->setYourInt(40);
-        $ins->setMyReference($ref);
-        $ins->setRef(new ThirdType());
-        $ins->getRef()->setRef(new YetAnotherType());
-        $ins->getRef()->getRef()->setYourInt(300);
+        $ref->yourInt = 40;
+        $ins->myReference = $ref;
+        $ins->ref = new ThirdType();
+        $ins->ref->ref = new YetAnotherType();
+        $ins->ref->ref->yourInt = 300;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new YetAnotherType();
-        $ref->setYourInt(30);
-        $ins->setMyReference($ref);
-        $ins->setRef(new ThirdType());
-        $ins->getRef()->setRef(new YetAnotherType());
-        $ins->getRef()->getRef()->setYourInt(666);
+        $ref->yourInt = 30;
+        $ins->myReference = $ref;
+        $ins->ref = new ThirdType();
+        $ins->ref->ref = new YetAnotherType();
+        $ins->ref->ref->yourInt = 666;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
         $ref = new YetAnotherType();
-        $ref->setYourInt(20);
-        $ins->setMyReference($ref);
-        $ins->setRef(new ThirdType());
-        $ins->getRef()->setRef(new YetAnotherType());
-        $ins->getRef()->getRef()->setYourInt(666);
+        $ref->yourInt = 20;
+        $ins->myReference = $ref;
+        $ins->ref = new ThirdType();
+        $ins->ref->ref = new YetAnotherType();
+        $ins->ref->ref->yourInt = 666;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new YetAnotherType();
-        $ref->setYourInt(10);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 10;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $this->checkResults($expectedResults);
@@ -1952,76 +1952,76 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
     {
         // issue #38
         $type = new AdvancedUpdateType();
-        $type->setMyInt(5);
+        $type->myInt = 5;
         
         $cond1 = new \Good\Manners\Condition\GreaterThan($type);
         
         $type = new AdvancedUpdateType();
-        $type->setMyReference(new YetAnotherType());
-        $type->getMyReference()->setYourInt(10);
+        $type->myReference = new YetAnotherType();
+        $type->myReference->yourInt = 10;
         
         $cond2 = new \Good\Manners\Condition\GreaterThan($type);
         
         $any = new \Good\Manners\Condition\AndCondition($cond1, $cond2);
         
         $modifications = new AdvancedUpdateType();
-        $modifications->setMyInt(1);
-        $modifications->setMyReference(new YetAnotherType());
-        $modifications->getMyReference()->setYourInt(1);
+        $modifications->myInt = 1;
+        $modifications->myReference = new YetAnotherType();
+        $modifications->myReference->yourInt = 1;
         
         $this->storage1->modifyAny($any, $modifications);
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
-        $ins->setMyReference(null);
-        $ins->setRef(null);
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myReference = null;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new YetAnotherType();
-        $ref->setYourInt(40);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 40;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(1);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 1;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new YetAnotherType();
-        $ref->setYourInt(1);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 1;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(1);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
+        $ins->myInt = 1;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
         $ref = new YetAnotherType();
-        $ref->setYourInt(1);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 1;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $ins = new AdvancedUpdateType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new YetAnotherType();
-        $ref->setYourInt(10);
-        $ins->setMyReference($ref);
-        $ins->setRef(null);
+        $ref->yourInt = 10;
+        $ins->myReference = $ref;
+        $ins->ref = null;
         $expectedResults[] = $ins;
         
         $this->checkResults($expectedResults);

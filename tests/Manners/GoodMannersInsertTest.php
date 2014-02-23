@@ -94,19 +94,19 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
             // all the values from the database are strings, so that's
             // not very useful.
             // I hope one day this'll be fixed, though.
-            if ($hay->getMyInt() == $needle->getMyInt() &&
-                $hay->getMyFloat() == $needle->getMyFloat() &&
-                $hay->getMyText() == $needle->getMyText() &&
-                $hay->getMyDatetime() == $needle->getMyDatetime() &&
+            if ($hay->myInt == $needle->myInt &&
+                $hay->myFloat == $needle->myFloat &&
+                $hay->myText == $needle->myText &&
+                $hay->myDatetime == $needle->myDatetime &&
                 // they are both null
-                ($hay->getMyCircularReference() === null && $needle->getMyCircularReference() === null) ||
+                ($hay->myCircularReference === null && $needle->myCircularReference === null) ||
                 // or neither is null (so we won't be calling functions on null)
                 // and they are the same
-                 ($hay->getMyCircularReference() !== null && $needle->getMyCircularReference() !== null &&
-                  $hay->getMyCircularReference()->getMyInt() == $needle->getMyCircularReference()->getMyInt() &&
-                  $hay->getMyCircularReference()->getMyFloat() == $needle->getMyCircularReference()->getMyFloat() &&
-                  $hay->getMyCircularReference()->getMyText() == $needle->getMyCircularReference()->getMyText() &&
-                  $hay->getMyCircularReference()->getMyDatetime() == $needle->getMyCircularReference()->getMyDatetime()))
+                 ($hay->myCircularReference !== null && $needle->myCircularReference !== null &&
+                  $hay->myCircularReference->myInt == $needle->myCircularReference->myInt &&
+                  $hay->myCircularReference->myFloat == $needle->myCircularReference->myFloat &&
+                  $hay->myCircularReference->myText == $needle->myCircularReference->myText &&
+                  $hay->myCircularReference->myDatetime == $needle->myCircularReference->myDatetime))
             {
                 return $key;
             }
@@ -156,11 +156,11 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
     public function testBasicInsertion()
     {
         $ins = new InsertType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
-        $ins->setMyCircularReference(null);
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myCircularReference = null;
         $this->storage1->insert($ins);
         
         $expectedResults = array();
@@ -168,11 +168,11 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         // we create another copy, so we can't be influenced by
         // the storage changing the object
         $ins = new InsertType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
-        $ins->setMyCircularReference(null);
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myCircularReference = null;
         $expectedResults[] = $ins;
         
         $this->storage1->flush();
@@ -183,19 +183,19 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
     public function testCircularReferenceInsertion()
     {
         $ins = new InsertType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
         
         $ins2 = new InsertType();
-        $ins2->setMyInt(7);
-        $ins2->setMyFloat(7.7);
-        $ins2->setMyText("Seven");
-        $ins2->setMyDatetime(new \Datetime('2007-07-07'));
-        $ins2->setMyCircularReference($ins);
+        $ins2->myInt = 7;
+        $ins2->myFloat = 7.7;
+        $ins2->myText = "Seven";
+        $ins2->myDatetime = new \Datetime('2007-07-07');
+        $ins2->myCircularReference = $ins;
         
-        $ins->setMyCircularReference($ins2);
+        $ins->myCircularReference = $ins2;
         
         $this->storage1->insert($ins);
         $this->storage1->insert($ins2);
@@ -205,19 +205,19 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         // we create another copy, so we can't be influenced by
         // the storage changing the object
         $ins = new InsertType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
         
         $ins2 = new InsertType();
-        $ins2->setMyInt(7);
-        $ins2->setMyFloat(7.7);
-        $ins2->setMyText("Seven");
-        $ins2->setMyDatetime(new \Datetime('2007-07-07'));
-        $ins2->setMyCircularReference($ins);
+        $ins2->myInt = 7;
+        $ins2->myFloat = 7.7;
+        $ins2->myText = "Seven";
+        $ins2->myDatetime = new \Datetime('2007-07-07');
+        $ins2->myCircularReference = $ins;
         
-        $ins->setMyCircularReference($ins2);
+        $ins->myCircularReference = $ins2;
         
         $expectedResults[] = $ins;
         $expectedResults[] = $ins2;
@@ -230,11 +230,11 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
     public function testCircularNullsInsertion()
     {
         $ins = new InsertType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(null);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(null);
-        $ins->setMyCircularReference(null);
+        $ins->myInt = null;
+        $ins->myFloat = null;
+        $ins->myText = null;
+        $ins->myDatetime = null;
+        $ins->myCircularReference = null;
         $this->storage1->insert($ins);
         
         $expectedResults = array();
@@ -242,11 +242,11 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         // we create another copy, so we can't be influenced by
         // the storage changing the object
         $ins = new InsertType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(null);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(null);
-        $ins->setMyCircularReference(null);
+        $ins->myInt = null;
+        $ins->myFloat = null;
+        $ins->myText = null;
+        $ins->myDatetime = null;
+        $ins->myCircularReference = null;
         $expectedResults[] = $ins;
         
         $this->storage1->flush();

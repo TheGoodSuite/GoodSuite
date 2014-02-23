@@ -67,38 +67,38 @@ abstract class GoodMannersDeleteTest extends PHPUnit_Framework_TestCase
         $storage = $this->getNewStorage();
         
         $ins = new DeleteType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
         $storage->insert($ins);
         
         $ins = new DeleteType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $storage->insert($ins);
         
         $ins = new DeleteType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $storage->insert($ins);
         
         $ins = new DeleteType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
         $storage->insert($ins);
         
         $ins = new DeleteType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $storage->insert($ins);
         
         $storage->flush();
@@ -133,10 +133,10 @@ abstract class GoodMannersDeleteTest extends PHPUnit_Framework_TestCase
             // all the values from the database are strings, so that's
             // not very useful.
             // I hope one day this'll be fixed, though.
-            if ($hay->getMyInt() == $needle->getMyInt() &&
-                $hay->getMyFloat() == $needle->getMyFloat() &&
-                $hay->getMyText() == $needle->getMyText() &&
-                $hay->getMyDatetime() == $needle->getMyDatetime())
+            if ($hay->myInt == $needle->myInt &&
+                $hay->myFloat == $needle->myFloat &&
+                $hay->myText == $needle->myText &&
+                $hay->myDatetime == $needle->myDatetime)
             {
                 return $key;
             }
@@ -196,7 +196,7 @@ abstract class GoodMannersDeleteTest extends PHPUnit_Framework_TestCase
         
         foreach ($collection as $type)
         {
-            if ($type->getMyInt() == 5 || $type->getMyInt() == 10)
+            if ($type->myInt == 5 || $type->myInt == 10)
             {
                 $type->delete();
             }
@@ -207,24 +207,24 @@ abstract class GoodMannersDeleteTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new DeleteType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
         $expectedResults[] = $ins;
         
         $ins = new DeleteType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $expectedResults[] = $ins;
         
         $ins = new DeleteType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $expectedResults[] = $ins;
         
         $this->checkResults($expectedResults);

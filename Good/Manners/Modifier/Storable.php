@@ -138,10 +138,10 @@ class Storable implements \Good\Service\Modifier
         $this->accept .= '        $visitor->visitReferenceProperty("' . $member->getName() . '", ' .
                                             '"' . $member->getReferencedType() . '", ' . 
                                             '$this->is' . \ucfirst($member->getName()) . 'Dirty, ' .
-                                            '$this->get' . \ucfirst($member->getName()) . '());' . "\n";
+                                            '$this->' . $member->getName() . ');' . "\n";
         
         $this->setFromArray .= '                case "' . $this->classVariable . '":' . "\n";
-        $this->setFromArray .= '                    $this->set' . \ucfirst($this->classVariable) . '($value);'. "\n";
+        $this->setFromArray .= '                    $this->' . $this->classVariable . ' = $value;'. "\n";
         $this->setFromArray .= '                    break;' . "\n";
         
         $this->resolver .= '    private $resolved' . \ucfirst($member->getName()) . ' = null;' . "\n"; 
@@ -183,10 +183,10 @@ class Storable implements \Good\Service\Modifier
         
         $this->accept .= '        $visitor->visitTextProperty("' . $member->getName() . '", ' .
                                             '$this->is' . \ucfirst($member->getName()) . 'Dirty, ' . 
-                                            '$this->get' . \ucfirst($member->getName()) . '());' . "\n";
+                                            '$this->' . $member->getName() . ');' . "\n";
         
         $this->setFromArray .= '                case "' . $this->classVariable . '":' . "\n";
-        $this->setFromArray .= '                    $this->set' . \ucfirst($this->classVariable) . '($value);'. "\n";
+        $this->setFromArray .= '                    $this->' . $this->classVariable . ' = $value;'. "\n";
         $this->setFromArray .= '                    break;' . "\n";
         
         $this->visitNonReference($member);
@@ -200,10 +200,10 @@ class Storable implements \Good\Service\Modifier
         
         $this->accept .= '        $visitor->visitIntProperty("' . $member->getName() . '", ' .
                                             '$this->is' . \ucfirst($member->getName()) . 'Dirty, ' . 
-                                            '$this->get' . \ucfirst($member->getName()) . '());' . "\n";
+                                            '$this->' . $member->getName() . ');' . "\n";
         
         $this->setFromArray .= '                case "' . $this->classVariable . '":' . "\n";
-        $this->setFromArray .= '                    $this->set' . \ucfirst($this->classVariable) . '($value);'. "\n";
+        $this->setFromArray .= '                    $this->' . $this->classVariable . ' = $value;'. "\n";
         $this->setFromArray .= '                    break;' . "\n";
         
         $this->visitNonReference($member);
@@ -217,10 +217,10 @@ class Storable implements \Good\Service\Modifier
         
         $this->accept .= '        $visitor->visitFloatProperty("' . $member->getName() . '", ' .
                                             '$this->is' . \ucfirst($member->getName()) . 'Dirty, ' . 
-                                            '$this->get' . \ucfirst($member->getName()) . '());' . "\n";
+                                            '$this->' . $member->getName() . ');' . "\n";
         
         $this->setFromArray .= '                case "' . $this->classVariable . '":' . "\n";
-        $this->setFromArray .= '                    $this->set' . \ucfirst($this->classVariable) . '($value);'. "\n";
+        $this->setFromArray .= '                    $this->' . $this->classVariable . ' = $value;'. "\n";
         $this->setFromArray .= '                    break;' . "\n";
         
         $this->visitNonReference($member);
@@ -234,16 +234,16 @@ class Storable implements \Good\Service\Modifier
         
         $this->accept .= '        $visitor->visitDatetimeProperty("' . $member->getName() . '", ' .
                                             '$this->is' . \ucfirst($member->getName()) . 'Dirty, ' . 
-                                            '$this->get' . \ucfirst($member->getName()) . '());' . "\n";
+                                            '$this->' . $member->getName() . ');' . "\n";
         
         $this->setFromArray .= '                case "' . $this->classVariable . '":' . "\n";
         $this->setFromArray .= '                    if ($value === null || $value instanceof \DateTime)' . "\n";
         $this->setFromArray .= "                    {\n";
-        $this->setFromArray .= '                        $this->set' . \ucfirst($this->classVariable) . '($value);'. "\n";
+        $this->setFromArray .= '                        $this->' . $this->classVariable . ' = $value;'. "\n";
         $this->setFromArray .= "                    }\n";
         $this->setFromArray .= '                    else' . "\n";
         $this->setFromArray .= "                    {\n";
-        $this->setFromArray .= '                        $this->set' . \ucfirst($this->classVariable) . '(new DateTime($value));'. "\n";
+        $this->setFromArray .= '                        $this->' . $this->classVariable . ' = new DateTime($value);'. "\n";
         $this->setFromArray .= "                    }\n";
         $this->setFromArray .= '                    break;' . "\n";
         
@@ -303,24 +303,24 @@ class Storable implements \Good\Service\Modifier
     }
     public function getterBegin()
     {
-        $res  = '        $this->GMMStorable_checkValidationToken();' . "\n";
-        $res .= "        \n";
+        $res  = '                $this->GMMStorable_checkValidationToken();' . "\n";
+        $res .= "                \n";
         
         return $res;
     }
     public function setterBegin()
     {
-        $res  = '        $this->GMMStorable_checkValidationToken();' . "\n";
-        $res .= "        \n";
+        $res  = '                $this->GMMStorable_checkValidationToken();' . "\n";
+        $res .= "                \n";
         
         return $res;
     }
     public function setterEnd()
     {
-        $res  = "        \n";
+        $res  = "                \n";
         // ucfirst: upper case first letter (it's a php built-in)
-        $res .= '        $this->is' . \ucfirst($this->classVariable) . 'Dirty = true;' . "\n";
-        $res .= '        $this->GMMStorable_makeDirty();' . "\n";
+        $res .= '                $this->is' . \ucfirst($this->classVariable) . 'Dirty = true;' . "\n";
+        $res .= '                $this->GMMStorable_makeDirty();' . "\n";
         
         return $res;
     }

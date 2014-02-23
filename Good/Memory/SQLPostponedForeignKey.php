@@ -18,8 +18,7 @@ class SQLPostponedForeignKey
     public function doNow()
     {
         // Is there maybe a nicer way to do this?
-        $field = 'set' . \ucfirst($this->field);
-        $this->referer->$field($this->foreigner);
+        $this->referer->{$this->field} = $this->foreigner;
     }
 }
 

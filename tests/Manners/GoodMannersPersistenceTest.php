@@ -68,10 +68,10 @@ abstract class GoodMannersPersistenceTest extends PHPUnit_Framework_TestCase
             // all the values from the database are strings, so that's
             // not very useful.
             // I hope one day this'll be fixed, though.
-            if ($hay->getMyInt() == $needle->getMyInt() &&
-                $hay->getMyFloat() == $needle->getMyFloat() &&
-                $hay->getMyText() == $needle->getMyText() &&
-                $hay->getMyDatetime() == $needle->getMyDatetime())
+            if ($hay->myInt == $needle->myInt &&
+                $hay->myFloat == $needle->myFloat &&
+                $hay->myText == $needle->myText &&
+                $hay->myDatetime == $needle->myDatetime)
             {
                 return $key;
             }
@@ -106,17 +106,17 @@ abstract class GoodMannersPersistenceTest extends PHPUnit_Framework_TestCase
         $storage = $this->getNewStorage();
     
         $ins = new PersistenceType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
         $storage->insert($ins);
         
         $ins = new PersistenceType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(8.8);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2012-12-12'));
+        $ins->myInt = 5;
+        $ins->myFloat = 8.8;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2012-12-12');
         $storage->insert($ins);
         
         $expectedResults = array();
@@ -139,17 +139,17 @@ abstract class GoodMannersPersistenceTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new PersistenceType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
         $expectedResults[] = $ins;
         
         $ins = new PersistenceType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(8.8);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2012-12-12'));
+        $ins->myInt = 5;
+        $ins->myFloat = 8.8;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2012-12-12');
         $expectedResults[] = $ins;
         
         // At the moment we don't have a proper api to get any,

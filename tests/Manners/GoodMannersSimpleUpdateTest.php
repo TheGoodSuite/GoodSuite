@@ -79,53 +79,53 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $storage = $this->getNewStorage();
         
         $ins = new SimpleUpdateType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
         $ref = new AnotherType();
-        $ref->setYourInt(50);
-        $ins->setMyReference($ref);
+        $ref->yourInt = 50;
+        $ins->myReference = $ref;
         $storage->insert($ins);
         
         $ins = new SimpleUpdateType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new AnotherType();
-        $ref->setYourInt(40);
-        $ins->setMyReference($ref);
+        $ref->yourInt = 40;
+        $ins->myReference = $ref;
         $storage->insert($ins);
         
         $ins = new SimpleUpdateType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new AnotherType();
-        $ref->setYourInt(30);
-        $ins->setMyReference($ref);
+        $ref->yourInt = 30;
+        $ins->myReference = $ref;
         $storage->insert($ins);
         
         $ins = new SimpleUpdateType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
         $ref = new AnotherType();
-        $ref->setYourInt(20);
-        $ins->setMyReference($ref);
+        $ref->yourInt = 20;
+        $ins->myReference = $ref;
         $storage->insert($ins);
         
         $ins = new SimpleUpdateType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new AnotherType();
-        $ref->setYourInt(10);
-        $ins->setMyReference($ref);
+        $ref->yourInt = 10;
+        $ins->myReference = $ref;
         $storage->insert($ins);
         
         $storage->flush();
@@ -161,16 +161,16 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
             // all the values from the database are strings, so that's
             // not very useful.
             // I hope one day this'll be fixed, though.
-            if ($hay->getMyInt() == $needle->getMyInt() &&
-                $hay->getMyFloat() == $needle->getMyFloat() &&
-                $hay->getMyText() == $needle->getMyText() &&
-                $hay->getMyDatetime() == $needle->getMyDatetime() &&
+            if ($hay->myInt == $needle->myInt &&
+                $hay->myFloat == $needle->myFloat &&
+                $hay->myText == $needle->myText &&
+                $hay->myDatetime == $needle->myDatetime &&
                 // they are both null
-                (($hay->getMyReference() === null && $needle->getMyReference() === null) ||
+                (($hay->myReference === null && $needle->myReference === null) ||
                 // or neither is null (so we won't be calling functions on null)
                 // and they are the same
-                 ($hay->getMyReference() !== null && $needle->getMyReference() !== null &&
-                  $hay->getMyReference()->getYourInt() == $needle->getMyReference()->getYourInt())))
+                 ($hay->myReference !== null && $needle->myReference !== null &&
+                  $hay->myReference->yourInt == $needle->myReference->yourInt)))
             {
                 return $key;
             }
@@ -230,10 +230,10 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         
         foreach ($collection as $type)
         {
-            $type->setMyInt(2);
-            $type->setMyFloat(1.1);
-            $type->setMyText("Zero");
-            $type->setMyDatetime(new Datetime('1999-12-31'));
+            $type->myInt = 2;
+            $type->myFloat = 1.1;
+            $type->myText = "Zero";
+            $type->myDatetime = new Datetime('1999-12-31');
         }
         
         $this->storage1->flush();
@@ -241,48 +241,48 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new SimpleUpdateType();
-        $ins->setMyInt(2);
-        $ins->setMyFloat(1.1);
-        $ins->setMyText("Zero");
-        $ins->setMyDatetime(new Datetime('1999-12-31'));
-        $ins->setMyReference(new AnotherType());
-        $ins->getMyReference()->setYourInt(50);
+        $ins->myInt = 2;
+        $ins->myFloat = 1.1;
+        $ins->myText = "Zero";
+        $ins->myDatetime = new Datetime('1999-12-31');
+        $ins->myReference = new AnotherType();
+        $ins->myReference->yourInt = 50;
         $expectedResults[] = $ins;
         
         $ins = new SimpleUpdateType();
-        $ins->setMyInt(2);
-        $ins->setMyFloat(1.1);
-        $ins->setMyText("Zero");
-        $ins->setMyDatetime(new Datetime('1999-12-31'));
-        $ins->setMyReference(new AnotherType());
-        $ins->getMyReference()->setYourInt(40);
+        $ins->myInt = 2;
+        $ins->myFloat = 1.1;
+        $ins->myText = "Zero";
+        $ins->myDatetime = new Datetime('1999-12-31');
+        $ins->myReference = new AnotherType();
+        $ins->myReference->yourInt = 40;
         $expectedResults[] = $ins;
         
         $ins = new SimpleUpdateType();
-        $ins->setMyInt(2);
-        $ins->setMyFloat(1.1);
-        $ins->setMyText("Zero");
-        $ins->setMyDatetime(new Datetime('1999-12-31'));
-        $ins->setMyReference(new AnotherType());
-        $ins->getMyReference()->setYourInt(30);
+        $ins->myInt = 2;
+        $ins->myFloat = 1.1;
+        $ins->myText = "Zero";
+        $ins->myDatetime = new Datetime('1999-12-31');
+        $ins->myReference = new AnotherType();
+        $ins->myReference->yourInt = 30;
         $expectedResults[] = $ins;
         
         $ins = new SimpleUpdateType();
-        $ins->setMyInt(2);
-        $ins->setMyFloat(1.1);
-        $ins->setMyText("Zero");
-        $ins->setMyDatetime(new Datetime('1999-12-31'));
-        $ins->setMyReference(new AnotherType());
-        $ins->getMyReference()->setYourInt(20);
+        $ins->myInt = 2;
+        $ins->myFloat = 1.1;
+        $ins->myText = "Zero";
+        $ins->myDatetime = new Datetime('1999-12-31');
+        $ins->myReference = new AnotherType();
+        $ins->myReference->yourInt = 20;
         $expectedResults[] = $ins;
         
         $ins = new SimpleUpdateType();
-        $ins->setMyInt(2);
-        $ins->setMyFloat(1.1);
-        $ins->setMyText("Zero");
-        $ins->setMyDatetime(new Datetime('1999-12-31'));
-        $ins->setMyReference(new AnotherType());
-        $ins->getMyReference()->setYourInt(10);
+        $ins->myInt = 2;
+        $ins->myFloat = 1.1;
+        $ins->myText = "Zero";
+        $ins->myDatetime = new Datetime('1999-12-31');
+        $ins->myReference = new AnotherType();
+        $ins->myReference->yourInt = 10;
         $expectedResults[] = $ins;
         
         $this->checkResults($expectedResults);
@@ -301,16 +301,16 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         
         foreach ($collection as $type)
         {
-            if ($type->getMyInt() == 5)
+            if ($type->myInt == 5)
             {
-                $type->setMyInt(null);
-                $type->setMyText(null);
+                $type->myInt = null;
+                $type->myText = null;
             }
             
-            if ($type->getMyInt() == 10)
+            if ($type->myInt == 10)
             {
-                $type->setMyFloat(null);
-                $type->setMyDatetime(null);
+                $type->myFloat = null;
+                $type->myDatetime = null;
             }
         }
         
@@ -319,53 +319,53 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new SimpleUpdateType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
         $ref = new AnotherType();
-        $ref->setYourInt(50);
-        $ins->setMyReference($ref);
+        $ref->yourInt = 50;
+        $ins->myReference = $ref;
         $expectedResults[] = $ins;
         
         $ins = new SimpleUpdateType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(null);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = null;
+        $ins->myFloat = null;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new AnotherType();
-        $ref->setYourInt(40);
-        $ins->setMyReference($ref);
+        $ref->yourInt = 40;
+        $ins->myReference = $ref;
         $expectedResults[] = $ins;
         
         $ins = new SimpleUpdateType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
         $ref = new AnotherType();
-        $ref->setYourInt(30);
-        $ins->setMyReference($ref);
+        $ref->yourInt = 30;
+        $ins->myReference = $ref;
         $expectedResults[] = $ins;
         
         $ins = new SimpleUpdateType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(null);
+        $ins->myInt = 10;
+        $ins->myFloat = null;
+        $ins->myText = "Ten";
+        $ins->myDatetime = null;
         $ref = new AnotherType();
-        $ref->setYourInt(20);
-        $ins->setMyReference($ref);
+        $ref->yourInt = 20;
+        $ins->myReference = $ref;
         $expectedResults[] = $ins;
         
         $ins = new SimpleUpdateType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new AnotherType();
-        $ref->setYourInt(10);
-        $ins->setMyReference($ref);
+        $ref->yourInt = 10;
+        $ins->myReference = $ref;
         $expectedResults[] = $ins;
         
         $this->checkResults($expectedResults);
@@ -387,22 +387,22 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         
         foreach ($collection as $type)
         {
-            if ($type->getMyInt() == 8)
+            if ($type->myInt == 8)
             {
-                $ref = $type->getMyReference();
-                $type->setMyReference(null);
+                $ref = $type->myReference;
+                $type->myReference = null;
             }
             
-            if ($type->getMyInt() == 10)
+            if ($type->myInt == 10)
             {
-                $type->setMyReference($ref);
+                $type->myReference = $ref;
             }
             
-            if ($type->getMyFloat() == 20.20)
+            if ($type->myFloat == 20.20)
             {
                 $myref = new AnotherType();
-                $myref->setYourInt(144);
-                $type->setMyReference($myref);
+                $myref->yourInt = 144;
+                $type->myReference = $myref;
                 
                 // todo: make this line unnecessary
                 $this->storage1->insert($myref);
@@ -414,51 +414,51 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $expectedResults = array();
         
         $ins = new SimpleUpdateType();
-        $ins->setMyInt(4);
-        $ins->setMyFloat(4.4);
-        $ins->setMyText("Four");
-        $ins->setMyDatetime(new \Datetime('2004-04-04'));
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
         $ref = new AnotherType();
-        $ref->setYourInt(50);
-        $ins->setMyReference($ref);
+        $ref->yourInt = 50;
+        $ins->myReference = $ref;
         $expectedResults[] = $ins;
         
         $ins = new SimpleUpdateType();
-        $ins->setMyInt(5);
-        $ins->setMyFloat(null);
-        $ins->setMyText("Five");
-        $ins->setMyDatetime(new \Datetime('2005-05-05'));
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \Datetime('2005-05-05');
         $ref = new AnotherType();
-        $ref->setYourInt(40);
-        $ins->setMyReference($ref);
+        $ref->yourInt = 40;
+        $ins->myReference = $ref;
         $expectedResults[] = $ins;
         
         $ins = new SimpleUpdateType();
-        $ins->setMyInt(8);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText(null);
-        $ins->setMyDatetime(new \Datetime('2008-08-08'));
-        $ins->setMyReference(null);
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myReference = null;
         $expectedResults[] = $ins;
         
         $ins = new SimpleUpdateType();
-        $ins->setMyInt(10);
-        $ins->setMyFloat(10.10);
-        $ins->setMyText("Ten");
-        $ins->setMyDatetime(new \Datetime('2010-10-10'));
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \Datetime('2010-10-10');
         $ref = new AnotherType();
-        $ref->setYourInt(30);
-        $ins->setMyReference($ref);
+        $ref->yourInt = 30;
+        $ins->myReference = $ref;
         $expectedResults[] = $ins;
         
         $ins = new SimpleUpdateType();
-        $ins->setMyInt(null);
-        $ins->setMyFloat(20.20);
-        $ins->setMyText("Twenty");
-        $ins->setMyDatetime(null);
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
         $ref = new AnotherType();
-        $ref->setYourInt(144);
-        $ins->setMyReference($ref);
+        $ref->yourInt = 144;
+        $ins->myReference = $ref;
         $expectedResults[] = $ins;
         
         $this->checkResults($expectedResults);

@@ -39,11 +39,11 @@ abstract class GoodServiceModifierObservableBaseTest extends GoodServiceBaseTest
                  ->method('notifyObserver')
                  ->with($this->equalTo($observable));
         
-        $observable->setMyInt(5);
+        $observable->myInt = 5;
         
         $observable->registerObserver($observer);
         
-        $observable->setMyInt(7);
+        $observable->myInt = 7;
     }
     
     /**
@@ -67,12 +67,12 @@ abstract class GoodServiceModifierObservableBaseTest extends GoodServiceBaseTest
                   ->method('notifyObserver')
                   ->with($this->equalTo($observable));
         
-        $observable->setMyInt(5);
+        $observable->myInt = 5;
         
         $observable->registerObserver($observer);
         $observable->registerObserver($observer2);
         
-        $observable->setMyInt(7);
+        $observable->myInt = 7;
     }
     
     private $expecting = null;
@@ -102,21 +102,21 @@ abstract class GoodServiceModifierObservableBaseTest extends GoodServiceBaseTest
                  ->will($this->returnCallback(array($this, 'equalsExpecting')));
                  
         
-        $observable->setMyInt(5);
-        $observable2->setMyInt(14);
+        $observable->myInt = 5;
+        $observable2->myInt = 14;
         
         $observable->registerObserver($observer);
         $observable2->registerObserver($observer);
         
         $this->expecting = $observable2;
-        $observable2->setMyInt(22);
+        $observable2->myInt = 22;
         
         $this->expecting = $observable;
-        $observable->setMyInt(6);
-        $observable->setMyInt(7);
+        $observable->myInt = 6;
+        $observable->myInt = 7;
         
         $this->expecting = $observable2;
-        $observable2->setMyInt(30);
+        $observable2->myInt = 30;
     }
     
     /**
@@ -137,19 +137,19 @@ abstract class GoodServiceModifierObservableBaseTest extends GoodServiceBaseTest
                  ->will($this->returnCallback(array($this, 'equalsExpecting')));
                  
         
-        $observable->setMyInt(5213213);
+        $observable->myInt = 5213213;
         
         $observable->registerObserver($observer);
         $this->expecting = $observable;
-        $observable->setMyInt(22234);
+        $observable->myInt = 22234;
         
         $observable->unregisterObserver($observer);
         $this->expecting = null;
-        $observable->setMyInt(213213);
+        $observable->myInt = 213213;
         
         $observable->registerObserver($observer);
         $this->expecting = $observable;
-        $observable->setMyInt(1235555);
+        $observable->myInt = 1235555;
     }
 }
 

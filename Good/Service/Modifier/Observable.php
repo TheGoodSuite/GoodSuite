@@ -46,8 +46,8 @@ class Observable implements \Good\Service\Modifier
     public function setterBegin() {return '';}
     public function setterEnd()
     {
-        $res  = "        \n";
-        $res .= '        $this->GSMObservable_notifyObservers();' . "\n";
+        $res  = "                \n";
+        $res .= '                $this->GSMObservable_notifyObservers();' . "\n";
         
         return $res;
     }

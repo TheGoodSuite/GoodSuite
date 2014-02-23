@@ -65,10 +65,10 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
         
         $myType = new MyType();
-        $myType->setMyInt(5);
+        $myType->myInt = 5;
         
-        $this->assertEquals($myType->getMyInt(), 5);
-        $this->assertInternalType('int', $myType->getMyInt());
+        $this->assertEquals($myType->myInt, 5);
+        $this->assertInternalType('int', $myType->myInt);
     }
     
     public function testFloatProperty()
@@ -78,10 +78,10 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
         
         $myType = new MyType();
-        $myType->setMyFloat(5.5);
+        $myType->myFloat = 5.5;
         
-        $this->assertEquals($myType->getMyFloat(), 5.5);
-        $this->assertInternalType('float', $myType->getMyFloat());
+        $this->assertEquals($myType->myFloat, 5.5);
+        $this->assertInternalType('float', $myType->myFloat);
     }
     
     public function testTextProperty()
@@ -91,10 +91,10 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
         
         $myType = new MyType();
-        $myType->setMyText("Hello World!");
+        $myType->myText = "Hello World!";
         
-        $this->assertEquals($myType->getMyText(), "Hello World!");
-        $this->assertInternalType('string', $myType->getMyText());
+        $this->assertEquals($myType->myText, "Hello World!");
+        $this->assertInternalType('string', $myType->myText);
     }
     
     public function testDatetimeProperty()
@@ -105,10 +105,10 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         
         $myType = new MyType();
         $date = new \DateTime();
-        $myType->setMyDatetime($date);
+        $myType->myDatetime = $date;
         
-        $this->assertEquals($myType->getMyDatetime(), $date);
-        $this->assertInstanceOf('\\DateTime', $myType->getMyDatetime());
+        $this->assertEquals($myType->myDatetime, $date);
+        $this->assertInstanceOf('\\DateTime', $myType->myDatetime);
     }
     
     public function testReferenceProperty()
@@ -123,13 +123,13 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
                              'ReferenceType' => $this->inputDir . 'ReferenceType.datatype'));
         
         $reference = new ReferencedType();
-        $reference->setJustAnInt(45);
+        $reference->justAnInt = 45;
         
         $referer = new ReferenceType();
-        $referer->setReference($reference);
+        $referer->reference = $reference;
         
-        $this->assertEquals($referer->getReference(), $reference);
-        $this->assertInstanceOf('ReferencedType', $referer->getReference());
+        $this->assertEquals($referer->reference, $reference);
+        $this->assertInstanceOf('ReferencedType', $referer->reference);
     }
     
     /**
@@ -142,17 +142,20 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
         
         $myType = new MyType();
-        $myType->setMyInt(5);
+        $myType->myInt = 5;
         
-        $this->assertEquals($myType->getMyInt(), 5);
-        $this->assertInternalType('int', $myType->getMyInt());
+        $this->assertEquals($myType->myInt, 5);
+        $this->assertInternalType('int', $myType->myInt);
     }
     
     /**
      * @depends testIntProperty
-     */
-    public function testPrivateProperty()
+     *
+    public function testThereIsNoPrivateBug()
     {
+        // First off, there is no more implementation of private (see #62)
+        // Secondly, this way of testing no longer works at all, so we'll just fail.
+        $this->assertTrue(false);
         file_put_contents($this->inputDir . 'MyType.datatype',
                             '[private] int myInt');
         $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
@@ -166,9 +169,12 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     
     /**
      * @depends testIntProperty
-     */
-    public function testProtectedProperty()
+     *
+    public function testThereIsNoProtectedBug()
     {
+        // First off, there is no more implementation of protected (see #62)
+        // Secondly, this way of testing no longer works at all, so we'll just fail.
+        $this->assertTrue(false);
         file_put_contents($this->inputDir . 'MyType.datatype',
                             '[protected] int myInt');
         $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
@@ -182,9 +188,11 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     
     /**
      * @depends testIntProperty
-     */
+     *
     public function testPublicProperty()
     {
+        // This can't be tested this way anymore, but I'll leave this test for
+        // until I think of a proper way to test for this (and perhaps for when #62 is solved)
         file_put_contents($this->inputDir . 'MyType.datatype',
                             '[public] int myInt');
         $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
@@ -195,6 +203,7 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         $reflection = new \ReflectionMethod('MyType', 'setMyInt');
         $this->assertTrue($reflection->isPublic());
     }
+    */
 }
 
 ?>
