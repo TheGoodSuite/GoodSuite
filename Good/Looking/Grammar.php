@@ -132,7 +132,8 @@ Class Grammar
         $this->controlStructureElseif = '(?:(?i:elseif)\s*\((?P<condition>' . $this->expression . ')\))\s*:';
         $this->controlStructureElse = '(?i:else)\s*:';
         $this->controlStructureEndIf = '(?i:endif)';
-        $this->controlStructureForrange = '(?:(?i:forrange)\s*\((?P<from>' . $this->expression . ')-->(?P<to>(?P>expression))\))\s*:';
+        $this->controlStructureForrange = '(?:(?i:forrange)\s*\((?P<from>' . $this->expression . ')-->(?P<to>' . 
+                                             '(?P>expression))(?:\b(?i:as)\s+\$(?<forrangeVariable>' . $this->varName . ')\s*)?\))\s*:';
         $this->controlStructureEndForrange = '(?i:endforrange)';
         $this->controlStructureForeach = '(?:(?i:foreach)\s*\(\\s*(?P<foreachArray>' . $this->expression . 
                                                 ')\\s+(?i:as)\\s+\$(?P<foreachVariable>' . $this->varName . ')\))\s*:';

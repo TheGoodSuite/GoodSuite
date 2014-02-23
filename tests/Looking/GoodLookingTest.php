@@ -1052,6 +1052,42 @@ class GoodLookingTest extends PHPUnit_Framework_TestCase
         $goodLooking = new \Good\Looking\Looking($this->template);
         $goodLooking->display();
     }
+    
+    public function testForrangeAs()
+    {
+        // control structures without dropping out of code mode, no semicolons
+        
+        $this->expectOutputString('456');
+        
+        file_put_contents($this->template, '<: forrange(4 --> 6 as $i): $i; endforrange; :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking->display();
+    }
+    
+    public function testForrangeAsPostLoopZeroBased()
+    {
+        // control structures without dropping out of code mode, no semicolons
+        
+        $this->expectOutputString('7');
+        
+        file_put_contents($this->template, '<: forrange(0 --> 6 as $i): endforrange; $i; :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking->display();
+    }
+    
+    public function testForrangeAsPostLoopNonZeroBased()
+    {
+        // control structures without dropping out of code mode, no semicolons
+        
+        $this->expectOutputString('3');
+        
+        file_put_contents($this->template, '<: forrange(4 --> 6 as $i): endforrange; $i :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking->display();
+    }
 }
 
 ?>

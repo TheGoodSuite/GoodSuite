@@ -9,14 +9,16 @@ class ForrangeStructure extends ElementWithStatements
     private $from;
     private $to;
     private $statements;
+    private $counter;
     
-    public function __construct($grammar, $from, $to, $statements)
+    public function __construct($grammar, $from, $to, $counter, $statements)
     {
         parent::__construct($grammar);
         
         $this->statements = $statements;
         $this->from = $from;
         $this->to = $to;
+        $this->counter = $counter;
     }
     
     public function execute(Environment $environment)
@@ -30,6 +32,12 @@ class ForrangeStructure extends ElementWithStatements
         $out .= '$this->templateVars[' . $to . '] = intval(' . $this->evaluate($this->to) . '); ';
         $out .= '$this->templateVars[' . $delta . '] = $this->templateVars[' . $from . '] < ' .
                     '$this->templateVars[' . $to . '] ? 1 : -1; ';
+        
+        if ($this->counter != null)
+        {
+            $out .= '$this->registerSpecialVar("' . $this->counter . '", ' . $counter . ');';
+        }
+        
         $out .= 'for ($this->templateVars[' . $counter . '] = $this->templateVars[' . $from . ']; ' . 
                     '$this->templateVars[' . $counter . '] * $this->templateVars[' . $delta . '] <= ' .
                       '$this->templateVars[' . $to . '] * $this->templateVars[' . $delta . ']; ' .
@@ -41,6 +49,7 @@ class ForrangeStructure extends ElementWithStatements
         }
         
         $out .= 'endfor; ';
+        $out .= '$this->templateVars[' . $counter . '] -= $this->templateVars[' . $from . '];';
         
         return $out;
     }

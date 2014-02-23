@@ -95,7 +95,7 @@ class Parser
         }
     }
     
-    private function parseForrangeStructure($from, $to, &$input)
+    private function parseForrangeStructure($from, $to, $forrangeVar, &$input)
     {
         $statements = $this->parseStatementCollection($input);
         
@@ -109,7 +109,7 @@ class Parser
             // determine next mode
             $this->determineIfNextModeIsText($matches['terminator']);
             
-            return $this->factory->createForrangeStructure($from, $to, $statements);
+            return $this->factory->createForrangeStructure($from, $to, $forrangeVar, $statements);
         }
         
         if ($input == '')
@@ -253,7 +253,9 @@ class Parser
                 // remove the processed part and determine next mode
                 $this->removeFromStart($input, $matches[0]);
                 
-                $statements[] = $this->parseForrangeStructure($matches['from'], $matches['to'], $input);
+                $forVar = array_key_exists('forrangeVariable', $matches) ? $matches['forrangeVariable'] : null;
+                
+                $statements[] = $this->parseForrangeStructure($matches['from'], $matches['to'], $forVar, $input);
             }
             else if ($input != '' && preg_match('/^\\s*' . $this->grammar->controlStructureForeach . '/', $input, $matches) === 1)
             {
