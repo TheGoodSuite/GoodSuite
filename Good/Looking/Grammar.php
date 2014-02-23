@@ -64,7 +64,8 @@ Class Grammar
         $this->literalInt = '\\b([0]+|[1-9][0-9]*)\\b';
         $this->literalFloat = '\\b[0-9]+\\.[0-9]+\\b';
         $this->literalBoolean = '(?P<boolean>(?i)true|false)';
-        $this->operator = '(?P<operator>\\+|-|\\/|\\*|\\|\\||\\bor\\b|\\bxor\\b|&&|\\band\\b|==|=|!=|>=|<=|>|<|\.)';
+        // NB: if one operator is a substring of the other, the longer one should go first in the regex
+        $this->operator = '(?P<operator>\\+|-|\\/|\\*|\\|\\||\\bor\\b|\\bxor\\b|&&|\\band\\b|===|==|!==|!=|>=|<=|>|<|\.|%)';
         $this->propertyAccess = '->\s*(?P<propertyName>[a-zA-Z_][0-9a-zA-Z_]*)\b';
         
         // regexes that use others through concatenation

@@ -39,7 +39,7 @@ abstract class ElementWithStatements implements Element
             if (\preg_match('/^\s*' . $this->grammar->term . 
                     '\s*(?P<op>(?P>operator))?\s*/', $evaluateString, $matches) == 0)
             {
-                throw new \Exception("Syntax Error");
+                throw new \Exception("Syntax Error" . $evaluateString);
             }
             
             $evaluateString = \preg_replace('/^\s*' . $this->grammar->term . 
@@ -142,13 +142,20 @@ abstract class ElementWithStatements implements Element
                     $output .= ' && ';
                     break;
                     
-                case '=':
                 case '==':
                     $output .= ' == ';
                     break;
                     
+                case '===':
+                    $output .= ' === ';
+                    break;
+                    
                 case '!=':
                     $output .= ' != ';
+                    break;
+                    
+                case '!==':
+                    $output .= ' !== ';
                     break;
                     
                 case '>':
@@ -169,6 +176,10 @@ abstract class ElementWithStatements implements Element
                     
                 case '.':
                     $output .= ' . ';
+                    break;
+                    
+                case '%':
+                    $output .= ' % ';
                     break;
              
             }

@@ -419,10 +419,12 @@ class GoodLookingTest extends PHPUnit_Framework_TestCase
      */
     public function testEqualityOperator()
     {
-        $this->expectOutputString('YES');
+        $this->expectOutputString('YES-YES');
         
         file_put_contents($this->template, '<: if ("a" == "a"): :>YES<: endif :>' .
-                                           '<: if ("a" == "b"): :>NO<: endif :>');
+                                           '<: if ("a" == "b"): :>NO<: endif :>' . 
+                                           '<: if ("1" == 1): :>-YES<: endif :>' .
+                                           '<: if ("1" == 2): :>-NO<: endif :>');
         
         $goodLooking = new \Good\Looking\Looking($this->template);
         $goodLooking->display();
@@ -436,8 +438,10 @@ class GoodLookingTest extends PHPUnit_Framework_TestCase
     {
         $this->expectOutputString('YES');
         
-        file_put_contents($this->template, '<: if ("a" = "a"): :>YES<: endif :>' .
-                                      '<: if ("a" = "b"): :>NO<: endif :>');
+        file_put_contents($this->template, '<: if ("a" === "a"): :>YES<: endif :>' .
+                                           '<: if ("a" === "b"): :>NO<: endif :>' . 
+                                           '<: if ("1" === 1): :>-YES<: endif :>' .
+                                           '<: if ("1" === 2): :>-NO<: endif :>');
         
         $goodLooking = new \Good\Looking\Looking($this->template);
         $goodLooking->display();
@@ -449,10 +453,43 @@ class GoodLookingTest extends PHPUnit_Framework_TestCase
      */
     public function testInequalityOperator()
     {
-        $this->expectOutputString('NO');
+        $this->expectOutputString('NO-NO');
         
         file_put_contents($this->template, '<: if ("a" != "a"): :>YES<: endif :>' .
-                                      '<: if ("a" != "b"): :>NO<: endif :>');
+                                           '<: if ("a" != "b"): :>NO<: endif :>' . 
+                                           '<: if ("1" != 1): :>-YES<: endif :>' .
+                                           '<: if ("1" != 2): :>-NO<: endif :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking->display();
+    }
+    
+    /**
+     * @depends testIfTrueLiteral
+     * @depends testDoubleIfOnOneLine
+     */
+    public function testOtherInequalityOperator()
+    {
+        $this->expectOutputString('NO-YES-NO');
+        
+        file_put_contents($this->template, '<: if ("a" !== "a"): :>YES<: endif :>' .
+                                           '<: if ("a" !== "b"): :>NO<: endif :>' . 
+                                           '<: if ("1" !== 1): :>-YES<: endif :>' .
+                                           '<: if ("1" !== 2): :>-NO<: endif :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking->display();
+    }
+    
+    /**
+     * @depends testIfTrueLiteral
+     * @depends testDoubleIfOnOneLine
+     */
+    public function testModulusOperator()
+    {
+        $this->expectOutputString('2');
+        
+        file_put_contents($this->template, '<: 42 % 5 :>');
         
         $goodLooking = new \Good\Looking\Looking($this->template);
         $goodLooking->display();
