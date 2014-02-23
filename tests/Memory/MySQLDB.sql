@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 04, 2013 at 09:03 PM
--- Server version: 5.5.29
--- PHP Version: 5.3.10-1ubuntu3.6
+-- Generation Time: Feb 23, 2014 at 04:59 AM
+-- Server version: 5.5.35
+-- PHP Version: 5.3.10-1ubuntu3.9
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -104,6 +104,35 @@ CREATE TABLE IF NOT EXISTS `inserttype` (
 --
 
 CREATE TABLE IF NOT EXISTS `othertype` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `yourint` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `parenttype1`
+--
+
+CREATE TABLE IF NOT EXISTS `parenttype1` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `myint` int(11) DEFAULT NULL,
+  `myfloat` float DEFAULT NULL,
+  `mytext` text,
+  `mydatetime` datetime DEFAULT NULL,
+  `myothertype` int(11) DEFAULT NULL,
+  `mycircular` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `parenttype2`
+--
+
+CREATE TABLE IF NOT EXISTS `parenttype2` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `yourint` int(11) NOT NULL,
   PRIMARY KEY (`id`)

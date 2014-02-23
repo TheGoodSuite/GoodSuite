@@ -37,9 +37,7 @@ abstract class GoodMannersDeleteTest extends PHPUnit_Framework_TestCase
         $service = new \Good\Service\Service();
         $service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');
         
-        require dirname(__FILE__) . '/../generated/BaseDeleteType.datatype.php';
-        
-        $service->requireClasses(array('DeleteType'));
+        require dirname(__FILE__) . '/../generated/DeleteType.datatype.php';
         
         require dirname(__FILE__) . '/../generated/DeleteTypeResolver.php';
     }
@@ -47,7 +45,6 @@ abstract class GoodMannersDeleteTest extends PHPUnit_Framework_TestCase
     public static function _tearDownAfterClass()
     {
         unlink(dirname(__FILE__) . '/../testInputFiles/DeleteType.datatype');
-        unlink(dirname(__FILE__) . '/../generated/BaseDeleteType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/DeleteType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/DeleteTypeResolver.php');
         unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');

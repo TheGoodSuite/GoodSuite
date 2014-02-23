@@ -37,9 +37,7 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         $service = new \Good\Service\Service();
         $service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');
         
-        require dirname(__FILE__) . '/../generated/BaseInsertType.datatype.php';
-        
-        $service->requireClasses(array('InsertType'));
+        require dirname(__FILE__) . '/../generated/InsertType.datatype.php';
         
         require dirname(__FILE__) . '/../generated/InsertTypeResolver.php';
     }
@@ -47,7 +45,6 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
     public static function _tearDownAfterClass()
     {
         unlink(dirname(__FILE__) . '/../testInputFiles/InsertType.datatype');
-        unlink(dirname(__FILE__) . '/../generated/BaseInsertType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/InsertType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/InsertTypeResolver.php');
         unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');

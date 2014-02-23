@@ -311,7 +311,7 @@ class SQLStorage extends Storage
             }
         }
         
-        $ret = new $type();
+        $ret = $this->storableFactory->createStorable($type);
         
         $denamifier = new FieldDenamifier($this);
         $storableData = $denamifier->denamifyFields($storableData, $ret);

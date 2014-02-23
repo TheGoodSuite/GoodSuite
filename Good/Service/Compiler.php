@@ -122,9 +122,7 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
         
         $this->includes = array();
         
-        // ucfirst: make first letter upper case
-        $this->output = 'abstract class Base' . \ucfirst($dataType->getName())
-                                                    . " extends GeneratedBaseClass\n";
+        $this->output = 'class ' . $dataType->getName() . " extends GeneratedBaseClass\n";
         
         $this->output .= "{\n";
         $this->inputFile = $dataType->getSourceFileName();
@@ -132,7 +130,7 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
         //       and escape some stuff
         // Note: This was previously based on the input file namespace
         //       But I changed it to dataType name instead
-        $this->outputFile = $this->outputDir . 'Base' . \ucfirst($dataType->getName()) . '.datatype.php';
+        $this->outputFile = $this->outputDir . $dataType->getName() . '.datatype.php';
     }
     
     private function saveOutput()
@@ -176,21 +174,7 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
         $this->output .= "\n";
         $this->output .= "?>";
         
-        
-        $contents  = '<?php' . "\n";
-        $contents .= "\n";
-        $contents .= 'class ' . $this->className . ' extends Base' . \ucfirst($this->className) . "\n";
-        $contents .= "{\n";
-        $contents .= "}\n";
-        $contents .= "\n";
-        $contents .= '?>' . "\n";
-        
         \file_put_contents($this->outputFile, $this->output);
-        
-        // TODO: make following line independant of execution path at any time
-        //       and escape some stuff
-        $file = $this->outputDir . $this->className . '.datatype.php';
-        \file_put_contents($file, $contents);
     }
     
     public function visitReferenceMember(Schema\ReferenceMember $member)

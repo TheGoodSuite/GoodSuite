@@ -49,11 +49,9 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         $service = new \Good\Service\Service();
         $service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');
         
-        require dirname(__FILE__) . '/../generated/BaseAdvancedUpdateType.datatype.php';
-        require dirname(__FILE__) . '/../generated/BaseYetAnotherType.datatype.php';
-        require dirname(__FILE__) . '/../generated/BaseThirdType.datatype.php';
-        
-        $service->requireClasses(array('AdvancedUpdateType', 'YetAnotherType', 'ThirdType'));
+        require dirname(__FILE__) . '/../generated/AdvancedUpdateType.datatype.php';
+        require dirname(__FILE__) . '/../generated/YetAnotherType.datatype.php';
+        require dirname(__FILE__) . '/../generated/ThirdType.datatype.php';
         
         require dirname(__FILE__) . '/../generated/AdvancedUpdateTypeResolver.php';
         require dirname(__FILE__) . '/../generated/YetAnotherTypeResolver.php';
@@ -65,9 +63,6 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         unlink(dirname(__FILE__) . '/../testInputFiles/AdvancedUpdateType.datatype');
         unlink(dirname(__FILE__) . '/../testInputFiles/YetAnotherType.datatype');
         unlink(dirname(__FILE__) . '/../testInputFiles/ThirdType.datatype');
-        unlink(dirname(__FILE__) . '/../generated/BaseAdvancedUpdateType.datatype.php');
-        unlink(dirname(__FILE__) . '/../generated/BaseYetAnotherType.datatype.php');
-        unlink(dirname(__FILE__) . '/../generated/BaseThirdType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/AdvancedUpdateType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/YetAnotherType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/ThirdType.datatype.php');

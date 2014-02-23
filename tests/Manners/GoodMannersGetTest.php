@@ -41,11 +41,8 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $service = new \Good\Service\Service();
         $service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');
         
-        require dirname(__FILE__) . '/../generated/BaseGetType.datatype.php';
-        require dirname(__FILE__) . '/../generated/BaseOtherType.datatype.php';
-        
-        $service->requireClasses(array('GetType', 'OtherType'));
-        //require dirname(__FILE__) . '/../generated/GetType.datatype.php';
+        require dirname(__FILE__) . '/../generated/GetType.datatype.php';
+        require dirname(__FILE__) . '/../generated/OtherType.datatype.php';
         
         require dirname(__FILE__) . '/../generated/GetTypeResolver.php';
         require dirname(__FILE__) . '/../generated/OtherTypeResolver.php';
@@ -55,8 +52,6 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     {
         unlink(dirname(__FILE__) . '/../testInputFiles/GetType.datatype');
         unlink(dirname(__FILE__) . '/../testInputFiles/OtherType.datatype');
-        unlink(dirname(__FILE__) . '/../generated/BaseGetType.datatype.php');
-        unlink(dirname(__FILE__) . '/../generated/BaseOtherType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/GetType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/OtherType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/GetTypeResolver.php');

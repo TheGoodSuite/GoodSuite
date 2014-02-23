@@ -33,15 +33,13 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         
         foreach ($types as $type => $path)
         {
-            require $this->outputDir . 'Base' . ucfirst($type) . '.datatype.php';
+            require $this->outputDir . $type . '.datatype.php';
         }
         
-        $service->requireClasses(array_keys($types));
         $this->files = array_merge($this->files, array_values($types));
         
         foreach ($types as $type => $path)
         {
-            $this->files[] = $this->outputDir . 'Base' . ucfirst($type) . '.datatype.php';
             $this->files[] = $this->outputDir . $type . '.datatype.php';
         }
         

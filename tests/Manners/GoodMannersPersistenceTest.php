@@ -27,9 +27,7 @@ abstract class GoodMannersPersistenceTest extends PHPUnit_Framework_TestCase
         $service = new \Good\Service\Service();
         $service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');
         
-        require dirname(__FILE__) . '/../generated/BasePersistenceType.datatype.php';
-        
-        $service->requireClasses(array('PersistenceType'));
+        require dirname(__FILE__) . '/../generated/PersistenceType.datatype.php';
         
         require dirname(__FILE__) . '/../generated/PersistenceTypeResolver.php';
     }
@@ -50,7 +48,6 @@ abstract class GoodMannersPersistenceTest extends PHPUnit_Framework_TestCase
         $db->query('TRUNCATE persistencetype');
         
         unlink(dirname(__FILE__) . '/../testInputFiles/PersistenceType.datatype');
-        unlink(dirname(__FILE__) . '/../generated/BasePersistenceType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/PersistenceType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/PersistenceTypeResolver.php');
         unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');

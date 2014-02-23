@@ -43,10 +43,8 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $service = new \Good\Service\Service();
         $service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');
         
-        require dirname(__FILE__) . '/../generated/BaseSimpleUpdateType.datatype.php';
-        require dirname(__FILE__) . '/../generated/BaseAnotherType.datatype.php';
-        
-        $service->requireClasses(array('SimpleUpdateType', 'AnotherType'));
+        require dirname(__FILE__) . '/../generated/SimpleUpdateType.datatype.php';
+        require dirname(__FILE__) . '/../generated/AnotherType.datatype.php';
         
         require dirname(__FILE__) . '/../generated/SimpleUpdateTypeResolver.php';
         require dirname(__FILE__) . '/../generated/AnotherTypeResolver.php';
@@ -56,8 +54,6 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
     {
         unlink(dirname(__FILE__) . '/../testInputFiles/SimpleUpdateType.datatype');
         unlink(dirname(__FILE__) . '/../testInputFiles/AnotherType.datatype');
-        unlink(dirname(__FILE__) . '/../generated/BaseSimpleUpdateType.datatype.php');
-        unlink(dirname(__FILE__) . '/../generated/BaseAnotherType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/SimpleUpdateType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/AnotherType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/SimpleUpdateTypeResolver.php');
