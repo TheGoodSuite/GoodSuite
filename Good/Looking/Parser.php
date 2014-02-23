@@ -243,14 +243,14 @@ class Parser
             
             if ($input != '' && preg_match('/^\\s*' . $this->grammar->controlStructureIf . '/', $input, $matches) === 1)
             {
-                // remove the processed part and determine next mode
+                // remove the processed part
                 $this->removeFromStart($input, $matches[0]);
                 
                 $statements[] = $this->parseIfStructure($matches['condition'], $input);
             }
             else if ($input != '' && preg_match('/^\\s*' . $this->grammar->controlStructureForrange . '/', $input, $matches) === 1)
             {
-                // remove the processed part and determine next mode
+                // remove the processed part
                 $this->removeFromStart($input, $matches[0]);
                 
                 $forVar = array_key_exists('forrangeVariable', $matches) ? $matches['forrangeVariable'] : null;
@@ -259,7 +259,7 @@ class Parser
             }
             else if ($input != '' && preg_match('/^\\s*' . $this->grammar->controlStructureForeach . '/', $input, $matches) === 1)
             {
-                // remove the processed part and determine next mode
+                // remove the processed part
                 $this->removeFromStart($input, $matches[0]);
                 
                 $statements[] = $this->parseForeachStructure($matches['foreachArray'], $matches['foreachVariable'], $input);
