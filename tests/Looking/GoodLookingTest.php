@@ -80,7 +80,7 @@ class GoodLookingTest extends PHPUnit_Framework_TestCase
     }
     
     public function testOutputFloatLiteral()
-    {        
+    {
         $this->expectOutputString('123.456');
         
         file_put_contents($this->template, '<: 123.456 :>');
@@ -1121,6 +1121,45 @@ class GoodLookingTest extends PHPUnit_Framework_TestCase
         $this->expectOutputString('3');
         
         file_put_contents($this->template, '<: forrange(4 --> 6 as $i): endforrange; $i :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking->display();
+    }
+    
+    /*
+     * @depends testOutputIntVariable
+     */
+    public function testVariableAssignment()
+    {
+        $this->expectOutputString('6');
+        
+        file_put_contents($this->template, '<: $a = 6; $a :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking->display();
+    }
+    
+    /*
+     * @depends testOutputIntVariable
+     */
+    public function testMultipleVariableAssignment()
+    {
+        $this->expectOutputString('666');
+        
+        file_put_contents($this->template, '<: $a = $b = $c = 6; $a; $b; $c :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking->display();
+    }
+    
+    /*
+     * @depends testOutputIntVariable
+     */
+    public function testMultipleSeperateVariableAssignment()
+    {
+        $this->expectOutputString('5610');
+        
+        file_put_contents($this->template, '<: $a = 5; $b = 6; $c = $a + 5; $a; $b; $c :>');
         
         $goodLooking = new \Good\Looking\Looking($this->template);
         $goodLooking->display();

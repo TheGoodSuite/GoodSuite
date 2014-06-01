@@ -23,25 +23,31 @@ class ForrangeStructure extends ElementWithStatements
     
     public function execute(Environment $environment)
     {
-        $counter = $environment->getTemplateVar();
-        $from = $environment->getTemplateVar();
-        $to = $environment->getTemplateVar();
-        $delta = $environment->getTemplateVar();
+        $from = $environment->getNewHiddenVar();
+        $to = $environment->getNewHiddenVar();
+        $delta = $environment->getNewHiddenVar();
         
-        $out  = '$this->templateVars[' . $from . '] = intval(' . $this->evaluate($this->from) . '); ';
-        $out .= '$this->templateVars[' . $to . '] = intval(' . $this->evaluate($this->to) . '); ';
-        $out .= '$this->templateVars[' . $delta . '] = $this->templateVars[' . $from . '] < ' .
-                    '$this->templateVars[' . $to . '] ? 1 : -1; ';
+        $out = '';
         
         if ($this->counter != null)
         {
-            $out .= '$this->registerSpecialVar("' . $this->counter . '", ' . $counter . ');';
+            $out .= '$this->checkVarName("' . $this->counter . '");';
+            $counter = '$this->automaticVars["' . $this->counter . '"]';
+        }
+        else
+        {
+            $counter = '$this->hiddenVars[' . $environment->getNewHiddenVar() . ']';
         }
         
-        $out .= 'for ($this->templateVars[' . $counter . '] = $this->templateVars[' . $from . ']; ' . 
-                    '$this->templateVars[' . $counter . '] * $this->templateVars[' . $delta . '] <= ' .
-                      '$this->templateVars[' . $to . '] * $this->templateVars[' . $delta . ']; ' .
-                       '$this->templateVars[' . $counter . '] += $this->templateVars[' . $delta . ']):';
+        $out .= '$this->hiddenVars[' . $from . '] = intval(' . $this->evaluate($this->from) . '); ';
+        $out .= '$this->hiddenVars[' . $to . '] = intval(' . $this->evaluate($this->to) . '); ';
+        $out .= '$this->hiddenVars[' . $delta . '] = $this->hiddenVars[' . $from . '] < ' .
+                    '$this->hiddenVars[' . $to . '] ? 1 : -1; ';
+        
+        $out .= 'for (' . $counter . ' = $this->hiddenVars[' . $from . ']; ' . 
+                    $counter . ' * $this->hiddenVars[' . $delta . '] <= ' .
+                      '$this->hiddenVars[' . $to . '] * $this->hiddenVars[' . $delta . ']; ' .
+                       $counter . ' += $this->hiddenVars[' . $delta . ']):';
         
         foreach ($this->statements as $statement)
         {
@@ -49,7 +55,7 @@ class ForrangeStructure extends ElementWithStatements
         }
         
         $out .= 'endfor; ';
-        $out .= '$this->templateVars[' . $counter . '] -= $this->templateVars[' . $from . '];';
+        $out .= $counter . ' -= $this->hiddenVars[' . $from . '];';
         
         return $out;
     }

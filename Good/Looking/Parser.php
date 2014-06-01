@@ -195,7 +195,7 @@ class Parser
         while ($parseable && $input != '')
         {
             while ($input !== '' && ($this->inTextMode ||
-                      \preg_match('/^\\s*(?:' . $this->grammar->expression . '|\\s*)' . $regexTerminator . '/', $input, $matches) === 1))
+                      \preg_match('/^\\s*(?:' . $this->grammar->statement . '|\\s*)' . $regexTerminator . '/', $input, $matches) === 1))
             {
                 if ($this->inTextMode)
                 {
@@ -223,9 +223,9 @@ class Parser
                 }
                 else
                 {
-                    // if $matches['expression'] does not exist, this is
+                    // if $matches['statement'] does not exist, this is
                     // an empty statement (only whitespace), which means we only have to discard
-                    if (array_key_exists('expression', $matches))
+                    if (array_key_exists('statement', $matches))
                     {
                         // Make a statment out of entire match except the terminating symbol 
                         // (= statement ender, script delimiter or end of input)

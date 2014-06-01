@@ -21,10 +21,8 @@ class ForeachStructure extends ElementWithStatements
     
     public function execute(Environment $environment)
     {
-        $counter = $environment->getTemplateVar();
-        
-        $out  = '$this->registerSpecialVar("' . $this->varName . '", ' . $counter . '); ';
-        $out .= 'foreach(' . $this->evaluate($this->arrayStatement) . ' as $this->templateVars[' . $counter . ']): ';
+        $out  = '$this->checkVarName("' . $this->varName . '"); ';
+        $out .= 'foreach(' . $this->evaluate($this->arrayStatement) . ' as $this->automaticVars["' . $this->varName . '"]): ';
         
         foreach ($this->statements as $statement)
         {

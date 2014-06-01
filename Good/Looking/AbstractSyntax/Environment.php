@@ -4,13 +4,13 @@ namespace Good\Looking\AbstractSyntax;
 
 class Environment
 {
-    private $templateVars = 0;
+    private $hiddenVars = 0;
     
-    public function getTemplateVar()
+    public function getNewHiddenVar()
     {
-        $this->templateVars++;
+        $this->hiddenVars++;
         
-        return $this->templateVars - 1;
+        return $this->hiddenVars - 1;
     }
 }
 

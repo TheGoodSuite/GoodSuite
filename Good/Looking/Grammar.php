@@ -30,6 +30,8 @@ Class Grammar
     public $script;
     public $comment;
     public $literalString;
+    public $variableAssignment;
+    public $statement;
     
     // monkey dancers
     public $variable;
@@ -81,6 +83,8 @@ Class Grammar
                                                 $this->commentDelimiterRight;
         $this->literalString = '(?:' . $this->stringDouble . ')|(?:' . 
                                 $this->stringSingle . ')';
+        
+        $this->variableAssignment = '\\$(?P<assignVarName>' . $this->varName . ')\\s*=\\s*';
         
         // regexes that are going to do the monkey dance (preventing double definitions in
         // circular references). Here they are stored in their pre-monkey dance variables
@@ -139,6 +143,8 @@ Class Grammar
         $this->controlStructureForeach = '(?:(?i:foreach)\s*\(\\s*(?P<foreachArray>' . $this->expression . 
                                                 ')\\s+(?i:as)\\s+\$(?P<foreachVariable>' . $this->varName . ')\))\s*:';
         $this->controlStructureEndForeach = '(?i:endforeach)';
+        
+        $this->statement = '(?P<statement>(' . $this->variableAssignment . ')*' . $this->expression . ')';
     }
     
     private function str_replace_once($search, $replace, $subject)
