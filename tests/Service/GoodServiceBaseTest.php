@@ -135,6 +135,184 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     /**
      * @depends testIntProperty
      */
+    public function testIntGetter()
+    {
+        file_put_contents($this->inputDir . 'MyType.datatype',
+                            'int myInt');
+        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+        
+        $myType = new MyType();
+        $myType->myInt = 5;
+        
+        $this->assertEquals($myType->getMyInt(), 5);
+        $this->assertInternalType('int', $myType->myInt);
+    }
+    
+    /**
+     * @depends testFloatProperty
+     */
+    public function testFloatGetter()
+    {
+        file_put_contents($this->inputDir . 'MyType.datatype',
+                            'float myFloat');
+        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+        
+        $myType = new MyType();
+        $myType->myFloat = 5.5;
+        
+        $this->assertEquals($myType->getMyFloat(), 5.5);
+        $this->assertInternalType('float', $myType->myFloat);
+    }
+    
+    /**
+     * @depends testTextProperty
+     */
+    public function testTextGetter()
+    {
+        file_put_contents($this->inputDir . 'MyType.datatype',
+                            'text myText');
+        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+        
+        $myType = new MyType();
+        $myType->myText = "Hello World!";
+        
+        $this->assertEquals($myType->getMyText(), "Hello World!");
+        $this->assertInternalType('string', $myType->myText);
+    }
+    
+    /**
+     * @depends testDatetimeProperty
+     */
+    public function testDatetimeGetter()
+    {
+        file_put_contents($this->inputDir . 'MyType.datatype',
+                            'datetime myDatetime');
+        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+        
+        $myType = new MyType();
+        $date = new \DateTime();
+        $myType->myDatetime = $date;
+        
+        $this->assertEquals($myType->getMyDatetime(), $date);
+        $this->assertInstanceOf('\\DateTime', $myType->myDatetime);
+    }
+    
+    /**
+     * @depends testReferenceProperty
+     */
+    public function testReferenceGetter()
+    {
+        file_put_contents($this->inputDir . 'ReferencedType.datatype',
+                            'int justAnInt');
+        
+        file_put_contents($this->inputDir . 'ReferenceType.datatype',
+                            '"ReferencedType" reference');
+                            
+        $this->compile(array('ReferencedType' => $this->inputDir . 'ReferencedType.datatype',
+                             'ReferenceType' => $this->inputDir . 'ReferenceType.datatype'));
+        
+        $reference = new ReferencedType();
+        $reference->justAnInt = 45;
+        
+        $referer = new ReferenceType();
+        $referer->reference = $reference;
+        
+        $this->assertEquals($referer->getReference(), $reference);
+        $this->assertInstanceOf('ReferencedType', $referer->reference);
+    }
+    
+    /**
+     * @depends testIntProperty
+     */
+    public function testIntSetter()
+    {
+        file_put_contents($this->inputDir . 'MyType.datatype',
+                            'int myInt');
+        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+        
+        $myType = new MyType();
+        $myType->setMyInt(5);
+        
+        $this->assertEquals($myType->myInt, 5);
+        $this->assertInternalType('int', $myType->myInt);
+    }
+    
+    /**
+     * @depends testFloatProperty
+     */
+    public function testFloatSetter()
+    {
+        file_put_contents($this->inputDir . 'MyType.datatype',
+                            'float myFloat');
+        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+        
+        $myType = new MyType();
+        $myType->setMyFloat(5.5);
+        
+        $this->assertEquals($myType->myFloat, 5.5);
+        $this->assertInternalType('float', $myType->myFloat);
+    }
+    
+    /**
+     * @depends testTextProperty
+     */
+    public function testTextSetter()
+    {
+        file_put_contents($this->inputDir . 'MyType.datatype',
+                            'text myText');
+        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+        
+        $myType = new MyType();
+        $myType->setMyText("Hello World!");
+        
+        $this->assertEquals($myType->myText, "Hello World!");
+        $this->assertInternalType('string', $myType->myText);
+    }
+    
+    /**
+     * @depends testDatetimeProperty
+     */
+    public function testDatetimeSetter()
+    {
+        file_put_contents($this->inputDir . 'MyType.datatype',
+                            'datetime myDatetime');
+        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+        
+        $myType = new MyType();
+        $date = new \DateTime();
+        $myType->setMyDatetime($date);
+        
+        $this->assertEquals($myType->myDatetime, $date);
+        $this->assertInstanceOf('\\DateTime', $myType->myDatetime);
+    }
+    
+    /**
+     * @depends testReferenceProperty
+     */
+    public function testReferenceSetter()
+    {
+        file_put_contents($this->inputDir . 'ReferencedType.datatype',
+                            'int justAnInt');
+        
+        file_put_contents($this->inputDir . 'ReferenceType.datatype',
+                            '"ReferencedType" reference');
+                            
+        $this->compile(array('ReferencedType' => $this->inputDir . 'ReferencedType.datatype',
+                             'ReferenceType' => $this->inputDir . 'ReferenceType.datatype'));
+        
+        $reference = new ReferencedType();
+        $reference->justAnInt = 45;
+        
+        $referer = new ReferenceType();
+        $referer->setReference($reference);
+        
+        $this->assertEquals($referer->reference, $reference);
+        $this->assertInstanceOf('ReferencedType', $referer->reference);
+    }
+    
+    /**
+     * @depends testIntProperty
+     */
     public function testPHPTags()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',

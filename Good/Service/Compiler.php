@@ -326,32 +326,43 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
         // accessors
         
         //getter
-        $this->getters .= '            case \'' . $member->getName() . "':\n";
+        $this->output .= '    function get' . \ucfirst($member->getName()) . "()\n";
+        $this->output .= "    {\n";
         
         foreach ($this->modifiers as $modifier)
         {
-            $this->getters .= $modifier->getterBegin();
+            $this->output .= $modifier->getterBegin();
         }
         
-        $this->getters .= '                return $this->' . $member->getName() . ";\n";
-        
+        $this->output .= '        return $this->' . $member->getName() . ";\n";
+        $this->output .= "    }\n";
+        $this->output .= "    \n";
+
+        $this->getters .= '            case \'' . $member->getName() . "':\n";
+        $this->getters .= '                return $this->get' . \ucfirst($member->getName()) . "();\n";
         $this->getters .= "            \n";
         
         //setter
+        $this->output .= '    function set' . \ucfirst($member->getName()) . '($value)' . "\n";
+        $this->output .= "    {\n";
+        
+        foreach ($this->modifiers as $modifier)
+        {
+            $this->output .= $modifier->setterBegin();
+        }
+        
+        $this->output .= '        $this->' . $member->getName() . ' = $value;' . "\n";
+        
+        foreach ($this->modifiers as $modifier)
+        {
+            $this->output .= $modifier->setterEnd();
+        }
+        
+        $this->output .= "    }\n";
+        $this->output .= "    \n";
+
         $this->setters .= '            case \'' . $member->getName() . "':\n";
-        
-        foreach ($this->modifiers as $modifier)
-        {
-            $this->setters .= $modifier->setterBegin();
-        }
-        
-        $this->setters .= '                $this->' . $member->getName() . ' = $value;' . "\n";
-        
-        foreach ($this->modifiers as $modifier)
-        {
-            $this->setters .= $modifier->setterEnd();
-        }
-        
+        $this->setters .= '                $this->set' . \ucfirst($member->getName()) . '($value);' . "\n";
         $this->setters .= "                break;\n";
         $this->setters .= "            \n";
     }
