@@ -62,8 +62,6 @@ class ForrangeStructure extends ElementWithStatements
             $out .= '$this->freedAutomaticVars["' . $this->counter . '"] = true;';
         }
         
-        $out .= $counter . ' -= $this->hiddenVars[' . $from . '];';
-        
         return $out;
     }
 }

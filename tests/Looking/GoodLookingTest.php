@@ -1092,8 +1092,6 @@ class GoodLookingTest extends PHPUnit_Framework_TestCase
     
     public function testForrangeAs()
     {
-        // control structures without dropping out of code mode, no semicolons
-        
         $this->expectOutputString('456');
         
         file_put_contents($this->template, '<: forrange(4 --> 6 as $i): $i; endforrange; :>');
@@ -1104,8 +1102,6 @@ class GoodLookingTest extends PHPUnit_Framework_TestCase
     
     public function testForrangeAsPostLoopZeroBased()
     {
-        // control structures without dropping out of code mode, no semicolons
-        
         $this->expectOutputString('7');
         
         file_put_contents($this->template, '<: forrange(0 --> 6 as $i): endforrange; $i; :>');
@@ -1116,9 +1112,7 @@ class GoodLookingTest extends PHPUnit_Framework_TestCase
     
     public function testForrangeAsPostLoopNonZeroBased()
     {
-        // control structures without dropping out of code mode, no semicolons
-        
-        $this->expectOutputString('3');
+        $this->expectOutputString('7');
         
         file_put_contents($this->template, '<: forrange(4 --> 6 as $i): endforrange; $i :>');
         
