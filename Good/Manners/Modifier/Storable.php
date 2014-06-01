@@ -303,24 +303,24 @@ class Storable implements \Good\Service\Modifier
     }
     public function getterBegin()
     {
-        $res  = '                $this->GMMStorable_checkValidationToken();' . "\n";
-        $res .= "                \n";
+        $res  = '        $this->GMMStorable_checkValidationToken();' . "\n";
+        $res .= "        \n";
         
         return $res;
     }
     public function setterBegin()
     {
-        $res  = '                $this->GMMStorable_checkValidationToken();' . "\n";
-        $res .= "                \n";
+        $res  = '        $this->GMMStorable_checkValidationToken();' . "\n";
+        $res .= "        \n";
         
         return $res;
     }
     public function setterEnd()
     {
-        $res  = "                \n";
+        $res  = "        \n";
         // ucfirst: upper case first letter (it's a php built-in)
-        $res .= '                $this->is' . \ucfirst($this->classVariable) . 'Dirty = true;' . "\n";
-        $res .= '                $this->GMMStorable_makeDirty();' . "\n";
+        $res .= '        $this->is' . \ucfirst($this->classVariable) . 'Dirty = true;' . "\n";
+        $res .= '        $this->GMMStorable_makeDirty();' . "\n";
         
         return $res;
     }
