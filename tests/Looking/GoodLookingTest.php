@@ -1164,6 +1164,52 @@ class GoodLookingTest extends PHPUnit_Framework_TestCase
         $goodLooking = new \Good\Looking\Looking($this->template);
         $goodLooking->display();
     }
+    
+    /*
+     * @depends testForrangeAs
+     */
+    public function testForrangeReuse()
+    {
+        $this->expectOutputString('12a1a2');
+        
+        file_put_contents($this->template, '<: forrange (1 --> 2 as $i): $i; endforrange; forrange(1-->2 as $i): "a"; $i; endforrange :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking->display();
+    }
+    
+    /*
+     * @depends testForreach
+     * @depends testArrayAccessIntKey
+     */
+    public function testForeachReuse()
+    {
+        $this->expectOutputString('abqaqb');
+        
+        file_put_contents($this->template, '<: foreach ($arr as $a): $a; endforeach; foreach($arr as $a): "q"; $a; endforeach :>');
+        
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking->registerVar('arr', array('a', 'b'));
+        $goodLooking->display();
+    }
+    
+    /*
+     * @depends testForrangeAs
+     * @depends testForreach
+     * @depends testArrayAccessIntKey
+     */
+    public function testForeachForrangeMixedReuse()
+    {
+        $this->expectOutputString('abq1q2');
+        
+        file_put_contents($this->template, '<: foreach ($arr as $a): $a; endforeach; forrange(1-->2 as $a): "q"; $a; endforrange :>');
+        
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking->registerVar('arr', array('a', 'b'));
+        $goodLooking->display();
+    }
 }
 
 ?>

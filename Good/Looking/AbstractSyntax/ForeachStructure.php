@@ -29,7 +29,7 @@ class ForeachStructure extends ElementWithStatements
             $out .= $statement->execute($environment);
         }
         
-        $out .= 'endforeach; ';
+        $out .= 'endforeach; $this->freedAutomaticVars["' . $this->varName . '"] = true;';
         
         return $out;
     }

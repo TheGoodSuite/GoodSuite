@@ -8,6 +8,7 @@ class Interpreter
     private $compiledTemplate;
     
     private $automaticVars = array();
+    private $freedAutomaticVars = array();
     private $hiddenVars = array();
     private $templateVars = array();
     private $userVars = array();
@@ -80,7 +81,11 @@ class Interpreter
         }
         else if (isset($this->automaticVars[$varName]))
         {
-            throw new \Exception("Can't use existing automatic variable for loop");
+            // allow reuse of automatic variables *after* loop
+            if (!isset($this->freedAutomaticVars[$varName]) || !$this->freedAutomaticVars[$varName])
+            {
+                throw new \Exception("Can't re-use automatic variable until first loop is done");
+            }
         }
         else if (isset($this->userVars[$varName]))
         {
