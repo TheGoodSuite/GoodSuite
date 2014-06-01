@@ -148,12 +148,12 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
     private function saveOutput()
     {
         $this->getters .= '            default:' . "\n";
-        $this->getters .= '                throw new \Exception("Unknown property");' . "\n";
+        $this->getters .= '                throw new \Exception("Unknown or non-public property");' . "\n";
         $this->getters .= "        }\n";
         $this->getters .= "    }\n";
         
         $this->setters .= '            default:' . "\n";
-        $this->setters .= '                throw new \Exception("Unknown property");' . "\n";
+        $this->setters .= '                throw new \Exception("Unknown or non-public property");' . "\n";
         $this->setters .= "        }\n";
         $this->setters .= "    }\n";
         
@@ -326,7 +326,7 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
         // accessors
         
         //getter
-        $this->output .= '    function get' . \ucfirst($member->getName()) . "()\n";
+        $this->output .= '    ' . $access . ' function get' . \ucfirst($member->getName()) . "()\n";
         $this->output .= "    {\n";
         
         foreach ($this->modifiers as $modifier)
@@ -338,12 +338,15 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
         $this->output .= "    }\n";
         $this->output .= "    \n";
 
-        $this->getters .= '            case \'' . $member->getName() . "':\n";
-        $this->getters .= '                return $this->get' . \ucfirst($member->getName()) . "();\n";
-        $this->getters .= "            \n";
+        if ($access == 'public')
+        {
+            $this->getters .= '            case \'' . $member->getName() . "':\n";
+            $this->getters .= '                return $this->get' . \ucfirst($member->getName()) . "();\n";
+            $this->getters .= "            \n";
+        }
         
         //setter
-        $this->output .= '    function set' . \ucfirst($member->getName()) . '($value)' . "\n";
+        $this->output .= '    ' . $access . ' function set' . \ucfirst($member->getName()) . '($value)' . "\n";
         $this->output .= "    {\n";
         
         foreach ($this->modifiers as $modifier)
@@ -360,11 +363,14 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
         
         $this->output .= "    }\n";
         $this->output .= "    \n";
-
-        $this->setters .= '            case \'' . $member->getName() . "':\n";
-        $this->setters .= '                $this->set' . \ucfirst($member->getName()) . '($value);' . "\n";
-        $this->setters .= "                break;\n";
-        $this->setters .= "            \n";
+        
+        if ($access == 'public')
+        {
+            $this->setters .= '            case \'' . $member->getName() . "':\n";
+            $this->setters .= '                $this->set' . \ucfirst($member->getName()) . '($value);' . "\n";
+            $this->setters .= "                break;\n";
+            $this->setters .= "            \n";
+        }
     }
 }
 

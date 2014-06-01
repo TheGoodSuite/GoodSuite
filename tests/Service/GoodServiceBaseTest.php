@@ -328,12 +328,9 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     
     /**
      * @depends testIntProperty
-     *
-    public function testThereIsNoPrivateBug()
+     */
+    public function testPrivateGetterSetter()
     {
-        // First off, there is no more implementation of private (see #62)
-        // Secondly, this way of testing no longer works at all, so we'll just fail.
-        $this->assertTrue(false);
         file_put_contents($this->inputDir . 'MyType.datatype',
                             '[private] int myInt');
         $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
@@ -347,17 +344,45 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     
     /**
      * @depends testIntProperty
-     *
-    public function testThereIsNoProtectedBug()
+     */
+    public function testThereIsNoPrivatePropertyGet()
     {
-        // First off, there is no more implementation of protected (see #62)
-        // Secondly, this way of testing no longer works at all, so we'll just fail.
-        $this->assertTrue(false);
+        file_put_contents($this->inputDir . 'MyType.datatype',
+                            '[private] int myInt');
+        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+        
+        // Private is actually protected...
+        $val = new MyType();
+        
+        $this->setExpectedException('Exception', 'Unknown or non-public property');
+        $int = $val->myInt;
+    }
+    
+    /**
+     * @depends testIntProperty
+     */
+    public function testThereIsNoPrivatePropertySet()
+    {
+        file_put_contents($this->inputDir . 'MyType.datatype',
+                            '[private] int myInt');
+        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+        
+        // Private is actually protected...
+        $val = new MyType();
+        
+        $this->setExpectedException('Exception', 'Unknown or non-public property');
+        $val->myInt = 4;
+    }
+    
+    /**
+     * @depends testIntProperty
+     */
+    public function testProtectedGetterSetter()
+    {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             '[protected] int myInt');
         $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
         
-        // Private is actually protected...
         $reflection = new \ReflectionMethod('MyType', 'getMyInt');
         $this->assertTrue($reflection->isProtected());
         $reflection = new \ReflectionMethod('MyType', 'setMyInt');
@@ -366,11 +391,41 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     
     /**
      * @depends testIntProperty
-     *
-    public function testPublicProperty()
+     */
+    public function testThereIsNoProtectedPropertyGet()
     {
-        // This can't be tested this way anymore, but I'll leave this test for
-        // until I think of a proper way to test for this (and perhaps for when #62 is solved)
+        file_put_contents($this->inputDir . 'MyType.datatype',
+                            '[private] int myInt');
+        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+        
+        // Private is actually protected...
+        $val = new MyType();
+        
+        $this->setExpectedException('Exception', 'Unknown or non-public property');
+        $int = $val->myInt;
+    }
+    
+    /**
+     * @depends testIntProperty
+     */
+    public function testThereIsNoProtectedPropertySet()
+    {
+        file_put_contents($this->inputDir . 'MyType.datatype',
+                            '[private] int myInt');
+        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+        
+        // Private is actually protected...
+        $val = new MyType();
+        
+        $this->setExpectedException('Exception', 'Unknown or non-public property');
+        $val->myInt = 4;
+    }
+    
+    /**
+     * @depends testIntProperty
+     */
+    public function testPublicGetterSetter()
+    {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             '[public] int myInt');
         $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
@@ -381,7 +436,22 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         $reflection = new \ReflectionMethod('MyType', 'setMyInt');
         $this->assertTrue($reflection->isPublic());
     }
-    */
+    
+    /**
+     * @depends testIntProperty
+     */
+    public function testDefaultIsPublicGetterSetter()
+    {
+        file_put_contents($this->inputDir . 'MyType.datatype',
+                            'int myInt');
+        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+        
+        // Private is actually protected...
+        $reflection = new \ReflectionMethod('MyType', 'getMyInt');
+        $this->assertTrue($reflection->isPublic());
+        $reflection = new \ReflectionMethod('MyType', 'setMyInt');
+        $this->assertTrue($reflection->isPublic());
+    }
 }
 
 ?>
