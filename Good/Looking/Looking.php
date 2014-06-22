@@ -81,7 +81,8 @@ class Looking
         }
         
         $interpreter = new Interpreter($this->templateFileName . '.compiledTemplate', 
-                                       $this->registeredVars);
+                                       $this->registeredVars,
+                                       new FunctionHelper());
         
         $interpreter->interpret();
     }

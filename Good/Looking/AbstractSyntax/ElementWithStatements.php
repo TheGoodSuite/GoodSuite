@@ -124,7 +124,7 @@ abstract class ElementWithStatements implements Element
                 
                 $output .= '$this->functionHandlers["' . 
                              \addslashes($environment->getFunctionHandlerForFunction($functionName)) . 
-                             '"]->handleFunction("' . $functionName . '", array(';
+                             '"]->handleFunction("' . $functionName . '", $this->functionHelper, array(';
                 
                 $first = true;
                 

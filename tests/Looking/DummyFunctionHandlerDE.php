@@ -13,7 +13,7 @@ class DummyFunctionHandlerDE implements \Good\Looking\FunctionHandler
         return array('d', 'e');
     }
     
-    function handleFunction($f, array $args)
+    function handleFunction($f, \Good\Looking\FunctionHelper $helper, array $args)
     {
         if ($f == 'd')
         {

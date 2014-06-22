@@ -3,6 +3,7 @@
 namespace Good\Looking\FunctionHandlers;
 
 use Good\Looking\FunctionHandler;
+use Good\Looking\FunctionHelper;
 
 class NoEscape implements FunctionHandler
 {
@@ -15,9 +16,9 @@ class NoEscape implements FunctionHandler
         return array('noEscape');
     }
     
-    public function handleFunction($f, array $args)
+    public function handleFunction($function, FunctionHelper $helper, array $arguments)
     {
-        echo $args[0];
+        echo $arguments[0];
         return '';
     }
 }

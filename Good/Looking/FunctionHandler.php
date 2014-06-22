@@ -17,7 +17,7 @@ interface FunctionHandler
 {
     public function __construct();
     public function getHandledfunctions();
-    public function handleFunction($functionName, array $arguments);
+    public function handleFunction($functionName, FunctionHelper $helper, array $arguments);
 }
 
 ?>

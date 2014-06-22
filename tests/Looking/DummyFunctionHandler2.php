@@ -11,7 +11,7 @@ class DummyFunctionHandler2 implements \Good\Looking\FunctionHandler
         return array('inc');
     }
     
-    function handleFunction($f, array $args)
+    function handleFunction($f, \Good\Looking\FunctionHelper $helper, array $args)
     {
         if ($f == 'inc')
         {

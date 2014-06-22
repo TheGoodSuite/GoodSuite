@@ -11,7 +11,7 @@ class DummyFunctionHandler4 implements \Good\Looking\FunctionHandler
         return array('b');
     }
     
-    function handleFunction($f, array $args)
+    function handleFunction($f, \Good\Looking\FunctionHelper $helper, array $args)
     {
         return 'Handler4';
     }

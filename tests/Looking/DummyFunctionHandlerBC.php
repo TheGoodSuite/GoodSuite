@@ -15,7 +15,7 @@ class DummyFunctionHandlerBC implements \Good\Looking\FunctionHandler
         return array('b', 'c');
     }
     
-    function handleFunction($f, array $args)
+    function handleFunction($f, \Good\Looking\FunctionHelper $helper, array $args)
     {
         if ($f == 'b')
         {

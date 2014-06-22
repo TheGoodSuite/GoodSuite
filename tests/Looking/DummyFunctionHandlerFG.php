@@ -13,7 +13,7 @@ class DummyFunctionHandlerFG implements \Good\Looking\FunctionHandler
         return array('f', 'g');
     }
     
-    function handleFunction($f, array $args)
+    function handleFunction($f, \Good\Looking\FunctionHelper $helper, array $args)
     {
         if ($f == 'f')
         {

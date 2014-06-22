@@ -13,7 +13,7 @@ class DummyFunctionHandler6 implements \Good\Looking\FunctionHandler
         return array('set', 'get');
     }
     
-    function handleFunction($f, array $args)
+    function handleFunction($f, \Good\Looking\FunctionHelper $helper, array $args)
     {
         if ($f == 'set')
         {

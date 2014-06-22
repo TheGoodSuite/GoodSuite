@@ -13,11 +13,13 @@ class Interpreter
     private $templateVars = array();
     private $userVars = array();
     private $functionHandlers = array();
+    private $functionHelper;
     
-    public function __construct($compiledTemplate, $vars)
+    public function __construct($compiledTemplate, $vars, $functionHelper)
     {
         $this->compiledTemplate = $compiledTemplate;
         $this->templateVars = $vars;
+        $this->functionHelper = $functionHelper;
     }
     
     public function interpret()
