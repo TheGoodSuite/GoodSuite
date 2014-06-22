@@ -8,8 +8,6 @@ class DummyFunctionHandlerFG implements \Good\Looking\FunctionHandler
     {
     }
     
-    private $var = 0;
-    
     function getHandledFunctions()
     {
         return array('f', 'g');
