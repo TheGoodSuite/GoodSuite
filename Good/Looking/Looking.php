@@ -71,19 +71,23 @@ class Looking
             throw new \Exception('Template not found.');
         }
         
-        if (!\file_exists($this->templateFileName . '.compiledTemplate') ||
-                    \filemtime($this->templateFileName) > \filemtime($this->templateFileName . '.compiledTemplate'))
+        $this->compileIfNecessary($this->templateFileName);
+        
+        $interpreter = new Interpreter($this->registeredVars);
+        
+        $interpreter->interpret($this->templateFileName . '.compiledTemplate',
+                                new FunctionHelper($this, $interpreter, $this->templateFileName));
+    }
+    
+    public function compileIfNecessary($template)
+    {
+        if (!\file_exists($template . '.compiledTemplate') ||
+                    \filemtime($template) > \filemtime($template . '.compiledTemplate'))
         {
             $environment = new Environment($this->functionHandlers, $this->functions);
             
             $compiler = new Compiler($this->grammar, $environment);
-            $compiler->compile($this->templateFileName, $this->templateFileName . '.compiledTemplate');
+            $compiler->compile($template, $template . '.compiledTemplate');
         }
-        
-        $interpreter = new Interpreter($this->templateFileName . '.compiledTemplate', 
-                                       $this->registeredVars,
-                                       new FunctionHelper());
-        
-        $interpreter->interpret();
     }
 }

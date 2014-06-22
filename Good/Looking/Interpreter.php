@@ -4,27 +4,26 @@ namespace Good\Looking;
 
 class Interpreter
 {
-    // filename of template file
-    private $compiledTemplate;
-    
     private $automaticVars = array();
+    private $automaticVarsStack = array();
     private $freedAutomaticVars = array();
+    private $freedAutomaticVarsStack = array();
     private $hiddenVars = array();
+    private $hiddenVarsStack = array();
     private $templateVars = array();
     private $userVars = array();
     private $functionHandlers = array();
     private $functionHelper;
     
-    public function __construct($compiledTemplate, $vars, $functionHelper)
+    public function __construct($vars)
     {
-        $this->compiledTemplate = $compiledTemplate;
         $this->templateVars = $vars;
-        $this->functionHelper = $functionHelper;
     }
     
-    public function interpret()
+    public function interpret($compiledTemplate, FunctionHelper $functionHelper)
     {
-        require $this->compiledTemplate;
+        $this->functionHelper = $functionHelper;
+        require $compiledTemplate;
     }
     
     //
@@ -105,5 +104,26 @@ class Interpreter
     private function arrayItem($array, $item)
     {
         return $array[$item];
+    }
+    
+    //
+    // Functions that should be called by a function helper
+    //
+    
+    public function pushContext()
+    {
+        $this->hiddenVarsStack[] = $this->hiddenVars;
+        $this->automaticVarsStack[] = $this->automaticVars;
+        $this->freedAutomaticVarsStack[] = $this->freedAutomaticVars;
+        $this->hiddenVars = array();
+        $this->automaticVars = array();
+        $this->freedAutomaticVars = array();
+    }
+    
+    public function popContext()
+    {
+        $this->hiddenVars = array_pop($this->hiddenVarsStack);
+        $this->automaticVars = array_pop($this->automaticVarsStack);
+        $this->freedAutomaticVars = array_pop($this->freedAutomaticVarsStack);
     }
 }

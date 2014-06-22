@@ -20,7 +20,6 @@ Class Compiler
         $file = \fopen($output, 'w+');
         \fwrite($file, $compiledTemplate);
         \fclose($file);
-        
     }
     
     private function compileTemplate($input)
