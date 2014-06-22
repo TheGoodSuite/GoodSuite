@@ -1319,6 +1319,18 @@ class GoodLookingTest extends PHPUnit_Framework_TestCase
         $goodLooking->registerVar('r', 'P');
         $goodLooking->display();
     }
+    
+    public function testEqualToVariable()
+    {
+        $this->expectOutputString("YESNO");
+        
+        file_put_contents($this->template, '<: if ($a == 5): :>YES<: else: :>NO<: endif; if ($b === "A"): :>YES<: else: :>NO<:endif:>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking->registerVar('a', 5);
+        $goodLooking->registerVar('b', 'B');
+        $goodLooking->display();
+    }
 }
 
 ?>

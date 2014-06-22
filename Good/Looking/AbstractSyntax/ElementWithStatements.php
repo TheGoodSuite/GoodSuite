@@ -33,7 +33,7 @@ abstract class ElementWithStatements implements Element
             throw new \Exception("Syntax error");
         }
         
-        if (\preg_match('/^\\s*(?P<assignment>' . $this->grammar->variableAssignment . ')/', $evaluateString, $matches) === 1)
+        if (\preg_match('/^\\s*(?P<assignment>' . $this->grammar->variableAssignment . '(?!\\=))/', $evaluateString, $matches) === 1)
         {
             $vars = 'array("' . $matches['assignVarName'] . '"';
             $value = substr($evaluateString, strlen($matches['assignment']));
