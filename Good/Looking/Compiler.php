@@ -5,10 +5,12 @@ namespace Good\Looking;
 Class Compiler
 {
     private $grammar;
+    private $environment;
     
-    public function __construct(Grammar $grammar)
+    public function __construct(Grammar $grammar, AbstractSyntax\Environment $environment)
     {
         $this->grammar = $grammar;
+        $this->environment = $environment;
     }
     
     public function compile($input, $output)
@@ -28,9 +30,7 @@ Class Compiler
         
         $document = $parser->parseDocument($input);
         
-        $environment = new AbstractSyntax\Environment();
-        
-        $output = $document->execute($environment);
+        $output = $document->execute($this->environment);
         
         return $output;
     }

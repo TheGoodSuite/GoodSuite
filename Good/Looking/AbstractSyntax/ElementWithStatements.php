@@ -18,7 +18,7 @@ abstract class ElementWithStatements implements Element
         $this->grammar = $grammar;
     }
     
-    protected function evaluate($evaluateString)
+    protected function evaluate($evaluateString, $environment)
     {
         //  w00t! finally did this function
         
@@ -45,7 +45,7 @@ abstract class ElementWithStatements implements Element
             
             $vars .= ')';
             
-            return '$this->setVars(' . $vars . ', ' . $this->evaluate($value) . ')';
+            return '$this->setVars(' . $vars . ', ' . $this->evaluate($value, $environment) . ')';
         }
         
         $output = '';
@@ -66,7 +66,7 @@ abstract class ElementWithStatements implements Element
             
             if (\preg_match('/^\(' . $this->grammar->expression . '\)$/', $term) != 0)
             {
-                $output .= '(' . $this->evaluate(substr($term, 1, -1)) . ')';
+                $output .= '(' . $this->evaluate(substr($term, 1, -1), $environment) . ')';
             }
             else if (\preg_match('/^' . $this->grammar->literalBoolean . '$/',
                                                         $term, $matches) != 0)
@@ -90,7 +90,7 @@ abstract class ElementWithStatements implements Element
                     if (preg_match($array, $varModifiers, $matches) == 1) 
                     {
                         $templateVariable = '$this->arrayItem(' . $templateVariable . ', ' .
-                                    $this->evaluate($matches['expression']) . ')';
+                                    $this->evaluate($matches['expression'], $environment) . ')';
                         
                         $varModifiers = \preg_replace($array, '', $varModifiers);
                     }
@@ -116,10 +116,36 @@ abstract class ElementWithStatements implements Element
             {
                 $output .= $term;
             }
-            else if (preg_match('/^' . $this->grammar->func . '$/', $term) != 0)
+            else if (preg_match('/^' . $this->grammar->func . '$/', $term, $matches) != 0)
             {
-                // as of yet, functions are unsupported
-                throw new \Exception("Function call found while functions are currently unsupported");
+                $args = $matches['arguments'];
+                $functionName = $matches['functionName'];
+                
+                $output .= '$this->functionHandlers["' . 
+                             \addslashes($environment->getFunctionHandlerForFunction($functionName)) . 
+                             '"]->handleFunction("' . $functionName . '", array(';
+                
+                $first = true;
+                
+                while ($args != '')
+                {
+                    if ($first)
+                    {
+                        $first = false;
+                    }
+                    else
+                    {
+                        $output .= ',';
+                    }
+                    
+                    \preg_match('/^' . $this->grammar->expression . '(?:,|$)/', $args, $matches);
+                    
+                    $args = \substr($args, strlen($matches[0]));
+                    
+                    $output .= $this->evaluate($matches['expression'], $environment);
+                }
+                
+                $output .= '))';
             }
             else
             {

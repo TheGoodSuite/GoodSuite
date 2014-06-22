@@ -12,6 +12,7 @@ class Interpreter
     private $hiddenVars = array();
     private $templateVars = array();
     private $userVars = array();
+    private $functionHandlers = array();
     
     public function __construct($compiledTemplate, $vars)
     {

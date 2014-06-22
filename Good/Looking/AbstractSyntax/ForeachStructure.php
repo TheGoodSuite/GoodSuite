@@ -22,7 +22,7 @@ class ForeachStructure extends ElementWithStatements
     public function execute(Environment $environment)
     {
         $out  = '$this->checkVarName("' . $this->varName . '"); ';
-        $out .= 'foreach(' . $this->evaluate($this->arrayStatement) . ' as $this->automaticVars["' . $this->varName . '"]): ';
+        $out .= 'foreach(' . $this->evaluate($this->arrayStatement, $environment) . ' as $this->automaticVars["' . $this->varName . '"]): ';
         
         foreach ($this->statements as $statement)
         {

@@ -21,7 +21,7 @@ class IfElseStructure extends ElementWithStatements
     
     public function execute(Environment $environment)
     {
-        $out = 'if (' . $this->evaluate($this->condition) . '):';
+        $out = 'if (' . $this->evaluate($this->condition, $environment) . '):';
         
         foreach ($this->statements as $statement)
         {

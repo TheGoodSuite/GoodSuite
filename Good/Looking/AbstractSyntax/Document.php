@@ -13,12 +13,22 @@ class Document implements Element
     
     public function execute(Environment $environment)
     {
-        $out = '<?php ';
+        $main = '';
         
         foreach ($this->statements as $statement)
         {
-            $out .= $statement->execute($environment);
+            $main .= $statement->execute($environment);
         }
+        
+        $out = '<?php ';
+        
+        foreach ($environment->getUsedFunctionHandlers() as $handler => $file)
+        {
+            $out .= "if (!class_exists('" . \addslashes($handler) . "', false)) { require '" . \addslashes($file) . "'; };";
+            $out .= '$this->functionHandlers["' . \addslashes($handler) . '"] = new ' . $handler . '();';
+        }
+        
+        $out .= $main;
         
         $out .= '?>';
         

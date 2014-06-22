@@ -39,8 +39,8 @@ class ForrangeStructure extends ElementWithStatements
             $counter = '$this->hiddenVars[' . $environment->getNewHiddenVar() . ']';
         }
         
-        $out .= '$this->hiddenVars[' . $from . '] = intval(' . $this->evaluate($this->from) . '); ';
-        $out .= '$this->hiddenVars[' . $to . '] = intval(' . $this->evaluate($this->to) . '); ';
+        $out .= '$this->hiddenVars[' . $from . '] = intval(' . $this->evaluate($this->from, $environment) . '); ';
+        $out .= '$this->hiddenVars[' . $to . '] = intval(' . $this->evaluate($this->to, $environment) . '); ';
         $out .= '$this->hiddenVars[' . $delta . '] = $this->hiddenVars[' . $from . '] < ' .
                     '$this->hiddenVars[' . $to . '] ? 1 : -1; ';
         

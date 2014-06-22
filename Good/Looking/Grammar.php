@@ -93,7 +93,7 @@ Class Grammar
         
         $preVariable = '(?P<variable>\$(?P<varName>' . $this->varName . 
                                             ')(?P<varModifiers>(\s*((?P>arrayAccess)|' . $this->propertyAccess . '))*))';
-        $preFunc = '(?P<function>\\b[a-zA-Z][a-zA-Z0-9_]*\\((?P<arguments>(?P>expression)(?:,(?P>expression))*)?\\))';
+        $preFunc = '(?P<function>\\b(?P<functionName>[a-zA-Z][a-zA-Z0-9_]*)\\((?P<arguments>(?:(?P>expression)(?:,(?P>expression))*)?)\\))';
 
         $preTerm = '(?P<term>\\s*(?:(?:' . $this->literalNumber . 
                              ')|(?P>function)|' . $this->literalBoolean .

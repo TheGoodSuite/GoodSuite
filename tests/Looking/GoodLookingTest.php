@@ -1204,6 +1204,73 @@ class GoodLookingTest extends PHPUnit_Framework_TestCase
         $goodLooking->registerVar('arr', array('a', 'b'));
         $goodLooking->display();
     }
+    
+    public function testCallFunction()
+    {
+        require 'DummyFunctionHandler1.php';
+    
+        $this->expectOutputString('ABBA');
+        
+        file_put_contents($this->template, '<: a(); b(); b(); a() :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking->registerFunctionHandler('DummyFunctionHandler1');
+        $goodLooking->display();
+    }
+    
+    public function testCallChainedFunction()
+    {
+        require 'DummyFunctionHandler2.php';
+    
+        $this->expectOutputString('6');
+        
+        file_put_contents($this->template, '<: inc(inc(inc(3))) :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking->registerFunctionHandler('DummyFunctionHandler2');
+        $goodLooking->display();
+    }
+    
+    public function testCallFunctionsFromTwoHandlers()
+    {
+        require 'DummyFunctionHandler3.php';
+        require 'DummyFunctionHandler4.php';
+    
+        $this->expectOutputString('Handler3Handler4');
+        
+        file_put_contents($this->template, '<: a(); b(); :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking->registerFunctionHandler('DummyFunctionHandler3');
+        $goodLooking->registerFunctionHandler('DummyFunctionHandler4');
+        $goodLooking->display();
+    }
+    
+    public function testCallFunctionMultipleArguments()
+    {
+        require 'DummyFunctionHandler5.php';
+    
+        $this->expectOutputString('6');
+        
+        file_put_contents($this->template, '<: add(2, 4) :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking->registerFunctionHandler('DummyFunctionHandler5');
+        $goodLooking->display();
+    }
+    
+    public function testCallFunctionsThatShareState()
+    {
+        require 'DummyFunctionHandler6.php';
+    
+        $this->expectOutputString('345');
+        
+        file_put_contents($this->template, '<: set(4); set(3); get(); set(4); get(); set(99); set(5); get() :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking->registerFunctionHandler('DummyFunctionHandler6');
+        $goodLooking->display();
+    }
 }
 
 ?>

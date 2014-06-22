@@ -20,7 +20,7 @@ class Statement extends ElementWithStatements
             return '';
         }
         
-        return 'echo \htmlentities(' . $this->evaluate($this->code) . '); ';
+        return 'echo \htmlentities(' . $this->evaluate($this->code, $environment) . '); ';
     }
 }
 
