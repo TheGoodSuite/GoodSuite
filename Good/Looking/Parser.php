@@ -84,7 +84,7 @@ class Parser
         {
             throw new \Exception('Error: End of document found though there was still an "if" that needed to be closed.');
         }
-        else if (\preg_match('/^\\s*(?<controlStructure>' . $this->grammar->controlStructureEndFor . '|' .
+        else if (\preg_match('/^\\s*(?<controlStructure>' . $this->grammar->controlStructureEndForrange . '|' .
                                         $this->grammar->controlStructureEndForeach . ')\\s*$/', $input, $matched) === 1)
         {
             throw new \Exception('Error: Control structure mismatch, found <i>' . $matches['controlStructure'] . '</i> while parsing an if.');
@@ -151,7 +151,7 @@ class Parser
         }
         else if (\preg_match('/^\\s*(?<controlStructure>' . $this->grammar->controlStructureEndIf . '|' .
                                         $this->grammar->controlStructureElse . '|' .
-                                        $this->grammar->controlStructureEndFor . ')\\s*$/', $input, $matched) === 1)
+                                        $this->grammar->controlStructureEndForrange . ')\\s*$/', $input, $matched) === 1)
         {
             throw new \Exception('Error: Control structure mismatch, found <i>' . $matches['controlStructure'] . '</i> while parsing a foreach.');
         }
