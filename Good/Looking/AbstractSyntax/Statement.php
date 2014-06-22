@@ -2,6 +2,8 @@
 
 namespace Good\Looking\AbstractSyntax;
 
+use Good\Looking\Environment;
+
 class Statement extends ElementWithStatements
 {
     private $code;

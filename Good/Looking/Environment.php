@@ -1,6 +1,6 @@
 <?php
 
-namespace Good\Looking\AbstractSyntax;
+namespace Good\Looking;
 
 class Environment
 {

@@ -3,6 +3,7 @@
 namespace Good\Looking\AbstractSyntax;
 
 use Good\Looking\Grammar;
+use Good\Looking\Environment;
 
 class IfStructure extends ElementWithStatements
 {

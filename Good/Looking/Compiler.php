@@ -7,7 +7,7 @@ Class Compiler
     private $grammar;
     private $environment;
     
-    public function __construct(Grammar $grammar, AbstractSyntax\Environment $environment)
+    public function __construct(Grammar $grammar, Environment $environment)
     {
         $this->grammar = $grammar;
         $this->environment = $environment;

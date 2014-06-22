@@ -3,6 +3,7 @@
 namespace Good\Looking\AbstractSyntax;
 
 use Good\Looking\Grammar;
+use Good\Looking\Environment;
 
 // This class provides the functionality of parsing statements to child classes
 // This class exists only because out parser only partally parses and leaves
@@ -18,7 +19,7 @@ abstract class ElementWithStatements implements Element
         $this->grammar = $grammar;
     }
     
-    protected function evaluate($evaluateString, $environment)
+    protected function evaluate($evaluateString, Environment $environment)
     {
         //  w00t! finally did this function
         

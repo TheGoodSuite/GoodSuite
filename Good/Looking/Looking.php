@@ -74,7 +74,7 @@ class Looking
         if (!\file_exists($this->templateFileName . '.compiledTemplate') ||
                     \filemtime($this->templateFileName) > \filemtime($this->templateFileName . '.compiledTemplate'))
         {
-            $environment = new AbstractSyntax\Environment($this->functionHandlers, $this->functions);
+            $environment = new Environment($this->functionHandlers, $this->functions);
             
             $compiler = new Compiler($this->grammar, $environment);
             $compiler->compile($this->templateFileName, $this->templateFileName . '.compiledTemplate');

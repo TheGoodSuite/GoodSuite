@@ -2,6 +2,8 @@
 
 namespace Good\Looking\AbstractSyntax;
 
+use Good\Looking\Environment;
+
 class Document implements Element
 {
     private $statements;

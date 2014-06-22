@@ -2,6 +2,8 @@
 
 namespace Good\Looking\AbstractSyntax;
 
+use Good\Looking\Environment;
+
 class TextBlock implements Element
 {
     private $text;
