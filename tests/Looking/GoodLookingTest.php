@@ -1298,6 +1298,27 @@ class GoodLookingTest extends PHPUnit_Framework_TestCase
         $goodLooking = new \Good\Looking\Looking($this->template);
         $goodLooking->display();
     }
+    
+    public function testArrayLiteral()
+    {
+        $this->expectOutputString("RWG");
+        
+        file_put_contents($this->template, '<: $arr = ["T", "W", "N", "G", "R"]; $arr[4]; $arr[1]; $arr[3] :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking->display();
+    }
+    
+    public function testArrayLiteralWithExpressiveItems()
+    {
+        $this->expectOutputString("P8");
+        
+        file_put_contents($this->template, '<: $g = 8; $arr = [[1, 2], $r, [3, $g]]; $arr[1]; $arr[2][1] :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking->registerVar('r', 'P');
+        $goodLooking->display();
+    }
 }
 
 ?>

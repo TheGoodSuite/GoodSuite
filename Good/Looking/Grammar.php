@@ -39,6 +39,7 @@ Class Grammar
     public $term;
     public $expression;
     public $arrayAccess;
+    public $arrayLiteral;
     
     // control structures
     public $controlStructureIf;
@@ -98,35 +99,42 @@ Class Grammar
         $preTerm = '(?P<term>\\s*(?:(?:' . $this->literalNumber . 
                              ')|(?P>function)|' . $this->literalBoolean .
                               '|(?P>variable)|(?:' . $this->literalString . 
-                               ')|\\((?P>expression)\\)))';
+                               ')|(?P>arrayLiteral)|\\((?P>expression)\\)))';
 
         $preExpression = '(?P<expression>(?P>term)\\s*(?:' . 
                                             $this->operator .
                                                 '\\s*(?P>term)\\s*)*)';
 
+        $preArrayLiteral = '(?P<arrayLiteral>\\[(?P<arrayItems>(?P>expression)(?:,(?P>expression))*)?\\])';
+        
         // DA MONKEY DANCE!!
         // note that even things as silly as the order of the search & replace array elements
         // matters a lot
 
-        $this->variable = $this->str_replace_once(array('(?P>arrayAccess)', '(?P>expression)', '(?P>term)', '(?P>function)'),
-                                                  array($preArrayAccess,    $preExpression,    $preTerm,    $preFunc),
+        $this->variable = $this->str_replace_once(array('(?P>arrayAccess)', '(?P>expression)', '(?P>term)', '(?P>arrayLiteral)', '(?P>function)'),
+                                                  array($preArrayAccess,    $preExpression,    $preTerm,    $preArrayLiteral,    $preFunc),
                                                   $preVariable);
 
-        $this->func = $this->str_replace_once(array('(?P>expression)', '(?P>term)', '(?P>variable)', '(?P>arrayAccess)'),
-                                              array($preExpression,    $preTerm,    $preVariable,        $preArrayAccess),
+        $this->func = $this->str_replace_once(array('(?P>expression)',  '(?P>term)', '(?P>arrayLiteral)', '(?P>variable)', '(?P>arrayAccess)'),
+                                              array($preExpression,     $preTerm,    $preArrayLiteral,    $preVariable,        $preArrayAccess),
                                               $preFunc);
 
-        $this->term = $this->str_replace_once(array('(?P>function)', '(?P>expression)', '(?P>variable)', '(?P>arrayAccess)'),
-                                              array($preFunc,        $preExpression,   $preVariable,        $preArrayAccess),
+        $this->term = $this->str_replace_once(array('(?P>function)', '(?P>expression)', '(?P>arrayLiteral)',  '(?P>variable)', '(?P>arrayAccess)'),
+                                              array($preFunc,        $preExpression,    $preArrayLiteral,     $preVariable,    $preArrayAccess),
                                               $preTerm);
 
-        $this->expression = $this->str_replace_once(array('(?P>term)', '(?P>function)', '(?P>variable)', '(?P>arrayAccess)'),
-                                                    array($preTerm,    $preFunc,        $preVariable,        $preArrayAccess),
+        $this->expression = $this->str_replace_once(array('(?P>term)', '(?P>function)', '(?P>variable)', '(?P>arrayAccess)', '(?P>arrayLiteral)'),
+                                                    array($preTerm,    $preFunc,        $preVariable,    $preArrayAccess,    $preArrayLiteral),
                                                     $preExpression);
         
-        $this->arrayAccess = $this->str_replace_once(array('(?P>expression)', '(?P>term)', '(?P>function)', '(?P>variable)'),
-                                                     array($preExpression,   $preTerm,    $preFunc,        $preVariable),
+        $this->arrayAccess = $this->str_replace_once(array('(?P>expression)',  '(?P>term)', '(?P>arrayLiteral)', '(?P>function)', '(?P>variable)'),
+                                                     array($preExpression,     $preTerm,    $preArrayLiteral,    $preFunc,        $preVariable),
                                                      $preArrayAccess);
+                                                     
+        $this->arrayLiteral = $this->str_replace_once(array('(?P>expression)', '(?P>term)', '(?P>function)', '(?P>variable)', '(?P>arrayAccess)'),
+                                                      array($preExpression,     $preTerm,    $preFunc,        $preVariable,    $preArrayAccess),
+                                                      $preArrayLiteral);
+                                                     
         
         // and finally, we need to do some post-monkey dance concatenation
         // (in other words, these use one or more regexes from created in the

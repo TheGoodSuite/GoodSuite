@@ -148,6 +148,36 @@ abstract class ElementWithStatements implements Element
                 
                 $output .= '))';
             }
+            else if (preg_match('/^' . $this->grammar->arrayLiteral. '$/', $term, $matches) != 0)
+            {
+                $output .= 'array(';
+                
+                if (array_key_exists('arrayItems', $matches))
+                {
+                    $items = $matches['arrayItems'];
+                    $first = true;
+                    
+                    while ($items != '')
+                    {
+                        if ($first)
+                        {
+                            $first = false;
+                        }
+                        else
+                        {
+                            $output .= ',';
+                        }
+                        
+                        preg_match('/^' . $this->grammar->expression . '(?:,|$)/', $items, $matches);
+                        
+                        $items = substr($items, strlen($matches[0]));
+                        
+                        $output .= $this->evaluate($matches['expression'], $environment);
+                    }
+                }
+                
+                $output .= ')';
+            }
             else
             {
                 throw new \Exception("Could not qualify term as any type of term!");
