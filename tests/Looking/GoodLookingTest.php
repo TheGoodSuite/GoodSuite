@@ -1271,6 +1271,16 @@ class GoodLookingTest extends PHPUnit_Framework_TestCase
         $goodLooking->registerFunctionHandler('DummyFunctionHandler6');
         $goodLooking->display();
     }
+    
+    public function testAutoEscape()
+    {
+        $this->expectOutputString('&lt;br&gt;');
+        
+        file_put_contents($this->template, '<: "<br>" :>');
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking->display();
+    }
 }
 
 ?>
