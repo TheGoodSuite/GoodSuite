@@ -25,18 +25,18 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         // for the duration of the test case
         gc_disable();
         file_put_contents(dirname(__FILE__) . '/../testInputFiles/AdvancedUpdateType.datatype', 
-                                                                            "int myInt\n" .
-                                                                            "float myFloat\n".
-                                                                            "text myText\n" .
-                                                                            "datetime myDatetime\n" .
-                                                                            '"YetAnotherType" myReference' . "\n" .
-                                                                            '"ThirdType" ref' . "\n");
+                                                                            "int myInt;\n" .
+                                                                            "float myFloat;\n".
+                                                                            "text myText;\n" .
+                                                                            "datetime myDatetime;\n" .
+                                                                            '"YetAnotherType" myReference;' . "\n" .
+                                                                            '"ThirdType" ref;' . "\n");
         
         file_put_contents(dirname(__FILE__) . '/../testInputFiles/YetAnotherType.datatype', 
-                                                                            "int yourInt\n");
+                                                                            "int yourInt;\n");
         
         file_put_contents(dirname(__FILE__) . '/../testInputFiles/ThirdType.datatype', 
-                                                                            '"YetAnotherType" ref' . "\n");
+                                                                            '"YetAnotherType" ref;' . "\n");
     
         $rolemodel = new \Good\Rolemodel\Rolemodel();
         $schema = $rolemodel->createSchema(array('AdvancedUpdateType' => 

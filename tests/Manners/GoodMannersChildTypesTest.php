@@ -118,15 +118,15 @@ abstract class GoodMannersChildTypesTest extends PHPUnit_Framework_TestCase
         // for the duration of the test case
         gc_disable();
         file_put_contents(dirname(__FILE__) . '/../testInputFiles/ParentType1.datatype', 
-                                                                            "int myInt\n" .
-                                                                            "float myFloat\n".
-                                                                            "text myText\n" .
-                                                                            "datetime myDatetime\n" .
-                                                                            '"ParentType2" myOtherType' . "\n" .
-                                                                            '"ParentType1" myCircular' . "\n");
+                                                                            "int myInt;\n" .
+                                                                            "float myFloat;\n".
+                                                                            "text myText;\n" .
+                                                                            "datetime myDatetime;\n" .
+                                                                            '"ParentType2" myOtherType;' . "\n" .
+                                                                            '"ParentType1" myCircular;' . "\n");
         
         file_put_contents(dirname(__FILE__) . '/../testInputFiles/ParentType2.datatype', 
-                                                                            "int yourInt\n");
+                                                                            "int yourInt;\n");
     
         $rolemodel = new \Good\Rolemodel\Rolemodel();
         $schema = $rolemodel->createSchema(array('ParentType1' => dirname(__FILE__) . '/../testInputFiles/ParentType1.datatype',

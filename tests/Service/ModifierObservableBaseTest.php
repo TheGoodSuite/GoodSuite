@@ -29,7 +29,7 @@ abstract class GoodServiceModifierObservableBaseTest extends GoodServiceBaseTest
     public function testObserverBasics()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
-                            'int myInt');
+                            'int myInt;');
         $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
         
         $observable = new MyType();
@@ -52,7 +52,7 @@ abstract class GoodServiceModifierObservableBaseTest extends GoodServiceBaseTest
     public function testTwoObservers()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
-                            'int myInt');
+                            'int myInt;');
         $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
         
         $observable = new MyType();
@@ -88,7 +88,7 @@ abstract class GoodServiceModifierObservableBaseTest extends GoodServiceBaseTest
     public function testTwoObservables()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
-                            'int myInt');
+                            'int myInt;');
         $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
         
         $observable = new MyType();
@@ -125,7 +125,7 @@ abstract class GoodServiceModifierObservableBaseTest extends GoodServiceBaseTest
     public function testUnregisterObserver()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
-                            'int myInt');
+                            'int myInt;');
         $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
         
         $observable = new MyType();

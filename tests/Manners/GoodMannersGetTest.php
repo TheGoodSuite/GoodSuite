@@ -24,15 +24,15 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         // for the duration of the test case
         gc_disable();
         file_put_contents(dirname(__FILE__) . '/../testInputFiles/GetType.datatype', 
-                                                                            "int myInt\n" .
-                                                                            "float myFloat\n".
-                                                                            "text myText\n" .
-                                                                            "datetime myDatetime\n" .
-                                                                            '"OtherType" myOtherType' . "\n" .
-                                                                            '"GetType" myCircular' . "\n");
+                                                                            "int myInt;\n" .
+                                                                            "float myFloat;\n".
+                                                                            "text myText;\n" .
+                                                                            "datetime myDatetime;\n" .
+                                                                            '"OtherType" myOtherType;' . "\n" .
+                                                                            '"GetType" myCircular;' . "\n");
         
         file_put_contents(dirname(__FILE__) . '/../testInputFiles/OtherType.datatype', 
-                                                                            "int yourInt\n");
+                                                                            "int yourInt;\n");
     
         $rolemodel = new \Good\Rolemodel\Rolemodel();
         $schema = $rolemodel->createSchema(array('GetType' => dirname(__FILE__) . '/../testInputFiles/GetType.datatype',

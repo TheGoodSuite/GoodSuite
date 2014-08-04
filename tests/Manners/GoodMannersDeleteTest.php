@@ -25,10 +25,10 @@ abstract class GoodMannersDeleteTest extends PHPUnit_Framework_TestCase
         // for the duration of the test case
         gc_disable();
         file_put_contents(dirname(__FILE__) . '/../testInputFiles/DeleteType.datatype', 
-                                                                            "int myInt\n" .
-                                                                            "float myFloat\n".
-                                                                            "text myText\n" .
-                                                                            "datetime myDatetime\n" );
+                                                                            "int myInt;\n" .
+                                                                            "float myFloat;\n".
+                                                                            "text myText;\n" .
+                                                                            "datetime myDatetime;\n" );
     
         $rolemodel = new \Good\Rolemodel\Rolemodel();
         $schema = $rolemodel->createSchema(array('DeleteType' => 
