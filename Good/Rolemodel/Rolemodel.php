@@ -6,17 +6,28 @@ class Rolemodel
 {
     public function createSchema(array $input)
     {
-        $dataTypes = array();
+        // use an intermediate array to prevent unnecessary O-factor increase
+        $dataTypeArrays = array();
         
         foreach ($input as $file)
         {
-            $dataTypes[] = $this->fileToDataType($file);
+            $dataTypeArrays[] = $this->fileToDataTypes($file);
+        }
+        
+        $dataTypes = array();
+        
+        foreach ($dataTypeArrays as $dataTypeArray)
+        {
+            foreach ($dataTypeArray as $dataType)
+            {
+                $dataTypes[] = $dataType;
+            }
         }
         
         return new Schema($dataTypes);
     }
     
-    private function fileToDataType($file)
+    private function fileToDataTypes($file)
     {
         // read the file
         $input = \file_get_contents($file);
@@ -47,60 +58,62 @@ class Rolemodel
         $datatypeBegin = '\\s*datatype\\s+(?<datatypeName>' . $identifier . ')\s*{';
         $dataTypeEnd = '\\s*}';
         
-        // We'll use this array to build the result in
-        $members = array();
-        
-        if (preg_match('/^' . $datatypeBegin . '/', $input, $matches) !== 1)
-        {
-            // TODO: better error handling outputting, et al
-            throw new \Exception("Malformed Datamodel file: " . $file);
-        }
-        
-        $input = substr($input, strlen($matches[0]));
-        $datatypeName = $matches['datatypeName'];
-        
         $factory = new PrimitiveFactory();
+        $types = array();
         
-        while (preg_match('/^' . $memberDefinition . '/', $input, $matches) === 1)
+        while (preg_match('/^' . $datatypeBegin . '/', $input, $matches) === 1)
         {
-            $line = $matches[0];
-            $input = substr($input, strlen($line));
+            // We'll use this array to build the result in
+            $members = array();
             
-            $type = $matches['type'];
-            $varName = $matches['name'];
-            if ($matches['attributes'] != '')
+            $input = substr($input, strlen($matches[0]));
+            $datatypeName = $matches['datatypeName'];
+            
+            while (preg_match('/^' . $memberDefinition . '/', $input, $matches) === 1)
             {
-                $attributes = \preg_split('/' . $regexAttributeSeperator . '/', $matches['attributes']);
-            }
-            else
-            {
-                $attributes = array();
+                $line = $matches[0];
+                $input = substr($input, strlen($line));
+                
+                $type = $matches['type'];
+                $varName = $matches['name'];
+                if ($matches['attributes'] != '')
+                {
+                    $attributes = \preg_split('/' . $regexAttributeSeperator . '/', $matches['attributes']);
+                }
+                else
+                {
+                    $attributes = array();
+                }
+                
+                // Type
+                if (\substr($type, 0, 1) == '"' && \substr($type, -1) == '"')
+                {
+                    $members[] = new Schema\ReferenceMember($attributes, $varName, \substr($type, 1, -1));
+                }
+                else
+                {
+                    $members[] = $factory->makePrimitive($attributes, $varName, $type);
+                }
             }
             
-            // Type
-            if (\substr($type, 0, 1) == '"' && \substr($type, -1) == '"')
+            if (preg_match('/^' . $dataTypeEnd . '\s*/', $input, $matches) !== 1)
             {
-                $members[] = new Schema\ReferenceMember($attributes, $varName, \substr($type, 1, -1));
+                // TODO: better error handling outputting, et al
+                throw new \Exception("Malformed Datamodel file: " . $file);
             }
-            else
-            {
-                $members[] = $factory->makePrimitive($attributes, $varName, $type);
-            }
+            
+            $input = substr($input, strlen($matches[0]));
+            
+            $types[] = new Schema\DataType($file, $datatypeName, $members);
         }
         
-        if (preg_match('/^' . $dataTypeEnd . '\s*$/', $input) !== 1)
+        if (preg_match("/^\s*$/", $input) !== 1)
         {
             // TODO: better error handling outputting, et al
             throw new \Exception("Malformed Datamodel file: " . $file);
         }
         
-        //if (preg_match("/^\s*$/", $input) !== 1)
-        //{
-            // TODO: better error handling outputting, et al
-        //    throw new \Exception("Malformed Datamodel file: " . $file);
-        //}
-        
-        return new Schema\DataType($file, $datatypeName, $members);
+        return $types;
     }
 }
 

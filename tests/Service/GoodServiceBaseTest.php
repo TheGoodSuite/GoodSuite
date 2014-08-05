@@ -519,6 +519,57 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($myType->myInt, 5);
         $this->assertInternalType('int', $myType->myInt);
     }
+    
+    public function testMultipleDatatypesInOneFileOnOneLine()
+    {
+        file_put_contents($this->inputDir . 'MyTypes.datatype',
+                            "datatype MyType{[public]int myInt;}datatype MyOtherType{float myFloat;}");
+        $this->compile(array($this->inputDir . 'MyTypes.datatype'));
+        
+        $myType = new MyType();
+        $myType->myInt = 5;
+        $this->assertEquals($myType->myInt, 5);
+        $this->assertInternalType('int', $myType->myInt);
+        
+        $myType = new MyOtherType();
+        $myType->myFloat = 5.5;
+        $this->assertEquals($myType->myFloat, 5.5);
+        $this->assertInternalType('float', $myType->myFloat);
+    }
+    
+    public function testMultipleDatatypesInOneFileOnMultipleLines()
+    {
+        file_put_contents($this->inputDir . 'MyType.datatype',
+                            "datatype\n" .
+                            "MyType\n" .
+                            "{\n" .
+                            "[\n" .
+                            "public\n".
+                            "]\n".
+                            "int   \n".
+                            "myInt\n" .
+                            ";\n" .
+                            "}\n" .
+                            "\n" .
+                            "\n" .
+                            "\n" .
+                            "datatype\n" .
+                            "MyOtherType\n" .
+                            "{\n" .
+                            "[\n" .
+                            "public\n".
+                            "]\n".
+                            "int   \n".
+                            "myFloat\n" .
+                            ";\n" .
+                            "}\n");
+        $this->compile(array($this->inputDir . 'MyType.datatype'));
+        
+        $myType = new MyType();
+        $myType->myInt = 5;
+        $this->assertEquals($myType->myInt, 5);
+        $this->assertInternalType('int', $myType->myInt);
+    }
 }
 
 ?>
