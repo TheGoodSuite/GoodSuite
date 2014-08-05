@@ -37,7 +37,7 @@ class Rolemodel
         // building a complicated regex just once
         // (so outside the for loop)
         $regexAttributeSeperator = '(\\s*,\\s*|\\s+)';
-        $regexAttributes = '\\[(?P<attributes>[a-zA-Z0-9_]+(' . $regexAttributeSeperator . '[a-zA-Z0-9_]+)*\\s*)?\\]';
+        $regexAttributes = '\\[\\s*(?P<attributes>[a-zA-Z0-9_]+(' . $regexAttributeSeperator . '[a-zA-Z0-9_]+)*\\s*)?\\]';
         $regexType = '(?P<type>([a-zA-Z_][a-zA-Z0-9_]*|"[a-zA-Z_][a-zA-Z0-9_]*"))';
         $regexName = '(?P<name>[a-zA-Z_][a-zA-Z0-9_]*)';
         $memberFinisher = ';';

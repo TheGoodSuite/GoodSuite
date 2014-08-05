@@ -504,10 +504,12 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     public function testMultipleMemberSpreadOverMultipleLines()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
-                            "[public\n".
+                            "[\n" .
+                            "public\n".
                             "]\n".
                             "int   \n".
-                            "myInt;");
+                            "myInt\n" .
+                            ";");
         $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
         
         $myType = new MyType();
