@@ -21,27 +21,22 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         $this->outputDir =  dirname(__FILE__) . '/../generated/';
     }
     
-    protected function compile($types, $modifiers = array())
+    protected function compile($inputfiles, $modifiers = array())
     {
         $rolemodel = new \Good\Rolemodel\Rolemodel();
 
-        $schema = $rolemodel->createSchema($types);
+        $schema = $rolemodel->createSchema($inputfiles);
 
         $service = new \Good\Service\Service();
 
-        $service->compile($modifiers, $schema, $this->outputDir);
+        $outputFiles = $service->compile($modifiers, $schema, $this->outputDir);
         
-        foreach ($types as $type => $path)
+        foreach ($outputFiles as $file)
         {
-            require $this->outputDir . $type . '.datatype.php';
+            require $file;
         }
         
-        $this->files = array_merge($this->files, array_values($types));
-        
-        foreach ($types as $type => $path)
-        {
-            $this->files[] = $this->outputDir . $type . '.datatype.php';
-        }
+        $this->files = array_merge($this->files, $inputfiles, $outputFiles);
         
         $this->files[] = $this->outputDir . 'GeneratedBaseClass.php';
     }
@@ -61,8 +56,8 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     public function testIntProperty()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
-                            'int myInt;');
-        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+                            'datatype MyType { int myInt; }');
+        $this->compile(array($this->inputDir . 'MyType.datatype'));
         
         $myType = new MyType();
         $myType->myInt = 5;
@@ -74,8 +69,8 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     public function testFloatProperty()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
-                            'float myFloat;');
-        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+                            'datatype MyType { float myFloat; }');
+        $this->compile(array($this->inputDir . 'MyType.datatype'));
         
         $myType = new MyType();
         $myType->myFloat = 5.5;
@@ -87,8 +82,8 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     public function testTextProperty()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
-                            'text myText;');
-        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+                            'datatype MyType { text myText; }');
+        $this->compile(array($this->inputDir . 'MyType.datatype'));
         
         $myType = new MyType();
         $myType->myText = "Hello World!";
@@ -100,8 +95,8 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     public function testDatetimeProperty()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
-                            'datetime myDatetime;');
-        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+                            'datatype MyType { datetime myDatetime; }');
+        $this->compile(array($this->inputDir . 'MyType.datatype'));
         
         $myType = new MyType();
         $date = new \DateTime();
@@ -114,13 +109,13 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     public function testReferenceProperty()
     {
         file_put_contents($this->inputDir . 'ReferencedType.datatype',
-                            'int justAnInt;');
+                            'datatype ReferencedType { int justAnInt; }');
         
         file_put_contents($this->inputDir . 'ReferenceType.datatype',
-                            '"ReferencedType" reference;');
+                            'datatype ReferenceType { "ReferencedType" reference; }');
                             
-        $this->compile(array('ReferencedType' => $this->inputDir . 'ReferencedType.datatype',
-                             'ReferenceType' => $this->inputDir . 'ReferenceType.datatype'));
+        $this->compile(array($this->inputDir . 'ReferencedType.datatype',
+                             $this->inputDir . 'ReferenceType.datatype'));
         
         $reference = new ReferencedType();
         $reference->justAnInt = 45;
@@ -138,8 +133,8 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     public function testIntGetter()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
-                            'int myInt;');
-        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+                            'datatype MyType { int myInt; }');
+        $this->compile(array($this->inputDir . 'MyType.datatype'));
         
         $myType = new MyType();
         $myType->myInt = 5;
@@ -154,8 +149,8 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     public function testFloatGetter()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
-                            'float myFloat;');
-        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+                            'datatype MyType { float myFloat; }');
+        $this->compile(array($this->inputDir . 'MyType.datatype'));
         
         $myType = new MyType();
         $myType->myFloat = 5.5;
@@ -170,8 +165,8 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     public function testTextGetter()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
-                            'text myText;');
-        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+                            'datatype MyType { text myText; }');
+        $this->compile(array($this->inputDir . 'MyType.datatype'));
         
         $myType = new MyType();
         $myType->myText = "Hello World!";
@@ -186,8 +181,8 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     public function testDatetimeGetter()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
-                            'datetime myDatetime;');
-        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+                            'datatype MyType { datetime myDatetime; }');
+        $this->compile(array($this->inputDir . 'MyType.datatype'));
         
         $myType = new MyType();
         $date = new \DateTime();
@@ -203,13 +198,13 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     public function testReferenceGetter()
     {
         file_put_contents($this->inputDir . 'ReferencedType.datatype',
-                            'int justAnInt;');
+                            'datatype ReferencedType { int justAnInt; }');
         
         file_put_contents($this->inputDir . 'ReferenceType.datatype',
-                            '"ReferencedType" reference;');
+                            'datatype ReferenceType { "ReferencedType" reference; }');
                             
-        $this->compile(array('ReferencedType' => $this->inputDir . 'ReferencedType.datatype',
-                             'ReferenceType' => $this->inputDir . 'ReferenceType.datatype'));
+        $this->compile(array($this->inputDir . 'ReferencedType.datatype',
+                             $this->inputDir . 'ReferenceType.datatype'));
         
         $reference = new ReferencedType();
         $reference->justAnInt = 45;
@@ -227,8 +222,8 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     public function testIntSetter()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
-                            'int myInt;');
-        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+                            'datatype MyType { int myInt; }');
+        $this->compile(array($this->inputDir . 'MyType.datatype'));
         
         $myType = new MyType();
         $myType->setMyInt(5);
@@ -243,8 +238,8 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     public function testFloatSetter()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
-                            'float myFloat;');
-        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+                            'datatype MyType { float myFloat; }');
+        $this->compile(array($this->inputDir . 'MyType.datatype'));
         
         $myType = new MyType();
         $myType->setMyFloat(5.5);
@@ -259,8 +254,8 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     public function testTextSetter()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
-                            'text myText;');
-        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+                            'datatype MyType { text myText; }');
+        $this->compile(array($this->inputDir . 'MyType.datatype'));
         
         $myType = new MyType();
         $myType->setMyText("Hello World!");
@@ -275,8 +270,8 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     public function testDatetimeSetter()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
-                            'datetime myDatetime;');
-        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+                            'datatype MyType { datetime myDatetime; }');
+        $this->compile(array($this->inputDir . 'MyType.datatype'));
         
         $myType = new MyType();
         $date = new \DateTime();
@@ -292,13 +287,13 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     public function testReferenceSetter()
     {
         file_put_contents($this->inputDir . 'ReferencedType.datatype',
-                            'int justAnInt;');
+                            'datatype ReferencedType { int justAnInt; }');
         
         file_put_contents($this->inputDir . 'ReferenceType.datatype',
-                            '"ReferencedType" reference;');
+                            'datatype ReferenceType { "ReferencedType" reference; }');
                             
-        $this->compile(array('ReferencedType' => $this->inputDir . 'ReferencedType.datatype',
-                             'ReferenceType' => $this->inputDir . 'ReferenceType.datatype'));
+        $this->compile(array($this->inputDir . 'ReferencedType.datatype',
+                             $this->inputDir . 'ReferenceType.datatype'));
         
         $reference = new ReferencedType();
         $reference->justAnInt = 45;
@@ -316,8 +311,8 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     public function testPHPTags()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
-                            '<?php int myInt; ?>');
-        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+                            '<?php datatype MyType { int myInt; } ?>');
+        $this->compile(array($this->inputDir . 'MyType.datatype'));
         
         $myType = new MyType();
         $myType->myInt = 5;
@@ -332,8 +327,8 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     public function testPrivateGetterSetter()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
-                            '[private] int myInt;');
-        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+                            'datatype MyType { [private] int myInt; }');
+        $this->compile(array($this->inputDir . 'MyType.datatype'));
         
         // Private is actually protected...
         $reflection = new \ReflectionMethod('MyType', 'getMyInt');
@@ -348,8 +343,8 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     public function testThereIsNoPrivatePropertyGet()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
-                            '[private] int myInt;');
-        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+                            'datatype MyType { [private] int myInt; }');
+        $this->compile(array($this->inputDir . 'MyType.datatype'));
         
         // Private is actually protected...
         $val = new MyType();
@@ -364,8 +359,8 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     public function testThereIsNoPrivatePropertySet()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
-                            '[private] int myInt;');
-        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+                            'datatype MyType { [private] int myInt; }');
+        $this->compile(array($this->inputDir . 'MyType.datatype'));
         
         // Private is actually protected...
         $val = new MyType();
@@ -380,8 +375,8 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     public function testProtectedGetterSetter()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
-                            '[protected] int myInt;');
-        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+                            'datatype MyType { [protected] int myInt; }');
+        $this->compile(array($this->inputDir . 'MyType.datatype'));
         
         $reflection = new \ReflectionMethod('MyType', 'getMyInt');
         $this->assertTrue($reflection->isProtected());
@@ -395,8 +390,8 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     public function testThereIsNoProtectedPropertyGet()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
-                            '[private] int myInt;');
-        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+                            'datatype MyType { [private] int myInt; }');
+        $this->compile(array($this->inputDir . 'MyType.datatype'));
         
         // Private is actually protected...
         $val = new MyType();
@@ -411,8 +406,8 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     public function testThereIsNoProtectedPropertySet()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
-                            '[private] int myInt;');
-        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+                            'datatype MyType { [private] int myInt; }');
+        $this->compile(array($this->inputDir . 'MyType.datatype'));
         
         // Private is actually protected...
         $val = new MyType();
@@ -427,8 +422,8 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     public function testPublicGetterSetter()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
-                            '[public] int myInt;');
-        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+                            'datatype MyType { [public] int myInt; }');
+        $this->compile(array($this->inputDir . 'MyType.datatype'));
         
         // Private is actually protected...
         $reflection = new \ReflectionMethod('MyType', 'getMyInt');
@@ -443,8 +438,8 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     public function testDefaultIsPublicGetterSetter()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
-                            'int myInt;');
-        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+                            'datatype MyType { int myInt; }');
+        $this->compile(array($this->inputDir . 'MyType.datatype'));
         
         // Private is actually protected...
         $reflection = new \ReflectionMethod('MyType', 'getMyInt');
@@ -456,10 +451,13 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     public function testMultipleMembers()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
-                            "int myInt;\n".
-                            "int myFloat;\n".
-                            "int myInt2;\n");
-        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+                            "datatype MyType\n".
+                            "{\n".
+                            "   int myInt;\n" .
+                            "   int myFloat;\n" .
+                            "   int myInt2;\n" .
+                            "}");
+        $this->compile(array($this->inputDir . 'MyType.datatype'));
         
         $myType = new MyType();
         $myType->myInt = 5;
@@ -480,10 +478,10 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     public function testMultipleMembersOnOneLine()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
-                            "int myInt;".
+                            "datatype MyType{int myInt;".
                             "[]int myFloat;".
-                            "int myInt2;");
-        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+                            "int myInt2;}");
+        $this->compile(array($this->inputDir . 'MyType.datatype'));
         
         $myType = new MyType();
         $myType->myInt = 5;
@@ -501,16 +499,20 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         $this->assertInternalType('int', $myType->myInt2);
     }
     
-    public function testMultipleMemberSpreadOverMultipleLines()
+    public function testOneMemberSpreadOverMultipleLines()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
+                            "datatype\n" .
+                            "MyType\n" .
+                            "{\n" .
                             "[\n" .
                             "public\n".
                             "]\n".
                             "int   \n".
                             "myInt\n" .
-                            ";");
-        $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
+                            ";\n" .
+                            "}\n");
+        $this->compile(array($this->inputDir . 'MyType.datatype'));
         
         $myType = new MyType();
         $myType->myInt = 5;

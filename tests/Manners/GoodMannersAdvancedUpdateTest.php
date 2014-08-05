@@ -25,26 +25,26 @@ abstract class GoodMannersAdvancedUpdateTest extends PHPUnit_Framework_TestCase
         // for the duration of the test case
         gc_disable();
         file_put_contents(dirname(__FILE__) . '/../testInputFiles/AdvancedUpdateType.datatype', 
-                                                                            "int myInt;\n" .
-                                                                            "float myFloat;\n".
-                                                                            "text myText;\n" .
-                                                                            "datetime myDatetime;\n" .
-                                                                            '"YetAnotherType" myReference;' . "\n" .
-                                                                            '"ThirdType" ref;' . "\n");
+                                                                            "datatype AdvancedUpdateType\n" .
+                                                                            "{\n" .
+                                                                            "   int myInt;\n" .
+                                                                            "   float myFloat;\n".
+                                                                            "   text myText;\n" .
+                                                                            "   datetime myDatetime;\n" .
+                                                                            '   "YetAnotherType" myReference;' . "\n" .
+                                                                            '   "ThirdType" ref;' . "\n" .
+                                                                            "}\n");
         
         file_put_contents(dirname(__FILE__) . '/../testInputFiles/YetAnotherType.datatype', 
-                                                                            "int yourInt;\n");
+                                                                            "datatype YetAnotherType { int yourInt; }");
         
         file_put_contents(dirname(__FILE__) . '/../testInputFiles/ThirdType.datatype', 
-                                                                            '"YetAnotherType" ref;' . "\n");
+                                                                            'datatype ThirdType {"YetAnotherType" ref; }');
     
         $rolemodel = new \Good\Rolemodel\Rolemodel();
-        $schema = $rolemodel->createSchema(array('AdvancedUpdateType' => 
-                                                        dirname(__FILE__) . '/../testInputFiles/AdvancedUpdateType.datatype',
-                                                'YetAnotherType' => 
-                                                        dirname(__FILE__) . '/../testInputFiles/YetAnotherType.datatype',
-                                                'ThirdType' =>
-                                                        dirname(__FILE__) . '/../testInputFiles/ThirdType.datatype'));
+        $schema = $rolemodel->createSchema(array(dirname(__FILE__) . '/../testInputFiles/AdvancedUpdateType.datatype',
+                                                 dirname(__FILE__) . '/../testInputFiles/YetAnotherType.datatype',
+                                                 dirname(__FILE__) . '/../testInputFiles/ThirdType.datatype'));
 
         $service = new \Good\Service\Service();
         $service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');

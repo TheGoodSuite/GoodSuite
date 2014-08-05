@@ -118,19 +118,22 @@ abstract class GoodMannersChildTypesTest extends PHPUnit_Framework_TestCase
         // for the duration of the test case
         gc_disable();
         file_put_contents(dirname(__FILE__) . '/../testInputFiles/ParentType1.datatype', 
-                                                                            "int myInt;\n" .
-                                                                            "float myFloat;\n".
-                                                                            "text myText;\n" .
-                                                                            "datetime myDatetime;\n" .
-                                                                            '"ParentType2" myOtherType;' . "\n" .
-                                                                            '"ParentType1" myCircular;' . "\n");
+                                                                            "datatype ParentType1\n" .
+                                                                            "{\n" .
+                                                                            "   int myInt;\n" .
+                                                                            "   float myFloat;\n".
+                                                                            "   text myText;\n" .
+                                                                            "   datetime myDatetime;\n" .
+                                                                            '   "ParentType2" myOtherType;' . "\n" .
+                                                                            '   "ParentType1" myCircular;' . "\n" .
+                                                                            "}\n");
         
         file_put_contents(dirname(__FILE__) . '/../testInputFiles/ParentType2.datatype', 
-                                                                            "int yourInt;\n");
+                                                                            "datatype ParentType2 { int yourInt; }");
     
         $rolemodel = new \Good\Rolemodel\Rolemodel();
-        $schema = $rolemodel->createSchema(array('ParentType1' => dirname(__FILE__) . '/../testInputFiles/ParentType1.datatype',
-                                                 'ParentType2' => dirname(__FILE__) . '/../testInputFiles/ParentType2.datatype'));
+        $schema = $rolemodel->createSchema(array(dirname(__FILE__) . '/../testInputFiles/ParentType1.datatype',
+                                                 dirname(__FILE__) . '/../testInputFiles/ParentType2.datatype'));
 
         $service = new \Good\Service\Service();
         $service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');

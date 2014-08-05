@@ -15,14 +15,16 @@ abstract class GoodMannersPersistenceTest extends PHPUnit_Framework_TestCase
         // for the duration of the test case
         gc_disable();
         file_put_contents(dirname(__FILE__) . '/../testInputFiles/PersistenceType.datatype', 
-                                                                            "int myInt;\n" .
-                                                                            "float myFloat;\n".
-                                                                            "text myText;\n" .
-                                                                            "datetime myDatetime;\n");
+                                                                            "datatype PersistenceType\n" .
+                                                                            "{" .
+                                                                            "   int myInt;\n" .
+                                                                            "   float myFloat;\n".
+                                                                            "   text myText;\n" .
+                                                                            "   datetime myDatetime;\n" .
+                                                                            "}\n");
     
         $rolemodel = new \Good\Rolemodel\Rolemodel();
-        $schema = $rolemodel->createSchema(array('PersistenceType' => 
-                            dirname(__FILE__) . '/../testInputFiles/PersistenceType.datatype'));
+        $schema = $rolemodel->createSchema(array(dirname(__FILE__) . '/../testInputFiles/PersistenceType.datatype'));
 
         $service = new \Good\Service\Service();
         $service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');

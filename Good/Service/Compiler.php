@@ -16,6 +16,7 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
     // file level data
     private $inputFile = null;
     private $outputFile = null;
+    private $outputFiles = array();
     private $output = null;
     private $includes = null;
     private $className = null;
@@ -26,6 +27,11 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
     {
         $this->outputDir = $outputDir;
         $this->modifiers = $modifiers;
+    }
+    
+    public function compiledFiles()
+    {
+        return $this->outputFiles;
     }
     
     public function visitSchema(Schema $schema)
@@ -133,6 +139,7 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
         // Note: This was previously based on the input file namespace
         //       But I changed it to dataType name instead
         $this->outputFile = $this->outputDir . $dataType->getName() . '.datatype.php';
+        $this->outputFiles[] = $this->outputFile;
         
         $this->getters  = '    public function __get($property)' . "\n";
         $this->getters .= "    {\n";

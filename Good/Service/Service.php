@@ -13,6 +13,8 @@ class Service
         $compiler = new Compiler($modifiers, $outputDir);
         
         $model->acceptSchemaVisitor($compiler);
+        
+        return $compiler->compiledFiles();
     }
 }
 
