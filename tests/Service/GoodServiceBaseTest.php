@@ -481,7 +481,7 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             "int myInt;".
-                            "int myFloat;".
+                            "[]int myFloat;".
                             "int myInt2;");
         $this->compile(array('MyType' => $this->inputDir . 'MyType.datatype'));
         
