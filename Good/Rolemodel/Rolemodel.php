@@ -32,19 +32,6 @@ class Rolemodel
         // read the file
         $input = \file_get_contents($file);
         
-        // Cutting out php tags out if they are there
-        // (they are allowed as an additional method to make the content unaccesible)
-        
-        if (substr($input, 0, 5) == '<?php')
-        {
-            $input = \substr($input, 5);
-        }
-        
-        if (substr($input, -2) == '?>')
-        {
-            $input = \substr($input, 0, -2);
-        }
-        
         // building a complicated regex just once
         // (so outside the for loop)
         $identifier = '[a-zA-Z_][a-zA-Z0-9_]*';

@@ -308,22 +308,6 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     /**
      * @depends testIntProperty
      */
-    public function testPHPTags()
-    {
-        file_put_contents($this->inputDir . 'MyType.datatype',
-                            '<?php datatype MyType { int myInt; } ?>');
-        $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
-        $myType = new MyType();
-        $myType->myInt = 5;
-        
-        $this->assertEquals($myType->myInt, 5);
-        $this->assertInternalType('int', $myType->myInt);
-    }
-    
-    /**
-     * @depends testIntProperty
-     */
     public function testPrivateGetterSetter()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
