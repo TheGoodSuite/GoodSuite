@@ -51,6 +51,7 @@ class Observable implements \Good\Service\Modifier
         
         return $res;
     }
+    public function topOfGetterSwitch() { return ''; }
     
     public function topOfFile() {return '';}
     public function classBody()

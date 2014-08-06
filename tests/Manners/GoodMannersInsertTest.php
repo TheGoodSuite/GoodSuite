@@ -388,6 +388,21 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         $this->assertNotNull($ins2->getId());
         $this->assertNotEquals($ins->getId(), $ins2->getId());
     }
+    
+    public function testIdAsProperty()
+    {
+        $ins = new InsertType();
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myCircularReference = null;
+        $this->storage1->insert($ins);
+        
+        $this->storage1->flush();
+        
+        $this->assertEquals($ins->getId(), $ins->id);
+    }
 }
 
 ?>

@@ -11,6 +11,7 @@ interface Modifier extends \Good\Rolemodel\SchemaVisitor
     public function getterBegin();
     public function setterBegin();
     public function setterEnd();
+    public function topOfGetterSwitch();
     public function varDefinitionBefore();
     public function varDefinitionAfter();
     public function topOfFile();

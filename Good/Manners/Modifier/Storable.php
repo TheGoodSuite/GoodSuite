@@ -334,6 +334,14 @@ class Storable implements \Good\Service\Modifier
         
         return $res;
     }
+    public function topOfGetterSwitch()
+    {
+        $res  = '            case "id":' . "\n";
+        $res .= '                return $this->getid();' . "\n";
+        $res .= "            \n";
+        
+        return $res;
+    }
     
     public function topOfFile()
     {

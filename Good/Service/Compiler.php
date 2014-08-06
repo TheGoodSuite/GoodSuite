@@ -146,6 +146,11 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
         $this->getters .= '        switch ($property)' . "\n";
         $this->getters .= "        {\n";
         
+        foreach ($this->modifiers as $modifier)
+        {
+            $this->getters .= $modifier->topOfGetterSwitch($dataType);
+        }
+        
         $this->setters  = '    public function __set($property, $value)' . "\n";
         $this->setters .= "    {\n";
         $this->setters .= '        switch ($property)' . "\n";
