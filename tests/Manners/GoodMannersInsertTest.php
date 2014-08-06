@@ -256,6 +256,138 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         
         $this->checkInsertion($expectedResults);
     }
+    
+    public function testIdIsSetOnInsert()
+    {
+        $ins = new InsertType();
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myCircularReference = null;
+        $this->storage1->insert($ins);
+        
+        $this->storage1->flush();
+        
+        $this->assertNotNull($ins->getId());
+    }
+    
+    public function testDifferentObjectsGetDifferentIds()
+    {
+        $ins = new InsertType();
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myCircularReference = null;
+        $this->storage1->insert($ins);
+        
+        $ins2 = new InsertType();
+        $ins2->myInt = 4;
+        $ins2->myFloat = 4.4;
+        $ins2->myText = "Four";
+        $ins2->myDatetime = new \Datetime('2004-04-04');
+        $ins2->myCircularReference = null;
+        $this->storage1->insert($ins2);
+        
+        $this->storage1->flush();
+        
+        $this->assertNotNull($ins->getId());
+        $this->assertNotNull($ins2->getId());
+        $this->assertNotEquals($ins->getId(), $ins2->getId());
+    }
+    
+    public function testObjectsGetSameIdsWhenFetchedFromDatabase()
+    {
+        $ins = new InsertType();
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myCircularReference = null;
+        $this->storage1->insert($ins);
+        
+        $ins2 = new InsertType();
+        $ins2->myInt = 5;
+        $ins2->myFloat = 4.4;
+        $ins2->myText = "Four";
+        $ins2->myDatetime = new \Datetime('2004-04-04');
+        $ins2->myCircularReference = null;
+        $this->storage1->insert($ins2);
+        
+        $ins3 = new InsertType();
+        $ins3->myInt = 6;
+        $ins3->myFloat = 4.4;
+        $ins3->myText = "Four";
+        $ins3->myDatetime = new \Datetime('2004-04-04');
+        $ins3->myCircularReference = null;
+        $this->storage1->insert($ins3);
+        
+        $ins4 = new InsertType();
+        $ins4->myInt = 7;
+        $ins4->myFloat = 4.4;
+        $ins4->myText = "Four";
+        $ins4->myDatetime = new \Datetime('2004-04-04');
+        $ins4->myCircularReference = null;
+        $this->storage1->insert($ins4);
+        
+        $this->storage1->flush();
+        
+        $five = new InsertType();
+        $five->myInt = 5;
+        $cond = new \Good\Manners\Condition\EqualTo($five);
+        $results = $this->storage2->getCollection($cond, new InsertTypeResolver());
+        
+        $n = 0;
+        
+        foreach ($results as $result)
+        {
+            $n++;
+            $this->assertEquals($result->getId(), $ins2->getId());
+        }
+        
+        $this->assertEquals(1, $n);
+        
+        $seven = new InsertType();
+        $seven->myInt = 7;
+        $cond = new \Good\Manners\Condition\EqualTo($seven);
+        $results = $this->storage2->getCollection($cond, new InsertTypeResolver());
+        
+        $n = 0;
+        
+        foreach ($results as $result)
+        {
+            $n++;
+            $this->assertEquals($result->getId(), $ins4->getId());
+        }
+        
+        $this->assertEquals(1, $n);
+    }
+    
+    public function testIdIsSetOnCircularInsert()
+    {
+        $ins = new InsertType();
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \Datetime('2004-04-04');
+        
+        $ins2 = new InsertType();
+        $ins2->myInt = 4;
+        $ins2->myFloat = 4.4;
+        $ins2->myText = "Four";
+        $ins2->myDatetime = new \Datetime('2004-04-04');
+        $ins->myCircularReference = $ins;
+        $ins->myCircularReference = $ins2;
+        
+        $this->storage1->insert($ins);
+        
+        $this->storage1->flush();
+        
+        $this->assertNotNull($ins->getId());
+        $this->assertNotNull($ins2->getId());
+        $this->assertNotEquals($ins->getId(), $ins2->getId());
+    }
 }
 
 ?>
