@@ -19,6 +19,7 @@ interface Storable
     public function setValidationToken(ValidationToken $token);
     public function getId();
     public function setId($value);
+    public function hasValidId();
     public function isDirty();
     public function clean();
     public function getType();

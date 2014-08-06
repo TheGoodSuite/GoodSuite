@@ -44,7 +44,7 @@ class ConditionWriter implements StorableVisitor,
         
         if ($this->first)
         {
-            if ($to->getId() != -1)
+            if ($to->hasValidId())
             {
                 $this->condition .= 't' . $this->currentTable . '.id' .
                                         ' ' . $this->comparison . ' ' . \intval($to->getId());

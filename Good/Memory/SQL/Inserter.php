@@ -91,7 +91,7 @@ class Inserter implements StorableVisitor
                     $this->postponed = \array_merge($this->postponed, $inserter->getPostponed());
                 }
                 
-                if (!$value->isNew() && $value->getId() == -1)
+                if (!$value->isNew() && !$value->hasValidId())
                 // $value is actually new, but not marked as such to prevent infinite recursion
                 {
                     $this->postponed[] = new SQLPostponedForeignKey($this->inserting,

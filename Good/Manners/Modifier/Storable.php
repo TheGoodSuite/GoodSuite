@@ -39,7 +39,7 @@ class Storable implements \Good\Service\Modifier
     {
         $res  = "    // Storable\n";
         $res .= '    private $isNew = true;' . "\n";
-        $res .= '    private $id = -1;' . "\n";
+        $res .= '    private $id = null;' . "\n";
         $res .= "    \n";
         $res .= '    public function isNew()'. "\n";
         $res .= "    {\n";
@@ -53,12 +53,22 @@ class Storable implements \Good\Service\Modifier
         $res .= "    \n";
         $res .= '    public function getId()' . "\n";
         $res .= "    {\n";
+        $res .= '        if ($this->id === null)' . "\n";
+        $res .= "        {\n";
+        $res .= '            throw new \Exception("Uninitilized id requested!");' . "\n";
+        $res .= "        }\n";
+        $res .= "        \n";
         $res .= '        return $this->id;' . "\n";
         $res .= "    }\n";
         $res .= "    \n";
         $res .= '    public function setId($value)' . "\n";
         $res .= "    {\n";
         $res .= '        $this->id = $value;' . "\n";
+        $res .= "    }\n";
+        $res .= "    \n";
+        $res .= '    public function hasValidId()' . "\n";
+        $res .= "    {\n";
+        $res .= '        return $this->id !== null;' . "\n";
         $res .= "    }\n";
         $res .= "    \n";
         
