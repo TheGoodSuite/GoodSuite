@@ -593,50 +593,6 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testGetAll
-     */
-    public function testGetById()
-    {
-        // first we get a result from the database to find out what irs id is
-        // We'll use the second from getAll, so it can't use any query similar
-        // to how we originally get the result.
-        
-        // We still use the same ol' trick
-        $type = new GetType();
-        $any = new \Good\Manners\Condition\EqualTo($type);
-        
-        $resolver = new GetTypeResolver();
-        $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($any, $resolver);
-        
-        $collection->getNext();
-        $idHolder = $collection->getNext();
-        
-        // I want to make a better api for getting by id,
-        // but this should do the trick
-        $type = new GetType();
-        $type->setId($idHolder->getId());
-        $any = new \Good\Manners\Condition\EqualTo($type);
-        
-        $resolver = new GetTypeResolver();
-        $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($any, $resolver);
-        
-        $expectedResults = array();
-        
-        $expectedResults[] = $idHolder;
-        
-        foreach ($collection as $type)
-        {
-            $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
-            array_splice($expectedResults, $pos, 1);
-        }
-        
-        $this->assertSame(array(), $expectedResults);        
-    }
-    
-    /**
      * @depends testGetLessThan
      * @depends testGetGreaterThan
      */
