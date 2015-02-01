@@ -38,8 +38,8 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
                                                                             "datatype OtherType { int yourInt; }");
     
         $rolemodel = new \Good\Rolemodel\Rolemodel();
-        $schema = $rolemodel->createSchema(array('GetType' => dirname(__FILE__) . '/../testInputFiles/GetType.datatype',
-                                                   'OtherType' => dirname(__FILE__) . '/../testInputFiles/OtherType.datatype'));
+        $schema = $rolemodel->createSchema(array(dirname(__FILE__) . '/../testInputFiles/GetType.datatype',
+                                                   dirname(__FILE__) . '/../testInputFiles/OtherType.datatype'));
 
         $service = new \Good\Service\Service();
         $service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');

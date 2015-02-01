@@ -24,7 +24,7 @@ abstract class GoodMannersIdTest extends PHPUnit_Framework_TestCase
                                                                             "}\n");
     
         $rolemodel = new \Good\Rolemodel\Rolemodel();
-        $schema = $rolemodel->createSchema(array('IdType' => dirname(__FILE__) . '/../testInputFiles/IdType.datatype'));
+        $schema = $rolemodel->createSchema(array(dirname(__FILE__) . '/../testInputFiles/IdType.datatype'));
 
         $service = new \Good\Service\Service();
         $service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');
@@ -82,6 +82,7 @@ abstract class GoodMannersIdTest extends PHPUnit_Framework_TestCase
     
     public function tearDown()
     {
+        return;
         // Just doing this already to make sure the deconstructor will hasve
         // side-effects at an unspecified moment...
         // (at which point the database will probably be in a wrong state for this)
