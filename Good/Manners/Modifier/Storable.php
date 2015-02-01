@@ -28,7 +28,7 @@ class Storable implements \Good\Service\Modifier
     
     public function implementingInterfaces()
     {
-        return array('\\Good\\Manners\\Storable');
+        return array('\\Good\\Manners\\GeneratedStorable');
     }
     
     public function baseClassConstructor()

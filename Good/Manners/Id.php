@@ -89,16 +89,6 @@ class Id implements Storable
     {
         // This doesn't need to do anything, because we don't care about the fields of an id
     }
-    
-    public function setFromArray(array $values)
-    {
-        throw new Exception("You can't set values on an Id.");
-    }
-    
-    public static function resolver()
-    {
-        throw new Exception("You can't get a resolver from an Id.");
-    }
 }
 
 ?>
