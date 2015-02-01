@@ -94,6 +94,14 @@ abstract class GoodMannersIdTest extends PHPUnit_Framework_TestCase
         $this->_tearDownAfterClass();
     }
     
+    private function idTypeEquals($first, $second)
+    {
+        return $first->myText == $second->myText &&
+               (($first->reference === null && $second->reference === null) ||
+                $first->reference !== null && $second->reference !== null &&
+                $first->reference->myText == $second->reference->myText);
+    }
+    
     private function array_search_specific($needle, $haystack)
     {
         // this is sort of a array_search
@@ -104,10 +112,7 @@ abstract class GoodMannersIdTest extends PHPUnit_Framework_TestCase
             // all the values from the database are strings, so that's
             // not very useful.
             // I hope one day this'll be fixed, though.
-            if ($hay->myText == $needle->myText &&
-                (($hay->reference === null && $needle->reference === null) ||
-                 $hay->reference !== null && $needle->reference !== null &&
-                 $hay->reference->myText == $needle->reference->myText))
+            if ($this->idTypeEquals($hay, $needle))
             {
                 return $key;
             }
@@ -147,31 +152,19 @@ abstract class GoodMannersIdTest extends PHPUnit_Framework_TestCase
         
         $idHolder = $collection->getNext();
         
-        // There's still some improvement to be made here ($id->get())
-        $id = IdType::id($this->storage, $idHolder->getId());
-        $any = new \Good\Manners\Condition\EqualTo($id);
-        
         $resolver = IdType::resolver();
         $resolver->resolveReference();
-        $collection = $this->storage->getCollection($any, $resolver);
         
-        $expectedResults = array();
+        $id = IdType::id($this->storage, $idHolder->getId());
+        
+        $result = $id->get($resolver);
         
         $expected = new IdType();
         $expected->myText = 'b';
         $expected->reference = new IdType();
         $expected->reference->myText = 'a';
         
-        $expectedResults[] = $expected;
-        
-        foreach ($collection as $type)
-        {
-            $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
-            array_splice($expectedResults, $pos, 1);
-        }
-        
-        $this->assertSame(array(), $expectedResults);        
+        $this->assertTrue($this->idTypeEquals($result, $expected));
     }
     
     public function testDeleteById()

@@ -4,6 +4,8 @@ namespace Good\Manners;
 
 use Good\Manners\Storable;
 use Good\Manners\Storage;
+use Good\Manners\Resolver;
+use Good\Manners\Condition\EqualTo;
 
 class Id implements Storable
 {
@@ -85,6 +87,22 @@ class Id implements Storable
     public function acceptStorableVisitor(StorableVisitor $visitor)
     {
         // This doesn't need to do anything, because we don't care about the fields of an id
+    }
+    
+    // Note: when the resolver argument becomes optional in the Storage, it should become
+    //       optional here as well.
+    public function get(Resolver $resolver)
+    {
+        $collection = $this->storage->getCollection(new EqualTo($this), $resolver);
+        
+        $first = $collection->getNext();
+        
+        if ($first === null)
+        {
+            throw new \Exception("Id not found in storage");
+        }
+        
+        return $first;
     }
 }
 
