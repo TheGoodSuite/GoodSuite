@@ -418,9 +418,9 @@ class Storable implements \Good\Service\Modifier
         $res .= '        return new ' . $this->className . 'Resolver();' . "\n";
         $res .= "    }\n";
         $res .= "    \n";
-        $res .= '    public static function id($id)' . "\n";
+        $res .= '    public static function id($storage, $id)' . "\n";
         $res .= "    {\n";
-        $res .= '        return new \Good\Manners\Id(new ' . $this->className . '(), $id);' . "\n";
+        $res .= '        return new \Good\Manners\Id(new ' . $this->className . '(), $storage, $id);' . "\n";
         $res .= "    }\n";
         $res .= "    \n";
         $res .= '    public function getType()' . "\n";

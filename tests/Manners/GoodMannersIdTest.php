@@ -148,7 +148,7 @@ abstract class GoodMannersIdTest extends PHPUnit_Framework_TestCase
         $idHolder = $collection->getNext();
         
         // There's still some improvement to be made here ($id->get())
-        $id = IdType::id($idHolder->getId());
+        $id = IdType::id($this->storage, $idHolder->getId());
         $any = new \Good\Manners\Condition\EqualTo($id);
         
         $resolver = IdType::resolver();
@@ -187,8 +187,7 @@ abstract class GoodMannersIdTest extends PHPUnit_Framework_TestCase
         
         $idHolder = $collection->getNext();
         
-        $id = IdType::id($idHolder->getId());
-        $id->setStorage($this->storage);
+        $id = IdType::id($this->storage, $idHolder->getId());
         $id->delete();
         
         $this->storage->flush();
@@ -236,7 +235,7 @@ abstract class GoodMannersIdTest extends PHPUnit_Framework_TestCase
         
         $idHolder = $collection->getNext();
         
-        $id = IdType::id($idHolder->getId());
+        $id = IdType::id($this->storage, $idHolder->getId());
         $referencing = new IdType();
         $referencing->reference = $id;
         
@@ -288,7 +287,7 @@ abstract class GoodMannersIdTest extends PHPUnit_Framework_TestCase
         
         $b = $collection->getNext();
         
-        $id = IdType::id($b->getId());
+        $id = IdType::id($this->storage, $b->getId());
         
         $a->reference = $id;
         
@@ -341,7 +340,7 @@ abstract class GoodMannersIdTest extends PHPUnit_Framework_TestCase
         
         $idHolder = $collection->getNext();
         
-        $id = IdType::id($idHolder->getId());
+        $id = IdType::id($this->storage, $idHolder->getId());
         
         $a = new IdType();
         $a->myText = 'a';

@@ -13,24 +13,21 @@ class Id implements Storable
     private $storage = null;
     private $deleted = false;
     
-    public function __construct(Storable $base, $id)
+    public function __construct(Storable $base, Storage $storage, $id)
     {
         $this->base = $base;
+        $this->storage = $storage;
         $this->id = $id;
     }
     
     public function setStorage(Storage $storage)
     {
+        // Does this function even make sense?
         $this->storage = $storage;
     }
     
     public function delete()
     {
-        if ($this->storage === null)
-        {
-            throw new \Exception("Can't delete by id unless a store is set on id");
-        }
-        
         $this->deleted = true;
         $this->storage->dirtyStorable($this);
     }
