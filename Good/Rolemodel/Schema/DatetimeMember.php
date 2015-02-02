@@ -11,6 +11,26 @@ class DatetimeMember extends PrimitiveMember
         // visit this, there are no children to pass visitor on to
         $visitor->visitDatetimeMember($this);
     }
+    
+    function getValidParameterTypeModifiers()
+    {
+        return array();
+    }
+    
+    function getValidNonParameterTypeModifiers()
+    {
+        return array();
+    }
+    
+    function processTypeModifiers(array $typeModifiers)
+    {
+        return $typeModifiers;
+    }
+    
+    function getDefaultTypeModifierValues()
+    {
+        return array();
+    }
 }
 
 ?>
