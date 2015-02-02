@@ -91,6 +91,11 @@ class Rolemodel
                         {
                             $typeModifierName = $typeModifierMatches['typeModifierName'];
                             
+                            if (array_key_exists($typeModifierName, $typeModfiers))
+                            {
+                                throw new \Exception("Same type modifier found more than once on a single property");
+                            }
+                            
                             if (array_key_exists('typeModfierValue', $typeModifierMatches) && $typeModifierMatches['typeModfierValue'] !== "")
                             {
                                 $typeModifiers[$typeModifierName] = intval($typeModifierMatches['typeModfierValue']);
