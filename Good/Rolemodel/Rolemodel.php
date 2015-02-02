@@ -37,7 +37,7 @@ class Rolemodel
         $identifier = '[a-zA-Z_][a-zA-Z0-9_]*';
         $regexAttributeSeperator = '(\\s*,\\s*|\\s+)';
         $regexAttributes = '\\[\\s*(?P<attributes>[a-zA-Z0-9_]+(' . $regexAttributeSeperator . '[a-zA-Z0-9_]+)*\\s*)?\\]';
-        $regexTypeModifier = '(?P<typeModfier>(?P<typeModfierName>[a-zA-Z][a-zA-Z0-9_]*)\s*(?:=\s*(?P<typeModfierValue>[1-9][0-9]*))?)';
+        $regexTypeModifier = '(?P<typeModfier>(?P<typeModifierName>[a-zA-Z][a-zA-Z0-9_]*)\s*(?:=\s*(?P<typeModfierValue>[1-9][0-9]*))?)';
         $regexTypeModifiers = '\\s*(?:' . $regexTypeModifier . '\\s*(?P<lastTypeModifierPart>,\\s*(?P>typeModfier)\\s*)*)?';
         $regexType = '(?:(?P<primitiveType>' . $identifier . ')(?:\\((?<typeModfiers>' . $regexTypeModifiers . ')\\))?|"(?P<referenceType>' . $identifier . ')")';
         $regexName = '(?P<name>' . $identifier . ')';
@@ -89,15 +89,15 @@ class Rolemodel
                         
                         while (preg_match('/^' . $regexTypeModifiers . '$/', $typeModifierSource, $typeModifierMatches) != 0)
                         {
-                            $typeModfierName = $typeModifierMatches['typeModfierName'];
+                            $typeModifierName = $typeModifierMatches['typeModifierName'];
                             
                             if (array_key_exists('typeModfierValue', $typeModifierMatches) && $typeModifierMatches['typeModfierValue'] !== "")
                             {
-                                $typeModifiers[$typeModfierName] = intval($typeModifierMatches['typeModfierValue']);
+                                $typeModifiers[$typeModifierName] = intval($typeModifierMatches['typeModfierValue']);
                             }
                             else
                             {
-                                $typeModfiers[$typeModfierName] = true;
+                                $typeModfiers[$typeModifierName] = true;
                             }
                             
                             if (array_key_exists('lastTypeModifierPart', $typeModifierMatches) && $typeModifierMatches['lastTypeModifierPart'] !== "")
