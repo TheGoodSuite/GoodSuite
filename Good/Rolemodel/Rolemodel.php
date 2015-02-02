@@ -37,7 +37,9 @@ class Rolemodel
         $identifier = '[a-zA-Z_][a-zA-Z0-9_]*';
         $regexAttributeSeperator = '(\\s*,\\s*|\\s+)';
         $regexAttributes = '\\[\\s*(?P<attributes>[a-zA-Z0-9_]+(' . $regexAttributeSeperator . '[a-zA-Z0-9_]+)*\\s*)?\\]';
-        $regexType = '(?P<type>' . $identifier . '|"' . $identifier . '")';
+        $regexTypeModifier = '(?P<typeModfier>(?P<typeModfierName>[a-zA-Z][a-zA-Z0-9_]*)\s*(?:=\s*(?P<typeModfierValue>[1-9][0-9]*))?)';
+        $regexTypeModifiers = '\\s*(?:' . $regexTypeModifier . '\\s*(?P<lastTypeModifierPart>,\\s*(?P>typeModfier)\\s*)*)?';
+        $regexType = '(?:(?P<primitiveType>' . $identifier . ')(?:\\((?<typeModfiers>' . $regexTypeModifiers . ')\\))?|"(?P<referenceType>' . $identifier . ')")';
         $regexName = '(?P<name>' . $identifier . ')';
         $memberFinisher = ';';
         $memberDefinition = '\\s*(' . $regexAttributes . '\\s*)?' . $regexType . '\\s+' . $regexName . '\\s*' . $memberFinisher;
@@ -61,7 +63,6 @@ class Rolemodel
                 $line = $matches[0];
                 $input = substr($input, strlen($line));
                 
-                $type = $matches['type'];
                 $varName = $matches['name'];
                 if ($matches['attributes'] != '')
                 {
@@ -73,13 +74,46 @@ class Rolemodel
                 }
                 
                 // Type
-                if (\substr($type, 0, 1) == '"' && \substr($type, -1) == '"')
+                if (array_key_exists('referenceType', $matches) && $matches['referenceType'] !== "")
                 {
-                    $members[] = new Schema\ReferenceMember($attributes, $varName, \substr($type, 1, -1));
+                    $members[] = new Schema\ReferenceMember($attributes, $varName, $matches['referenceType']);
                 }
                 else
                 {
-                    $members[] = $factory->makePrimitive($attributes, $varName, $type);
+                    // extract typeModfiers
+                    $typeModfiers = array();
+                    
+                    if (array_key_exists('typeModifiers', $matches) && $matches['typeModfiers'] !== "")
+                    {
+                        $typeModfierSource = $matches['typeModfiers'];
+                        
+                        while (preg_match('/^' . $regexTypeModifiers . '$/', $typeModifierSource, $typeModifierMatches) != 0)
+                        {
+                            $typeModfierName = $typeModifierMatches['typeModfierName'];
+                            
+                            if (array_key_exists('typeModfierValue', $typeModifierMatches) && $typeModifierMatches['typeModfierValue'] !== "")
+                            {
+                                $typeModifiers[$typeModfierName] = intval($typeModifierMatches['typeModfierValue']);
+                            }
+                            else
+                            {
+                                $typeModfiers[$typeModfierName] = true;
+                            }
+                            
+                            if (array_key_exists('lastTypeModifierPart', $typeModifierMatches) && $typeModifierMatches['lastTypeModifierPart'] !== "")
+                            {
+                                $typeModfierSource = substr($typeModifierSource, 0, -1 * length($typeModifierMatches['lastTypeModifierPart']));
+                            }
+                            else
+                            {
+                                $typeModifierSource = '';
+                            }
+                        }
+                        
+                        $typeModfiers = array_reverse($typeModfiers);
+                    }
+                    
+                    $members[] = $factory->makePrimitive($attributes, $varName, $matches['primitiveType'], $typeModfiers);
                 }
             }
             
