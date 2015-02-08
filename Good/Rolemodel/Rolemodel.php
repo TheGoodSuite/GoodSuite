@@ -38,8 +38,8 @@ class Rolemodel
         $regexAttributeSeperator = '(\\s*,\\s*|\\s+)';
         $regexAttributes = '\\[\\s*(?P<attributes>[a-zA-Z0-9_]+(' . $regexAttributeSeperator . '[a-zA-Z0-9_]+)*\\s*)?\\]';
         $regexTypeModifier = '(?P<typeModifier>(?P<typeModifierName>[a-zA-Z][a-zA-Z0-9_]*)\s*(?:=\s*(?P<typeModifierValue>-?[1-9][0-9]*))?)';
-        $regexTypeModifiers = '\\s*(?:' . $regexTypeModifier . '\\s*(?P<lastTypeModifierPart>,\\s*(?P>typeModifier)\\s*)*)?';
-        $regexType = '(?:(?P<primitiveType>' . $identifier . ')(?:\\((?<typeModifiers>' . $regexTypeModifiers . ')\\))?|"(?P<referenceType>' . $identifier . ')")';
+        $regexTypeModifiers = '\\s*' . $regexTypeModifier . '\\s*(?P<lastTypeModifierPart>,\\s*(?P>typeModifier)\\s*)*';
+        $regexType = '(?:(?P<primitiveType>' . $identifier . ')(?:\\((?:(?<typeModifiers>' . $regexTypeModifiers . ')|\\s*)\\))?|"(?P<referenceType>' . $identifier . ')")';
         $regexName = '(?P<name>' . $identifier . ')';
         $memberFinisher = ';';
         $memberDefinition = '\\s*(' . $regexAttributes . '\\s*)?' . $regexType . '\\s+' . $regexName . '\\s*' . $memberFinisher;
@@ -87,7 +87,7 @@ class Rolemodel
                     {
                         $typeModifierSource = $matches['typeModifiers'];
                         
-                        while (preg_match('/^' . $regexTypeModifiers . '$/', $typeModifierSource, $typeModifierMatches) != 0)
+                        while (preg_match('/^' . $regexTypeModifiers . '$/', $typeModifierSource, $typeModifierMatches) != 0 && $typeModifierMatches[0] != "")
                         {
                             $typeModifierName = $typeModifierMatches['typeModifierName'];
                             
@@ -105,7 +105,7 @@ class Rolemodel
                                 $typeModifiers[$typeModifierName] = true;
                             }
                             
-                            if (array_key_exists('lastTypeModifierPart', $typeModifierMatches) && $typeModifierMatches['lastTypeModifierPart'] !== "")
+                            if (array_key_exists('lastTypeModifierPart', $typeModifierMatches))
                             {
                                 $typeModifierSource = substr($typeModifierSource, 0, -1 * length($typeModifierMatches['lastTypeModifierPart']));
                             }
