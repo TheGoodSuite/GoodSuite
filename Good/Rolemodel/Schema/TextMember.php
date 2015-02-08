@@ -3,6 +3,7 @@
 namespace Good\Rolemodel\Schema;
 
 use Good\Rolemodel\SchemaVisitor;
+use Good\Rolemodel\InvalidTypeModifierException;
 
 class TextMember extends PrimitiveMember
 {
@@ -29,12 +30,12 @@ class TextMember extends PrimitiveMember
             if (array_key_exists('minLength', $typeModifiers) ||
                 array_key_exists('maxLength', $typeModifiers))
             {
-                throw new \Exception("The 'length' type modifier cannot be defined alongside 'minLength' or 'maxLength'.");
+                throw new InvalidTypeModifierException("The 'length' type modifier cannot be defined alongside 'minLength' or 'maxLength'.");
             }
             
             if ($typeModifiers['length'] < 0)
             {
-                throw new \Exception("The length for a text must be positive");
+                throw new InvalidTypeModifierException("The length for a text must be positive");
             }
             
             $typeModifiers['minLength'] = $typeModifiers['length'];
@@ -46,13 +47,13 @@ class TextMember extends PrimitiveMember
             array_key_exists('maxLength', $typeModifiers) &&
             $typeModifiers['minLength'] > $typeModifiers['maxLength'])
         {
-            throw new \Exception("The minLength for a text cannot be higher than its maxLength");
+            throw new InvalidTypeModifierException("The minLength for a text cannot be higher than its maxLength");
         }
         
         if ((array_key_exists('minLength', $typeModifiers) && $typeModifiers['minLength'] < 0) || 
             (array_key_exists('maxLength', $typeModifiers) && $typeModifiers['maxLength'] < 0))
         {
-            throw new \Exception("The minLength and maxLength for a text must be positive");
+            throw new InvalidTypeModifierException("The minLength and maxLength for a text must be positive");
         }
         
         return $typeModifiers;

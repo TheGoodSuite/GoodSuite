@@ -2,6 +2,8 @@
 
 namespace Good\Rolemodel\Schema;
 
+use Good\Rolemodel\InvalidTypeModifierException;
+
 abstract class PrimitiveMember extends Member
 {
     private $typeModifiers;
@@ -46,11 +48,11 @@ abstract class PrimitiveMember extends Member
                 {
                     if (array_key_exists($modifier, $allowedParameterModifiers))
                     {
-                        throw new \Exception('Type modifier "' . $modifier . '" on ' . $this->getName() . ' must have a value.');
+                        throw new InvalidTypeModifierException('Type modifier "' . $modifier . '" on ' . $this->getName() . ' must have a value.');
                     }
                     else
                     {
-                        throw new \Exception('Unknown type modifier "' . $modifier . '" on ' . $this->getName() . '.');
+                        throw new InvalidTypeModifierException('Unknown type modifier "' . $modifier . '" on ' . $this->getName() . '.');
                     }
                 }
             }
@@ -60,11 +62,11 @@ abstract class PrimitiveMember extends Member
                 {
                     if (array_key_exists($modifier, $allowedNonParameterModifiers))
                     {
-                        throw new \Exception('Type modifier "' . $modifier . '" on ' . $this->getName() . ' must not have a value.');
+                        throw new InvalidTypeModifierException('Type modifier "' . $modifier . '" on ' . $this->getName() . ' must not have a value.');
                     }
                     else
                     {
-                        throw new \Exception('Unknown type modifier "' . $modifier . '" on ' . $this->getName() . '.');
+                        throw new InvalidTypeModifierException('Unknown type modifier "' . $modifier . '" on ' . $this->getName() . '.');
                     }
                 }
             }
