@@ -37,9 +37,9 @@ class Rolemodel
         $identifier = '[a-zA-Z_][a-zA-Z0-9_]*';
         $regexAttributeSeperator = '(\\s*,\\s*|\\s+)';
         $regexAttributes = '\\[\\s*(?P<attributes>[a-zA-Z0-9_]+(' . $regexAttributeSeperator . '[a-zA-Z0-9_]+)*\\s*)?\\]';
-        $regexTypeModifier = '(?P<typeModfier>(?P<typeModifierName>[a-zA-Z][a-zA-Z0-9_]*)\s*(?:=\s*(?P<typeModfierValue>-?[1-9][0-9]*))?)';
-        $regexTypeModifiers = '\\s*(?:' . $regexTypeModifier . '\\s*(?P<lastTypeModifierPart>,\\s*(?P>typeModfier)\\s*)*)?';
-        $regexType = '(?:(?P<primitiveType>' . $identifier . ')(?:\\((?<typeModfiers>' . $regexTypeModifiers . ')\\))?|"(?P<referenceType>' . $identifier . ')")';
+        $regexTypeModifier = '(?P<typeModifier>(?P<typeModifierName>[a-zA-Z][a-zA-Z0-9_]*)\s*(?:=\s*(?P<typeModifierValue>-?[1-9][0-9]*))?)';
+        $regexTypeModifiers = '\\s*(?:' . $regexTypeModifier . '\\s*(?P<lastTypeModifierPart>,\\s*(?P>typeModifier)\\s*)*)?';
+        $regexType = '(?:(?P<primitiveType>' . $identifier . ')(?:\\((?<typeModifiers>' . $regexTypeModifiers . ')\\))?|"(?P<referenceType>' . $identifier . ')")';
         $regexName = '(?P<name>' . $identifier . ')';
         $memberFinisher = ';';
         $memberDefinition = '\\s*(' . $regexAttributes . '\\s*)?' . $regexType . '\\s+' . $regexName . '\\s*' . $memberFinisher;
@@ -80,34 +80,34 @@ class Rolemodel
                 }
                 else
                 {
-                    // extract typeModfiers
-                    $typeModfiers = array();
+                    // extract typeModifiers
+                    $typeModifiers = array();
                     
-                    if (array_key_exists('typeModifiers', $matches) && $matches['typeModfiers'] !== "")
+                    if (array_key_exists('typeModifiers', $matches) && $matches['typeModifiers'] !== "")
                     {
-                        $typeModfierSource = $matches['typeModfiers'];
+                        $typeModifierSource = $matches['typeModifiers'];
                         
                         while (preg_match('/^' . $regexTypeModifiers . '$/', $typeModifierSource, $typeModifierMatches) != 0)
                         {
                             $typeModifierName = $typeModifierMatches['typeModifierName'];
                             
-                            if (array_key_exists($typeModifierName, $typeModfiers))
+                            if (array_key_exists($typeModifierName, $typeModifiers))
                             {
                                 throw new \Exception("Same type modifier found more than once on a single property");
                             }
                             
-                            if (array_key_exists('typeModfierValue', $typeModifierMatches) && $typeModifierMatches['typeModfierValue'] !== "")
+                            if (array_key_exists('typeModifierValue', $typeModifierMatches) && $typeModifierMatches['typeModifierValue'] !== "")
                             {
-                                $typeModifiers[$typeModifierName] = intval($typeModifierMatches['typeModfierValue']);
+                                $typeModifiers[$typeModifierName] = intval($typeModifierMatches['typeModifierValue']);
                             }
                             else
                             {
-                                $typeModfiers[$typeModifierName] = true;
+                                $typeModifiers[$typeModifierName] = true;
                             }
                             
                             if (array_key_exists('lastTypeModifierPart', $typeModifierMatches) && $typeModifierMatches['lastTypeModifierPart'] !== "")
                             {
-                                $typeModfierSource = substr($typeModifierSource, 0, -1 * length($typeModifierMatches['lastTypeModifierPart']));
+                                $typeModifierSource = substr($typeModifierSource, 0, -1 * length($typeModifierMatches['lastTypeModifierPart']));
                             }
                             else
                             {
@@ -115,10 +115,10 @@ class Rolemodel
                             }
                         }
                         
-                        $typeModfiers = array_reverse($typeModfiers);
+                        $typeModifiers = array_reverse($typeModifiers);
                     }
                     
-                    $members[] = $factory->makePrimitive($attributes, $varName, $matches['primitiveType'], $typeModfiers);
+                    $members[] = $factory->makePrimitive($attributes, $varName, $matches['primitiveType'], $typeModifiers);
                 }
             }
             
