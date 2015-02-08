@@ -32,9 +32,27 @@ class TextMember extends PrimitiveMember
                 throw new \Exception("The 'length' type modifier cannot be defined alongside 'minLength' or 'maxLength'.");
             }
             
+            if ($typeModifiers['length'] < 0)
+            {
+                throw new \Exception("The length for a text must be positive");
+            }
+            
             $typeModifiers['minLength'] = $typeModifiers['length'];
             $typeModifiers['maxLength'] = $typeModifiers['length'];
             unset($typeModifiers['length']);
+        }
+        
+        if (array_key_exists('minLength', $typeModifiers) && 
+            array_key_exists('maxLength', $typeModifiers) &&
+            $typeModifiers['minLength'] > $typeModifiers['maxLength'])
+        {
+            throw new \Exception("The minLength for a text cannot be higher than its maxLength");
+        }
+        
+        if ((array_key_exists('minLength', $typeModifiers) && $typeModifiers['minLength'] < 0) || 
+            (array_key_exists('maxLength', $typeModifiers) && $typeModifiers['maxLength'] < 0))
+        {
+            throw new \Exception("The minLength and maxLength for a text must be positive");
         }
         
         return $typeModifiers;
@@ -42,7 +60,7 @@ class TextMember extends PrimitiveMember
     
     function getDefaultTypeModifierValues()
     {
-        return array();
+        return array('minLength' => 0);
     }
 }
 
