@@ -37,7 +37,7 @@ class Rolemodel
         $identifier = '[a-zA-Z_][a-zA-Z0-9_]*';
         $regexAttributeSeperator = '(\\s*,\\s*|\\s+)';
         $regexAttributes = '\\[\\s*(?P<attributes>[a-zA-Z0-9_]+(' . $regexAttributeSeperator . '[a-zA-Z0-9_]+)*\\s*)?\\]';
-        $regexTypeModifier = '(?P<typeModfier>(?P<typeModifierName>[a-zA-Z][a-zA-Z0-9_]*)\s*(?:=\s*(?P<typeModfierValue>[1-9][0-9]*))?)';
+        $regexTypeModifier = '(?P<typeModfier>(?P<typeModifierName>[a-zA-Z][a-zA-Z0-9_]*)\s*(?:=\s*(?P<typeModfierValue>-?[1-9][0-9]*))?)';
         $regexTypeModifiers = '\\s*(?:' . $regexTypeModifier . '\\s*(?P<lastTypeModifierPart>,\\s*(?P>typeModfier)\\s*)*)?';
         $regexType = '(?:(?P<primitiveType>' . $identifier . ')(?:\\((?<typeModfiers>' . $regexTypeModifiers . ')\\))?|"(?P<referenceType>' . $identifier . ')")';
         $regexName = '(?P<name>' . $identifier . ')';
