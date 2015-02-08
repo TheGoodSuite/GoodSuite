@@ -223,9 +223,11 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
         }
         
         $varType = $member->getReferencedType();
+        $typeCheck = null;
+        
         $includes[] = $member->getReferencedType();
         
-        $this->commitVariable($member, $varType);
+        $this->commitVariable($member, $varType, $typeCheck);
     }
     
     public function visitTextMember(Schema\TextMember $member)
@@ -236,8 +238,9 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
         }
         
         $varType = 'string';
+        $typeCheck = '\\Good\\Service\\TypeChecker::checkString($value)';
         
-        $this->commitVariable($member, $varType);
+        $this->commitVariable($member, $varType, $typeCheck);
     }
     
     public function visitIntMember(Schema\IntMember $member)
@@ -248,8 +251,9 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
         }
         
         $varType = 'int';
+        $typeCheck = '\\Good\\Service\\TypeChecker::checkInt($value)';
         
-        $this->commitVariable($member, $varType);
+        $this->commitVariable($member, $varType, $typeCheck);
     }
     
     public function visitFloatMember(Schema\FloatMember $member)
@@ -260,8 +264,9 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
         }
         
         $varType = 'float';
+        $typeCheck = '\\Good\\Service\\TypeChecker::checkFloat($value)';
         
-        $this->commitVariable($member, $varType);
+        $this->commitVariable($member, $varType, $typeCheck);
     }
     
     public function visitDatetimeMember(Schema\DatetimeMember $member)
@@ -272,11 +277,12 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
         }
         
         $varType = 'datetime';
+        $typeCheck = '\\Good\\Service\\TypeChecker::checkDateTime($value)';
         
-        $this->commitVariable($member, $varType);
+        $this->commitVariable($member, $varType, $typeCheck);
     }
     
-    private function commitVariable(Schema\Member $member, $varType)
+    private function commitVariable(Schema\Member $member, $varType, $typeCheck)
     {
         // Var type is currently unused but might be used when I do typechecking
         // (then again, I might actually do it differently)
@@ -359,7 +365,14 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
         
         //setter
         $this->output .= '    ' . $access . ' function set' . \ucfirst($member->getName()) . '($value)' . "\n";
+        
         $this->output .= "    {\n";
+        
+        if ($typeCheck != null)
+        {
+            $this->output .= '        ' . $typeCheck . ";\n";
+            $this->output .= "        \n";
+        }
         
         foreach ($this->modifiers as $modifier)
         {
