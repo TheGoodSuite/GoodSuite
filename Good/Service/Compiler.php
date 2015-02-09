@@ -237,8 +237,17 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
             $modifier->visitTextMember($member);
         }
         
+        $typeModifiers = $member->getTypeModifiers();
+        
         $varType = 'string';
-        $typeCheck = '\\Good\\Service\\TypeChecker::checkString($value)';
+        $typeCheck = '\\Good\\Service\\TypeChecker::checkString($value, ' . $typeModifiers['minLength'];
+        
+        if (array_key_exists('maxLength', $typeModifiers))
+        {
+            $typeCheck .= ', ' . $typeModifiers['maxLength'];
+        }
+        
+        $typeCheck .= ')';
         
         $this->commitVariable($member, $varType, $typeCheck);
     }
@@ -250,8 +259,11 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
             $modifier->visitIntMember($member);
         }
         
+        $typeModifiers = $member->getTypeModifiers();
+        
         $varType = 'int';
-        $typeCheck = '\\Good\\Service\\TypeChecker::checkInt($value)';
+        $typeCheck = '\\Good\\Service\\TypeChecker::checkInt($value, ' . $typeModifiers['minValue'];
+        $typeCheck .= ', ' . $typeModifiers['maxValue'] . ')';
         
         $this->commitVariable($member, $varType, $typeCheck);
     }
