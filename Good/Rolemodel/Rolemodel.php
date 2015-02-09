@@ -38,7 +38,9 @@ class Rolemodel
         $regexAttributeSeperator = '(\\s*,\\s*|\\s+)';
         $regexAttributes = '\\[\\s*(?P<attributes>[a-zA-Z0-9_]+(' . $regexAttributeSeperator . '[a-zA-Z0-9_]+)*\\s*)?\\]';
         $regexTypeModifier = '(?P<typeModifier>(?P<typeModifierName>[a-zA-Z][a-zA-Z0-9_]*)\s*(?:=\s*(?P<typeModifierValue>-?[1-9][0-9]*))?)';
-        $regexTypeModifiers = '\\s*' . $regexTypeModifier . '\\s*(?P<lastTypeModifierPart>,\\s*(?P>typeModifier)\\s*)*';
+        // some complexity was added through nextTypeModifier, which is there to ensure that firstSeparator captures the first separator instead of the last
+        // (without extra backtracking)
+        $regexTypeModifiers = '(?P<firstTypeModifierPart>\\s*' . $regexTypeModifier . '\\s*)(?:(?P<nextTypeModifier>(?P<firstSeparator>,)\\s*(?P>typeModifier)\\s*)(?P>nextTypeModifier)*)?';
         $regexType = '(?:(?P<primitiveType>' . $identifier . ')(?:\\((?:(?<typeModifiers>' . $regexTypeModifiers . ')|\\s*)\\))?|"(?P<referenceType>' . $identifier . ')")';
         $regexName = '(?P<name>' . $identifier . ')';
         $memberFinisher = ';';
@@ -105,17 +107,15 @@ class Rolemodel
                                 $typeModifiers[$typeModifierName] = true;
                             }
                             
-                            if (array_key_exists('lastTypeModifierPart', $typeModifierMatches))
+                            $cutOff = strlen($typeModifierMatches['firstTypeModifierPart']);
+                            
+                            if (array_key_exists('firstSeparator', $typeModifierMatches) && $typeModifierMatches['firstSeparator'] !== "")
                             {
-                                $typeModifierSource = substr($typeModifierSource, 0, -1 * length($typeModifierMatches['lastTypeModifierPart']));
+                                $cutOff += strlen($typeModifierMatches['firstSeparator']);
                             }
-                            else
-                            {
-                                $typeModifierSource = '';
-                            }
+                            
+                            $typeModifierSource = \substr($typeModifierSource, $cutOff);
                         }
-                        
-                        $typeModifiers = array_reverse($typeModifiers);
                     }
                     
                     $members[] = $factory->makePrimitive($attributes, $varName, $matches['primitiveType'], $typeModifiers);
