@@ -1177,6 +1177,20 @@ class GoodLookingTest extends PHPUnit_Framework_TestCase
     }
     
     /*
+     * @depends testOutputIntVariable
+     * Issue: #101
+     */
+    public function testNewlinesBeforeAssignment()
+    {
+        $this->expectOutputString('5');
+        
+        file_put_contents($this->template, "<: \n\n\n \$variable = 5; \$variable :>");
+        
+        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking->display();
+    }
+    
+    /*
      * @depends testForrangeAs
      */
     public function testForrangeReuse()
