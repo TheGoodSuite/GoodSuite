@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Feb 23, 2014 at 04:59 AM
--- Server version: 5.5.35
--- PHP Version: 5.3.10-1ubuntu3.9
+-- Generation Time: Jul 11, 2016 at 01:46 AM
+-- Server version: 5.5.46
+-- PHP Version: 5.3.10-1ubuntu3.23
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -19,6 +19,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `goodtests`
 --
+CREATE DATABASE `goodtests` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `goodtests`;
 
 -- --------------------------------------------------------
 
@@ -35,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `advancedupdatetype` (
   `myreference` int(11) DEFAULT NULL,
   `ref` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -78,6 +80,19 @@ CREATE TABLE IF NOT EXISTS `gettype` (
   `mydatetime` datetime DEFAULT NULL,
   `myothertype` int(11) DEFAULT NULL,
   `mycircular` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `idtype`
+--
+
+CREATE TABLE IF NOT EXISTS `idtype` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mytext` text NOT NULL,
+  `reference` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
