@@ -1,11 +1,11 @@
 <?php
 
-require_once dirname(__FILE__) . '/../Manners/GoodMannersChildTypesTest.php';
+require_once dirname(__FILE__) . '/../../Manners/GoodMannersInsertTest.php';
 
 /** 
  * @runTestsInSeparateProcesses
  */
-class GoodMemoryChildTypesTest extends GoodMannersChildTypesTest
+class GoodMemoryInsertTest extends GoodMannersInsertTest
 {
     public function getNewDb()
     {
@@ -20,3 +20,5 @@ class GoodMemoryChildTypesTest extends GoodMannersChildTypesTest
         return new \Good\Memory\SQLStorage($this->getNewDb());
     }
 }
+
+?>
