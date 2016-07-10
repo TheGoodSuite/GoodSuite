@@ -8,6 +8,7 @@ abstract class GoodMannersPersistenceTest extends PHPUnit_Framework_TestCase
     abstract public function getNewStorage();
     // this function should be removed, but is used for clearing the database at the moment
     abstract public function getNewDb();
+    abstract public function truncateTable($table);
     
     public function _setUpEachHalf()
     {
@@ -39,15 +40,13 @@ abstract class GoodMannersPersistenceTest extends PHPUnit_Framework_TestCase
     {
         // just doubling this up (from tearDown) to be sure
         // this should be handled natively once that is implemented
-        $db = $this->getNewDb();
-        $db->query('TRUNCATE persistencetype');
+        $this->truncateTable('persistencetype');
     }
     
     public function _tearDown()
     {
         // this should be handled through the GoodManners API once that is implemented
-        $db = $this->getNewDb();
-        $db->query('TRUNCATE persistencetype');
+        $this->truncateTable('persistencetype');
         
         unlink(dirname(__FILE__) . '/../testInputFiles/PersistenceType.datatype');
         unlink(dirname(__FILE__) . '/../generated/PersistenceType.datatype.php');

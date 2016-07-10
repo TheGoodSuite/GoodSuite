@@ -19,6 +19,12 @@ class GoodMemoryDeleteTest extends GoodMannersDeleteTest
     {
         return new \Good\Memory\SQLStorage($this->getNewDb());
     }
+    
+    public function truncateTable($table)
+    {
+        $db = $this->getNewDb();
+        $db->query("TRUNCATE " . $table);
+    }
 }
 
 ?>

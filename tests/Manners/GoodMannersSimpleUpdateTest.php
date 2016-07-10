@@ -11,6 +11,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
     abstract public function getNewStorage();
     // this function should be removed, but is used for clearing the database at the moment
     abstract public function getNewDb();
+    abstract public function truncateTable($table);
     
     // This could be done just once for all the tests and it would even be necessary
     // to run the tests in this class in a single process.
@@ -73,9 +74,8 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         
         // just doubling this up (from tearDown) to be sure
         // this should be handled natively once that is implemented
-        $db = $this->getNewDb();
-        $db->query('TRUNCATE simpleupdatetype');
-        $db->query('TRUNCATE anothertype');
+        $this->truncateTable('simpleupdatetype');
+        $this->truncateTable('anothertype');
         
         $storage = $this->getNewStorage();
         
@@ -145,9 +145,8 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $this->storage2->flush();
         
         // this should be handled through the GoodManners API once that is implemented
-        $db = $this->getNewDb();
-        $db->query('TRUNCATE simpleupdatetype');
-        $db->query('TRUNCATE anothertype');
+        $this->truncateTable('simpleupdatetype');
+        $this->truncateTable('anothertype');
         
         $this->_tearDownAfterClass();
     }

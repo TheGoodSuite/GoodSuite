@@ -10,6 +10,7 @@ abstract class GoodMannersIdTest extends PHPUnit_Framework_TestCase
     abstract public function getNewStorage();
     // this function should be removed, but is used for clearing the database at the moment
     abstract public function getNewDb();
+    abstract public function truncateTable($table);
     
     public static function _setUpBeforeClass()
     {
@@ -53,8 +54,7 @@ abstract class GoodMannersIdTest extends PHPUnit_Framework_TestCase
         
         // just doubling this up (from tearDown) to be sure
         // this should be handled natively once that is implemented
-        $db = $this->getNewDb();
-        $db->query('TRUNCATE idtype');
+        $this->truncateTable('idtype');
         
         $storage = $this->getNewStorage();
         
@@ -88,8 +88,7 @@ abstract class GoodMannersIdTest extends PHPUnit_Framework_TestCase
         $this->storage->flush();
         
         // this should be handled through the GoodManners API once that is implemented
-        $db = $this->getNewDb();
-        $db->query('TRUNCATE idtype');
+        $this->truncateTable('idtype');
         
         $this->_tearDownAfterClass();
     }
