@@ -1,6 +1,6 @@
 <?php
 
-// type is currently ignored as only Mysqli is supported
+// type is currently bypassed, but I do want to keep it here for now
 $dbconfig['type'] = 'MySQLi';
 $dbconfig['name'] = '';
 $dbconfig['host'] = '';
