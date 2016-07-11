@@ -1,3 +1,4 @@
 Memory/*/dbconfig.php
 generated
 testInputFiles
+*.sqlite
