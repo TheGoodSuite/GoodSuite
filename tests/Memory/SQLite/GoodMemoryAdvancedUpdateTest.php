@@ -16,9 +16,7 @@ class GoodMemoryAdvancedUpdateTest extends GoodMannersAdvancedUpdateTest
     
     public function getNewStorage()
     {
-        $a = new \Good\Memory\SQLStorage($this->getNewDb());
-        
-        return $a;
+        return new \Good\Memory\SQLStorage($this->getNewDb());
     }
     
     public function truncateTable($table)
