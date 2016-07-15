@@ -49,12 +49,6 @@ class MySQL implements Database
         {
             $this->connect();
         }
-        
-        if (isset($_GET['showquery']) && $_GET['showquery'] == 'true')
-            echo $query . "; <br /> \n";
-        
-        if (isset($_GET['doquery']) && $_GET['doquery'] == 'no')
-            return;
             
         $this->result = $this->db->query($query);
     }
