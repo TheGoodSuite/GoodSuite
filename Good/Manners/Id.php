@@ -104,6 +104,18 @@ class Id implements Storable
         
         return $first;
     }
+    
+    public function __get($property)
+    {
+        if ($property === "id")
+        {
+            return $this->getId();
+        }
+        else
+        {
+            throw new \Exception("Unable to get any property other than 'id' from an unfetched object.");
+        }
+    }
 }
 
 ?>
