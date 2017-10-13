@@ -191,7 +191,11 @@ class SQLStorage extends Storage
             throw new \Exception("Non-DateTime given for a DateTime field.");
         }
         
-        return "'" . $value->format('Y-m-d H:i:s') . "'";
+        // This hack shouldn't be necessary anymore once we use DateTimeImmutable as per #109
+        $fixedTimeZone = new \DateTime($value->format(\DateTime::ATOM));
+        $fixedTimeZone->setTimeZone(new \DateTimeZone("UTC"));
+        
+        return "'" . $fixedTimeZone->format('Y-m-d H:i:s') . "'";
     }
     
     public function parseText($value)

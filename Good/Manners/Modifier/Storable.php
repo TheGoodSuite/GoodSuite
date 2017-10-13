@@ -253,7 +253,7 @@ class Storable implements \Good\Service\Modifier
         $this->setFromArray .= "                    }\n";
         $this->setFromArray .= '                    else' . "\n";
         $this->setFromArray .= "                    {\n";
-        $this->setFromArray .= '                        $this->' . $this->classVariable . ' = new DateTime($value);'. "\n";
+        $this->setFromArray .= '                        $this->' . $this->classVariable . ' = new DateTime($value, new DateTimeZone("UTC"));'. "\n";
         $this->setFromArray .= "                    }\n";
         $this->setFromArray .= '                    break;' . "\n";
         
