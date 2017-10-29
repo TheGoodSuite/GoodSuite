@@ -151,7 +151,7 @@ class Storable implements \Good\Service\Modifier
                                             '$this->' . $member->getName() . ');' . "\n";
         
         $this->setFromArray .= '                case "' . $this->classVariable . '":' . "\n";
-        $this->setFromArray .= '                    $this->' . $this->classVariable . ' = $value;'. "\n";
+        $this->setFromArray .= '                    $this->set' . \ucfirst($this->classVariable) . '($value);'. "\n";
         $this->setFromArray .= '                    break;' . "\n";
         
         $this->resolver .= '    private $resolved' . \ucfirst($member->getName()) . ' = null;' . "\n"; 
@@ -196,7 +196,7 @@ class Storable implements \Good\Service\Modifier
                                             '$this->' . $member->getName() . ');' . "\n";
         
         $this->setFromArray .= '                case "' . $this->classVariable . '":' . "\n";
-        $this->setFromArray .= '                    $this->' . $this->classVariable . ' = $value;'. "\n";
+        $this->setFromArray .= '                    $this->set' . \ucfirst($this->classVariable) . '($value);'. "\n";
         $this->setFromArray .= '                    break;' . "\n";
         
         $this->visitNonReference($member);
@@ -213,7 +213,7 @@ class Storable implements \Good\Service\Modifier
                                             '$this->' . $member->getName() . ');' . "\n";
         
         $this->setFromArray .= '                case "' . $this->classVariable . '":' . "\n";
-        $this->setFromArray .= '                    $this->' . $this->classVariable . ' = $value;'. "\n";
+        $this->setFromArray .= '                    $this->set' . \ucfirst($this->classVariable) . '($value);'. "\n";
         $this->setFromArray .= '                    break;' . "\n";
         
         $this->visitNonReference($member);
@@ -230,7 +230,7 @@ class Storable implements \Good\Service\Modifier
                                             '$this->' . $member->getName() . ');' . "\n";
         
         $this->setFromArray .= '                case "' . $this->classVariable . '":' . "\n";
-        $this->setFromArray .= '                    $this->' . $this->classVariable . ' = $value;'. "\n";
+        $this->setFromArray .= '                    $this->set' . \ucfirst($this->classVariable) . '($value);'. "\n";
         $this->setFromArray .= '                    break;' . "\n";
         
         $this->visitNonReference($member);
@@ -249,11 +249,11 @@ class Storable implements \Good\Service\Modifier
         $this->setFromArray .= '                case "' . $this->classVariable . '":' . "\n";
         $this->setFromArray .= '                    if ($value === null || $value instanceof \DateTime)' . "\n";
         $this->setFromArray .= "                    {\n";
-        $this->setFromArray .= '                        $this->' . $this->classVariable . ' = $value;'. "\n";
+        $this->setFromArray .= '                        $this->set' . \ucfirst($this->classVariable) . '($value);'. "\n";
         $this->setFromArray .= "                    }\n";
         $this->setFromArray .= '                    else' . "\n";
         $this->setFromArray .= "                    {\n";
-        $this->setFromArray .= '                        $this->' . $this->classVariable . ' = new DateTime($value, new DateTimeZone("UTC"));'. "\n";
+        $this->setFromArray .= '                        $this->set' . \ucfirst($this->classVariable) . '(new DateTime($value, new DateTimeZone("UTC")));'. "\n";
         $this->setFromArray .= "                    }\n";
         $this->setFromArray .= '                    break;' . "\n";
         
