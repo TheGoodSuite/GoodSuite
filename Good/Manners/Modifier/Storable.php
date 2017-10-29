@@ -196,7 +196,7 @@ class Storable implements \Good\Service\Modifier
                                             '$this->' . $member->getName() . ');' . "\n";
         
         $this->setFromArray .= '                case "' . $this->classVariable . '":' . "\n";
-        $this->setFromArray .= '                    $this->set' . \ucfirst($this->classVariable) . '($value);'. "\n";
+        $this->setFromArray .= '                    $this->set' . \ucfirst($this->classVariable) . '(\strval($value));'. "\n";
         $this->setFromArray .= '                    break;' . "\n";
         
         $this->visitNonReference($member);
@@ -213,7 +213,7 @@ class Storable implements \Good\Service\Modifier
                                             '$this->' . $member->getName() . ');' . "\n";
         
         $this->setFromArray .= '                case "' . $this->classVariable . '":' . "\n";
-        $this->setFromArray .= '                    $this->set' . \ucfirst($this->classVariable) . '($value);'. "\n";
+        $this->setFromArray .= '                    $this->set' . \ucfirst($this->classVariable) . '(\intval($value));'. "\n";
         $this->setFromArray .= '                    break;' . "\n";
         
         $this->visitNonReference($member);
@@ -230,7 +230,7 @@ class Storable implements \Good\Service\Modifier
                                             '$this->' . $member->getName() . ');' . "\n";
         
         $this->setFromArray .= '                case "' . $this->classVariable . '":' . "\n";
-        $this->setFromArray .= '                    $this->set' . \ucfirst($this->classVariable) . '($value);'. "\n";
+        $this->setFromArray .= '                    $this->set' . \ucfirst($this->classVariable) . '(\floatval($value));'. "\n";
         $this->setFromArray .= '                    break;' . "\n";
         
         $this->visitNonReference($member);
