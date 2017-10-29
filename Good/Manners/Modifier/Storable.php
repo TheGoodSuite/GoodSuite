@@ -63,6 +63,7 @@ class Storable implements \Good\Service\Modifier
         $res .= "    \n";
         $res .= '    public function setId($value)' . "\n";
         $res .= "    {\n";
+        $res .= '        \\Good\\Service\\TypeChecker::checkString($value, 1);' . "\n";;
         $res .= '        $this->id = $value;' . "\n";
         $res .= "    }\n";
         $res .= "    \n";
