@@ -36,7 +36,7 @@ class TypeChecker
             return;
         }
         
-        if (!is_float($value))
+        if (!is_int($value) && !is_float($value))
         {
             throw new InvalidParameterException("Value specified is not a float");
         }
