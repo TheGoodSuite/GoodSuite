@@ -46,7 +46,7 @@ class Inserter implements StorableVisitor
         $this->sql .= $this->values . ')';
         
         $this->db->query($this->sql);
-        $value->setId($this->db->getLastInsertedId());
+        $value->setId(\strval($this->db->getLastInsertedId()));
         $value->clean();
     }
 
