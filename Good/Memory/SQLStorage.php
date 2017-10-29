@@ -321,7 +321,7 @@ class SQLStorage extends Storage
         $storableData = $denamifier->denamifyFields($storableData, $ret);
         
         $ret->setFromArray($storableData);
-        $ret->setId($data[$table]["id"]);
+        $ret->setId(strval($data[$table]["id"]));
         
         $ret->setNew(false);
         $ret->clean();
