@@ -1,11 +1,11 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../Manners/GoodMannersDeleteTest.php';
+require_once dirname(__FILE__) . '/../../Manners/GoodMannersChildTypesTest.php';
 
 /**
  * @runTestsInSeparateProcesses
  */
-class GoodMemoryDeleteTest extends GoodMannersDeleteTest
+class GoodMemorySQLiteChildTypesTest extends GoodMannersChildTypesTest
 {
     public function getNewDb()
     {
@@ -25,5 +25,3 @@ class GoodMemoryDeleteTest extends GoodMannersDeleteTest
         $db->query("DELETE FROM " . $table);
     }
 }
-
-?>

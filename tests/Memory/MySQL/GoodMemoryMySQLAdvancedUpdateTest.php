@@ -1,11 +1,11 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../Manners/GoodMannersInsertTest.php';
+require_once dirname(__FILE__) . '/../../Manners/GoodMannersAdvancedUpdateTest.php';
 
 /**
  * @runTestsInSeparateProcesses
  */
-class GoodMemoryInsertTest extends GoodMannersInsertTest
+class GoodMemoryMySQLAdvancedUpdateTest extends GoodMannersAdvancedUpdateTest
 {
     public function getNewDb()
     {

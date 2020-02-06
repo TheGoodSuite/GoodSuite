@@ -5,7 +5,7 @@ require_once dirname(__FILE__) . '/../../Manners/GoodMannersPersistenceTest.php'
 /**
  * @runTestsInSeparateProcesses
  */
-class GoodMemoryPersistenceTest extends GoodMannersPersistenceTest
+class GoodMemoryMySQLPersistenceTest extends GoodMannersPersistenceTest
 {
     public function getNewDb()
     {

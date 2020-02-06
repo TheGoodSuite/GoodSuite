@@ -1,18 +1,17 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../Manners/GoodMannersIdTest.php';
+require_once dirname(__FILE__) . '/../../Manners/GoodMannersInsertTest.php';
 
 /**
  * @runTestsInSeparateProcesses
  */
-class GoodMemoryIdTest extends GoodMannersIdTest
+class GoodMemorySQLiteInsertTest extends GoodMannersInsertTest
 {
     public function getNewDb()
     {
         require dirname(__FILE__) . '/dbconfig.php';
 
-        return new \Good\Memory\Database\MySQL($dbconfig['name'], $dbconfig['host'],
-                                    $dbconfig['port'], $dbconfig['user'], $dbconfig['pass'], '');
+        return new \Good\Memory\Database\SQLite($dbconfig['filename']);
     }
 
     public function getNewStorage()
@@ -23,7 +22,7 @@ class GoodMemoryIdTest extends GoodMannersIdTest
     public function truncateTable($table)
     {
         $db = $this->getNewDb();
-        $db->query("TRUNCATE " . $table);
+        $db->query("DELETE FROM " . $table);
     }
 }
 
