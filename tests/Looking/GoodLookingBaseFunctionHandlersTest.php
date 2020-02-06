@@ -9,7 +9,7 @@ class GoodLookingBaseFunctionHandlersTest extends \PHPUnit\Framework\TestCase
         // PHPUnit is breaking my tests (but not when run in isolation, only when multiple classes are run)
         // through some of the magic it provides when "trying" to be helpful
         // Let's beark into its blacklist to prevent it from doing this!
-        $blacklist = new \PHPUnit_Util_Blacklist();
+        $blacklist = new \PHPUnit\Util\Blacklist();
         $refl = new \ReflectionObject($blacklist);
         $method = $refl->getMethod('initialize');
         $method->setAccessible(true);
