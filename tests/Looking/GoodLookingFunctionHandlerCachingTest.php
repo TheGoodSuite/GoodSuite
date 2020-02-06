@@ -3,7 +3,7 @@
 /**
  * @runTestsInSeparateProcesses
  */
-class GoodLookingFunctionHandlerCachingTest extends PHPUnit_Framework_TestCase
+class GoodLookingFunctionHandlerCachingTest extends \PHPUnit\Framework\TestCase
 {
     public static function _setUpBeforeClass()
     {

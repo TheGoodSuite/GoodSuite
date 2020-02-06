@@ -1,6 +1,6 @@
 <?php
 
-class GoodLookingBaseFunctionHandlersTest extends PHPUnit_Framework_TestCase
+class GoodLookingBaseFunctionHandlersTest extends \PHPUnit\Framework\TestCase
 {
     private $template = '';
 

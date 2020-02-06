@@ -9,7 +9,7 @@
 /**
  * @runTestsInSeparateProcesses
  */
-abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
+abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
 {
     private $files = array(); // so we know what to clean up
     protected $inputDir = '';

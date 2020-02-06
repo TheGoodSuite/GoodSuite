@@ -3,7 +3,7 @@
 /**
  * @runTestsInSeparateProcesses
  */
-abstract class GoodMannersPersistenceTest extends PHPUnit_Framework_TestCase
+abstract class GoodMannersPersistenceTest extends \PHPUnit\Framework\TestCase
 {
     abstract public function getNewStorage();
     // this function should be removed, but is used for clearing the database at the moment

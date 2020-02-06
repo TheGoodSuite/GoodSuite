@@ -3,7 +3,7 @@
 /**
  * @runTestsInSeparateProcesses
  */
-abstract class GoodMannersDeleteTest extends PHPUnit_Framework_TestCase
+abstract class GoodMannersDeleteTest extends \PHPUnit\Framework\TestCase
 {
     private $storage1;
     private $storage2;

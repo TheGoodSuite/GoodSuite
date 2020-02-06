@@ -3,7 +3,7 @@
 /**
  * @runTestsInSeparateProcesses
  */
-abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
+abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
 {
     private $storage1;
     private $storage2;

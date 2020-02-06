@@ -1,6 +1,6 @@
 <?php
 
-class GoodLookingTest extends PHPUnit_Framework_TestCase
+class GoodLookingTest extends \PHPUnit\Framework\TestCase
 {
     private $template = '';
 

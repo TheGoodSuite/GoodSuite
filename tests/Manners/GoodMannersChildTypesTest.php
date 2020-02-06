@@ -97,7 +97,7 @@ class IndependentFactoryBoth implements \Good\Manners\StorableFactory
 /**
  * @runTestsInSeparateProcesses
  */
-abstract class GoodMannersChildTypesTest extends PHPUnit_Framework_TestCase
+abstract class GoodMannersChildTypesTest extends \PHPUnit\Framework\TestCase
 {
     private $storage;
 

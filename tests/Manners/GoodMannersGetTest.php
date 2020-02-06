@@ -3,7 +3,7 @@
 /**
  * @runTestsInSeparateProcesses
  */
-abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
+abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
 {
     private $storage;
 

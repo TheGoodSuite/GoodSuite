@@ -3,7 +3,7 @@
 /**
  * @runTestsInSeparateProcesses
  */
-abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
+abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
 {
     private $storage1;
     private $storage2;
