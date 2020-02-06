@@ -15,7 +15,7 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
     protected $inputDir = '';
     private $outputDir = '';
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->inputDir = dirname(__FILE__) . '/../testInputFiles/';
         $this->outputDir =  dirname(__FILE__) . '/../generated/';
@@ -41,7 +41,7 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         $this->files[] = $this->outputDir . 'GeneratedBaseClass.php';
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         foreach($this->files as $file)
         {

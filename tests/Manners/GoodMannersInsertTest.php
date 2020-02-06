@@ -59,7 +59,7 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->_setUpBeforeClass();
 
@@ -72,7 +72,7 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
         $this->storage2 = $this->getNewStorage();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         // Just doing this already to make sure the deconstructor will hasve
         // side-effects at an unspecified moment...

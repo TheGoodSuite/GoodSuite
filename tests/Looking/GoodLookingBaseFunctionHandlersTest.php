@@ -4,7 +4,7 @@ class GoodLookingBaseFunctionHandlersTest extends \PHPUnit\Framework\TestCase
 {
     private $template = '';
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         // PHPUnit is breaking my tests (but not when run in isolation, only when multiple classes are run)
         // through some of the magic it provides when "trying" to be helpful
@@ -21,13 +21,13 @@ class GoodLookingBaseFunctionHandlersTest extends \PHPUnit\Framework\TestCase
         $prop->setValue($arr);
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->template = dirname(__FILE__) . '/../testInputFiles/template';
         file_put_contents($this->template, '');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unlink($this->template);
         unlink($this->template . '.compiledTemplate');
