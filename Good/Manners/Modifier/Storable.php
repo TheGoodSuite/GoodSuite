@@ -12,6 +12,8 @@ class Storable implements \Good\Service\Modifier
     private $classVariableIsReference;
     private $firstClass;
     private $accept;
+    private $setFromArray;
+    private $toArray;
 
     private $resolver = null;
     private $resolverVisit = null;
@@ -110,6 +112,11 @@ class Storable implements \Good\Service\Modifier
         $this->setFromArray .= '            switch ($field)' . "\n";
         $this->setFromArray .= "            {\n";
 
+        $this->toArray  = '    public function toArray($datesToIso)' . "\n";
+        $this->toArray .= "    {\n";
+        $this->toArray .= "        return [\n";
+        $this->toArray .= '            "id" => $this->id,' . "\n";
+
         $this->resolver  = "<?php\n";
         $this->resolver .= "\n";
         $this->resolver .= 'class ' . $dataType->getName() . 'Resolver extends \\Good\\Manners\\BaseResolver' . "\n";
@@ -154,6 +161,9 @@ class Storable implements \Good\Service\Modifier
         $this->setFromArray .= '                case "' . $this->classVariable . '":' . "\n";
         $this->setFromArray .= '                    $this->set' . \ucfirst($this->classVariable) . '($value);'. "\n";
         $this->setFromArray .= '                    break;' . "\n";
+
+        $this->toArray .= '            "' . $this->classVariable . '" => $this->' . $this->classVariable . ' == null ?' . "\n";
+        $this->toArray .= '                null : $this->' . $this->classVariable . '->toArray($datesToIso),' . "\n";
 
         $this->resolver .= '    private $resolved' . \ucfirst($member->getName()) . ' = null;' . "\n";
         $this->resolver .= "    \n";
@@ -200,6 +210,8 @@ class Storable implements \Good\Service\Modifier
         $this->setFromArray .= '                    $this->set' . \ucfirst($this->classVariable) . '(\strval($value));'. "\n";
         $this->setFromArray .= '                    break;' . "\n";
 
+        $this->toArray .= '            "' . $this->classVariable . '" => $this->' . $this->classVariable . ',' . "\n";
+
         $this->visitNonReference($member);
     }
     public function visitIntMember(Schema\IntMember $member)
@@ -217,6 +229,8 @@ class Storable implements \Good\Service\Modifier
         $this->setFromArray .= '                    $this->set' . \ucfirst($this->classVariable) . '(\intval($value));'. "\n";
         $this->setFromArray .= '                    break;' . "\n";
 
+        $this->toArray .= '            "' . $this->classVariable . '" => $this->' . $this->classVariable . ',' . "\n";
+
         $this->visitNonReference($member);
     }
     public function visitFloatMember(Schema\FloatMember $member)
@@ -233,6 +247,8 @@ class Storable implements \Good\Service\Modifier
         $this->setFromArray .= '                case "' . $this->classVariable . '":' . "\n";
         $this->setFromArray .= '                    $this->set' . \ucfirst($this->classVariable) . '(\floatval($value));'. "\n";
         $this->setFromArray .= '                    break;' . "\n";
+
+        $this->toArray .= '            "' . $this->classVariable . '" => $this->' . $this->classVariable . ',' . "\n";
 
         $this->visitNonReference($member);
     }
@@ -257,6 +273,9 @@ class Storable implements \Good\Service\Modifier
         $this->setFromArray .= '                        $this->set' . \ucfirst($this->classVariable) . '(new DateTime($value, new DateTimeZone("UTC")));'. "\n";
         $this->setFromArray .= "                    }\n";
         $this->setFromArray .= '                    break;' . "\n";
+
+        $this->toArray .= '            "' . $this->classVariable . '" => $datesToIso && $this->' . $this->classVariable . ' != null ?' . "\n";
+        $this->toArray .= '                $this->' . $this->classVariable . '->format(\DateTime::ATOM) : $this->' . $this->classVariable . ',' . "\n";
 
         $this->visitNonReference($member);
     }
@@ -443,6 +462,12 @@ class Storable implements \Good\Service\Modifier
         $this->setFromArray .= "    }\n";
 
         $res .= $this->setFromArray;
+
+        $this->toArray .= "        ];\n";
+        $this->toArray .= "    }\n";
+        $this->toArray .= "\n";
+
+        $res .= $this->toArray;
 
         return $res;
     }
