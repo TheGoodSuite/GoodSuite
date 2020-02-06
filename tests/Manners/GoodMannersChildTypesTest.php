@@ -87,10 +87,6 @@ class IndependentFactoryBoth implements \Good\Manners\StorableFactory
         {
             return new ChildType2();
         }
-        else
-        {
-            return parent::createStorable($type);
-        }
     }
 }
 
