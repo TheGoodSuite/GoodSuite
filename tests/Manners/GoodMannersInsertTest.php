@@ -1,18 +1,18 @@
 <?php
 
-/** 
+/**
  * @runTestsInSeparateProcesses
  */
 abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
 {
     private $storage1;
     private $storage2;
-    
+
     abstract public function getNewStorage();
     // this function should be removed, but is used for clearing the database at the moment
     abstract public function getNewDb();
     abstract public function truncateTable($table);
-    
+
     // This could be done just once for all the tests and it would even be necessary
     // to run the tests in this class in a single process.
     // However, since we can't run these tests in the same process as those from other
@@ -22,10 +22,10 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
     // setUp instead of having PHPUnit do its magic.
     public static function _setUpBeforeClass()
     {
-        // Garbage collector causes segmentation fault, so we disable 
+        // Garbage collector causes segmentation fault, so we disable
         // for the duration of the test case
         gc_disable();
-        file_put_contents(dirname(__FILE__) . '/../testInputFiles/InsertType.datatype', 
+        file_put_contents(dirname(__FILE__) . '/../testInputFiles/InsertType.datatype',
                                                                             "datatype InsertType\n" .
                                                                             "{\n" .
                                                                             "   int myInt;\n" .
@@ -34,44 +34,44 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
                                                                             "   datetime myDatetime;\n" .
                                                                             '   "InsertType" myCircularReference;' . "\n" .
                                                                             "}\n");
-    
+
         $rolemodel = new \Good\Rolemodel\Rolemodel();
         $schema = $rolemodel->createSchema(array(dirname(__FILE__) . '/../testInputFiles/InsertType.datatype'));
 
         $service = new \Good\Service\Service();
         $service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');
-        
+
         require dirname(__FILE__) . '/../generated/InsertType.datatype.php';
-        
+
         require dirname(__FILE__) . '/../generated/InsertTypeResolver.php';
     }
-    
+
     public static function _tearDownAfterClass()
     {
         unlink(dirname(__FILE__) . '/../testInputFiles/InsertType.datatype');
         unlink(dirname(__FILE__) . '/../generated/InsertType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/InsertTypeResolver.php');
         unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');
-        
+
         if (ini_get('zend.enable_gc'))
         {
             gc_enable();
         }
     }
-    
+
     public function setUp()
     {
         $this->_setUpBeforeClass();
-        
+
         // just doubling this up (from tearDown) to be sure
         // this should be handled natively once that is implemented
         $this->truncateTable('inserttype');
-        
+
         // two storages, so communication will have to go through data storage
         $this->storage1 = $this->getNewStorage();
         $this->storage2 = $this->getNewStorage();
     }
-    
+
     public function tearDown()
     {
         // Just doing this already to make sure the deconstructor will hasve
@@ -79,13 +79,13 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         // (at which point the database will probably be in a wrong state for this)
         $this->storage1->flush();
         $this->storage2->flush();
-        
+
         // this should be handled through the GoodManners API once that is implemented
         $this->truncateTable('inserttype');
-        
+
         $this->_tearDownAfterClass();
     }
-    
+
     private function array_search_specific($needle, $haystack)
     {
         // this is sort of a array_search
@@ -113,48 +113,48 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
                 return $key;
             }
         }
-        
+
         return false;
     }
-    
+
     private function assertContainsAndReturnIndex_specific($needle, $haystack)
     {
         $pos = $this->array_search_specific($needle, $haystack);
-        
+
         if ($pos === false)
         {
             // this will always fail
             // basically, we tested before with a couple less restirctions
             // and now we just use the general function to get nice ouput
-            // it'll contain some differences that don't matter, but that's 
+            // it'll contain some differences that don't matter, but that's
             // a small price to pay
             $this->assertContains($needle, $haystack);
         }
-        
+
         return $pos;
     }
-    
+
     private function checkInsertion($expected)
     {
         // At the moment we don't have a proper api to get any,
         // but this trick does do the same
         $type = new InsertType();
         $any = new \Good\Manners\Condition\GreaterThan($type);
-        
+
         $resolver = new InsertTypeResolver();
         $resolver->resolveMyCircularReference();
         $collection = $this->storage2->getCollection($any, $resolver);
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expected);
-            
+
             array_splice($expected, $pos, 1);
         }
-        
-        $this->assertSame(array(), $expected);        
+
+        $this->assertSame(array(), $expected);
     }
-    
+
     public function testBasicInsertion()
     {
         $ins = new InsertType();
@@ -164,9 +164,9 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         $ins->myDatetime = new \Datetime('2004-04-04');
         $ins->myCircularReference = null;
         $this->storage1->insert($ins);
-        
+
         $expectedResults = array();
-        
+
         // we create another copy, so we can't be influenced by
         // the storage changing the object
         $ins = new InsertType();
@@ -176,12 +176,12 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         $ins->myDatetime = new \Datetime('2004-04-04');
         $ins->myCircularReference = null;
         $expectedResults[] = $ins;
-        
+
         $this->storage1->flush();
-        
+
         $this->checkInsertion($expectedResults);
     }
-    
+
     public function testCircularReferenceInsertion()
     {
         $ins = new InsertType();
@@ -189,21 +189,21 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
         $ins->myDatetime = new \Datetime('2004-04-04');
-        
+
         $ins2 = new InsertType();
         $ins2->myInt = 7;
         $ins2->myFloat = 7.7;
         $ins2->myText = "Seven";
         $ins2->myDatetime = new \Datetime('2007-07-07');
         $ins2->myCircularReference = $ins;
-        
+
         $ins->myCircularReference = $ins2;
-        
+
         $this->storage1->insert($ins);
         $this->storage1->insert($ins2);
-        
+
         $expectedResults = array();
-        
+
         // we create another copy, so we can't be influenced by
         // the storage changing the object
         $ins = new InsertType();
@@ -211,24 +211,24 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
         $ins->myDatetime = new \Datetime('2004-04-04');
-        
+
         $ins2 = new InsertType();
         $ins2->myInt = 7;
         $ins2->myFloat = 7.7;
         $ins2->myText = "Seven";
         $ins2->myDatetime = new \Datetime('2007-07-07');
         $ins2->myCircularReference = $ins;
-        
+
         $ins->myCircularReference = $ins2;
-        
+
         $expectedResults[] = $ins;
         $expectedResults[] = $ins2;
-        
+
         $this->storage1->flush();
-        
+
         $this->checkInsertion($expectedResults);
     }
-    
+
     public function testCircularNullsInsertion()
     {
         $ins = new InsertType();
@@ -238,9 +238,9 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         $ins->myDatetime = null;
         $ins->myCircularReference = null;
         $this->storage1->insert($ins);
-        
+
         $expectedResults = array();
-        
+
         // we create another copy, so we can't be influenced by
         // the storage changing the object
         $ins = new InsertType();
@@ -250,12 +250,12 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         $ins->myDatetime = null;
         $ins->myCircularReference = null;
         $expectedResults[] = $ins;
-        
+
         $this->storage1->flush();
-        
+
         $this->checkInsertion($expectedResults);
     }
-    
+
     public function testIdIsSetOnInsert()
     {
         $ins = new InsertType();
@@ -265,12 +265,12 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         $ins->myDatetime = new \Datetime('2004-04-04');
         $ins->myCircularReference = null;
         $this->storage1->insert($ins);
-        
+
         $this->storage1->flush();
-        
+
         $this->assertNotNull($ins->getId());
     }
-    
+
     public function testDifferentObjectsGetDifferentIds()
     {
         $ins = new InsertType();
@@ -280,7 +280,7 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         $ins->myDatetime = new \Datetime('2004-04-04');
         $ins->myCircularReference = null;
         $this->storage1->insert($ins);
-        
+
         $ins2 = new InsertType();
         $ins2->myInt = 4;
         $ins2->myFloat = 4.4;
@@ -288,14 +288,14 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         $ins2->myDatetime = new \Datetime('2004-04-04');
         $ins2->myCircularReference = null;
         $this->storage1->insert($ins2);
-        
+
         $this->storage1->flush();
-        
+
         $this->assertNotNull($ins->getId());
         $this->assertNotNull($ins2->getId());
         $this->assertNotEquals($ins->getId(), $ins2->getId());
     }
-    
+
     public function testObjectsGetSameIdsWhenFetchedFromDatabase()
     {
         $ins = new InsertType();
@@ -305,7 +305,7 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         $ins->myDatetime = new \Datetime('2004-04-04');
         $ins->myCircularReference = null;
         $this->storage1->insert($ins);
-        
+
         $ins2 = new InsertType();
         $ins2->myInt = 5;
         $ins2->myFloat = 4.4;
@@ -313,7 +313,7 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         $ins2->myDatetime = new \Datetime('2004-04-04');
         $ins2->myCircularReference = null;
         $this->storage1->insert($ins2);
-        
+
         $ins3 = new InsertType();
         $ins3->myInt = 6;
         $ins3->myFloat = 4.4;
@@ -321,7 +321,7 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         $ins3->myDatetime = new \Datetime('2004-04-04');
         $ins3->myCircularReference = null;
         $this->storage1->insert($ins3);
-        
+
         $ins4 = new InsertType();
         $ins4->myInt = 7;
         $ins4->myFloat = 4.4;
@@ -329,40 +329,40 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         $ins4->myDatetime = new \Datetime('2004-04-04');
         $ins4->myCircularReference = null;
         $this->storage1->insert($ins4);
-        
+
         $this->storage1->flush();
-        
+
         $five = new InsertType();
         $five->myInt = 5;
         $cond = new \Good\Manners\Condition\EqualTo($five);
         $results = $this->storage2->getCollection($cond, new InsertTypeResolver());
-        
+
         $n = 0;
-        
+
         foreach ($results as $result)
         {
             $n++;
             $this->assertEquals($result->getId(), $ins2->getId());
         }
-        
+
         $this->assertEquals(1, $n);
-        
+
         $seven = new InsertType();
         $seven->myInt = 7;
         $cond = new \Good\Manners\Condition\EqualTo($seven);
         $results = $this->storage2->getCollection($cond, new InsertTypeResolver());
-        
+
         $n = 0;
-        
+
         foreach ($results as $result)
         {
             $n++;
             $this->assertEquals($result->getId(), $ins4->getId());
         }
-        
+
         $this->assertEquals(1, $n);
     }
-    
+
     public function testIdIsSetOnCircularInsert()
     {
         $ins = new InsertType();
@@ -370,7 +370,7 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
         $ins->myDatetime = new \Datetime('2004-04-04');
-        
+
         $ins2 = new InsertType();
         $ins2->myInt = 4;
         $ins2->myFloat = 4.4;
@@ -378,16 +378,16 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         $ins2->myDatetime = new \Datetime('2004-04-04');
         $ins->myCircularReference = $ins;
         $ins->myCircularReference = $ins2;
-        
+
         $this->storage1->insert($ins);
-        
+
         $this->storage1->flush();
-        
+
         $this->assertNotNull($ins->getId());
         $this->assertNotNull($ins2->getId());
         $this->assertNotEquals($ins->getId(), $ins2->getId());
     }
-    
+
     public function testIdAsProperty()
     {
         $ins = new InsertType();
@@ -397,9 +397,9 @@ abstract class GoodMannersInsertTest extends PHPUnit_Framework_TestCase
         $ins->myDatetime = new \Datetime('2004-04-04');
         $ins->myCircularReference = null;
         $this->storage1->insert($ins);
-        
+
         $this->storage1->flush();
-        
+
         $this->assertEquals($ins->getId(), $ins->id);
     }
 }

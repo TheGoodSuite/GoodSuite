@@ -1,18 +1,18 @@
 <?php
 
-/** 
+/**
  * @runTestsInSeparateProcesses
  */
 abstract class GoodMannersDeleteTest extends PHPUnit_Framework_TestCase
 {
     private $storage1;
     private $storage2;
-    
+
     abstract public function getNewStorage();
     // this function should be removed, but is used for clearing the database at the moment
     abstract public function getNewDb();
     abstract public function truncateTable($table);
-    
+
     // This could be done just once for all the tests and it would even be necessary
     // to run the tests in this class in a single process.
     // However, since we can't run these tests in the same process as those from other
@@ -22,10 +22,10 @@ abstract class GoodMannersDeleteTest extends PHPUnit_Framework_TestCase
     // setUp instead of having PHPUnit do its magic.
     public static function _setUpBeforeClass()
     {
-        // Garbage collector causes segmentation fault, so we disable 
+        // Garbage collector causes segmentation fault, so we disable
         // for the duration of the test case
         gc_disable();
-        file_put_contents(dirname(__FILE__) . '/../testInputFiles/DeleteType.datatype', 
+        file_put_contents(dirname(__FILE__) . '/../testInputFiles/DeleteType.datatype',
                                                                             "datatype DeleteType\n" .
                                                                             "{\n" .
                                                                             "   int myInt;\n" .
@@ -33,83 +33,83 @@ abstract class GoodMannersDeleteTest extends PHPUnit_Framework_TestCase
                                                                             "   text myText;\n" .
                                                                             "   datetime myDatetime;\n" .
                                                                             "}\n" );
-    
+
         $rolemodel = new \Good\Rolemodel\Rolemodel();
         $schema = $rolemodel->createSchema(array(dirname(__FILE__) . '/../testInputFiles/DeleteType.datatype'));
 
         $service = new \Good\Service\Service();
         $service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');
-        
+
         require dirname(__FILE__) . '/../generated/DeleteType.datatype.php';
-        
+
         require dirname(__FILE__) . '/../generated/DeleteTypeResolver.php';
     }
-    
+
     public static function _tearDownAfterClass()
     {
         unlink(dirname(__FILE__) . '/../testInputFiles/DeleteType.datatype');
         unlink(dirname(__FILE__) . '/../generated/DeleteType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/DeleteTypeResolver.php');
         unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');
-        
+
         if (ini_get('zend.enable_gc'))
         {
             gc_enable();
         }
     }
-    
+
     public function setUp()
     {
         $this->_setUpBeforeClass();
-        
+
         // just doubling this up (from tearDown) to be sure
         // this should be handled natively once that is implemented
         $this->truncateTable('deletetype');
-        
+
         $storage = $this->getNewStorage();
-        
+
         $ins = new DeleteType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
         $ins->myDatetime = new \Datetime('2004-04-04');
         $storage->insert($ins);
-        
+
         $ins = new DeleteType();
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
         $ins->myDatetime = new \Datetime('2005-05-05');
         $storage->insert($ins);
-        
+
         $ins = new DeleteType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
         $ins->myDatetime = new \Datetime('2008-08-08');
         $storage->insert($ins);
-        
+
         $ins = new DeleteType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
         $ins->myDatetime = new \Datetime('2010-10-10');
         $storage->insert($ins);
-        
+
         $ins = new DeleteType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
         $ins->myText = "Twenty";
         $ins->myDatetime = null;
         $storage->insert($ins);
-        
+
         $storage->flush();
-        
+
         // new Storage, so communication will have to go through data storage
         $this->storage1 = $this->getNewStorage();
         $this->storage2 = $this->getNewStorage();
     }
-    
+
     public function tearDown()
     {
         // Just doing this already to make sure the deconstructor will hasve
@@ -117,13 +117,13 @@ abstract class GoodMannersDeleteTest extends PHPUnit_Framework_TestCase
         // (at which point the database will probably be in a wrong state for this)
         $this->storage1->flush();
         $this->storage2->flush();
-        
+
         // this should be handled through the GoodManners API once that is implemented
         $this->truncateTable('deletetype');
-        
+
         $this->_tearDownAfterClass();
     }
-    
+
     private function array_search_specific($needle, $haystack)
     {
         // this is sort of a array_search
@@ -142,59 +142,59 @@ abstract class GoodMannersDeleteTest extends PHPUnit_Framework_TestCase
                 return $key;
             }
         }
-        
+
         return false;
     }
-    
+
     private function assertContainsAndReturnIndex_specific($needle, $haystack)
     {
         $pos = $this->array_search_specific($needle, $haystack);
-        
+
         if ($pos === false)
         {
             // We're always wrong here.
             //$this->assertContains($needle, $haystack);
-            
+
             // I'd rather not have huge messages when running my entire test suite.
             $this->assertTrue(false);
         }
-        
+
         // To keep the assert count to what it actually is:
         $this->assertTrue(true);
-        
+
         return $pos;
     }
-    
+
     private function checkResults($expected)
     {
         // At the moment we don't have a proper api to get any,
         // but this trick does do the same
         $type = new DeleteType();
         $any = new \Good\Manners\Condition\GreaterThan($type);
-        
+
         $resolver = new DeleteTypeResolver();
-        
+
         $collection = $this->storage2->getCollection($any, $resolver);
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expected);
-            
+
             array_splice($expected, $pos, 1);
         }
-        
-        $this->assertSame(array(), $expected);        
+
+        $this->assertSame(array(), $expected);
     }
-    
+
     public function testDelete()
     {
         // At the moment we don't have a proper api to get any,
         // but this trick does do the same
         $type = new DeleteType();
         $any = new \Good\Manners\Condition\GreaterThan($type);
-        
+
         $collection = $this->storage1->getCollection($any, new DeleteTypeResolver());
-        
+
         foreach ($collection as $type)
         {
             if ($type->myInt == 5 || $type->myInt == 10)
@@ -202,32 +202,32 @@ abstract class GoodMannersDeleteTest extends PHPUnit_Framework_TestCase
                 $type->delete();
             }
         }
-        
+
         $this->storage1->flush();
-        
+
         $expectedResults = array();
-        
+
         $ins = new DeleteType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
         $ins->myDatetime = new \Datetime('2004-04-04');
         $expectedResults[] = $ins;
-        
+
         $ins = new DeleteType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
         $ins->myDatetime = new \Datetime('2008-08-08');
         $expectedResults[] = $ins;
-        
+
         $ins = new DeleteType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
         $ins->myText = "Twenty";
         $ins->myDatetime = null;
         $expectedResults[] = $ins;
-        
+
         $this->checkResults($expectedResults);
     }
 }

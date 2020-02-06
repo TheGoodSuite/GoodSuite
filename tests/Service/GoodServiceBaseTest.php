@@ -2,8 +2,8 @@
 
 // Making abstract so I can have a child that does exactly this, and one
 // that does repeat these tests with a modifier, to confirm everything is
-// still working with that modifier 
-// (PHPUnit doesn't like it if I do this without the base class being 
+// still working with that modifier
+// (PHPUnit doesn't like it if I do this without the base class being
 //  abstract)
 
 /**
@@ -14,13 +14,13 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     private $files = array(); // so we know what to clean up
     protected $inputDir = '';
     private $outputDir = '';
-    
+
     public function setUp()
     {
         $this->inputDir = dirname(__FILE__) . '/../testInputFiles/';
         $this->outputDir =  dirname(__FILE__) . '/../generated/';
     }
-    
+
     protected function compile($inputfiles, $modifiers = array())
     {
         $rolemodel = new \Good\Rolemodel\Rolemodel();
@@ -30,29 +30,29 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         $service = new \Good\Service\Service();
 
         $outputFiles = $service->compile($modifiers, $schema, $this->outputDir);
-        
+
         foreach ($outputFiles as $file)
         {
             require $file;
         }
-        
+
         $this->files = array_merge($this->files, $inputfiles, $outputFiles);
-        
+
         $this->files[] = $this->outputDir . 'GeneratedBaseClass.php';
     }
-    
+
     public function tearDown()
     {
         foreach($this->files as $file)
         {
             unlink($file);
         }
-        
+
         // not strictly necessary, but I'd rather not rely ont he fact
         // that each test runs in a different instance fo this class
         $this->files = array();
     }
-    
+
     /**
      * @expectedException Good\Rolemodel\InvalidTypeModifierException
      */
@@ -62,7 +62,7 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
                             "datatype MyType{ int(minValue=42, maxValue=10) myInt;}");
         $this->compile(array($this->inputDir . 'MyType.datatype'));
     }
-    
+
     /**
      * @expectedException Good\Rolemodel\InvalidTypeModifierException
      */
@@ -72,7 +72,7 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
                             "datatype MyType{ int(minValue=-1, nonNegative) myInt;}");
         $this->compile(array($this->inputDir . 'MyType.datatype'));
     }
-    
+
     /**
      * @expectedException Good\Rolemodel\InvalidTypeModifierException
      */
@@ -82,20 +82,20 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
                             "datatype MyType{ int(maxValue=-1, nonNegative) myInt;}");
         $this->compile(array($this->inputDir . 'MyType.datatype'));
     }
-    
+
     public function testIntProperty()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myInt = 5;
-        
+
         $this->assertEquals($myType->myInt, 5);
         $this->assertInternalType('int', $myType->myInt);
     }
-    
+
     /**
      * @depends testIntProperty
      */
@@ -104,14 +104,14 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myInt = 5;
-        
+
         $this->assertEquals($myType->getMyInt(), 5);
         $this->assertInternalType('int', $myType->myInt);
     }
-    
+
     /**
      * @expectedException Good\Service\InvalidParameterException
      */
@@ -120,11 +120,11 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myInt = 5.5;
     }
-    
+
     /**
      * @expectedException Good\Service\InvalidParameterException
      */
@@ -133,11 +133,11 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myInt = new MyType();
     }
-    
+
     /**
      * @expectedException Good\Service\InvalidParameterException
      */
@@ -146,11 +146,11 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int(minValue=-1) myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myInt = -5;
     }
-    
+
     /**
      * @expectedException Good\Service\InvalidParameterException
      */
@@ -159,11 +159,11 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int(minValue=17) myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myInt = 5;
     }
-    
+
     /**
      * @expectedException Good\Service\InvalidParameterException
      */
@@ -172,11 +172,11 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int(maxValue=-3) myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myInt = -1;
     }
-    
+
     /**
      * @expectedException Good\Service\InvalidParameterException
      */
@@ -185,11 +185,11 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int(maxValue=17) myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myInt = 42;
     }
-    
+
     /**
      * @expectedException Good\Service\InvalidParameterException
      */
@@ -198,104 +198,104 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int(nonNegative) myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myInt = -1;
     }
-    
+
     public function testIntPropertyAboveNegativeMinValue()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int(minValue=-2) myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myInt = -1;
     }
-    
+
     public function testIntPropertyAbovePositiveMinValue()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int(minValue=2) myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myInt = 5;
     }
-    
+
     public function testIntPropertyBelowNegativeMaxValue()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int(maxValue=-3) myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myInt = -5;
     }
-    
+
     public function testIntPropertyBelowPositiveMaxValue()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int(maxValue=512) myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myInt = 42;
     }
-    
+
     public function testIntPropertyBetweenNegativeMinValueAndMaxValue()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int(minValue=-200, maxValue=-43) myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myInt = -100;
     }
-    
+
     public function testIntPropertyBetweenPositiveMinValueAndMaxValue()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int(minValue=2, maxValue=5) myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myInt = 4;
     }
-    
+
     public function testIntPropertyBetweenNegativeMinValueAndPositiveMaxValue()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int(minValue=-512, maxValue=512) myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myInt = 0;
     }
-    
+
     public function testIntPropertyPositiveValueWithNonNegativeTypeModifier()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int(nonNegative) myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myInt = 2;
     }
-    
+
     public function testFloatProperty()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { float myFloat; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myFloat = 5.5;
-        
+
         $this->assertEquals($myType->myFloat, 5.5);
         $this->assertInternalType('float', $myType->myFloat);
     }
-    
+
     /**
      * @depends testFloatProperty
      */
@@ -304,14 +304,14 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { float myFloat; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myFloat = 5.5;
-        
+
         $this->assertEquals($myType->getMyFloat(), 5.5);
         $this->assertInternalType('float', $myType->myFloat);
     }
-    
+
     /**
      * @expectedException Good\Service\InvalidParameterException
      */
@@ -320,11 +320,11 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { float myFloat; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myFloat = 5;
     }
-    
+
     /**
      * @expectedException Good\Service\InvalidParameterException
      */
@@ -333,7 +333,7 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { float myFloat; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myFloat = new MyType();
     }
@@ -346,7 +346,7 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
                             "datatype MyType{ text(minLength=42, maxLength=10) myText;}");
         $this->compile(array($this->inputDir . 'MyType.datatype'));
     }
-    
+
     /**
      * @expectedException Good\Rolemodel\InvalidTypeModifierException
      */
@@ -356,7 +356,7 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
                             "datatype MyType{ text(minLength=-1) myText;}");
         $this->compile(array($this->inputDir . 'MyType.datatype'));
     }
-    
+
     /**
      * @expectedException Good\Rolemodel\InvalidTypeModifierException
      */
@@ -366,7 +366,7 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
                             "datatype MyType{ text(maxLength=-1) myText;}");
         $this->compile(array($this->inputDir . 'MyType.datatype'));
     }
-    
+
     /**
      * @expectedException Good\Rolemodel\InvalidTypeModifierException
      */
@@ -376,7 +376,7 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
                             "datatype MyType{ text(length=3, minLength=1) myText;}");
         $this->compile(array($this->inputDir . 'MyType.datatype'));
     }
-    
+
     /**
      * @expectedException Good\Rolemodel\InvalidTypeModifierException
      */
@@ -386,20 +386,20 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
                             "datatype MyType{ text(length=3, maxLength=3) myText;}");
         $this->compile(array($this->inputDir . 'MyType.datatype'));
     }
-    
+
     public function testTextProperty()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { text myText; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myText = "Hello World!";
-        
+
         $this->assertEquals($myType->myText, "Hello World!");
         $this->assertInternalType('string', $myType->myText);
     }
-    
+
     /**
      * @depends testTextProperty
      */
@@ -408,14 +408,14 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { text myText; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myText = "Hello World!";
-        
+
         $this->assertEquals($myType->getMyText(), "Hello World!");
         $this->assertInternalType('string', $myType->myText);
     }
-    
+
     /**
      * @expectedException Good\Service\InvalidParameterException
      */
@@ -424,11 +424,11 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { text myText; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myText = 5;
     }
-    
+
     /**
      * @expectedException Good\Service\InvalidParameterException
      */
@@ -437,11 +437,11 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { text myText; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myText = new MyType();
     }
-    
+
     /**
      * @expectedException Good\Service\InvalidParameterException
      */
@@ -450,11 +450,11 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { text(minLength=3) myText; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myText = "A";
     }
-    
+
     /**
      * @expectedException Good\Service\InvalidParameterException
      */
@@ -463,11 +463,11 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { text(maxLength=5) myText; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myText = "123456";
     }
-    
+
     /**
      * @expectedException Good\Service\InvalidParameterException
      */
@@ -476,11 +476,11 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { text(length=3) myText; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myText = "A";
     }
-    
+
     /**
      * @expectedException Good\Service\InvalidParameterException
      */
@@ -489,65 +489,65 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { text(length=5) myText; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myText = "123456";
     }
-    
+
     public function testTextPropertyLongerThanMinLength()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { text(minLength=3) myText; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myText = "ABCD";
     }
-    
+
     public function testTextPropertyShorterThanMaxLength()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { text(maxLength=5) myText; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myText = "123";
     }
-    
+
     public function testTextPropertyValueLengthBetweenMinLengthAndMaxLength()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { text(minLength=2, maxLength=6) myText; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myText = "1234";
     }
-    
+
     public function testTextPropertyAsLongAsLength()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { text(length=3) myText; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myText = "AAA";
     }
-    
+
     public function testDatetimeProperty()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { datetime myDatetime; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $date = new \DateTime();
         $myType->myDatetime = $date;
-        
+
         $this->assertEquals($myType->myDatetime, $date);
         $this->assertInstanceOf('\\DateTime', $myType->myDatetime);
     }
-    
+
     /**
      * @expectedException Good\Service\InvalidParameterException
      */
@@ -556,11 +556,11 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { datetime myDatetime; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myDatetime = 5;
     }
-    
+
     /**
      * @expectedException Good\Service\InvalidParameterException
      */
@@ -569,32 +569,32 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { datetime myDatetime; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myDatetime = new MyType();
     }
-    
+
     public function testReferenceProperty()
     {
         file_put_contents($this->inputDir . 'ReferencedType.datatype',
                             'datatype ReferencedType { int justAnInt; }');
-        
+
         file_put_contents($this->inputDir . 'ReferenceType.datatype',
                             'datatype ReferenceType { "ReferencedType" reference; }');
-                            
+
         $this->compile(array($this->inputDir . 'ReferencedType.datatype',
                              $this->inputDir . 'ReferenceType.datatype'));
-        
+
         $reference = new ReferencedType();
         $reference->justAnInt = 45;
-        
+
         $referer = new ReferenceType();
         $referer->reference = $reference;
-        
+
         $this->assertEquals($referer->reference, $reference);
         $this->assertInstanceOf('ReferencedType', $referer->reference);
     }
-    
+
     /**
      * @depends testDatetimeProperty
      */
@@ -603,15 +603,15 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { datetime myDatetime; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $date = new \DateTime();
         $myType->myDatetime = $date;
-        
+
         $this->assertEquals($myType->getMyDatetime(), $date);
         $this->assertInstanceOf('\\DateTime', $myType->myDatetime);
     }
-    
+
     /**
      * @depends testReferenceProperty
      */
@@ -619,23 +619,23 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     {
         file_put_contents($this->inputDir . 'ReferencedType.datatype',
                             'datatype ReferencedType { int justAnInt; }');
-        
+
         file_put_contents($this->inputDir . 'ReferenceType.datatype',
                             'datatype ReferenceType { "ReferencedType" reference; }');
-                            
+
         $this->compile(array($this->inputDir . 'ReferencedType.datatype',
                              $this->inputDir . 'ReferenceType.datatype'));
-        
+
         $reference = new ReferencedType();
         $reference->justAnInt = 45;
-        
+
         $referer = new ReferenceType();
         $referer->reference = $reference;
-        
+
         $this->assertEquals($referer->getReference(), $reference);
         $this->assertInstanceOf('ReferencedType', $referer->reference);
     }
-    
+
     /**
      * @depends testIntProperty
      */
@@ -644,14 +644,14 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->setMyInt(5);
-        
+
         $this->assertEquals($myType->myInt, 5);
         $this->assertInternalType('int', $myType->myInt);
     }
-    
+
     /**
      * @depends testFloatProperty
      */
@@ -660,14 +660,14 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { float myFloat; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->setMyFloat(5.5);
-        
+
         $this->assertEquals($myType->myFloat, 5.5);
         $this->assertInternalType('float', $myType->myFloat);
     }
-    
+
     /**
      * @depends testTextProperty
      */
@@ -676,14 +676,14 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { text myText; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->setMyText("Hello World!");
-        
+
         $this->assertEquals($myType->myText, "Hello World!");
         $this->assertInternalType('string', $myType->myText);
     }
-    
+
     /**
      * @depends testDatetimeProperty
      */
@@ -692,15 +692,15 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { datetime myDatetime; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $date = new \DateTime();
         $myType->setMyDatetime($date);
-        
+
         $this->assertEquals($myType->myDatetime, $date);
         $this->assertInstanceOf('\\DateTime', $myType->myDatetime);
     }
-    
+
     /**
      * @depends testReferenceProperty
      */
@@ -708,23 +708,23 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
     {
         file_put_contents($this->inputDir . 'ReferencedType.datatype',
                             'datatype ReferencedType { int justAnInt; }');
-        
+
         file_put_contents($this->inputDir . 'ReferenceType.datatype',
                             'datatype ReferenceType { "ReferencedType" reference; }');
-                            
+
         $this->compile(array($this->inputDir . 'ReferencedType.datatype',
                              $this->inputDir . 'ReferenceType.datatype'));
-        
+
         $reference = new ReferencedType();
         $reference->justAnInt = 45;
-        
+
         $referer = new ReferenceType();
         $referer->setReference($reference);
-        
+
         $this->assertEquals($referer->reference, $reference);
         $this->assertInstanceOf('ReferencedType', $referer->reference);
     }
-    
+
     /**
      * @depends testIntProperty
      */
@@ -733,14 +733,14 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { [private] int myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         // Private is actually protected...
         $reflection = new \ReflectionMethod('MyType', 'getMyInt');
         $this->assertTrue($reflection->isProtected());
         $reflection = new \ReflectionMethod('MyType', 'setMyInt');
         $this->assertTrue($reflection->isProtected());
     }
-    
+
     /**
      * @depends testIntProperty
      */
@@ -749,14 +749,14 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { [private] int myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         // Private is actually protected...
         $val = new MyType();
-        
+
         $this->setExpectedException('Exception', 'Unknown or non-public property');
         $int = $val->myInt;
     }
-    
+
     /**
      * @depends testIntProperty
      */
@@ -765,14 +765,14 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { [private] int myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         // Private is actually protected...
         $val = new MyType();
-        
+
         $this->setExpectedException('Exception', 'Unknown or non-public property');
         $val->myInt = 4;
     }
-    
+
     /**
      * @depends testIntProperty
      */
@@ -781,13 +781,13 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { [protected] int myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $reflection = new \ReflectionMethod('MyType', 'getMyInt');
         $this->assertTrue($reflection->isProtected());
         $reflection = new \ReflectionMethod('MyType', 'setMyInt');
         $this->assertTrue($reflection->isProtected());
     }
-    
+
     /**
      * @depends testIntProperty
      */
@@ -796,14 +796,14 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { [private] int myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         // Private is actually protected...
         $val = new MyType();
-        
+
         $this->setExpectedException('Exception', 'Unknown or non-public property');
         $int = $val->myInt;
     }
-    
+
     /**
      * @depends testIntProperty
      */
@@ -812,14 +812,14 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { [private] int myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         // Private is actually protected...
         $val = new MyType();
-        
+
         $this->setExpectedException('Exception', 'Unknown or non-public property');
         $val->myInt = 4;
     }
-    
+
     /**
      * @depends testIntProperty
      */
@@ -828,14 +828,14 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { [public] int myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         // Private is actually protected...
         $reflection = new \ReflectionMethod('MyType', 'getMyInt');
         $this->assertTrue($reflection->isPublic());
         $reflection = new \ReflectionMethod('MyType', 'setMyInt');
         $this->assertTrue($reflection->isPublic());
     }
-    
+
     /**
      * @depends testIntProperty
      */
@@ -844,14 +844,14 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         // Private is actually protected...
         $reflection = new \ReflectionMethod('MyType', 'getMyInt');
         $this->assertTrue($reflection->isPublic());
         $reflection = new \ReflectionMethod('MyType', 'setMyInt');
         $this->assertTrue($reflection->isPublic());
     }
-    
+
     public function testMultipleMembers()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
@@ -862,23 +862,23 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
                             "   int myInt2;\n" .
                             "}");
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myInt = 5;
         $this->assertEquals($myType->myInt, 5);
         $this->assertInternalType('int', $myType->myInt);
-        
+
         $myType = new MyType();
         $myType->myFloat = 5.5;
         $this->assertEquals($myType->myFloat, 5.5);
         $this->assertInternalType('float', $myType->myFloat);
-        
+
         $myType = new MyType();
         $myType->myInt2 = 42;
         $this->assertEquals($myType->myInt2, 42);
         $this->assertInternalType('int', $myType->myInt2);
     }
-    
+
     public function testMultipleMembersOnOneLine()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
@@ -886,23 +886,23 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
                             "[]float myFloat;".
                             "int myInt2;}");
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myInt = 5;
         $this->assertEquals($myType->myInt, 5);
         $this->assertInternalType('int', $myType->myInt);
-        
+
         $myType = new MyType();
         $myType->myFloat = 5.5;
         $this->assertEquals($myType->myFloat, 5.5);
         $this->assertInternalType('float', $myType->myFloat);
-        
+
         $myType = new MyType();
         $myType->myInt2 = 42;
         $this->assertEquals($myType->myInt2, 42);
         $this->assertInternalType('int', $myType->myInt2);
     }
-    
+
     public function testOneMemberSpreadOverMultipleLines()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
@@ -917,30 +917,30 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
                             ";\n" .
                             "}\n");
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myInt = 5;
         $this->assertEquals($myType->myInt, 5);
         $this->assertInternalType('int', $myType->myInt);
     }
-    
+
     public function testMultipleDatatypesInOneFileOnOneLine()
     {
         file_put_contents($this->inputDir . 'MyTypes.datatype',
                             "datatype MyType{[public]int myInt;}datatype MyOtherType{float myFloat;}");
         $this->compile(array($this->inputDir . 'MyTypes.datatype'));
-        
+
         $myType = new MyType();
         $myType->myInt = 5;
         $this->assertEquals($myType->myInt, 5);
         $this->assertInternalType('int', $myType->myInt);
-        
+
         $myType = new MyOtherType();
         $myType->myFloat = 5.5;
         $this->assertEquals($myType->myFloat, 5.5);
         $this->assertInternalType('float', $myType->myFloat);
     }
-    
+
     public function testMultipleDatatypesInOneFileOnMultipleLines()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
@@ -968,14 +968,14 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
                             ";\n" .
                             "}\n");
         $this->compile(array($this->inputDir . 'MyType.datatype'));
-        
+
         $myType = new MyType();
         $myType->myInt = 5;
         $this->assertEquals($myType->myInt, 5);
         $this->assertInternalType('int', $myType->myInt);
     }
-    
-    
+
+
     /**
      * @expectedException Good\Rolemodel\InvalidTypeModifierException
      */
@@ -985,7 +985,7 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
                             'datatype MyType { int(unknown) myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
     }
-    
+
     /**
      * @expectedException Good\Rolemodel\InvalidTypeModifierException
      */
@@ -995,7 +995,7 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
                             'datatype MyType { int(unknown=3) myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
     }
-    
+
     /**
      * @expectedException Good\Rolemodel\InvalidTypeModifierException
      */
@@ -1005,7 +1005,7 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
                             'datatype MyType { int(maxValue) myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
     }
-    
+
     /**
      * @expectedException Good\Rolemodel\InvalidTypeModifierException
      */
@@ -1015,28 +1015,28 @@ abstract class GoodServiceBaseTest extends PHPUnit_Framework_TestCase
                             'datatype MyType { int(nonNegative=42) myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
     }
-    
+
     public function testTypeWithoutTypeModifiersButWithBraces()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int() myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
     }
-    
+
     public function testTypeWithoutTypeModifiersButWithBracesWithWhitespace()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int(      ) myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
     }
-    
+
     public function testTypeModifiersWithABunchOfWhitespace()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             "datatype MyType { int(  minValue   =    4     ,    nonNegative   , maxValue    = 5  ) myInt; }");
         $this->compile(array($this->inputDir . 'MyType.datatype'));
     }
-    
+
     public function testTypeModifiersWithoutAnyWhitespace()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',

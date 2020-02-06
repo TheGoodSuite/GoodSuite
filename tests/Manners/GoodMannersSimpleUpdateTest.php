@@ -1,18 +1,18 @@
 <?php
 
-/** 
+/**
  * @runTestsInSeparateProcesses
  */
 abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
 {
     private $storage1;
     private $storage2;
-    
+
     abstract public function getNewStorage();
     // this function should be removed, but is used for clearing the database at the moment
     abstract public function getNewDb();
     abstract public function truncateTable($table);
-    
+
     // This could be done just once for all the tests and it would even be necessary
     // to run the tests in this class in a single process.
     // However, since we can't run these tests in the same process as those from other
@@ -22,10 +22,10 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
     // setUp instead of having PHPUnit do its magic.
     public static function _setUpBeforeClass()
     {
-        // Garbage collector causes segmentation fault, so we disable 
+        // Garbage collector causes segmentation fault, so we disable
         // for the duration of the test case
         gc_disable();
-        file_put_contents(dirname(__FILE__) . '/../testInputFiles/SimpleUpdateType.datatype', 
+        file_put_contents(dirname(__FILE__) . '/../testInputFiles/SimpleUpdateType.datatype',
                                                                             "datatype SimpleUpdateType\n" .
                                                                             "{" .
                                                                             "   int myInt;\n" .
@@ -34,24 +34,24 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
                                                                             "   datetime myDatetime;\n" .
                                                                             '   "AnotherType" myReference;' . "\n" .
                                                                             "}\n");
-        
-        file_put_contents(dirname(__FILE__) . '/../testInputFiles/AnotherType.datatype', 
+
+        file_put_contents(dirname(__FILE__) . '/../testInputFiles/AnotherType.datatype',
                                                                             "datatype AnotherType { int yourInt; }");
-    
+
         $rolemodel = new \Good\Rolemodel\Rolemodel();
         $schema = $rolemodel->createSchema(array(dirname(__FILE__) . '/../testInputFiles/SimpleUpdateType.datatype',
                                                  dirname(__FILE__) . '/../testInputFiles/AnotherType.datatype'));
 
         $service = new \Good\Service\Service();
         $service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');
-        
+
         require dirname(__FILE__) . '/../generated/SimpleUpdateType.datatype.php';
         require dirname(__FILE__) . '/../generated/AnotherType.datatype.php';
-        
+
         require dirname(__FILE__) . '/../generated/SimpleUpdateTypeResolver.php';
         require dirname(__FILE__) . '/../generated/AnotherTypeResolver.php';
     }
-    
+
     public static function _tearDownAfterClass()
     {
         unlink(dirname(__FILE__) . '/../testInputFiles/SimpleUpdateType.datatype');
@@ -61,24 +61,24 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         unlink(dirname(__FILE__) . '/../generated/SimpleUpdateTypeResolver.php');
         unlink(dirname(__FILE__) . '/../generated/AnotherTypeResolver.php');
         unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');
-        
+
         if (ini_get('zend.enable_gc'))
         {
             gc_enable();
         }
     }
-    
+
     public function setUp()
     {
         $this->_setUpBeforeClass();
-        
+
         // just doubling this up (from tearDown) to be sure
         // this should be handled natively once that is implemented
         $this->truncateTable('simpleupdatetype');
         $this->truncateTable('anothertype');
-        
+
         $storage = $this->getNewStorage();
-        
+
         $ins = new SimpleUpdateType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
@@ -88,7 +88,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $ref->yourInt = 50;
         $ins->myReference = $ref;
         $storage->insert($ins);
-        
+
         $ins = new SimpleUpdateType();
         $ins->myInt = 5;
         $ins->myFloat = null;
@@ -98,7 +98,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $ref->yourInt = 40;
         $ins->myReference = $ref;
         $storage->insert($ins);
-        
+
         $ins = new SimpleUpdateType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
@@ -108,7 +108,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $ref->yourInt = 30;
         $ins->myReference = $ref;
         $storage->insert($ins);
-        
+
         $ins = new SimpleUpdateType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
@@ -118,7 +118,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $ref->yourInt = 20;
         $ins->myReference = $ref;
         $storage->insert($ins);
-        
+
         $ins = new SimpleUpdateType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
@@ -128,14 +128,14 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $ref->yourInt = 10;
         $ins->myReference = $ref;
         $storage->insert($ins);
-        
+
         $storage->flush();
-        
+
         // new Storage, so communication will have to go through data storage
         $this->storage1 = $this->getNewStorage();
         $this->storage2 = $this->getNewStorage();
     }
-    
+
     public function tearDown()
     {
         // Just doing this already to make sure the deconstructor will hasve
@@ -143,14 +143,14 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         // (at which point the database will probably be in a wrong state for this)
         $this->storage1->flush();
         $this->storage2->flush();
-        
+
         // this should be handled through the GoodManners API once that is implemented
         $this->truncateTable('simpleupdatetype');
         $this->truncateTable('anothertype');
-        
+
         $this->_tearDownAfterClass();
     }
-    
+
     private function array_search_specific($needle, $haystack)
     {
         // this is sort of a array_search
@@ -175,59 +175,59 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
                 return $key;
             }
         }
-        
+
         return false;
     }
-    
+
     private function assertContainsAndReturnIndex_specific($needle, $haystack)
     {
         $pos = $this->array_search_specific($needle, $haystack);
-        
+
         if ($pos === false)
         {
             // this will always fail
             // basically, we tested before with a couple less restirctions
             // and now we just use the general function to get nice ouput
-            // it'll contain some differences that don't matter, but that's 
+            // it'll contain some differences that don't matter, but that's
             // a small price to pay
             $this->assertContains($needle, $haystack);
         }
-        
+
         return $pos;
     }
-    
+
     private function checkResults($expected)
     {
         // At the moment we don't have a proper api to get any,
         // but this trick does do the same
         $type = new SimpleUpdateType();
         $any = new \Good\Manners\Condition\GreaterThan($type);
-        
+
         $resolver = new SimpleUpdateTypeResolver();
         $resolver->resolveMyReference();
         $collection = $this->storage2->getCollection($any, $resolver);
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expected);
-            
+
             array_splice($expected, $pos, 1);
         }
-        
+
         $this->assertSame(array(), $expected);
     }
-    
+
     public function testSimpleUpdate()
     {
         // At the moment we don't have a proper api to get any,
         // but this trick does do the same
         $type = new SimpleUpdateType();
         $any = new \Good\Manners\Condition\GreaterThan($type);
-        
+
         $resolver = new SimpleUpdateTypeResolver();
         $resolver->resolveMyReference();
         $collection = $this->storage1->getCollection($any, $resolver);
-        
+
         foreach ($collection as $type)
         {
             $type->myInt = 2;
@@ -235,11 +235,11 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
             $type->myText = "Zero";
             $type->myDatetime = new Datetime('1999-12-31');
         }
-        
+
         $this->storage1->flush();
-        
+
         $expectedResults = array();
-        
+
         $ins = new SimpleUpdateType();
         $ins->myInt = 2;
         $ins->myFloat = 1.1;
@@ -248,7 +248,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $ins->myReference = new AnotherType();
         $ins->myReference->yourInt = 50;
         $expectedResults[] = $ins;
-        
+
         $ins = new SimpleUpdateType();
         $ins->myInt = 2;
         $ins->myFloat = 1.1;
@@ -257,7 +257,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $ins->myReference = new AnotherType();
         $ins->myReference->yourInt = 40;
         $expectedResults[] = $ins;
-        
+
         $ins = new SimpleUpdateType();
         $ins->myInt = 2;
         $ins->myFloat = 1.1;
@@ -266,7 +266,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $ins->myReference = new AnotherType();
         $ins->myReference->yourInt = 30;
         $expectedResults[] = $ins;
-        
+
         $ins = new SimpleUpdateType();
         $ins->myInt = 2;
         $ins->myFloat = 1.1;
@@ -275,7 +275,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $ins->myReference = new AnotherType();
         $ins->myReference->yourInt = 20;
         $expectedResults[] = $ins;
-        
+
         $ins = new SimpleUpdateType();
         $ins->myInt = 2;
         $ins->myFloat = 1.1;
@@ -284,21 +284,21 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $ins->myReference = new AnotherType();
         $ins->myReference->yourInt = 10;
         $expectedResults[] = $ins;
-        
+
         $this->checkResults($expectedResults);
     }
-    
+
     public function testSimpleUpdateSetToNull()
     {
         // At the moment we don't have a proper api to get any,
         // but this trick does do the same
         $type = new SimpleUpdateType();
         $any = new \Good\Manners\Condition\GreaterThan($type);
-        
+
         $resolver = new SimpleUpdateTypeResolver();
         $resolver->resolveMyReference();
         $collection = $this->storage1->getCollection($any, $resolver);
-        
+
         foreach ($collection as $type)
         {
             if ($type->myInt == 5)
@@ -306,18 +306,18 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
                 $type->myInt = null;
                 $type->myText = null;
             }
-            
+
             if ($type->myInt == 10)
             {
                 $type->myFloat = null;
                 $type->myDatetime = null;
             }
         }
-        
+
         $this->storage1->flush();
-        
+
         $expectedResults = array();
-        
+
         $ins = new SimpleUpdateType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
@@ -327,7 +327,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $ref->yourInt = 50;
         $ins->myReference = $ref;
         $expectedResults[] = $ins;
-        
+
         $ins = new SimpleUpdateType();
         $ins->myInt = null;
         $ins->myFloat = null;
@@ -337,7 +337,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $ref->yourInt = 40;
         $ins->myReference = $ref;
         $expectedResults[] = $ins;
-        
+
         $ins = new SimpleUpdateType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
@@ -347,7 +347,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $ref->yourInt = 30;
         $ins->myReference = $ref;
         $expectedResults[] = $ins;
-        
+
         $ins = new SimpleUpdateType();
         $ins->myInt = 10;
         $ins->myFloat = null;
@@ -357,7 +357,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $ref->yourInt = 20;
         $ins->myReference = $ref;
         $expectedResults[] = $ins;
-        
+
         $ins = new SimpleUpdateType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
@@ -367,24 +367,24 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $ref->yourInt = 10;
         $ins->myReference = $ref;
         $expectedResults[] = $ins;
-        
+
         $this->checkResults($expectedResults);
     }
-    
+
     public function testSimpleUpdateReferences()
     {
         // At the moment we don't have a proper api to get any,
         // but this trick does do the same
         $type = new SimpleUpdateType();
         $any = new \Good\Manners\Condition\GreaterThan($type);
-        
+
         $resolver = new SimpleUpdateTypeResolver();
         $resolver->resolveMyReference();
         $resolver->orderByMyIntAsc();
         $collection = $this->storage1->getCollection($any, $resolver);
-        
+
         $ref = null;
-        
+
         foreach ($collection as $type)
         {
             if ($type->myInt == 8)
@@ -392,27 +392,27 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
                 $ref = $type->myReference;
                 $type->myReference = null;
             }
-            
+
             if ($type->myInt == 10)
             {
                 $type->myReference = $ref;
             }
-            
+
             if ($type->myFloat == 20.20)
             {
                 $myref = new AnotherType();
                 $myref->yourInt = 144;
                 $type->myReference = $myref;
-                
+
                 // todo: make this line unnecessary
                 $this->storage1->insert($myref);
             }
         }
-        
+
         $this->storage1->flush();
-        
+
         $expectedResults = array();
-        
+
         $ins = new SimpleUpdateType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
@@ -422,7 +422,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $ref->yourInt = 50;
         $ins->myReference = $ref;
         $expectedResults[] = $ins;
-        
+
         $ins = new SimpleUpdateType();
         $ins->myInt = 5;
         $ins->myFloat = null;
@@ -432,7 +432,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $ref->yourInt = 40;
         $ins->myReference = $ref;
         $expectedResults[] = $ins;
-        
+
         $ins = new SimpleUpdateType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
@@ -440,7 +440,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $ins->myDatetime = new \Datetime('2008-08-08');
         $ins->myReference = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new SimpleUpdateType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
@@ -450,7 +450,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $ref->yourInt = 30;
         $ins->myReference = $ref;
         $expectedResults[] = $ins;
-        
+
         $ins = new SimpleUpdateType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
@@ -460,7 +460,7 @@ abstract class GoodMannersSimpleUpdateTest extends PHPUnit_Framework_TestCase
         $ref->yourInt = 144;
         $ins->myReference = $ref;
         $expectedResults[] = $ins;
-        
+
         $this->checkResults($expectedResults);
     }
 }

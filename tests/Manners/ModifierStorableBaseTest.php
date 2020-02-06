@@ -24,7 +24,7 @@ abstract class GoodMannersModifierStorableBaseTest extends GoodServiceBaseTest
             parent::compile($types, $modifiers);
         }
     }
-    
+
     // todo
 }
 

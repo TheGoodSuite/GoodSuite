@@ -1,17 +1,17 @@
 <?php
 
-/** 
+/**
  * @runTestsInSeparateProcesses
  */
 abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
 {
     private $storage;
-    
+
     abstract public function getNewStorage();
     // this function should be removed, but is used for clearing the database at the moment
     abstract public function getNewDb();
     abstract public function truncateTable($table);
-    
+
     // This could be done just once for all the tests and it would even be necessary
     // to run the tests in this class in a single process.
     // However, since we can't run these tests in the same process as those from other
@@ -21,10 +21,10 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
     // setUp instead of having PHPUnit do its magic.
     public static function _setUpBeforeClass()
     {
-        // Garbage collector causes segmentation fault, so we disable 
+        // Garbage collector causes segmentation fault, so we disable
         // for the duration of the test case
         gc_disable();
-        file_put_contents(dirname(__FILE__) . '/../testInputFiles/GetType.datatype', 
+        file_put_contents(dirname(__FILE__) . '/../testInputFiles/GetType.datatype',
                                                                             "datatype GetType\n" .
                                                                             "{" .
                                                                             "   int myInt;\n" .
@@ -34,24 +34,24 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
                                                                             '   "OtherType" myOtherType;' . "\n" .
                                                                             '   "GetType" myCircular;' . "\n" .
                                                                             "}\n");
-        
-        file_put_contents(dirname(__FILE__) . '/../testInputFiles/OtherType.datatype', 
+
+        file_put_contents(dirname(__FILE__) . '/../testInputFiles/OtherType.datatype',
                                                                             "datatype OtherType { int yourInt; }");
-    
+
         $rolemodel = new \Good\Rolemodel\Rolemodel();
         $schema = $rolemodel->createSchema(array(dirname(__FILE__) . '/../testInputFiles/GetType.datatype',
                                                    dirname(__FILE__) . '/../testInputFiles/OtherType.datatype'));
 
         $service = new \Good\Service\Service();
         $service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');
-        
+
         require dirname(__FILE__) . '/../generated/GetType.datatype.php';
         require dirname(__FILE__) . '/../generated/OtherType.datatype.php';
-        
+
         require dirname(__FILE__) . '/../generated/GetTypeResolver.php';
         require dirname(__FILE__) . '/../generated/OtherTypeResolver.php';
     }
-    
+
     public static function _tearDownAfterClass()
     {
         unlink(dirname(__FILE__) . '/../testInputFiles/GetType.datatype');
@@ -61,24 +61,24 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         unlink(dirname(__FILE__) . '/../generated/GetTypeResolver.php');
         unlink(dirname(__FILE__) . '/../generated/OtherTypeResolver.php');
         unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');
-        
+
         if (ini_get('zend.enable_gc'))
         {
             gc_enable();
         }
     }
-    
+
     public function setUp()
     {
         $this->_setUpBeforeClass();
-        
+
         // just doubling this up (from tearDown) to be sure
         // this should be handled natively once that is implemented
         $this->truncateTable('gettype');
         $this->truncateTable('othertype');
-        
+
         $storage = $this->getNewStorage();
-        
+
         $ins = new GetType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
@@ -89,7 +89,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $storage->insert($ins);
-        
+
         $ins = new GetType();
         $ins->myInt = 5;
         $ins->myFloat = null;
@@ -100,7 +100,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $storage->insert($ins);
-        
+
         $ins = new GetType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
@@ -111,7 +111,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $storage->insert($ins);
-        
+
         $ins = new GetType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
@@ -120,7 +120,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $storage->insert($ins);
-        
+
         $ins = new GetType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
@@ -131,27 +131,27 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $storage->insert($ins);
-        
+
         $storage->flush();
-        
+
         // new Storage, so communication will have to go through data storage
         $this->storage = $this->getNewStorage();
     }
-    
+
     public function tearDown()
     {
         // Just doing this already to make sure the deconstructor will hasve
         // side-effects at an unspecified moment...
         // (at which point the database will probably be in a wrong state for this)
         $this->storage->flush();
-        
+
         // this should be handled through the GoodManners API once that is implemented
         $this->truncateTable('gettype');
         $this->truncateTable('othertype');
-        
+
         $this->_tearDownAfterClass();
     }
-    
+
     private function array_search_specific($needle, $haystack)
     {
         // this is sort of a array_search
@@ -185,41 +185,41 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
                 return $key;
             }
         }
-        
+
         return false;
     }
-    
+
     private function assertContainsAndReturnIndex_specific($needle, $haystack)
     {
         $pos = $this->array_search_specific($needle, $haystack);
-        
+
         if ($pos === false)
-        
+
         {
             // this will always fail
             // basically, we tested before with a couple less restirctions
             // and now we just use the general function to get nice ouput
-            // it'll contain some differences that don't matter, but that's 
+            // it'll contain some differences that don't matter, but that's
             // a small price to pay
             $this->assertContains($needle, $haystack);
         }
-        
+
         return $pos;
     }
-    
+
     public function testGetAll()
     {
         // At the moment we don't have a proper api to get any,
         // but this trick does do the same
         $type = new GetType();
         $any = new \Good\Manners\Condition\GreaterThan($type);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
@@ -230,7 +230,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 5;
         $ins->myFloat = null;
@@ -241,7 +241,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
@@ -252,7 +252,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
@@ -261,7 +261,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
@@ -272,29 +272,29 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
+
             array_splice($expectedResults, $pos, 1);
         }
-        
-        $this->assertSame(array(), $expectedResults);        
+
+        $this->assertSame(array(), $expectedResults);
     }
-    
+
     public function testGetLessThan()
     {
         $type = new GetType();
         $type->myInt = 5;
         $any = new \Good\Manners\Condition\LessThan($type);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
@@ -305,29 +305,29 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
+
             array_splice($expectedResults, $pos, 1);
         }
-        
+
         $this->assertSame(array(), $expectedResults);
     }
-    
+
     public function testGetLessOrEqual()
     {
         $type = new GetType();
         $type->myInt = 5;
         $any = new \Good\Manners\Condition\LessOrEqual($type);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
@@ -338,7 +338,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 5;
         $ins->myFloat = null;
@@ -349,29 +349,29 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
+
             array_splice($expectedResults, $pos, 1);
         }
-        
+
         $this->assertSame(array(), $expectedResults);
     }
-    
+
     public function testGetGreaterThan()
     {
         $type = new GetType();
         $type->myInt = 5;
         $any = new \Good\Manners\Condition\GreaterThan($type);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
@@ -382,7 +382,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
@@ -391,29 +391,29 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
+
             array_splice($expectedResults, $pos, 1);
         }
-        
+
         $this->assertSame(array(), $expectedResults);
     }
-    
+
     public function testGetGreaterOrEqual()
     {
         $type = new GetType();
         $type->myInt = 5;
         $any = new \Good\Manners\Condition\GreaterOrEqual($type);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 5;
         $ins->myFloat = null;
@@ -424,7 +424,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
@@ -435,7 +435,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
@@ -444,29 +444,29 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
+
             array_splice($expectedResults, $pos, 1);
         }
-        
+
         $this->assertSame(array(), $expectedResults);
     }
-    
+
     public function testGetEqualTo()
     {
         $type = new GetType();
         $type->myInt = 5;
         $any = new \Good\Manners\Condition\EqualTo($type);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 5;
         $ins->myFloat = null;
@@ -477,29 +477,29 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
+
             array_splice($expectedResults, $pos, 1);
         }
-        
+
         $this->assertSame(array(), $expectedResults);
     }
-    
+
     public function testGetNotEqualTo()
     {
         $type = new GetType();
         $type->myInt = 5;
         $any = new \Good\Manners\Condition\NotEqualTo($type);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
@@ -510,7 +510,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
@@ -521,7 +521,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
@@ -530,17 +530,17 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
+
             array_splice($expectedResults, $pos, 1);
         }
-        
+
         $this->assertSame(array(), $expectedResults);
     }
-    
+
     /**
      * @depends testGetEqualTo
      */
@@ -552,24 +552,24 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         //  which is exactly what the whole point of this test is)
         $otherType = new OtherType();
         $otherType->yourInt = 80;
-        
+
         $any = new \Good\Manners\Condition\EqualTo($otherType);
-        
+
         $collection = $this->storage->getCollection($any, new OtherTypeResolver());
-        
+
         $referenced = $collection->getNext();
-        
-        // Then, we get the result with that reference    
+
+        // Then, we get the result with that reference
         $type = new GetType();
         $type->myOtherType = $referenced;
         $any = new \Good\Manners\Condition\EqualTo($type);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 5;
         $ins->myFloat = null;
@@ -580,17 +580,17 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
+
             array_splice($expectedResults, $pos, 1);
         }
-        
+
         $this->assertSame(array(), $expectedResults);
     }
-    
+
     /**
      * @depends testGetLessThan
      * @depends testGetGreaterThan
@@ -600,19 +600,19 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $type = new GetType();
         $type->myInt = 4;
         $greater = new \Good\Manners\Condition\GreaterThan($type);
-        
+
         $type = new GetType();
         $type->myInt = 10;
         $less = new \Good\Manners\Condition\LessThan($type);
-        
+
         $and = new \Good\Manners\Condition\AndCondition($less, $greater);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $collection = $this->storage->getCollection($and, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 5;
         $ins->myFloat = null;
@@ -623,7 +623,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
@@ -634,17 +634,17 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
+
             array_splice($expectedResults, $pos, 1);
         }
-        
+
         $this->assertSame(array(), $expectedResults);
     }
-    
+
     /**
      * @depends testGetLessThan
      * @depends testGetGreaterThan
@@ -654,21 +654,21 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $type = new GetType();
         $type->myInt = 5;
         $greater = new \Good\Manners\Condition\GreaterThan($type);
-        
+
         $less = new \Good\Manners\Condition\LessThan($type);
-        
+
         $type = new GetType();
         $type->myInt = 8;
         $greater = new \Good\Manners\Condition\GreaterThan($type);
-        
+
         $and = new \Good\Manners\Condition\OrCondition($less, $greater);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $collection = $this->storage->getCollection($and, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
@@ -679,7 +679,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
@@ -688,29 +688,29 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
+
             array_splice($expectedResults, $pos, 1);
         }
-        
+
         $this->assertSame(array(), $expectedResults);
     }
-    
+
     public function testGetReferenceIsNull()
     {
         $type = new GetType();
         $type->myOtherType = null;
         $any = new \Good\Manners\Condition\EqualTo($type);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
@@ -719,29 +719,29 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
+
             array_splice($expectedResults, $pos, 1);
         }
-        
+
         $this->assertSame(array(), $expectedResults);
     }
-    
+
     public function testGetReferenceIsNotNull()
     {
         $type = new GetType();
         $type->myOtherType = null;
         $any = new \Good\Manners\Condition\NotEqualTo($type);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
@@ -752,7 +752,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 5;
         $ins->myFloat = null;
@@ -763,7 +763,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
@@ -774,7 +774,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
@@ -785,17 +785,17 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
+
             array_splice($expectedResults, $pos, 1);
         }
-        
+
         $this->assertSame(array(), $expectedResults);
     }
-    
+
     /**
      * @depends testGetLessThan
      */
@@ -805,13 +805,13 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $type->myOtherType = new OtherType();
         $type->myOtherType->yourInt = 85;
         $any = new \Good\Manners\Condition\LessThan($type);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 5;
         $ins->myFloat = null;
@@ -822,7 +822,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
@@ -833,7 +833,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
@@ -844,17 +844,17 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
+
             array_splice($expectedResults, $pos, 1);
         }
-        
-        $this->assertSame(array(), $expectedResults);        
+
+        $this->assertSame(array(), $expectedResults);
     }
-    
+
     /**
      * @depends testGetGreaterThan
      * @depends testGetByPropertyOfReference
@@ -868,13 +868,13 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $type->myOtherType = new OtherType();
         $type->myOtherType->yourInt = 45;
         $any = new \Good\Manners\Condition\GreaterThan($type);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 5;
         $ins->myFloat = null;
@@ -885,17 +885,17 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
+
             array_splice($expectedResults, $pos, 1);
         }
-        
-        $this->assertSame(array(), $expectedResults);        
+
+        $this->assertSame(array(), $expectedResults);
     }
-    
+
     /**
      * @depends testGetGreaterThan
      */
@@ -905,13 +905,13 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $type = new GetType();
         $type->myFloat = 6.0;
         $any = new \Good\Manners\Condition\GreaterThan($type);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
@@ -922,7 +922,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
@@ -931,7 +931,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
@@ -942,17 +942,17 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
+
             array_splice($expectedResults, $pos, 1);
         }
-        
-        $this->assertSame(array(), $expectedResults);        
+
+        $this->assertSame(array(), $expectedResults);
     }
-    
+
     /**
      * @depends testGetEqualTo
      */
@@ -961,13 +961,13 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $type = new GetType();
         $type->myText = "Twenty";
         $any = new \Good\Manners\Condition\EqualTo($type);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
@@ -978,17 +978,17 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
+
             array_splice($expectedResults, $pos, 1);
         }
-        
-        $this->assertSame(array(), $expectedResults);        
+
+        $this->assertSame(array(), $expectedResults);
     }
-    
+
     /**
      * @depends testGetGreaterThan
      */
@@ -997,13 +997,13 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $type = new GetType();
         $type->myDatetime = new Datetime('2006-06-06');
         $any = new \Good\Manners\Condition\GreaterThan($type);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
@@ -1014,7 +1014,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
@@ -1023,17 +1023,17 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
+
             array_splice($expectedResults, $pos, 1);
         }
-        
+
         $this->assertSame(array(), $expectedResults);
     }
-    
+
     /**
      * @depends testGetEqualTo
      */
@@ -1042,13 +1042,13 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $type = new GetType();
         $type->myInt = null;
         $any = new \Good\Manners\Condition\EqualTo($type);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
@@ -1059,17 +1059,17 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
+
             array_splice($expectedResults, $pos, 1);
         }
-        
-        $this->assertSame(array(), $expectedResults);        
+
+        $this->assertSame(array(), $expectedResults);
     }
-    
+
     /**
      * @depends testGetEqualTo
      */
@@ -1078,13 +1078,13 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $type = new GetType();
         $type->myFloat = null;
         $any = new \Good\Manners\Condition\EqualTo($type);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 5;
         $ins->myFloat = null;
@@ -1095,17 +1095,17 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
+
             array_splice($expectedResults, $pos, 1);
         }
-        
-        $this->assertSame(array(), $expectedResults);        
+
+        $this->assertSame(array(), $expectedResults);
     }
-    
+
     /**
      * @depends testGetEqualTo
      */
@@ -1114,13 +1114,13 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $type = new GetType();
         $type->myText = null;
         $any = new \Good\Manners\Condition\EqualTo($type);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
@@ -1131,17 +1131,17 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
+
             array_splice($expectedResults, $pos, 1);
         }
-        
-        $this->assertSame(array(), $expectedResults);        
+
+        $this->assertSame(array(), $expectedResults);
     }
-    
+
     /**
      * @depends testGetEqualTo
      */
@@ -1150,13 +1150,13 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $type = new GetType();
         $type->myDatetime = null;
         $any = new \Good\Manners\Condition\EqualTo($type);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
@@ -1167,17 +1167,17 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
+
             array_splice($expectedResults, $pos, 1);
         }
-        
-        $this->assertSame(array(), $expectedResults);        
+
+        $this->assertSame(array(), $expectedResults);
     }
-    
+
     /**
      * @depends testGetNotEqualTo
      */
@@ -1188,13 +1188,13 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $type = new GetType();
         $type->myInt = null;
         $any = new \Good\Manners\Condition\NotEqualTo($type);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
@@ -1205,7 +1205,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 5;
         $ins->myFloat = null;
@@ -1216,7 +1216,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
@@ -1227,7 +1227,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
@@ -1236,17 +1236,17 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
+
             array_splice($expectedResults, $pos, 1);
         }
-        
-        $this->assertSame(array(), $expectedResults);        
+
+        $this->assertSame(array(), $expectedResults);
     }
-    
+
     /**
      * @depends testGetNotEqualTo
      */
@@ -1255,13 +1255,13 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $type = new GetType();
         $type->myFloat = null;
         $any = new \Good\Manners\Condition\NotEqualTo($type);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
@@ -1272,7 +1272,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
@@ -1283,7 +1283,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
@@ -1292,7 +1292,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
@@ -1303,17 +1303,17 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
+
             array_splice($expectedResults, $pos, 1);
         }
-        
-        $this->assertSame(array(), $expectedResults);        
+
+        $this->assertSame(array(), $expectedResults);
     }
-    
+
     /**
      * @depends testGetNotEqualTo
      */
@@ -1322,13 +1322,13 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $type = new GetType();
         $type->myText = null;
         $any = new \Good\Manners\Condition\NotEqualTo($type);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
@@ -1339,7 +1339,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 5;
         $ins->myFloat = null;
@@ -1349,7 +1349,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
@@ -1358,7 +1358,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
@@ -1369,17 +1369,17 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
+
             array_splice($expectedResults, $pos, 1);
         }
-        
-        $this->assertSame(array(), $expectedResults);        
+
+        $this->assertSame(array(), $expectedResults);
     }
-    
+
     /**
      * @depends testGetNotEqualTo
      */
@@ -1388,13 +1388,13 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $type = new GetType();
         $type->myDatetime = null;
         $any = new \Good\Manners\Condition\NotEqualTo($type);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
@@ -1405,7 +1405,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 5;
         $ins->myFloat = null;
@@ -1416,7 +1416,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
@@ -1427,7 +1427,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
@@ -1436,17 +1436,17 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
+
             array_splice($expectedResults, $pos, 1);
         }
-        
-        $this->assertSame(array(), $expectedResults);        
+
+        $this->assertSame(array(), $expectedResults);
     }
-    
+
     /**
      * @depends testGetAll
      */
@@ -1455,14 +1455,14 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         // Still the get any trick
         $type = new GetType();
         $any = new \Good\Manners\Condition\GreaterThan($type);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $resolver->orderByMyIntAsc();
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
@@ -1473,12 +1473,12 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $type = $collection->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
@@ -1489,12 +1489,12 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $type = $collection->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 5;
         $ins->myFloat = null;
@@ -1505,12 +1505,12 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $type = $collection->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
@@ -1521,12 +1521,12 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $type = $collection->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
@@ -1535,13 +1535,13 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $type = $collection->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-        
+
         $this->assertSame(null, $collection->getNext());
     }
-    
+
     /**
      * @depends testGetAll
      */
@@ -1550,14 +1550,14 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         // Still the get any trick
         $type = new GetType();
         $any = new \Good\Manners\Condition\GreaterThan($type);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $resolver->orderByMyIntDesc();
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
@@ -1566,12 +1566,12 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $type = $collection->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
@@ -1582,12 +1582,12 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $type = $collection->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 5;
         $ins->myFloat = null;
@@ -1598,12 +1598,12 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $type = $collection->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
@@ -1614,12 +1614,12 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $type = $collection->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
@@ -1630,13 +1630,13 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $type = $collection->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-        
+
         $this->assertSame(null, $collection->getNext());
     }
-    
+
     /**
      * @depends testGetAll
      * @depends testGetSortedAscending
@@ -1647,15 +1647,15 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         // Still the get any trick
         $type = new GetType();
         $any = new \Good\Manners\Condition\GreaterThan($type);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $resolver->orderByMyFloatAsc();
         $resolver->orderByMyIntDesc();
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 5;
         $ins->myFloat = null;
@@ -1666,12 +1666,12 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $type = $collection->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
@@ -1682,12 +1682,12 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $type = $collection->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
@@ -1696,12 +1696,12 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $type = $collection->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
@@ -1711,12 +1711,12 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
         $expectedResults[] = $ins;
-        
+
         $type = $collection->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
@@ -1727,15 +1727,15 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $type = $collection->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-        
+
         $expectedResults = array();
-        
+
         $this->assertSame(null, $collection->getNext());
     }
-    
+
     /**
      * @depends testGetAll
      */
@@ -1744,12 +1744,12 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         // same ol' trick for getting any
         $type = new GetType();
         $any = new \Good\Manners\Condition\GreaterThan($type);
-        
+
         $resolver = new GetTypeResolver();
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
@@ -1758,7 +1758,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 5;
         $ins->myFloat = null;
@@ -1767,7 +1767,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
@@ -1776,7 +1776,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
@@ -1785,7 +1785,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
@@ -1794,21 +1794,21 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         foreach ($collection as $type)
         {
             // do an isResolved check here
             // and then set to null (because you can't access unresolved properties)
             // However, the first isn't possible yet and the second isn't necessary yet
-            
+
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
+
             array_splice($expectedResults, $pos, 1);
         }
-        
+
         $this->assertSame(array(), $expectedResults);
     }
-    
+
     /**
      * @depends testGetAll
      */
@@ -1833,18 +1833,18 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
             }
         }
         $this->storage->flush();
-        
+
         // same ol' trick for getting any
         $type = new GetType();
         $any = new \Good\Manners\Condition\GreaterThan($type);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyCircular();
-        
+
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
@@ -1853,7 +1853,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = null;
         $expectedResults[] = $ins;
         $int4 = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 5;
         $ins->myFloat = null;
@@ -1862,7 +1862,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
@@ -1871,7 +1871,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
@@ -1881,7 +1881,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myCircular = $int4;
         $expectedResults[] = $ins;
         $int4->myCircular = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
@@ -1890,21 +1890,21 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         foreach ($collection as $type)
         {
             // do an isResolved check here
             // and then set to null (because you can't access unresolved properties)
             // However, the first isn't possible yet and the second isn't necessary yet
-            
+
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
-            
+
             array_splice($expectedResults, $pos, 1);
         }
-        
+
         $this->assertSame(array(), $expectedResults);
     }
-    
+
     /**
      * @depends testGetAll
      */
@@ -1913,14 +1913,14 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         // Still the get any trick
         $type = new GetType();
         $any = new \Good\Manners\Condition\GreaterThan($type);
-        
+
         $resolver = new GetTypeResolver();
         $resolver->resolveMyOtherType();
         $resolver->orderByMyIntDesc();
         $collection = $this->storage->getCollection($any, $resolver);
-        
+
         $expectedResults = array();
-        
+
         $ins = new GetType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
@@ -1929,7 +1929,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
@@ -1940,7 +1940,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 5;
         $ins->myFloat = null;
@@ -1951,7 +1951,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
@@ -1962,7 +1962,7 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $ins = new GetType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
@@ -1973,27 +1973,27 @@ abstract class GoodMannersGetTest extends PHPUnit_Framework_TestCase
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
-        
+
         $exp1 = $expectedResults;
-        
+
         foreach ($collection as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $exp1);
-            
+
             array_splice($exp1, $pos, 1);
-            
+
             $exp2 = $expectedResults;
-            
+
             foreach ($collection as $type)
             {
                 $pos = $this->assertContainsAndReturnIndex_specific($type, $exp2);
-                
+
                 array_splice($exp2, $pos, 1);
             }
-        
+
             $this->assertSame(array(), $exp2);
         }
-        
+
         $this->assertSame(array(), $exp1);
     }
 }
