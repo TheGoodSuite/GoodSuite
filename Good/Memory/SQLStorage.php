@@ -46,8 +46,13 @@ class SQLStorage extends Storage
         $updater->update($modifications->getType(), $condition, $modifications);
     }
 
-    public function getCollection(Condition $condition, Resolver $resolver)
+    public function getCollection(Condition $condition, Resolver $resolver = null)
     {
+        if ($resolver == null)
+        {
+            $resolver = $condition->getTargetType()::resolver();
+        }
+
         $this->joins = array(0 => array());
         $this->numberOfJoins = 0;
 

@@ -19,6 +19,11 @@ class EqualTo implements Condition
     {
         $processor->processEqualToCondition($this->to);
     }
+
+    public function getTargetType()
+    {
+        return $this->to->getType();
+    }
 }
 
 ?>

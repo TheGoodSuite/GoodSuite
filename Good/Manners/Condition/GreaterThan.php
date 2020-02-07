@@ -19,6 +19,11 @@ class GreaterThan implements Condition
     {
         $processor->processGreaterThanCondition($this->to);
     }
+
+    public function getTargetType()
+    {
+        return $this->to->getType();
+    }
 }
 
 ?>

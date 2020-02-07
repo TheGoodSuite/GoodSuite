@@ -19,6 +19,11 @@ class GreaterOrEqual implements Condition
     {
         $processor->processGreaterOrEqualCondition($this->to);
     }
+
+    public function getTargetType()
+    {
+        return $this->to->getType();
+    }
 }
 
 ?>

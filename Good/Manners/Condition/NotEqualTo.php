@@ -19,6 +19,11 @@ class NotEqualTo implements Condition
     {
         $processor->processNotEqualToCondition($this->to);
     }
+
+    public function getTargetType()
+    {
+        return $this->to->getType();
+    }
 }
 
 ?>

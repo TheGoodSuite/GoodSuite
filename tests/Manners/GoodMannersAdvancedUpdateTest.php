@@ -206,7 +206,6 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
 
         if ($pos === false)
         {
-            /*
             ob_start();
             echo "myInt: ";
             var_dump($needle->myInt);
@@ -226,7 +225,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
                 echo "myReference->yourInt: ";
                 var_dump($needle->myReference->yourInt);
             }
-            if ($needle->ref() === null)
+            if ($needle->ref === null)
             {
                 echo "ref: NULL\n";
             }
@@ -240,8 +239,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
             throw new Exception("Failed asserting that an array contained an object with these properties: $out");
 
             // We're always wrong here.
-            //$this->assertTrue(false, $haystack, "Failed asserting that an array contained an object with these properties: $out");
-            */
+            $this->assertTrue(false, $haystack, "Failed asserting that an array contained an object with these properties: $out");
 
             // I'd rather not have huge messages when running my entire test suite.
             $this->assertTrue(false);

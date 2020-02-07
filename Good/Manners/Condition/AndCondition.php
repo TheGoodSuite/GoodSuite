@@ -21,6 +21,11 @@ class AndCondition implements Condition
     {
         $processor->processAndCondition($this->condition1, $this->condition2);
     }
+
+    public function getTargetType()
+    {
+        return $this->condition1->getType();
+    }
 }
 
 ?>

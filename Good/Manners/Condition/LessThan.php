@@ -19,6 +19,11 @@ class LessThan implements Condition
     {
         $processor->processLessThanCondition($this->to);
     }
+
+    public function getTargetType()
+    {
+        return $this->to->getType();
+    }
 }
 
 ?>

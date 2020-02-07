@@ -19,6 +19,11 @@ class LessOrEqual implements Condition
     {
         $processor->processLessOrEqualCondition($this->to);
     }
+
+    public function getTargetType()
+    {
+        return $this->to->getType();
+    }
 }
 
 ?>
