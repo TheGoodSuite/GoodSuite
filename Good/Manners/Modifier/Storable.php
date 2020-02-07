@@ -14,6 +14,7 @@ class Storable implements \Good\Service\Modifier
     private $accept;
     private $setFromArray;
     private $toArray;
+    private $debugInfo;
 
     private $resolver = null;
     private $resolverVisit = null;
@@ -117,6 +118,11 @@ class Storable implements \Good\Service\Modifier
         $this->toArray .= "        return [\n";
         $this->toArray .= '            "id" => $this->id,' . "\n";
 
+        $this->debugInfo  = '    public function __debugInfo()' . "\n";
+        $this->debugInfo .= "    {\n";
+        $this->debugInfo .= "        return [\n";
+        $this->debugInfo .= '            "id" => $this->id,' . "\n";
+
         $this->resolver  = "<?php\n";
         $this->resolver .= "\n";
         $this->resolver .= 'class ' . $dataType->getName() . 'Resolver extends \\Good\\Manners\\BaseResolver' . "\n";
@@ -194,6 +200,9 @@ class Storable implements \Good\Service\Modifier
         $this->resolverVisit .= '            $visitor->resolverVisitUnresolvedReferenceProperty(' .
                                             '"' . $member->getName() . '");' . "\n";
         $this->resolverVisit .= "        }\n";
+
+        $this->debugInfo .= '            "' . $this->classVariable . '" => $this->' . $this->classVariable . ',' . "\n";
+        $this->debugInfo .= '            "is' . \ucfirst($this->classVariable) . 'Dirty" => $this->is' . \ucfirst($this->classVariable) . 'Dirty,' . "\n";
     }
     public function visitTextMember(Schema\TextMember $member)
     {
@@ -320,6 +329,9 @@ class Storable implements \Good\Service\Modifier
                                                     . $member->getName() . '");' . "\n";
         $this->resolverVisit .= "            }\n";
         $this->resolverVisit .= "        }\n";
+
+        $this->debugInfo .= '            "' . $this->classVariable . '" => $this->' . $this->classVariable . ',' . "\n";
+        $this->debugInfo .= '            "is' . \ucfirst($this->classVariable) . 'Dirty" => $this->is' . \ucfirst($this->classVariable) . 'Dirty,' . "\n";
     }
 
     public function varDefinitionBefore() {return '';}
@@ -468,6 +480,12 @@ class Storable implements \Good\Service\Modifier
         $this->toArray .= "\n";
 
         $res .= $this->toArray;
+
+        $this->debugInfo .= "        ];\n";
+        $this->debugInfo .= "    }\n";
+        $this->debugInfo .= "\n";
+
+        $res .= $this->debugInfo;
 
         return $res;
     }
