@@ -15,6 +15,12 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
     protected $inputDir = '';
     private $outputDir = '';
 
+    private function assertNoExceptions()
+    {
+        // Make assertion so test isn't marked as risky
+        $this->assertTrue(true);
+    }
+
     public function setUp(): void
     {
         $this->inputDir = dirname(__FILE__) . '/../testInputFiles/';
@@ -204,6 +210,8 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
 
         $myType = new MyType();
         $myType->myInt = -1;
+
+        $this->assertNoExceptions();
     }
 
     public function testIntPropertyAbovePositiveMinValue()
@@ -214,6 +222,8 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
 
         $myType = new MyType();
         $myType->myInt = 5;
+
+        $this->assertNoExceptions();
     }
 
     public function testIntPropertyBelowNegativeMaxValue()
@@ -224,6 +234,8 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
 
         $myType = new MyType();
         $myType->myInt = -5;
+
+        $this->assertNoExceptions();
     }
 
     public function testIntPropertyBelowPositiveMaxValue()
@@ -234,6 +246,8 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
 
         $myType = new MyType();
         $myType->myInt = 42;
+
+        $this->assertNoExceptions();
     }
 
     public function testIntPropertyBetweenNegativeMinValueAndMaxValue()
@@ -244,6 +258,8 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
 
         $myType = new MyType();
         $myType->myInt = -100;
+
+        $this->assertNoExceptions();
     }
 
     public function testIntPropertyBetweenPositiveMinValueAndMaxValue()
@@ -254,6 +270,8 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
 
         $myType = new MyType();
         $myType->myInt = 4;
+
+        $this->assertNoExceptions();
     }
 
     public function testIntPropertyBetweenNegativeMinValueAndPositiveMaxValue()
@@ -264,6 +282,8 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
 
         $myType = new MyType();
         $myType->myInt = 0;
+
+        $this->assertNoExceptions();
     }
 
     public function testIntPropertyPositiveValueWithNonNegativeTypeModifier()
@@ -274,6 +294,8 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
 
         $myType = new MyType();
         $myType->myInt = 2;
+
+        $this->assertNoExceptions();
     }
 
     public function testFloatProperty()
@@ -488,6 +510,8 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
 
         $myType = new MyType();
         $myType->myText = "ABCD";
+
+        $this->assertNoExceptions();
     }
 
     public function testTextPropertyShorterThanMaxLength()
@@ -498,6 +522,8 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
 
         $myType = new MyType();
         $myType->myText = "123";
+
+        $this->assertNoExceptions();
     }
 
     public function testTextPropertyValueLengthBetweenMinLengthAndMaxLength()
@@ -508,6 +534,8 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
 
         $myType = new MyType();
         $myType->myText = "1234";
+
+        $this->assertNoExceptions();
     }
 
     public function testTextPropertyAsLongAsLength()
@@ -518,6 +546,8 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
 
         $myType = new MyType();
         $myType->myText = "AAA";
+
+        $this->assertNoExceptions();
     }
 
     public function testDatetimeProperty()
@@ -1008,6 +1038,8 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int() myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
+
+        $this->assertNoExceptions();
     }
 
     public function testTypeWithoutTypeModifiersButWithBracesWithWhitespace()
@@ -1015,6 +1047,8 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int(      ) myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
+
+        $this->assertNoExceptions();
     }
 
     public function testTypeModifiersWithABunchOfWhitespace()
@@ -1022,6 +1056,8 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             "datatype MyType { int(  minValue   =    4     ,    nonNegative   , maxValue    = 5  ) myInt; }");
         $this->compile(array($this->inputDir . 'MyType.datatype'));
+
+        $this->assertNoExceptions();
     }
 
     public function testTypeModifiersWithoutAnyWhitespace()
@@ -1029,6 +1065,8 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         file_put_contents($this->inputDir . 'MyType.datatype',
                             "datatype MyType{int(minValue=4,nonNegative,maxValue=5) myInt;}");
         $this->compile(array($this->inputDir . 'MyType.datatype'));
+
+        $this->assertNoExceptions();
     }
 }
 
