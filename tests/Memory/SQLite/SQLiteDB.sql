@@ -46,7 +46,7 @@ CREATE TABLE `othertype` (
 	`yourint`	INTEGER,
 	PRIMARY KEY(id)
 );
-CREATE TABLE "inserttype" (
+CREATE TABLE `inserttype` (
 	`id`	INTEGER,
 	`myint`	INTEGER,
 	`myfloat`	REAL,
@@ -61,7 +61,7 @@ CREATE TABLE `idtype` (
 	`reference`	INTEGER,
 	PRIMARY KEY(id)
 );
-CREATE TABLE `gettype` (
+CREATE TABLE `mygettype` (
 	`id`	INTEGER,
 	`myint`	INTEGER,
 	`myfloat`	REAL,

@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `deletetype` (
 -- Table structure for table `gettype`
 --
 
-CREATE TABLE IF NOT EXISTS `gettype` (
+CREATE TABLE IF NOT EXISTS `mygettype` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `myint` int(11) DEFAULT NULL,
   `myfloat` float DEFAULT NULL,

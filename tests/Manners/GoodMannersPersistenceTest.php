@@ -124,6 +124,8 @@ abstract class GoodMannersPersistenceTest extends \PHPUnit\Framework\TestCase
 
         // Actually those two tests are just one test
         // (continued below)
+        // This assertion is to make sure it isn't marked as risky
+        $this->assertTrue(true);
     }
 
     /**
