@@ -93,7 +93,7 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         $myType->myInt = 5;
 
         $this->assertEquals($myType->myInt, 5);
-        $this->assertInternalType('int', $myType->myInt);
+        $this->assertIsInt($myType->myInt);
     }
 
     /**
@@ -109,7 +109,7 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         $myType->myInt = 5;
 
         $this->assertEquals($myType->getMyInt(), 5);
-        $this->assertInternalType('int', $myType->myInt);
+        $this->assertIsInt($myType->myInt);
     }
 
     public function testIntPropertyNonIntValue()
@@ -286,7 +286,7 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         $myType->myFloat = 5.5;
 
         $this->assertEquals($myType->myFloat, 5.5);
-        $this->assertInternalType('float', $myType->myFloat);
+        $this->assertIsFloat($myType->myFloat);
     }
 
     /**
@@ -302,7 +302,7 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         $myType->myFloat = 5.5;
 
         $this->assertEquals($myType->getMyFloat(), 5.5);
-        $this->assertInternalType('float', $myType->myFloat);
+        $this->assertIsFloat($myType->myFloat);
     }
 
     public function testFloatPropertyNonFloatValue()
@@ -389,7 +389,7 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         $myType->myText = "Hello World!";
 
         $this->assertEquals($myType->myText, "Hello World!");
-        $this->assertInternalType('string', $myType->myText);
+        $this->assertIsString($myType->myText);
     }
 
     /**
@@ -405,7 +405,7 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         $myType->myText = "Hello World!";
 
         $this->assertEquals($myType->getMyText(), "Hello World!");
-        $this->assertInternalType('string', $myType->myText);
+        $this->assertIsString($myType->myText);
     }
 
     public function testTextPropertyNonTextValue()
@@ -633,7 +633,7 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         $myType->setMyInt(5);
 
         $this->assertEquals($myType->myInt, 5);
-        $this->assertInternalType('int', $myType->myInt);
+        $this->assertIsInt($myType->myInt);
     }
 
     /**
@@ -649,7 +649,7 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         $myType->setMyFloat(5.5);
 
         $this->assertEquals($myType->myFloat, 5.5);
-        $this->assertInternalType('float', $myType->myFloat);
+        $this->assertIsFloat($myType->myFloat);
     }
 
     /**
@@ -665,7 +665,7 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         $myType->setMyText("Hello World!");
 
         $this->assertEquals($myType->myText, "Hello World!");
-        $this->assertInternalType('string', $myType->myText);
+        $this->assertIsString($myType->myText);
     }
 
     /**
@@ -854,17 +854,17 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         $myType = new MyType();
         $myType->myInt = 5;
         $this->assertEquals($myType->myInt, 5);
-        $this->assertInternalType('int', $myType->myInt);
+        $this->assertIsInt($myType->myInt);
 
         $myType = new MyType();
         $myType->myFloat = 5.5;
         $this->assertEquals($myType->myFloat, 5.5);
-        $this->assertInternalType('float', $myType->myFloat);
+        $this->assertIsFloat($myType->myFloat);
 
         $myType = new MyType();
         $myType->myInt2 = 42;
         $this->assertEquals($myType->myInt2, 42);
-        $this->assertInternalType('int', $myType->myInt2);
+        $this->assertIsInt($myType->myInt2);
     }
 
     public function testMultipleMembersOnOneLine()
@@ -878,17 +878,17 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         $myType = new MyType();
         $myType->myInt = 5;
         $this->assertEquals($myType->myInt, 5);
-        $this->assertInternalType('int', $myType->myInt);
+        $this->assertIsInt($myType->myInt);
 
         $myType = new MyType();
         $myType->myFloat = 5.5;
         $this->assertEquals($myType->myFloat, 5.5);
-        $this->assertInternalType('float', $myType->myFloat);
+        $this->assertIsFloat($myType->myFloat);
 
         $myType = new MyType();
         $myType->myInt2 = 42;
         $this->assertEquals($myType->myInt2, 42);
-        $this->assertInternalType('int', $myType->myInt2);
+        $this->assertIsInt($myType->myInt2);
     }
 
     public function testOneMemberSpreadOverMultipleLines()
@@ -909,7 +909,7 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         $myType = new MyType();
         $myType->myInt = 5;
         $this->assertEquals($myType->myInt, 5);
-        $this->assertInternalType('int', $myType->myInt);
+        $this->assertIsInt($myType->myInt);
     }
 
     public function testMultipleDatatypesInOneFileOnOneLine()
@@ -921,12 +921,12 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         $myType = new MyType();
         $myType->myInt = 5;
         $this->assertEquals($myType->myInt, 5);
-        $this->assertInternalType('int', $myType->myInt);
+        $this->assertIsInt($myType->myInt);
 
         $myType = new MyOtherType();
         $myType->myFloat = 5.5;
         $this->assertEquals($myType->myFloat, 5.5);
-        $this->assertInternalType('float', $myType->myFloat);
+        $this->assertIsFloat($myType->myFloat);
     }
 
     public function testMultipleDatatypesInOneFileOnMultipleLines()
@@ -960,7 +960,7 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         $myType = new MyType();
         $myType->myInt = 5;
         $this->assertEquals($myType->myInt, 5);
-        $this->assertInternalType('int', $myType->myInt);
+        $this->assertIsInt($myType->myInt);
     }
 
     public function testUnknownTypeModifierWithoutValue()
