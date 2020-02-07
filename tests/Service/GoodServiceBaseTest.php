@@ -737,7 +737,8 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         // Private is actually protected...
         $val = new MyType();
 
-        $this->setExpectedException('Exception', 'Unknown or non-public property');
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Unknown or non-public property');
         $int = $val->myInt;
     }
 
@@ -753,7 +754,8 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         // Private is actually protected...
         $val = new MyType();
 
-        $this->setExpectedException('Exception', 'Unknown or non-public property');
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Unknown or non-public property');
         $val->myInt = 4;
     }
 
@@ -784,7 +786,8 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         // Private is actually protected...
         $val = new MyType();
 
-        $this->setExpectedException('Exception', 'Unknown or non-public property');
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Unknown or non-public property');
         $int = $val->myInt;
     }
 
@@ -800,7 +803,8 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         // Private is actually protected...
         $val = new MyType();
 
-        $this->setExpectedException('Exception', 'Unknown or non-public property');
+        $this->expectException('Exception');
+        $this->expectExceptionMessage('Unknown or non-public property');
         $val->myInt = 4;
     }
 
