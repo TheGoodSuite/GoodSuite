@@ -34,7 +34,7 @@ abstract class GoodServiceModifierObservableBaseTest extends GoodServiceBaseTest
 
         $observable = new MyType();
 
-        $observer = $this->getMock('\Good\Service\Observer');
+        $observer = $this->createMock('\Good\Service\Observer');
         $observer->expects($this->once())
                  ->method('notifyObserver')
                  ->with($this->equalTo($observable));
@@ -57,12 +57,12 @@ abstract class GoodServiceModifierObservableBaseTest extends GoodServiceBaseTest
 
         $observable = new MyType();
 
-        $observer = $this->getMock('\Good\Service\Observer');
+        $observer = $this->createMock('\Good\Service\Observer');
         $observer->expects($this->once())
                  ->method('notifyObserver')
                  ->with($this->equalTo($observable));
 
-        $observer2 = $this->getMock('\Good\Service\Observer');
+        $observer2 = $this->createMock('\Good\Service\Observer');
         $observer2->expects($this->once())
                   ->method('notifyObserver')
                   ->with($this->equalTo($observable));
@@ -94,7 +94,7 @@ abstract class GoodServiceModifierObservableBaseTest extends GoodServiceBaseTest
         $observable = new MyType();
         $observable2 = new MyType();
 
-        $observer = $this->getMock('\Good\Service\Observer');
+        $observer = $this->createMock('\Good\Service\Observer');
         $observer->expects($this->exactly(4))
                  ->method('notifyObserver')
                  ->with($this->logicalOr($this->equalTo($observable),
@@ -130,7 +130,7 @@ abstract class GoodServiceModifierObservableBaseTest extends GoodServiceBaseTest
 
         $observable = new MyType();
 
-        $observer = $this->getMock('\Good\Service\Observer');
+        $observer = $this->createMock('\Good\Service\Observer');
         $observer->expects($this->exactly(2))
                  ->method('notifyObserver')
                  ->with($this->equalTo($observable))
