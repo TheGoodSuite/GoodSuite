@@ -140,7 +140,6 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
 
     public function tearDown(): void
     {
-        return;
         // Just doing this already to make sure the deconstructor will hasve
         // side-effects at an unspecified moment...
         // (at which point the database will probably be in a wrong state for this)
