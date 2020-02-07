@@ -327,6 +327,18 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         $this->assertIsFloat($myType->myFloat);
     }
 
+    public function testFloatPropertyIntValue()
+    {
+        file_put_contents($this->inputDir . 'MyType.datatype',
+                            'datatype MyType { float myFloat; }');
+        $this->compile(array($this->inputDir . 'MyType.datatype'));
+
+        $myType = new MyType();
+        $myType->myFloat = 5;
+
+        $this->assertNoExceptions();
+    }
+
     public function testFloatPropertyNonFloatValue()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
@@ -336,7 +348,7 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         $this->expectException("Good\Service\InvalidParameterException");
 
         $myType = new MyType();
-        $myType->myFloat = 5;
+        $myType->myFloat = "aa";
     }
 
     public function testFloatPropertyObjectValue()
