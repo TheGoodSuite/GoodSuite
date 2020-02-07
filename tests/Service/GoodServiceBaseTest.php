@@ -53,33 +53,33 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         $this->files = array();
     }
 
-    /**
-     * @expectedException Good\Rolemodel\InvalidTypeModifierException
-     */
     public function testIntTypeModifierMinValueAboveMaxValue()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             "datatype MyType{ int(minValue=42, maxValue=10) myInt;}");
+
+        $this->expectException("Good\Rolemodel\InvalidTypeModifierException");
+
         $this->compile(array($this->inputDir . 'MyType.datatype'));
     }
 
-    /**
-     * @expectedException Good\Rolemodel\InvalidTypeModifierException
-     */
     public function testIntTypeModifierNonNegativeAndMinValueNegative()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             "datatype MyType{ int(minValue=-1, nonNegative) myInt;}");
+
+        $this->expectException("Good\Rolemodel\InvalidTypeModifierException");
+
         $this->compile(array($this->inputDir . 'MyType.datatype'));
     }
 
-    /**
-     * @expectedException Good\Rolemodel\InvalidTypeModifierException
-     */
     public function testIntTypeModifierNonNegativeAndMaxValueNegative()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             "datatype MyType{ int(maxValue=-1, nonNegative) myInt;}");
+
+        $this->expectException("Good\Rolemodel\InvalidTypeModifierException");
+
         $this->compile(array($this->inputDir . 'MyType.datatype'));
     }
 
@@ -112,92 +112,85 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         $this->assertInternalType('int', $myType->myInt);
     }
 
-    /**
-     * @expectedException Good\Service\InvalidParameterException
-     */
     public function testIntPropertyNonIntValue()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
 
+        $this->expectException("Good\Service\InvalidParameterException");
+
         $myType = new MyType();
         $myType->myInt = 5.5;
     }
 
-    /**
-     * @expectedException Good\Service\InvalidParameterException
-     */
     public function testIntPropertyObjectValue()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
 
+        $this->expectException("Good\Service\InvalidParameterException");
+
         $myType = new MyType();
         $myType->myInt = new MyType();
     }
 
-    /**
-     * @expectedException Good\Service\InvalidParameterException
-     */
     public function testIntPropertyBelowNegativeMinValue()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int(minValue=-1) myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
 
+        $this->expectException("Good\Service\InvalidParameterException");
+
         $myType = new MyType();
         $myType->myInt = -5;
     }
 
-    /**
-     * @expectedException Good\Service\InvalidParameterException
-     */
     public function testIntPropertyBelowPositiveMinValue()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int(minValue=17) myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
 
+        $this->expectException("Good\Service\InvalidParameterException");
+
         $myType = new MyType();
         $myType->myInt = 5;
     }
 
-    /**
-     * @expectedException Good\Service\InvalidParameterException
-     */
     public function testIntPropertyAboveNegativeMaxValue()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int(maxValue=-3) myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
 
+        $this->expectException("Good\Service\InvalidParameterException");
+
         $myType = new MyType();
         $myType->myInt = -1;
     }
 
-    /**
-     * @expectedException Good\Service\InvalidParameterException
-     */
     public function testIntPropertyAbovePositiveMaxValue()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int(maxValue=17) myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
 
+        $this->expectException("Good\Service\InvalidParameterException");
+
         $myType = new MyType();
         $myType->myInt = 42;
     }
 
-    /**
-     * @expectedException Good\Service\InvalidParameterException
-     */
     public function testIntPropertyNegativeValueWithNonNegativeTypeModifier()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int(nonNegative) myInt; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
+
+        $this->expectException("Good\Service\InvalidParameterException");
 
         $myType = new MyType();
         $myType->myInt = -1;
@@ -312,78 +305,77 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         $this->assertInternalType('float', $myType->myFloat);
     }
 
-    /**
-     * @expectedException Good\Service\InvalidParameterException
-     */
     public function testFloatPropertyNonFloatValue()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { float myFloat; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
 
+        $this->expectException("Good\Service\InvalidParameterException");
+
         $myType = new MyType();
         $myType->myFloat = 5;
     }
 
-    /**
-     * @expectedException Good\Service\InvalidParameterException
-     */
     public function testFloatPropertyObjectValue()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { float myFloat; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
 
+        $this->expectException("Good\Service\InvalidParameterException");
+
         $myType = new MyType();
         $myType->myFloat = new MyType();
     }
-    /**
-     * @expectedException Good\Rolemodel\InvalidTypeModifierException
-     */
+
     public function testTextTypeModifierMinLengthAboveMaxLength()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             "datatype MyType{ text(minLength=42, maxLength=10) myText;}");
+
+        $this->expectException("Good\Rolemodel\InvalidTypeModifierException");
+
         $this->compile(array($this->inputDir . 'MyType.datatype'));
     }
 
-    /**
-     * @expectedException Good\Rolemodel\InvalidTypeModifierException
-     */
     public function testTextTypeModifierMinLengthNegative()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             "datatype MyType{ text(minLength=-1) myText;}");
+
+        $this->expectException("Good\Rolemodel\InvalidTypeModifierException");
+
         $this->compile(array($this->inputDir . 'MyType.datatype'));
     }
 
-    /**
-     * @expectedException Good\Rolemodel\InvalidTypeModifierException
-     */
     public function testTextTypeModifierMaxLengthNegative()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             "datatype MyType{ text(maxLength=-1) myText;}");
+
+        $this->expectException("Good\Rolemodel\InvalidTypeModifierException");
+
         $this->compile(array($this->inputDir . 'MyType.datatype'));
     }
 
-    /**
-     * @expectedException Good\Rolemodel\InvalidTypeModifierException
-     */
     public function testTextTypeModifierSepcifiedBothLengthAndMinLength()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             "datatype MyType{ text(length=3, minLength=1) myText;}");
+
+        $this->expectException("Good\Rolemodel\InvalidTypeModifierException");
+
         $this->compile(array($this->inputDir . 'MyType.datatype'));
     }
 
-    /**
-     * @expectedException Good\Rolemodel\InvalidTypeModifierException
-     */
     public function testTextTypeModifierSepcifiedBothLengthAndMaxLength()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             "datatype MyType{ text(length=3, maxLength=3) myText;}");
+
+        $this->expectException("Good\Rolemodel\InvalidTypeModifierException");
+
         $this->compile(array($this->inputDir . 'MyType.datatype'));
     }
 
@@ -416,79 +408,73 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         $this->assertInternalType('string', $myType->myText);
     }
 
-    /**
-     * @expectedException Good\Service\InvalidParameterException
-     */
     public function testTextPropertyNonTextValue()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { text myText; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
 
+        $this->expectException("Good\Service\InvalidParameterException");
+
         $myType = new MyType();
         $myType->myText = 5;
     }
 
-    /**
-     * @expectedException Good\Service\InvalidParameterException
-     */
     public function testTextPropertyObjectValue()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { text myText; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
 
+        $this->expectException("Good\Service\InvalidParameterException");
+
         $myType = new MyType();
         $myType->myText = new MyType();
     }
 
-    /**
-     * @expectedException Good\Service\InvalidParameterException
-     */
     public function testTextPropertyShorterThanMinLength()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { text(minLength=3) myText; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
 
+        $this->expectException("Good\Service\InvalidParameterException");
+
         $myType = new MyType();
         $myType->myText = "A";
     }
 
-    /**
-     * @expectedException Good\Service\InvalidParameterException
-     */
     public function testTextPropertyLongerThanMaxLength()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { text(maxLength=5) myText; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
 
+        $this->expectException("Good\Service\InvalidParameterException");
+
         $myType = new MyType();
         $myType->myText = "123456";
     }
 
-    /**
-     * @expectedException Good\Service\InvalidParameterException
-     */
     public function testTextPropertyShorterThanLength()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { text(length=3) myText; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
 
+        $this->expectException("Good\Service\InvalidParameterException");
+
         $myType = new MyType();
         $myType->myText = "A";
     }
 
-    /**
-     * @expectedException Good\Service\InvalidParameterException
-     */
     public function testTextPropertyLongerThanLength()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { text(length=5) myText; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
+
+        $this->expectException("Good\Service\InvalidParameterException");
 
         $myType = new MyType();
         $myType->myText = "123456";
@@ -548,27 +534,25 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf('\\DateTime', $myType->myDatetime);
     }
 
-    /**
-     * @expectedException Good\Service\InvalidParameterException
-     */
     public function testDatetimePropertyNonDatetimeValue()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { datetime myDatetime; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
 
+        $this->expectException("Good\Service\InvalidParameterException");
+
         $myType = new MyType();
         $myType->myDatetime = 5;
     }
 
-    /**
-     * @expectedException Good\Service\InvalidParameterException
-     */
     public function testDatetimePropertyObjectValue()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { datetime myDatetime; }');
         $this->compile(array($this->inputDir . 'MyType.datatype'));
+
+        $this->expectException("Good\Service\InvalidParameterException");
 
         $myType = new MyType();
         $myType->myDatetime = new MyType();
@@ -975,44 +959,43 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         $this->assertInternalType('int', $myType->myInt);
     }
 
-
-    /**
-     * @expectedException Good\Rolemodel\InvalidTypeModifierException
-     */
     public function testUnknownTypeModifierWithoutValue()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int(unknown) myInt; }');
+
+        $this->expectException("Good\Rolemodel\InvalidTypeModifierException");
+
         $this->compile(array($this->inputDir . 'MyType.datatype'));
     }
 
-    /**
-     * @expectedException Good\Rolemodel\InvalidTypeModifierException
-     */
     public function testUnknownTypeModifierWithValue()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int(unknown=3) myInt; }');
+
+        $this->expectException("Good\Rolemodel\InvalidTypeModifierException");
+
         $this->compile(array($this->inputDir . 'MyType.datatype'));
     }
 
-    /**
-     * @expectedException Good\Rolemodel\InvalidTypeModifierException
-     */
     public function testTypeModifierThatShouldHaveValueWithoutValue()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int(maxValue) myInt; }');
+
+        $this->expectException("Good\Rolemodel\InvalidTypeModifierException");
+
         $this->compile(array($this->inputDir . 'MyType.datatype'));
     }
 
-    /**
-     * @expectedException Good\Rolemodel\InvalidTypeModifierException
-     */
     public function testTypeModifierThatShouldNotHaveValueWithValue()
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int(nonNegative=42) myInt; }');
+
+        $this->expectException("Good\Rolemodel\InvalidTypeModifierException");
+
         $this->compile(array($this->inputDir . 'MyType.datatype'));
     }
 
