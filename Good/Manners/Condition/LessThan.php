@@ -14,7 +14,7 @@ class LessThan implements Condition
     {
         $this->to = $to;
     }
-    
+
     public function process(ConditionProcessor $processor)
     {
         $processor->processLessThanCondition($this->to);

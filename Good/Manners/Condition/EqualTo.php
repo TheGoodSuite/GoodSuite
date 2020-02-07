@@ -14,7 +14,7 @@ class EqualTo implements Condition
     {
         $this->to = $to;
     }
-    
+
     public function process(ConditionProcessor $processor)
     {
         $processor->processEqualToCondition($this->to);

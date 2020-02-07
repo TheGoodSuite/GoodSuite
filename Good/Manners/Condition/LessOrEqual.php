@@ -14,7 +14,7 @@ class LessOrEqual implements Condition
     {
         $this->to = $to;
     }
-    
+
     public function process(ConditionProcessor $processor)
     {
         $processor->processLessOrEqualCondition($this->to);

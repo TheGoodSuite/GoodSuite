@@ -14,7 +14,7 @@ class GreaterThan implements Condition
     {
         $this->to = $to;
     }
-    
+
     public function process(ConditionProcessor $processor)
     {
         $processor->processGreaterThanCondition($this->to);
