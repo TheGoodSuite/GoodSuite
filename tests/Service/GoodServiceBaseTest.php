@@ -569,11 +569,11 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         $this->compile(array($this->inputDir . 'MyType.datatype'));
 
         $myType = new MyType();
-        $date = new \DateTime();
+        $date = new \DateTimeImmutable();
         $myType->myDatetime = $date;
 
         $this->assertEquals($myType->myDatetime, $date);
-        $this->assertInstanceOf('\\DateTime', $myType->myDatetime);
+        $this->assertInstanceOf('\\DateTimeImmutable', $myType->myDatetime);
     }
 
     public function testDatetimePropertyNonDatetimeValue()
@@ -631,11 +631,11 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         $this->compile(array($this->inputDir . 'MyType.datatype'));
 
         $myType = new MyType();
-        $date = new \DateTime();
+        $date = new \DateTimeImmutable();
         $myType->myDatetime = $date;
 
         $this->assertEquals($myType->getMyDatetime(), $date);
-        $this->assertInstanceOf('\\DateTime', $myType->myDatetime);
+        $this->assertInstanceOf('\\DateTimeImmutable', $myType->myDatetime);
     }
 
     /**
@@ -720,11 +720,11 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         $this->compile(array($this->inputDir . 'MyType.datatype'));
 
         $myType = new MyType();
-        $date = new \DateTime();
+        $date = new \DateTimeImmutable();
         $myType->setMyDatetime($date);
 
         $this->assertEquals($myType->myDatetime, $date);
-        $this->assertInstanceOf('\\DateTime', $myType->myDatetime);
+        $this->assertInstanceOf('\\DateTimeImmutable', $myType->myDatetime);
     }
 
     /**

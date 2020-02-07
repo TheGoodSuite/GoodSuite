@@ -273,18 +273,18 @@ class Storable implements \Good\Service\Modifier
                                             '$this->' . $member->getName() . ');' . "\n";
 
         $this->setFromArray .= '                case "' . $this->classVariable . '":' . "\n";
-        $this->setFromArray .= '                    if ($value === null || $value instanceof \DateTime)' . "\n";
+        $this->setFromArray .= '                    if ($value === null || $value instanceof \DateTimeImmutable)' . "\n";
         $this->setFromArray .= "                    {\n";
         $this->setFromArray .= '                        $this->set' . \ucfirst($this->classVariable) . '($value);'. "\n";
         $this->setFromArray .= "                    }\n";
         $this->setFromArray .= '                    else' . "\n";
         $this->setFromArray .= "                    {\n";
-        $this->setFromArray .= '                        $this->set' . \ucfirst($this->classVariable) . '(new DateTime($value, new DateTimeZone("UTC")));'. "\n";
+        $this->setFromArray .= '                        $this->set' . \ucfirst($this->classVariable) . '(new DateTimeImmutable($value, new DateTimeZone("UTC")));'. "\n";
         $this->setFromArray .= "                    }\n";
         $this->setFromArray .= '                    break;' . "\n";
 
         $this->toArray .= '            "' . $this->classVariable . '" => $datesToIso && $this->' . $this->classVariable . ' != null ?' . "\n";
-        $this->toArray .= '                $this->' . $this->classVariable . '->format(\DateTime::ATOM) : $this->' . $this->classVariable . ',' . "\n";
+        $this->toArray .= '                $this->' . $this->classVariable . '->format(\DateTimeImmutable::ATOM) : $this->' . $this->classVariable . ',' . "\n";
 
         $this->visitNonReference($member);
     }

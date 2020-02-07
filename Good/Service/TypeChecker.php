@@ -72,9 +72,9 @@ class TypeChecker
             return;
         }
 
-        if (!($value instanceof \DateTime))
+        if (!($value instanceof \DateTimeImmutable))
         {
-            throw new InvalidParameterException("Value specified is not a DateTime");
+            throw new InvalidParameterException("Value specified is not a DateTimeImmutable");
         }
     }
 }

@@ -190,17 +190,13 @@ class SQLStorage extends Storage
     {
         // shouldn't be necessary when we do stricter type checking,
         // but let's just stick with it for now.
-        if (!($value instanceof \DateTime))
+        if (!($value instanceof \DateTimeImmutable))
         {
             // TODO: turn this into real error reporting
-            throw new \Exception("Non-DateTime given for a DateTime field.");
+            throw new \Exception("Non-DateTimeImmutable given for a DateTimeImmutable field.");
         }
 
-        // This hack shouldn't be necessary anymore once we use DateTimeImmutable as per #109
-        $fixedTimeZone = new \DateTime($value->format(\DateTime::ATOM));
-        $fixedTimeZone->setTimeZone(new \DateTimeZone("UTC"));
-
-        return "'" . $fixedTimeZone->format('Y-m-d H:i:s') . "'";
+        return "'" . $value->setTimeZone(new \DateTimeZone("UTC"))->format('Y-m-d H:i:s') . "'";
     }
 
     public function parseText($value)

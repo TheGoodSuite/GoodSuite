@@ -110,14 +110,14 @@ abstract class GoodMannersPersistenceTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $storage->insert($ins);
 
         $ins = new PersistenceType();
         $ins->myInt = 5;
         $ins->myFloat = 8.8;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2012-12-12');
+        $ins->myDatetime = new \DateTimeImmutable('2012-12-12');
         $storage->insert($ins);
 
         $expectedResults = array();
@@ -145,14 +145,14 @@ abstract class GoodMannersPersistenceTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $expectedResults[] = $ins;
 
         $ins = new PersistenceType();
         $ins->myInt = 5;
         $ins->myFloat = 8.8;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2012-12-12');
+        $ins->myDatetime = new \DateTimeImmutable('2012-12-12');
         $expectedResults[] = $ins;
 
         // At the moment we don't have a proper api to get any,

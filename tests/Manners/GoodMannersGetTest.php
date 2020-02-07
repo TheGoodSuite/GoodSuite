@@ -83,7 +83,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ref = new OtherType();
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
@@ -94,7 +94,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new OtherType();
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
@@ -105,7 +105,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new OtherType();
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
@@ -116,7 +116,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $storage->insert($ins);
@@ -224,7 +224,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ref = new OtherType();
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
@@ -235,7 +235,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new OtherType();
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
@@ -246,7 +246,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new OtherType();
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
@@ -257,7 +257,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
@@ -299,7 +299,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ref = new OtherType();
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
@@ -332,7 +332,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ref = new OtherType();
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
@@ -343,7 +343,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new OtherType();
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
@@ -376,7 +376,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new OtherType();
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
@@ -387,7 +387,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
@@ -418,7 +418,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new OtherType();
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
@@ -429,7 +429,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new OtherType();
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
@@ -440,7 +440,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
@@ -471,7 +471,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new OtherType();
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
@@ -504,7 +504,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ref = new OtherType();
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
@@ -515,7 +515,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new OtherType();
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
@@ -526,7 +526,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
@@ -574,7 +574,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new OtherType();
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
@@ -617,7 +617,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new OtherType();
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
@@ -628,7 +628,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new OtherType();
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
@@ -673,7 +673,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ref = new OtherType();
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
@@ -684,7 +684,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
@@ -715,7 +715,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
@@ -746,7 +746,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ref = new OtherType();
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
@@ -757,7 +757,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new OtherType();
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
@@ -768,7 +768,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new OtherType();
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
@@ -816,7 +816,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new OtherType();
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
@@ -827,7 +827,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new OtherType();
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
@@ -879,7 +879,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new OtherType();
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
@@ -916,7 +916,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new OtherType();
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
@@ -927,7 +927,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
@@ -995,7 +995,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
     public function testGetByDatetime()
     {
         $type = new MyGetType();
-        $type->myDatetime = new Datetime('2006-06-06');
+        $type->myDatetime = new DateTimeImmutable('2006-06-06');
         $any = new \Good\Manners\Condition\GreaterThan($type);
 
         $resolver = new MyGetTypeResolver();
@@ -1008,7 +1008,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new OtherType();
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
@@ -1019,7 +1019,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
@@ -1089,7 +1089,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new OtherType();
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
@@ -1125,7 +1125,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new OtherType();
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
@@ -1199,7 +1199,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ref = new OtherType();
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
@@ -1210,7 +1210,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new OtherType();
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
@@ -1221,7 +1221,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new OtherType();
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
@@ -1232,7 +1232,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
@@ -1266,7 +1266,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ref = new OtherType();
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
@@ -1277,7 +1277,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new OtherType();
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
@@ -1288,7 +1288,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
@@ -1333,7 +1333,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ref = new OtherType();
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
@@ -1344,7 +1344,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new OtherType();
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
@@ -1354,7 +1354,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
@@ -1399,7 +1399,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ref = new OtherType();
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
@@ -1410,7 +1410,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new OtherType();
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
@@ -1421,7 +1421,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new OtherType();
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
@@ -1432,7 +1432,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
@@ -1483,7 +1483,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ref = new OtherType();
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
@@ -1499,7 +1499,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new OtherType();
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
@@ -1515,7 +1515,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new OtherType();
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
@@ -1531,7 +1531,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
@@ -1562,7 +1562,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
@@ -1576,7 +1576,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new OtherType();
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
@@ -1592,7 +1592,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new OtherType();
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
@@ -1608,7 +1608,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ref = new OtherType();
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
@@ -1660,7 +1660,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new OtherType();
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
@@ -1676,7 +1676,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ref = new OtherType();
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
@@ -1692,7 +1692,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
@@ -1706,7 +1706,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new OtherType();
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
@@ -1754,7 +1754,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
@@ -1763,7 +1763,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
@@ -1772,7 +1772,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
@@ -1781,7 +1781,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
@@ -1849,7 +1849,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myOtherType = null;
         $expectedResults[] = $ins;
         $int4 = $ins;
@@ -1858,7 +1858,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
@@ -1867,7 +1867,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
@@ -1876,7 +1876,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = $int4;
         $expectedResults[] = $ins;
@@ -1925,7 +1925,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $expectedResults[] = $ins;
@@ -1934,7 +1934,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new OtherType();
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
@@ -1945,7 +1945,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new OtherType();
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
@@ -1956,7 +1956,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ref = new OtherType();
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;

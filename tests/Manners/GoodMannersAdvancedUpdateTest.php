@@ -94,7 +94,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
         $storage->insert($ins);
@@ -103,7 +103,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new YetAnotherType();
         $ref->yourInt = 40;
         $ins->myReference = $ref;
@@ -114,7 +114,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new YetAnotherType();
         $ref->yourInt = 30;
         $ins->myReference = $ref;
@@ -125,7 +125,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ref = new YetAnotherType();
         $ref->yourInt = 20;
         $ins->myReference = $ref;
@@ -285,7 +285,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $modifications->myInt = 55;
         $modifications->myFloat = 55.55;
         $modifications->myText = "Fifty-five";
-        $modifications->myDatetime = new Datetime("2055-05-05");
+        $modifications->myDatetime = new DateTimeImmutable("2055-05-05");
 
         $this->storage1->modifyAny($any, $modifications);
 
@@ -295,7 +295,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 55;
         $ins->myFloat = 55.55;
         $ins->myText = "Fifty-five";
-        $ins->myDatetime = new Datetime("2055-05-05");
+        $ins->myDatetime = new DateTimeImmutable("2055-05-05");
         $ins->myReference = null;
         $ins->ref = null;
         $expectedResults[] = $ins;
@@ -304,7 +304,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 55;
         $ins->myFloat = 55.55;
         $ins->myText = "Fifty-five";
-        $ins->myDatetime = new Datetime("2055-05-05");
+        $ins->myDatetime = new DateTimeImmutable("2055-05-05");
         $ref = new YetAnotherType();
         $ref->yourInt = 40;
         $ins->myReference = $ref;
@@ -315,7 +315,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 55;
         $ins->myFloat = 55.55;
         $ins->myText = "Fifty-five";
-        $ins->myDatetime = new Datetime("2055-05-05");
+        $ins->myDatetime = new DateTimeImmutable("2055-05-05");
         $ref = new YetAnotherType();
         $ref->yourInt = 30;
         $ins->myReference = $ref;
@@ -326,7 +326,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 55;
         $ins->myFloat = 55.55;
         $ins->myText = "Fifty-five";
-        $ins->myDatetime = new Datetime("2055-05-05");
+        $ins->myDatetime = new DateTimeImmutable("2055-05-05");
         $ref = new YetAnotherType();
         $ref->yourInt = 20;
         $ins->myReference = $ref;
@@ -337,7 +337,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 55;
         $ins->myFloat = 55.55;
         $ins->myText = "Fifty-five";
-        $ins->myDatetime = new Datetime("2055-05-05");
+        $ins->myDatetime = new DateTimeImmutable("2055-05-05");
         $ref = new YetAnotherType();
         $ref->yourInt = 10;
         $ins->myReference = $ref;
@@ -375,7 +375,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
         $expectedResults[] = $ins;
@@ -384,7 +384,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new YetAnotherType();
         $ref->yourInt = 40;
         $ins->myReference = $ref;
@@ -444,7 +444,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
         $expectedResults[] = $ins;
@@ -453,7 +453,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new YetAnotherType();
         $ref->yourInt = 40;
         $ins->myReference = $ref;
@@ -464,7 +464,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ins->myReference = null;
         $ins->ref = null;
         $expectedResults[] = $ins;
@@ -473,7 +473,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ref = new YetAnotherType();
         $ref->yourInt = 20;
         $ins->myReference = $ref;
@@ -523,7 +523,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ref = new YetAnotherType();
         $ref->yourInt = 20;
         $ins->myReference = $ref;
@@ -534,7 +534,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new YetAnotherType();
         $ref->yourInt = 20;
         $ins->myReference = $ref;
@@ -545,7 +545,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new YetAnotherType();
         $ref->yourInt = 30;
         $ins->myReference = $ref;
@@ -556,7 +556,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ref = new YetAnotherType();
         $ref->yourInt = 20;
         $ins->myReference = $ref;
@@ -609,7 +609,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
         $expectedResults[] = $ins;
@@ -618,7 +618,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new YetAnotherType();
         $ref->yourInt = 40;
         $ins->myReference = $ref;
@@ -629,7 +629,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new YetAnotherType();
         $ref->yourInt = 144;
         $ins->myReference = $ref;
@@ -640,7 +640,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ref = new YetAnotherType();
         $ref->yourInt = 20;
         $ins->myReference = $ref;
@@ -679,7 +679,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
         $expectedResults[] = $ins;
@@ -688,7 +688,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new YetAnotherType();
         $ref->yourInt = 42;
         $ins->myReference = $ref;
@@ -699,7 +699,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new YetAnotherType();
         $ref->yourInt = 42;
         $ins->myReference = $ref;
@@ -710,7 +710,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ref = new YetAnotherType();
         $ref->yourInt = 42;
         $ins->myReference = $ref;
@@ -805,7 +805,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $any = new \Good\Manners\Condition\GreaterOrEqual($type);
 
         $modifications = new AdvancedUpdateType();
-        $modifications->myDatetime = new Datetime('1989-04-11');
+        $modifications->myDatetime = new DateTimeImmutable('1989-04-11');
 
         $this->storage1->modifyAny($any, $modifications);
 
@@ -815,7 +815,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 1;
         $ins->myFloat = 47.47;
         $ins->myText = "Goodbye";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
         $expectedResults[] = $ins;
@@ -824,7 +824,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = 47.47;
         $ins->myText = "Hello World!";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new YetAnotherType();
         $ref->yourInt = 40;
         $ins->myReference = $ref;
@@ -835,7 +835,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = "Hello World!";
-        $ins->myDatetime = new Datetime('1989-04-11');
+        $ins->myDatetime = new DateTimeImmutable('1989-04-11');
         $ref = new YetAnotherType();
         $ref->yourInt = 30;
         $ins->myReference = $ref;
@@ -846,7 +846,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 11.11;
         $ins->myText = "Hello World!";
-        $ins->myDatetime = new Datetime('1989-04-11');
+        $ins->myDatetime = new DateTimeImmutable('1989-04-11');
         $ref = new YetAnotherType();
         $ref->yourInt = 20;
         $ins->myReference = $ref;
@@ -904,7 +904,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "My oh My";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
         $expectedResults[] = $ins;
@@ -913,7 +913,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = 66.67;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new YetAnotherType();
         $ref->yourInt = 40;
         $ins->myReference = $ref;
@@ -924,7 +924,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 66.67;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new YetAnotherType();
         $ref->yourInt = 30;
         $ins->myReference = $ref;
@@ -935,7 +935,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "My oh My";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ref = new YetAnotherType();
         $ref->yourInt = 20;
         $ins->myReference = $ref;
@@ -976,7 +976,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
         $expectedResults[] = $ins;
@@ -985,7 +985,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new YetAnotherType();
         $ref->yourInt = 40;
         $ins->myReference = $ref;
@@ -996,7 +996,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = "Something else";
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new YetAnotherType();
         $ref->yourInt = 30;
         $ins->myReference = $ref;
@@ -1007,7 +1007,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Something else";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ref = new YetAnotherType();
         $ref->yourInt = 20;
         $ins->myReference = $ref;
@@ -1031,7 +1031,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
     public function testAdvancedUpdateByDate()
     {
         $type = new AdvancedUpdateType();
-        $type->myDatetime = new Datetime('2005-05-05');
+        $type->myDatetime = new DateTimeImmutable('2005-05-05');
 
         $any = new \Good\Manners\Condition\GreaterThan($type);
 
@@ -1046,7 +1046,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
         $expectedResults[] = $ins;
@@ -1055,7 +1055,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new YetAnotherType();
         $ref->yourInt = 40;
         $ins->myReference = $ref;
@@ -1066,7 +1066,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = -1;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new YetAnotherType();
         $ref->yourInt = 30;
         $ins->myReference = $ref;
@@ -1077,7 +1077,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = -1;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ref = new YetAnotherType();
         $ref->yourInt = 20;
         $ins->myReference = $ref;
@@ -1116,7 +1116,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 455;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
         $expectedResults[] = $ins;
@@ -1125,7 +1125,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new YetAnotherType();
         $ref->yourInt = 40;
         $ins->myReference = $ref;
@@ -1136,7 +1136,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new YetAnotherType();
         $ref->yourInt = 30;
         $ins->myReference = $ref;
@@ -1147,7 +1147,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ref = new YetAnotherType();
         $ref->yourInt = 20;
         $ins->myReference = $ref;
@@ -1196,7 +1196,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $any = new \Good\Manners\Condition\EqualTo($type);
 
         $modifications = new AdvancedUpdateType();
-        $modifications->myDatetime = new Datetime('2066-06-06');
+        $modifications->myDatetime = new DateTimeImmutable('2066-06-06');
 
         $this->storage1->modifyAny($any, $modifications);
 
@@ -1226,7 +1226,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 777;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
         $expectedResults[] = $ins;
@@ -1235,7 +1235,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 666;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new YetAnotherType();
         $ref->yourInt = 40;
         $ins->myReference = $ref;
@@ -1246,7 +1246,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2066-06-06');
+        $ins->myDatetime = new \DateTimeImmutable('2066-06-06');
         $ref = new YetAnotherType();
         $ref->yourInt = 30;
         $ins->myReference = $ref;
@@ -1257,7 +1257,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ref = new YetAnotherType();
         $ref->yourInt = 20;
         $ins->myReference = $ref;
@@ -1296,7 +1296,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $any = new \Good\Manners\Condition\NotEqualTo($type);
 
         $modifications = new AdvancedUpdateType();
-        $modifications->myDatetime = new Datetime('2066-06-06');
+        $modifications->myDatetime = new DateTimeImmutable('2066-06-06');
 
         $this->storage1->modifyAny($any, $modifications);
 
@@ -1306,7 +1306,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 666.666;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2066-06-06');
+        $ins->myDatetime = new \DateTimeImmutable('2066-06-06');
         $ins->myReference = null;
         $ins->ref = null;
         $expectedResults[] = $ins;
@@ -1315,7 +1315,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = 666.666;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2066-06-06');
+        $ins->myDatetime = new \DateTimeImmutable('2066-06-06');
         $ref = new YetAnotherType();
         $ref->yourInt = 40;
         $ins->myReference = $ref;
@@ -1326,7 +1326,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 666.666;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new YetAnotherType();
         $ref->yourInt = 30;
         $ins->myReference = $ref;
@@ -1337,7 +1337,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 666.666;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2066-06-06');
+        $ins->myDatetime = new \DateTimeImmutable('2066-06-06');
         $ref = new YetAnotherType();
         $ref->yourInt = 20;
         $ins->myReference = $ref;
@@ -1348,7 +1348,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = null;
         $ins->myFloat = 20.20;
         $ins->myText = "Twenty";
-        $ins->myDatetime = new \Datetime('2066-06-06');
+        $ins->myDatetime = new \DateTimeImmutable('2066-06-06');
         $ref = new YetAnotherType();
         $ref->yourInt = 10;
         $ins->myReference = $ref;
@@ -1386,7 +1386,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 666;
         $ins->myFloat = 4.4;
         $ins->myText = "Six Six Six";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
         $expectedResults[] = $ins;
@@ -1395,7 +1395,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Six Six Six";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new YetAnotherType();
         $ref->yourInt = 40;
         $ins->myReference = $ref;
@@ -1406,7 +1406,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 666;
         $ins->myFloat = 10.10;
         $ins->myText = "Six Six Six";
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new YetAnotherType();
         $ref->yourInt = 30;
         $ins->myReference = $ref;
@@ -1417,7 +1417,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 666;
         $ins->myFloat = 10.10;
         $ins->myText = "Six Six Six";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ref = new YetAnotherType();
         $ref->yourInt = 20;
         $ins->myReference = $ref;
@@ -1456,7 +1456,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
         $expectedResults[] = $ins;
@@ -1465,7 +1465,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 777;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new YetAnotherType();
         $ref->yourInt = 40;
         $ins->myReference = $ref;
@@ -1476,7 +1476,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 777;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new YetAnotherType();
         $ref->yourInt = 30;
         $ins->myReference = $ref;
@@ -1487,7 +1487,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 777;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ref = new YetAnotherType();
         $ref->yourInt = 20;
         $ins->myReference = $ref;
@@ -1559,7 +1559,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
         $expectedResults[] = $ins;
@@ -1568,7 +1568,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new YetAnotherType();
         $ref->yourInt = 42;
         $ins->myReference = $ref;
@@ -1579,7 +1579,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 1;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new YetAnotherType();
         $ref->yourInt = 42;
         $ins->myReference = $ref;
@@ -1590,7 +1590,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 1;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ref = new YetAnotherType();
         $ref->yourInt = 42;
         $ins->myReference = $ref;
@@ -1639,7 +1639,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
         $expectedResults[] = $ins;
@@ -1648,7 +1648,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new YetAnotherType();
         $ref->yourInt = 40;
         $ins->myReference = $ref;
@@ -1659,7 +1659,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 100;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new YetAnotherType();
         $ref->yourInt = 100;
         $ins->myReference = $ref;
@@ -1670,7 +1670,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 100;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ref = new YetAnotherType();
         $ref->yourInt = 100;
         $ins->myReference = $ref;
@@ -1758,7 +1758,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 99999;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = new ThirdType();
         $ins->ref->ref = new YetAnotherType();
@@ -1769,7 +1769,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new YetAnotherType();
         $ref->yourInt = 40;
         $ins->myReference = $ref;
@@ -1782,7 +1782,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 99999;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new YetAnotherType();
         $ref->yourInt = 30;
         $ins->myReference = $ref;
@@ -1795,7 +1795,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ref = new YetAnotherType();
         $ref->yourInt = 20;
         $ins->myReference = $ref;
@@ -1885,7 +1885,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = new ThirdType();
         $ins->ref->ref = new YetAnotherType();
@@ -1896,7 +1896,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new YetAnotherType();
         $ref->yourInt = 40;
         $ins->myReference = $ref;
@@ -1909,7 +1909,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new YetAnotherType();
         $ref->yourInt = 30;
         $ins->myReference = $ref;
@@ -1922,7 +1922,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ref = new YetAnotherType();
         $ref->yourInt = 20;
         $ins->myReference = $ref;
@@ -1974,7 +1974,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
         $expectedResults[] = $ins;
@@ -1983,7 +1983,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new YetAnotherType();
         $ref->yourInt = 40;
         $ins->myReference = $ref;
@@ -1994,7 +1994,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 1;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new YetAnotherType();
         $ref->yourInt = 1;
         $ins->myReference = $ref;
@@ -2005,7 +2005,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 1;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ref = new YetAnotherType();
         $ref->yourInt = 1;
         $ins->myReference = $ref;

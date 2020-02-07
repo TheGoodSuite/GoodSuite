@@ -175,7 +175,7 @@ abstract class GoodMannersChildTypesTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
-        $ins->myDatetime = new \Datetime('2004-04-04');
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ref = new ParentType2();
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
@@ -187,7 +187,7 @@ abstract class GoodMannersChildTypesTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
-        $ins->myDatetime = new \Datetime('2005-05-05');
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ref = new ParentType2();
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
@@ -198,7 +198,7 @@ abstract class GoodMannersChildTypesTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
-        $ins->myDatetime = new \Datetime('2008-08-08');
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ref = new ParentType2();
         $ref = new ParentType2();
         $ref->yourInt = 40;
@@ -210,7 +210,7 @@ abstract class GoodMannersChildTypesTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
-        $ins->myDatetime = new \Datetime('2010-10-10');
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
         $storage->insert($ins);
