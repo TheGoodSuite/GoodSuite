@@ -4,6 +4,8 @@ require_once dirname(__FILE__) . '/../../Manners/GoodMannersAdvancedUpdateTest.p
 
 /**
  * @runTestsInSeparateProcesses
+ * @group database
+ * @group sqlite
  */
 class GoodMemorySQLiteAdvancedUpdateTest extends GoodMannersAdvancedUpdateTest
 {

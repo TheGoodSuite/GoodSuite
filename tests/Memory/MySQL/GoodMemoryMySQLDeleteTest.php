@@ -4,6 +4,8 @@ require_once dirname(__FILE__) . '/../../Manners/GoodMannersDeleteTest.php';
 
 /**
  * @runTestsInSeparateProcesses
+ * @group database
+ * @group mysql
  */
 class GoodMemoryMySQLDeleteTest extends GoodMannersDeleteTest
 {

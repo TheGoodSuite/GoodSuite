@@ -4,6 +4,8 @@ require_once dirname(__FILE__) . '/../../Manners/GoodMannersIdTest.php';
 
 /**
  * @runTestsInSeparateProcesses
+ * @group database
+ * @group sqlite
  */
 class GoodMemorySQLiteIdTest extends GoodMannersIdTest
 {

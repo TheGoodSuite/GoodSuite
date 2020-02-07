@@ -4,6 +4,8 @@ require_once dirname(__FILE__) . '/../../Manners/GoodMannersInsertTest.php';
 
 /**
  * @runTestsInSeparateProcesses
+ * @group database
+ * @group mysql
  */
 class GoodMemoryMySQLInsertTest extends GoodMannersInsertTest
 {
