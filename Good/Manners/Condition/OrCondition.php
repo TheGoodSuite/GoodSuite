@@ -24,7 +24,7 @@ class OrCondition implements Condition
 
     public function getTargetType()
     {
-        return $this->condition1->getType();
+        return $this->condition1->getTargetType();
     }
 }
 
