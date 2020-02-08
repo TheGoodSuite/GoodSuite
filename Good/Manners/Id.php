@@ -89,9 +89,7 @@ class Id implements Storable
         // This doesn't need to do anything, because we don't care about the fields of an id
     }
 
-    // Note: when the resolver argument becomes optional in the Storage, it should become
-    //       optional here as well.
-    public function get(Resolver $resolver)
+    public function get(Resolver $resolver = null)
     {
         $collection = $this->storage->getCollection(new EqualTo($this), $resolver);
 
