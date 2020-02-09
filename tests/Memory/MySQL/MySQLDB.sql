@@ -208,6 +208,25 @@ CREATE TABLE IF NOT EXISTS `yetanothertype` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
+CREATE TABLE IF NOT EXISTS `select` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `from` int(11),
+  `where` float,
+  `order` text,
+  `by` datetime,
+  `group` int(11),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS `create` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `table` int(11),
+  `view` float,
+  `values` text,
+  `as` datetime,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

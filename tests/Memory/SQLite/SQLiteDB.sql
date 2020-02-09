@@ -94,4 +94,21 @@ CREATE TABLE "advancedupdatetype" (
 	`ref`	INTEGER,
 	PRIMARY KEY(id)
 );
+CREATE TABLE `select` (
+	`id`	INTEGER,
+	`from`	INTEGER,
+	`where` REAL,
+	`order` TEXT,
+	`by` DATETIME,
+	`group` INTEGER,
+	PRIMARY KEY(id)
+);
+CREATE TABLE `create` (
+	`id`	INTEGER,
+	`table`	INTEGER,
+	`view` REAL,
+	`values` TEXT,
+	`as` DATETIME,
+	PRIMARY KEY(id)
+);
 COMMIT;
