@@ -8,7 +8,7 @@ class Join
     public $fieldNameOrigin;
     public $tableNameDestination;
     public $tableNumberDestination;
-    
+
     public function __construct($tableNumberOrigin, $fieldNameOrigin, $tableNameDestination, $tableNumberDestination)
     {
         $this->tableNumberOrigin = $tableNumberOrigin;

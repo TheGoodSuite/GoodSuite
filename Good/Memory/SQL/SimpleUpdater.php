@@ -12,27 +12,27 @@ class SimpleUpdater implements StorableVisitor
 {
     private $db;
     private $storage;
-    
+
     private $sql;
     private $first;
-    
+
     public function __construct(SQLStorage $storage, Database\Database $db)
     {
         $this->db = $db;
         $this->storage = $storage;
     }
-    
-    
+
+
     public function update($datatypeName, Storable $value)
     {
         $this->sql = 'UPDATE ' . $this->storage->tableNamify($datatypeName);
         $this->sql .= ' SET ';
-        
+
         $this->first = true;
         $value->acceptStorableVisitor($this);
-        
+
         $this->sql .= " WHERE id = " . intval($value->getId()) . "";
-        
+
         $this->db->query($this->sql);
     }
 
@@ -47,8 +47,8 @@ class SimpleUpdater implements StorableVisitor
             $this->sql .= ', ';
         }
     }
-    
-    public function visitReferenceProperty($name, $datatypeName, $dirty, 
+
+    public function visitReferenceProperty($name, $datatypeName, $dirty,
                                                             Storable $value = null)
     {
         // We don't need to recurse, because if the value is dirty as well,
@@ -56,10 +56,10 @@ class SimpleUpdater implements StorableVisitor
         if ($dirty)
         {
             $this->comma();
-            
+
             $this->sql .= $this->storage->fieldNamify($name);
             $this->sql .= ' = ';
-        
+
             if ($value === null)
             {
                 $this->sql .= 'NULL';
@@ -70,16 +70,16 @@ class SimpleUpdater implements StorableVisitor
             }
         }
     }
-    
+
     public function visitTextProperty($name, $dirty, $value)
     {
         if ($dirty)
         {
             $this->comma();
-            
+
             $this->sql .= $this->storage->fieldNamify($name);
             $this->sql .= ' = ';
-            
+
             if ($value === null)
             {
                 $this->sql .= 'NULL';
@@ -90,16 +90,16 @@ class SimpleUpdater implements StorableVisitor
             }
         }
     }
-    
+
     public function visitIntProperty($name, $dirty, $value)
     {
         if ($dirty)
         {
             $this->comma();
-            
+
             $this->sql .= $this->storage->fieldNamify($name);
             $this->sql .= ' = ';
-            
+
             if ($value === null)
             {
                 $this->sql .= 'NULL';
@@ -110,16 +110,16 @@ class SimpleUpdater implements StorableVisitor
             }
         }
     }
-    
+
     public function visitFloatProperty($name, $dirty, $value)
     {
         if ($dirty)
         {
             $this->comma();
-            
+
             $this->sql .= $this->storage->fieldNamify($name);
             $this->sql .= ' = ';
-            
+
             if ($value === null)
             {
                 $this->sql .= 'NULL';
@@ -130,16 +130,16 @@ class SimpleUpdater implements StorableVisitor
             }
         }
     }
-    
+
     public function visitDatetimeProperty($name, $dirty, $value)
     {
         if ($dirty)
         {
             $this->comma();
-            
+
             $this->sql .= $this->storage->fieldNamify($name);
             $this->sql .= ' = ';
-            
+
             if ($value === null)
             {
                 $this->sql .= 'NULL';

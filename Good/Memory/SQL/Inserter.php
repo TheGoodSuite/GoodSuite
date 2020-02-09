@@ -13,38 +13,38 @@ class Inserter implements StorableVisitor
 {
     private $db;
     private $storage;
-    
+
     private $sql;
     private $values;
     private $first;
-    
+
     private $inserting;
     private $postponed;
-    
+
     public function __construct(SQLStorage $storage, Database\Database $db)
     {
         $this->db = $db;
         $this->storage = $storage;
         $this->postponed = array();
     }
-    
-    
+
+
     public function insert($datatypeName, Storable $value)
     {
         $this->sql = 'INSERT INTO ' . $this->storage->tableNamify($datatypeName) . ' (';
         $this->values = 'VALUES (';
         $this->first = true;
-        
+
         $this->inserting = $value;
-        
+
         $value->setNew(false);
         $value->setStorage($this->storage);
-        
+
         $value->acceptStorableVisitor($this);
-        
+
         $this->sql .= ') ';
         $this->sql .= $this->values . ')';
-        
+
         $this->db->query($this->sql);
         $value->setId(\strval($this->db->getLastInsertedId()));
         $value->clean();
@@ -62,22 +62,22 @@ class Inserter implements StorableVisitor
             $this->values .= ', ';
         }
     }
-    
+
     public function getPostponed()
     {
         return $this->postponed;
     }
-    
-    public function visitReferenceProperty($name, $datatypeName, $dirty, 
+
+    public function visitReferenceProperty($name, $datatypeName, $dirty,
                                                         Storable $value = null)
     {
         // If not dirty, do not include field and use default value
         if ($dirty)
         {
             $this->comma();
-            
+
             $this->sql .= $this->storage->fieldNamify($name);
-        
+
             if ($value === null)
             {
                 $this->values .= 'NULL';
@@ -90,7 +90,7 @@ class Inserter implements StorableVisitor
                     $inserter->insert($datatypeName, $value);
                     $this->postponed = \array_merge($this->postponed, $inserter->getPostponed());
                 }
-                
+
                 if (!$value->isNew() && !$value->hasValidId())
                 // $value is actually new, but not marked as such to prevent infinite recursion
                 {
@@ -106,16 +106,16 @@ class Inserter implements StorableVisitor
             }
         }
     }
-    
+
     public function visitTextProperty($name, $dirty, $value)
     {
         // If not dirty, do not include field and use default value
         if ($dirty)
         {
             $this->comma();
-            
+
             $this->sql .= $this->storage->fieldNamify($name);
-            
+
             if ($value === null)
             {
                 $this->values .= 'NULL';
@@ -126,16 +126,16 @@ class Inserter implements StorableVisitor
             }
         }
     }
-    
+
     public function visitIntProperty($name, $dirty, $value)
     {
         // If not dirty, do not include field and use default value
         if ($dirty)
         {
             $this->comma();
-            
+
             $this->sql .= $this->storage->fieldNamify($name);
-            
+
             if ($value === null)
             {
                 $this->values .= 'NULL';
@@ -146,16 +146,16 @@ class Inserter implements StorableVisitor
             }
         }
     }
-    
+
     public function visitFloatProperty($name, $dirty, $value)
     {
         // If not dirty, do not include field and use default value
         if ($dirty)
         {
             $this->comma();
-            
+
             $this->sql .= $this->storage->fieldNamify($name);
-        
+
             if ($value === null)
             {
                 $this->values .= 'NULL';
@@ -166,16 +166,16 @@ class Inserter implements StorableVisitor
             }
         }
     }
-    
+
     public function visitDatetimeProperty($name, $dirty, $value)
     {
         // If not dirty, do not include field and use default value
         if ($dirty)
         {
             $this->comma();
-            
+
             $this->sql .= $this->storage->fieldNamify($name);
-        
+
             if ($value === null)
             {
                 $this->values .= 'NULL';
