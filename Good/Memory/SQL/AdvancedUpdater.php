@@ -44,7 +44,7 @@ class AdvancedUpdater implements StorableVisitor
         $joinDiscoverer = new JoinDiscoverer($this->storage, 0);
         $joinDiscoverer->discoverJoins($value);
 
-        $this->sql = 'UPDATE ' . $this->storage->tableNamify($datatypeName);
+        $this->sql = 'UPDATE `' . $this->storage->tableNamify($datatypeName) . '`';
         $this->sql .= ' SET ';
 
         $this->first = true;
@@ -95,7 +95,7 @@ class AdvancedUpdater implements StorableVisitor
             {
                 $this->comma();
 
-                $this->sql .= $this->storage->fieldNamify($name);
+                $this->sql .= '`' . $this->storage->fieldNamify($name) . '`';
                 $this->sql .= ' = ';
 
                 if ($value === null)
@@ -116,7 +116,7 @@ class AdvancedUpdater implements StorableVisitor
         {
             $this->comma();
 
-            $this->sql .= $this->storage->fieldNamify($name);
+            $this->sql .= '`' . $this->storage->fieldNamify($name) . '`';
             $this->sql .= ' = ';
 
             if ($value === null)
@@ -136,7 +136,7 @@ class AdvancedUpdater implements StorableVisitor
         {
             $this->comma();
 
-            $this->sql .= $this->storage->fieldNamify($name);
+            $this->sql .= '`' . $this->storage->fieldNamify($name) . '`';
             $this->sql .= ' = ';
 
             if ($value === null)
@@ -157,7 +157,7 @@ class AdvancedUpdater implements StorableVisitor
         {
             $this->comma();
 
-            $this->sql .= $this->storage->fieldNamify($name);
+            $this->sql .= '`' . $this->storage->fieldNamify($name) . '`';
             $this->sql .= ' = ';
 
             if ($value === null)
@@ -177,7 +177,7 @@ class AdvancedUpdater implements StorableVisitor
         {
             $this->comma();
 
-            $this->sql .= $this->storage->fieldNamify($name);
+            $this->sql .= '`' . $this->storage->fieldNamify($name) . '`';
             $this->sql .= ' = ';
 
             if ($value === null)

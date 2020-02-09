@@ -46,7 +46,7 @@ class ConditionWriter implements StorableVisitor,
         {
             if ($to->hasValidId())
             {
-                $this->condition .= 't' . $this->currentTable . '.id' .
+                $this->condition .= '`t' . $this->currentTable . '`.`id`' .
                                         ' ' . $this->comparison . ' ' . \intval($to->getId());
             }
             else
@@ -113,21 +113,21 @@ class ConditionWriter implements StorableVisitor,
             {
                 if ($this->comparison == '=')
                 {
-                    $this->condition .= 't' . $this->currentTable . '.' . $this->storage->fieldNamify($name) .
-                                                ' IS NULL';
+                    $this->condition .= '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($name) .
+                                                '` IS NULL';
                 }
                 else // if ($this->comparison == '<>')
                 {
-                    $this->condition .= 't' . $this->currentTable . '.' . $this->storage->fieldNamify($name) .
-                                                ' IS NOT NULL';
+                    $this->condition .= '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($name) .
+                                                '` IS NOT NULL';
                 }
 
                 // todo: error out if not EqualTo or NotEqualTo
             }
             else if (!$value->isNew())
             {
-                $this->condition .= 't' . $this->currentTable . '.' . $this->storage->fieldNamify($name) .
-                                            $this->comparison . ' ' . \intval($value->getId());
+                $this->condition .= '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($name) .
+                                            '` ' . $this->comparison . ' ' . \intval($value->getId());
 
                 // todo: error out if not EqualTo or NotEqualTo
             }
@@ -154,7 +154,7 @@ class ConditionWriter implements StorableVisitor,
         {
             $this->writeBracketOrAnd();
 
-            $this->condition .= 't' . $this->currentTable . '.' . $this->storage->fieldNamify($name) . ' ';
+            $this->condition .= '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($name) . '` ';
             if ($value === null)
             {
                 if ($this->comparison == '=')
@@ -170,7 +170,7 @@ class ConditionWriter implements StorableVisitor,
             }
             else
             {
-                $this->condition .= $this->comparison .' ' . $this->storage->parseText($value);
+                $this->condition .= $this->comparison . ' ' . $this->storage->parseText($value);
             }
 
         }
@@ -181,7 +181,7 @@ class ConditionWriter implements StorableVisitor,
         {
             $this->writeBracketOrAnd();
 
-            $this->condition .= 't' . $this->currentTable . '.' . $this->storage->fieldNamify($name) . ' ';
+            $this->condition .= '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($name) . '` ';
             if ($value === null)
             {
                 if ($this->comparison == '=')
@@ -197,7 +197,7 @@ class ConditionWriter implements StorableVisitor,
             }
             else
             {
-                $this->condition .= $this->comparison .' ' . $this->storage->parseInt($value);
+                $this->condition .= $this->comparison . ' ' . $this->storage->parseInt($value);
             }
         }
     }
@@ -207,7 +207,7 @@ class ConditionWriter implements StorableVisitor,
         {
             $this->writeBracketOrAnd();
 
-            $this->condition .= 't' . $this->currentTable . '.' . $this->storage->fieldNamify($name) . ' ';
+            $this->condition .= '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($name) . '` ';
             if ($value === null)
             {
                 if ($this->comparison == '=')
@@ -223,7 +223,7 @@ class ConditionWriter implements StorableVisitor,
             }
             else
             {
-                $this->condition .= $this->comparison .' ' . $this->storage->parseFloat($value);
+                $this->condition .= $this->comparison . ' ' . $this->storage->parseFloat($value);
             }
         }
     }
@@ -233,7 +233,7 @@ class ConditionWriter implements StorableVisitor,
         {
             $this->writeBracketOrAnd();
 
-            $this->condition .= 't' . $this->currentTable . '.' . $this->storage->fieldNamify($name) . ' ';
+            $this->condition .= '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($name) . '` ';
             if ($value === null)
             {
                 if ($this->comparison == '=')
@@ -249,7 +249,7 @@ class ConditionWriter implements StorableVisitor,
             }
             else
             {
-                $this->condition .= $this->comparison .' ' . $this->storage->parseDatetime($value);
+                $this->condition .= $this->comparison . ' ' . $this->storage->parseDatetime($value);
             }
         }
     }

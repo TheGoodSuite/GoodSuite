@@ -25,13 +25,13 @@ class SimpleUpdater implements StorableVisitor
 
     public function update($datatypeName, Storable $value)
     {
-        $this->sql = 'UPDATE ' . $this->storage->tableNamify($datatypeName);
+        $this->sql = 'UPDATE `' . $this->storage->tableNamify($datatypeName) . '`';
         $this->sql .= ' SET ';
 
         $this->first = true;
         $value->acceptStorableVisitor($this);
 
-        $this->sql .= " WHERE id = " . intval($value->getId()) . "";
+        $this->sql .= " WHERE `id` = " . intval($value->getId()) . "";
 
         $this->db->query($this->sql);
     }
@@ -57,7 +57,7 @@ class SimpleUpdater implements StorableVisitor
         {
             $this->comma();
 
-            $this->sql .= $this->storage->fieldNamify($name);
+            $this->sql .= '`' . $this->storage->fieldNamify($name) . '`';
             $this->sql .= ' = ';
 
             if ($value === null)
@@ -77,7 +77,7 @@ class SimpleUpdater implements StorableVisitor
         {
             $this->comma();
 
-            $this->sql .= $this->storage->fieldNamify($name);
+            $this->sql .= '`' . $this->storage->fieldNamify($name) . '`';
             $this->sql .= ' = ';
 
             if ($value === null)
@@ -97,7 +97,7 @@ class SimpleUpdater implements StorableVisitor
         {
             $this->comma();
 
-            $this->sql .= $this->storage->fieldNamify($name);
+            $this->sql .= '`' . $this->storage->fieldNamify($name) . '`';
             $this->sql .= ' = ';
 
             if ($value === null)
@@ -117,7 +117,7 @@ class SimpleUpdater implements StorableVisitor
         {
             $this->comma();
 
-            $this->sql .= $this->storage->fieldNamify($name);
+            $this->sql .= '`' . $this->storage->fieldNamify($name) . '`';
             $this->sql .= ' = ';
 
             if ($value === null)
@@ -137,7 +137,7 @@ class SimpleUpdater implements StorableVisitor
         {
             $this->comma();
 
-            $this->sql .= $this->storage->fieldNamify($name);
+            $this->sql .= '`' . $this->storage->fieldNamify($name) . '`';
             $this->sql .= ' = ';
 
             if ($value === null)

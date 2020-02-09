@@ -150,8 +150,8 @@ class SQLStorage extends Storage
         {
             foreach ($deleted as $storable)
             {
-                $sql  = 'DELETE FROM ' . $this->tableNamify($storable->getType());
-                $sql .= " WHERE id = " . intval($storable->getId());
+                $sql  = 'DELETE FROM `' . $this->tableNamify($storable->getType()) . '`';
+                $sql .= " WHERE `id` = " . intval($storable->getId());
 
                 $this->db->query($sql);
             }

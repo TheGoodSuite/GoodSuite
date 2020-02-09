@@ -31,7 +31,7 @@ class Inserter implements StorableVisitor
 
     public function insert($datatypeName, Storable $value)
     {
-        $this->sql = 'INSERT INTO ' . $this->storage->tableNamify($datatypeName) . ' (';
+        $this->sql = "INSERT INTO `" . $this->storage->tableNamify($datatypeName) . '` (';
         $this->values = 'VALUES (';
         $this->first = true;
 
@@ -76,7 +76,7 @@ class Inserter implements StorableVisitor
         {
             $this->comma();
 
-            $this->sql .= $this->storage->fieldNamify($name);
+            $this->sql .= '`' . $this->storage->fieldNamify($name) . '`';
 
             if ($value === null)
             {
@@ -114,7 +114,7 @@ class Inserter implements StorableVisitor
         {
             $this->comma();
 
-            $this->sql .= $this->storage->fieldNamify($name);
+            $this->sql .= '`' . $this->storage->fieldNamify($name) . '`';
 
             if ($value === null)
             {
@@ -134,7 +134,7 @@ class Inserter implements StorableVisitor
         {
             $this->comma();
 
-            $this->sql .= $this->storage->fieldNamify($name);
+            $this->sql .= '`' . $this->storage->fieldNamify($name) . '`';
 
             if ($value === null)
             {
@@ -154,7 +154,7 @@ class Inserter implements StorableVisitor
         {
             $this->comma();
 
-            $this->sql .= $this->storage->fieldNamify($name);
+            $this->sql .= '`' . $this->storage->fieldNamify($name) . '`';
 
             if ($value === null)
             {
@@ -174,7 +174,7 @@ class Inserter implements StorableVisitor
         {
             $this->comma();
 
-            $this->sql .= $this->storage->fieldNamify($name);
+            $this->sql .= '`' . $this->storage->fieldNamify($name) . '`';
 
             if ($value === null)
             {
