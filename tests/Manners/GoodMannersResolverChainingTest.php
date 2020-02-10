@@ -6,7 +6,7 @@
  * Uses a type that has a name and a field that are both a SQL keywords
  * to test that both table and column names are escaped properly.
  */
-class GoodMannersArgumentsTest extends \PHPUnit\Framework\TestCase
+class GoodMannersResolverChainingTest extends \PHPUnit\Framework\TestCase
 {
     // This could be done just once for all the tests and it would even be necessary
     // to run the tests in this class in a single process.
