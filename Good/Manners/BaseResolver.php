@@ -23,6 +23,11 @@ abstract class BaseResolver implements Resolver
         }
     }
 
+    public function getRoot()
+    {
+        return $this->root;
+    }
+
     public function drawOrderTicket()
     {
         $count = $this->root->orderCount;
