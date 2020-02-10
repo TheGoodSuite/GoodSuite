@@ -155,13 +155,8 @@ abstract class GoodMannersPersistenceTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2012-12-12');
         $expectedResults[] = $ins;
 
-        // At the moment we don't have a proper api to get any,
-        // but this trick does do the same
-        $type = new PersistenceType();
-        $any = new \Good\Manners\Condition\GreaterThan($type);
-
         $resolver = new PersistenceTypeResolver();
-        $collection = $storage->getCollection($any, $resolver);
+        $collection = $storage->getCollection($resolver);
 
         foreach ($collection as $type)
         {

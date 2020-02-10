@@ -198,14 +198,9 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
 
     private function checkResults($expected)
     {
-        // At the moment we don't have a proper api to get any,
-        // but this trick does do the same
-        $type = new SimpleUpdateType();
-        $any = new \Good\Manners\Condition\GreaterThan($type);
-
         $resolver = new SimpleUpdateTypeResolver();
         $resolver->resolveMyReference();
-        $collection = $this->storage2->getCollection($any, $resolver);
+        $collection = $this->storage2->getCollection($resolver);
 
         foreach ($collection as $type)
         {
@@ -219,14 +214,9 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
 
     public function testSimpleUpdate()
     {
-        // At the moment we don't have a proper api to get any,
-        // but this trick does do the same
-        $type = new SimpleUpdateType();
-        $any = new \Good\Manners\Condition\GreaterThan($type);
-
         $resolver = new SimpleUpdateTypeResolver();
         $resolver->resolveMyReference();
-        $collection = $this->storage1->getCollection($any, $resolver);
+        $collection = $this->storage1->getCollection($resolver);
 
         foreach ($collection as $type)
         {
@@ -290,14 +280,9 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
 
     public function testSimpleUpdateSetToNull()
     {
-        // At the moment we don't have a proper api to get any,
-        // but this trick does do the same
-        $type = new SimpleUpdateType();
-        $any = new \Good\Manners\Condition\GreaterThan($type);
-
         $resolver = new SimpleUpdateTypeResolver();
         $resolver->resolveMyReference();
-        $collection = $this->storage1->getCollection($any, $resolver);
+        $collection = $this->storage1->getCollection($resolver);
 
         foreach ($collection as $type)
         {
@@ -373,15 +358,10 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
 
     public function testSimpleUpdateReferences()
     {
-        // At the moment we don't have a proper api to get any,
-        // but this trick does do the same
-        $type = new SimpleUpdateType();
-        $any = new \Good\Manners\Condition\GreaterThan($type);
-
         $resolver = new SimpleUpdateTypeResolver();
         $resolver->resolveMyReference();
         $resolver->orderByMyIntAsc();
-        $collection = $this->storage1->getCollection($any, $resolver);
+        $collection = $this->storage1->getCollection($resolver);
 
         $ref = null;
 

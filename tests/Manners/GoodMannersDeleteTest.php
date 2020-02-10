@@ -167,14 +167,7 @@ abstract class GoodMannersDeleteTest extends \PHPUnit\Framework\TestCase
 
     private function checkResults($expected)
     {
-        // At the moment we don't have a proper api to get any,
-        // but this trick does do the same
-        $type = new DeleteType();
-        $any = new \Good\Manners\Condition\GreaterThan($type);
-
-        $resolver = new DeleteTypeResolver();
-
-        $collection = $this->storage2->getCollection($any, $resolver);
+        $collection = $this->storage2->getCollection(DeleteType::resolver());
 
         foreach ($collection as $type)
         {
@@ -188,12 +181,7 @@ abstract class GoodMannersDeleteTest extends \PHPUnit\Framework\TestCase
 
     public function testDelete()
     {
-        // At the moment we don't have a proper api to get any,
-        // but this trick does do the same
-        $type = new DeleteType();
-        $any = new \Good\Manners\Condition\GreaterThan($type);
-
-        $collection = $this->storage1->getCollection($any, new DeleteTypeResolver());
+        $collection = $this->storage1->getCollection(DeleteType::resolver());
 
         foreach ($collection as $type)
         {

@@ -209,14 +209,9 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
 
     public function testGetAll()
     {
-        // At the moment we don't have a proper api to get any,
-        // but this trick does do the same
-        $type = new MyGetType();
-        $any = new \Good\Manners\Condition\GreaterThan($type);
-
         $resolver = new MyGetTypeResolver();
         $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $collection = $this->storage->getCollection($resolver);
 
         $expectedResults = array();
 
@@ -1452,14 +1447,10 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetSortedAscending()
     {
-        // Still the get any trick
-        $type = new MyGetType();
-        $any = new \Good\Manners\Condition\GreaterThan($type);
-
         $resolver = new MyGetTypeResolver();
         $resolver->resolveMyOtherType();
         $resolver->orderByMyIntAsc();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $collection = $this->storage->getCollection($resolver);
 
         $expectedResults = array();
 
@@ -1547,14 +1538,10 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetSortedDescending()
     {
-        // Still the get any trick
-        $type = new MyGetType();
-        $any = new \Good\Manners\Condition\GreaterThan($type);
-
         $resolver = new MyGetTypeResolver();
         $resolver->resolveMyOtherType();
         $resolver->orderByMyIntDesc();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $collection = $this->storage->getCollection($resolver);
 
         $expectedResults = array();
 
@@ -1644,15 +1631,11 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetDoubleSorted()
     {
-        // Still the get any trick
-        $type = new MyGetType();
-        $any = new \Good\Manners\Condition\GreaterThan($type);
-
         $resolver = new MyGetTypeResolver();
         $resolver->resolveMyOtherType();
         $resolver->orderByMyFloatAsc();
         $resolver->orderByMyIntDesc();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $collection = $this->storage->getCollection($resolver);
 
         $expectedResults = array();
 
@@ -1741,12 +1724,8 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetAllUnresolvedReference()
     {
-        // same ol' trick for getting any
-        $type = new MyGetType();
-        $any = new \Good\Manners\Condition\GreaterThan($type);
-
         $resolver = new MyGetTypeResolver();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $collection = $this->storage->getCollection($resolver);
 
         $expectedResults = array();
 
@@ -1815,11 +1794,9 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
     public function testGetCircularReference()
     {
         // First, we need to create a circular reference:
-        $type = new MyGetType();
-        $any = new \Good\Manners\Condition\GreaterThan($type);
         $resolver = new MyGetTypeResolver();
         $resolver->orderByMyIntAsc();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $collection = $this->storage->getCollection($resolver);
         foreach ($collection as $type)
         {
             if ($type->myInt == 4)
@@ -1834,14 +1811,10 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         }
         $this->storage->flush();
 
-        // same ol' trick for getting any
-        $type = new MyGetType();
-        $any = new \Good\Manners\Condition\GreaterThan($type);
-
         $resolver = new MyGetTypeResolver();
         $resolver->resolveMyCircular();
 
-        $collection = $this->storage->getCollection($any, $resolver);
+        $collection = $this->storage->getCollection($resolver);
 
         $expectedResults = array();
 
@@ -1910,14 +1883,10 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
      */
     public function testNestedForeachOnStorableCollection()
     {
-        // Still the get any trick
-        $type = new MyGetType();
-        $any = new \Good\Manners\Condition\GreaterThan($type);
-
         $resolver = new MyGetTypeResolver();
         $resolver->resolveMyOtherType();
         $resolver->orderByMyIntDesc();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $collection = $this->storage->getCollection($resolver);
 
         $expectedResults = array();
 

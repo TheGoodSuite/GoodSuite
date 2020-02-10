@@ -248,14 +248,9 @@ abstract class GoodMannersChildTypesTest extends \PHPUnit\Framework\TestCase
 
     public function checkResults($type1, $type2)
     {
-        // At the moment we don't have a proper api to get any,
-        // but this trick does do the same
-        $type = new ParentType1();
-        $any = new \Good\Manners\Condition\GreaterThan($type);
-
         $resolver = new ParentType1Resolver();
         $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $collection = $this->storage->getCollection($resolver);
 
         foreach ($collection as $obj)
         {

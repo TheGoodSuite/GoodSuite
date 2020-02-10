@@ -152,13 +152,10 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
     {
         $storage = $this->getNewStorage();
 
-        $select = new Select();
-        $condition = new \Good\Manners\Condition\EqualTo($select);
-
         $resolver = Select::resolver();
         $resolver->orderByFromAsc();
 
-        return $storage->getCollection($condition, $resolver);
+        return $storage->getCollection($resolver);
     }
 
     public function testInsert()
@@ -181,16 +178,11 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
     {
         $this->populateDatabase();
 
-        $select = new Select();
-        $select->from = 10;
-
-        $condition = new \Good\Manners\Condition\NotEqualTo($select);
-
         $resolver = Select::resolver();
         $resolver->resolveGroup();
         $resolver->orderByFromAsc();
 
-        $results = $this->storage->getCollection($condition, $resolver);
+        $results = $this->storage->getCollection($resolver);
 
         $result = $results->getNext();
         $this->assertSelectObject($result, 1000, 1.0, "One", new DateTimeImmutable("2001-01-01"));
@@ -229,12 +221,7 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
     {
         $this->populateDatabase();
 
-        $select = new Select();
-
-        $select->from = 5000;
-        $condition = new \Good\Manners\Condition\NotEqualTo($select);
-
-        foreach ($this->storage->getCollection($condition) as $select)
+        foreach ($this->storage->getCollection(Select::resolver()) as $select)
         {
             $select->from += 3000;
             $select->where += 3;
@@ -409,18 +396,13 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
     {
         $this->populateDatabase();
 
-        $select = new Select();
-        $select->from = 10;
-
-        $condition = new \Good\Manners\Condition\NotEqualTo($select);
-
         $resolver = Select::resolver();
         $resolver->orderByFromAsc();
         $resolver->orderByWhereAsc();
         $resolver->orderByOrderAsc();
         $resolver->orderByByAsc();
 
-        $results = $this->storage->getCollection($condition, $resolver);
+        $results = $this->storage->getCollection($resolver);
 
         $result = $results->getNext();
         $this->assertSelectObject($result, 1000, 1.0, "One", new DateTimeImmutable("2001-01-01"));
@@ -433,18 +415,13 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
     {
         $this->populateDatabase();
 
-        $select = new Select();
-        $select->from = 10;
-
-        $condition = new \Good\Manners\Condition\NotEqualTo($select);
-
         $resolver = Select::resolver();
         $resolver->orderByFromDesc();
         $resolver->orderByWhereDesc();
         $resolver->orderByOrderDesc();
         $resolver->orderByByDesc();
 
-        $results = $this->storage->getCollection($condition, $resolver);
+        $results = $this->storage->getCollection($resolver);
 
         $result = $results->getNext();
         $this->assertSelectObject($result, 2000, 2.0, "Two", new DateTimeImmutable("2002-02-02"));

@@ -184,12 +184,9 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
 
         $this->storage->flush();
 
-        // get all trick
-        $any = new \Good\Manners\Condition\EqualTo(new IdType());
-
         $resolver = IdType::resolver();
         $resolver->resolveReference();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $collection = $this->storage->getCollection($resolver);
 
         $expectedResults = array();
 
@@ -285,12 +282,9 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
 
         $this->storage->flush();
 
-        // get all trick
-        $any = new \Good\Manners\Condition\EqualTo(new IdType());
-
         $resolver = IdType::resolver();
         $resolver->resolveReference();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $collection = $this->storage->getCollection($resolver);
 
         $expectedResults = array();
 
@@ -348,12 +342,9 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
 
         $this->storage->modifyAny($aOrB, $referenceIsId);
 
-        // get all trick
-        $any = new \Good\Manners\Condition\EqualTo(new IdType());
-
         $resolver = IdType::resolver();
         $resolver->resolveReference();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $collection = $this->storage->getCollection($resolver);
 
         $expectedResults = array();
 

@@ -253,16 +253,11 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
 
     private function checkResults($expected)
     {
-        // At the moment we don't have a proper api to get any,
-        // but this trick does do the same
-        $type = new AdvancedUpdateType();
-        $any = new \Good\Manners\Condition\GreaterThan($type);
-
         $resolver = new AdvancedUpdateTypeResolver();
         $resolver->resolveMyReference();
         $resolver->resolveRef()->resolveRef();
 
-        $collection = $this->storage2->getCollection($any, $resolver);
+        $collection = $this->storage2->getCollection($resolver);
 
         foreach ($collection as $type)
         {
@@ -276,10 +271,15 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
 
     public function testAdvancedUpdate()
     {
-        // At the moment we don't have a proper api to get any,
-        // but this trick does do the same
         $type = new AdvancedUpdateType();
-        $any = new \Good\Manners\Condition\GreaterThan($type);
+        $type->myInt = -1;
+        $greatInt = new \Good\Manners\Condition\GreaterThan($type);
+
+        $type = new AdvancedUpdateType();
+        $type->myInt = null;
+        $noInt = new \Good\Manners\Condition\EqualTo($type);
+
+        $any = new \Good\Manners\Condition\OrCondition($greatInt, $noInt);
 
         $modifications = new AdvancedUpdateType();
         $modifications->myInt = 55;
@@ -349,8 +349,6 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
 
     public function testAdavancedUpdateSetToNull()
     {
-        // At the moment we don't have a proper api to get any,
-        // but this trick does do the same
         $type = new AdvancedUpdateType();
         $type->myInt = 5;
         $greater = new \Good\Manners\Condition\GreaterThan($type);
@@ -1693,12 +1691,9 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
 
     public function testAdvancedUpdateObjectDeepReference()
     {
-        // First insert a couple ThirdTypes into our dataset
-        $type = new AdvancedUpdateType();
-        $any = new \Good\Manners\Condition\EqualTo($type);
         $resolver = new AdvancedUpdateTypeResolver();
         $resolver->resolveRef();
-        $collection = $this->storage1->getCollection($any, $resolver);
+        $collection = $this->storage1->getCollection($resolver);
 
         foreach ($collection as $type)
         {
@@ -1820,12 +1815,9 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
 
     public function testAdvancedUpdateObjectDeepReferenceInverse()
     {
-        // First insert a couple ThirdTypes into our dataset
-        $type = new AdvancedUpdateType();
-        $any = new \Good\Manners\Condition\EqualTo($type);
         $resolver = new AdvancedUpdateTypeResolver();
         $resolver->resolveRef();
-        $collection = $this->storage1->getCollection($any, $resolver);
+        $collection = $this->storage1->getCollection($resolver);
 
         foreach ($collection as $type)
         {

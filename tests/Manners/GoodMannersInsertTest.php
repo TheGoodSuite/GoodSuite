@@ -136,14 +136,9 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
 
     private function checkInsertion($expected)
     {
-        // At the moment we don't have a proper api to get any,
-        // but this trick does do the same
-        $type = new InsertType();
-        $any = new \Good\Manners\Condition\GreaterThan($type);
-
         $resolver = new InsertTypeResolver();
         $resolver->resolveMyCircularReference();
-        $collection = $this->storage2->getCollection($any, $resolver);
+        $collection = $this->storage2->getCollection($resolver);
 
         foreach ($collection as $type)
         {
