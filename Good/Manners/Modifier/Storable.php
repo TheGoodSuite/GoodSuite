@@ -300,6 +300,7 @@ class Storable implements \Good\Service\Modifier
                                                         ' = $this->drawOrderTicket();' . "\n";
         $this->resolver .= '        $this->orderDirection' . \ucfirst($member->getName()) .
                                                         ' = self::ORDER_DIRECTION_ASC;' . "\n";
+        $this->resolver .= '        return $this;' . "\n";
         $this->resolver .= "    }\n";
         $this->resolver .= "    \n";
         $this->resolver .= '    public function orderBy' . \ucfirst($member->getName()) . 'Desc()' . "\n";
@@ -308,6 +309,7 @@ class Storable implements \Good\Service\Modifier
                                                         ' = $this->drawOrderTicket();' . "\n";
         $this->resolver .= '        $this->orderDirection' . \ucfirst($member->getName()) .
                                                         ' = self::ORDER_DIRECTION_DESC;' . "\n";
+        $this->resolver .= '        return $this;' . "\n";
         $this->resolver .= "    }\n";
         $this->resolver .= "    \n";
 
