@@ -2,9 +2,6 @@
 
 /**
  * @runTestsInSeparateProcesses
- *
- * Uses a type that has a name and a field that are both a SQL keywords
- * to test that both table and column names are escaped properly.
  */
 class GoodMannersResolverChainingTest extends \PHPUnit\Framework\TestCase
 {
