@@ -5,6 +5,7 @@ namespace Good\Memory;
 use Good\Manners\Storage;
 use Good\Manners\Storable;
 use Good\Manners\Condition;
+use Good\Manners\Condition\EqualTo;
 use Good\Manners\Resolver;
 
 class SQLStorage extends Storage
@@ -46,11 +47,39 @@ class SQLStorage extends Storage
         $updater->update($modifications->getType(), $condition, $modifications);
     }
 
-    public function getCollection(Condition $condition, Resolver $resolver = null)
+    public function getCollection($conditionOrResolver, Resolver $resolver = null)
     {
         if ($resolver == null)
         {
-            $resolver = $condition->getTargetType()::resolver();
+            if ($conditionOrResolver instanceof Condition)
+            {
+                $condition = $conditionOrResolver;
+                $resolver = $condition->getTargetType()::resolver();
+            }
+            else if ($conditionOrResolver instanceof Resolver)
+            {
+                $resolver = $conditionOrResolver;
+                $type = $resolver->getType();
+                $condition = new EqualTo(new $type);
+            }
+            else
+            {
+                throw new \InvalidArgumentException("When called with one argument, "
+                    . "the argument to getCollection should be a Condition or a "
+                    . "Resolver, but it was neither");
+            }
+        }
+        else
+        {
+            if ($conditionOrResolver instanceof Condition)
+            {
+                $condition = $conditionOrResolver;
+            }
+            else
+            {
+                throw new \InvalidArgumentException("When called with two arguments, "
+                    . "the first argument to getCollection should be a Condition.");
+            }
         }
 
         $this->joins = array(0 => array());
