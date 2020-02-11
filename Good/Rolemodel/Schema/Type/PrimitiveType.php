@@ -1,10 +1,11 @@
 <?php
 
-namespace Good\Rolemodel\Schema;
+namespace Good\Rolemodel\Schema\Type;
 
+use Good\Rolemodel\Schema\Type;
 use Good\Rolemodel\InvalidTypeModifierException;
 
-abstract class PrimitiveMember extends Member
+abstract class PrimitiveType implements Type
 {
     private $typeModifiers;
 
@@ -13,11 +14,9 @@ abstract class PrimitiveMember extends Member
     abstract function processTypeModifiers(array $typeModifiers);
     abstract function getDefaultTypeModifierValues();
 
-    public function __construct(array $attributes, $name, array $typeModifiers)
+    public function __construct(array $typeModifiers, $memberName)
     {
-        parent::__construct($attributes, $name);
-
-        $this->validateTypeModifiers($typeModifiers);
+        $this->validateTypeModifiers($typeModifiers, $memberName);
         $typeModifiers = $this->processTypeModifiers($typeModifiers);
         $typeModifiers = array_merge($this->getDefaultTypeModifierValues(), $typeModifiers);
 
@@ -34,7 +33,7 @@ abstract class PrimitiveMember extends Member
         return $this->typeModifiers;
     }
 
-    private function validateTypeModifiers(array $typeModifiers)
+    private function validateTypeModifiers(array $typeModifiers, $memberName)
     {
         // Turn them into "sets" that have O(1) lookup
         $allowedParameterModifiers = array_flip($this->getValidParameterTypeModifiers());
@@ -48,11 +47,11 @@ abstract class PrimitiveMember extends Member
                 {
                     if (array_key_exists($modifier, $allowedParameterModifiers))
                     {
-                        throw new InvalidTypeModifierException('Type modifier "' . $modifier . '" on ' . $this->getName() . ' must have a value.');
+                        throw new InvalidTypeModifierException('Type modifier "' . $modifier . '" on ' . $memberName . ' must have a value.');
                     }
                     else
                     {
-                        throw new InvalidTypeModifierException('Unknown type modifier "' . $modifier . '" on ' . $this->getName() . '.');
+                        throw new InvalidTypeModifierException('Unknown type modifier "' . $modifier . '" on ' . $memberName . '.');
                     }
                 }
             }
@@ -62,11 +61,11 @@ abstract class PrimitiveMember extends Member
                 {
                     if (array_key_exists($modifier, $allowedNonParameterModifiers))
                     {
-                        throw new InvalidTypeModifierException('Type modifier "' . $modifier . '" on ' . $this->getName() . ' must not have a value.');
+                        throw new InvalidTypeModifierException('Type modifier "' . $modifier . '" on ' . $memberName . ' must not have a value.');
                     }
                     else
                     {
-                        throw new InvalidTypeModifierException('Unknown type modifier "' . $modifier . '" on ' . $this->getName() . '.');
+                        throw new InvalidTypeModifierException('Unknown type modifier "' . $modifier . '" on ' . $memberName . '.');
                     }
                 }
             }

@@ -1,24 +1,23 @@
 <?php
 
-namespace Good\Rolemodel\Schema;
+namespace Good\Rolemodel\Schema\Type;
 
-use Good\Rolemodel\SchemaVisitor;
+use Good\Rolemodel\Schema\Type;
+use Good\Rolemodel\TypeVisitor;
 
-class ReferenceMember extends Member
+class ReferenceType implements Type
 {
     private $referencedType;
 
-    public function __construct(array $attributes, $name, $referencedType)
+    public function __construct($referencedType)
     {
-        parent::__construct($attributes, $name);
-
         $this->referencedType = $referencedType;
     }
 
-    public function acceptSchemaVisitor(SchemaVisitor $visitor)
+    public function acceptTypeVisitor(TypeVisitor $visitor)
     {
         // visit this, there are no children to pass visitor on to
-        $visitor->visitReferenceMember($this);
+        $visitor->visitReferenceType($this);
     }
 
     public function getReferencedType()

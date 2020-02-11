@@ -2,29 +2,29 @@
 
 namespace Good\Rolemodel;
 
-class Schema implements VisitableSchema
+class Schema
 {
-    private $dataTypes;
+    private $typeDefinitions;
 
-    public function __construct(array $dataTypes)
+    public function __construct(array $typeDefinitions)
     {
         // we index the types by their names, so we can easily access them
         // hm... I really need to take a look at this.
         // I don't really see a good reason to be doing this, actually.
-        $this->dataTypes = array();
-        foreach ($dataTypes as $dataType)
+        $this->typeDefinitions = array();
+        foreach ($typeDefinitions as $typeDefinition)
         {
-            $this->dataTypes[$dataType->getName()] = $dataType;
+            $this->typeDefinitions[$typeDefinition->getName()] = $typeDefinition;
         }
 
         // Make sure all referenced dataTypes are present
-        foreach ($this->dataTypes as $dataType)
+        foreach ($this->typeDefinitions as $typeDefinition)
         {
-            $references = $dataType->getReferencedTypes();
+            $references = $typeDefinition->getReferencedTypes();
 
             foreach ($references as $reference)
             {
-                if (!isset($this->dataTypes[$reference]))
+                if (!isset($this->typeDefinitions[$reference]))
                 {
                     // TODO: better error handling
 
@@ -34,18 +34,9 @@ class Schema implements VisitableSchema
         }
     }
 
-    public function acceptSchemaVisitor(SchemaVisitor $visitor)
+    public function getTypeDefitions()
     {
-        // visit this
-        $visitor->visitSchema($this);
-
-        // and move the visitor to your children
-        foreach ($this->dataTypes as $dataType)
-        {
-            $dataType->acceptSchemaVisitor($visitor);
-        }
-
-        $visitor->visitSchemaEnd();
+        return $this->typeDefinitions;
     }
 }
 

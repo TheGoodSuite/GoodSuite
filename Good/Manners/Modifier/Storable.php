@@ -89,7 +89,7 @@ class Storable implements \Good\Service\Modifier
         $this->finishDataType();
     }
 
-    public function visitDataType(Schema\DataType $dataType)
+    public function visitTypeDefinition(Schema\TypeDefinition $dataType)
     {
         if ($this->firstClass)
         {
@@ -152,7 +152,7 @@ class Storable implements \Good\Service\Modifier
         $this->extraFiles[$this->className . 'Resolver.php'] = $this->resolver;
     }
 
-    public function visitReferenceMember(Schema\ReferenceMember $member)
+    public function visitReferenceMember(Schema\Member $member, Schema\Type\ReferenceType $type)
     {
         $this->classVariable = $member->getName();
         $this->classMembers[] = $this->classVariable;
@@ -160,7 +160,7 @@ class Storable implements \Good\Service\Modifier
         $this->classVariableIsReference = true;
 
         $this->accept .= '        $visitor->visitReferenceProperty("' . $member->getName() . '", ' .
-                                            '"' . $member->getReferencedType() . '", ' .
+                                            '"' . $type->getReferencedType() . '", ' .
                                             '$this->is' . \ucfirst($member->getName()) . 'Dirty, ' .
                                             '$this->' . $member->getName() . ');' . "\n";
 
@@ -176,7 +176,7 @@ class Storable implements \Good\Service\Modifier
         $this->resolver .= '    public function resolve' . \ucfirst($member->getName()) . '()' . "\n";
         $this->resolver .= "    {\n";
         $this->resolver .= '        $this->resolved' . \ucfirst($member->getName()) . ' = ' .
-                                        'new ' . $member->getReferencedType() .
+                                        'new ' . $type->getReferencedType() .
                                                                 'Resolver($this->root);' . "\n";
         $this->resolver .= "        \n";
         $this->resolver .= '        return $this->resolved' . \ucfirst($member->getName()) . ';' . "\n";
@@ -191,7 +191,7 @@ class Storable implements \Good\Service\Modifier
         $this->resolverVisit .= '        if ($this->resolved' . \ucfirst($member->getName()) . ' != null)' . "\n";
         $this->resolverVisit .= "        {\n";
         $this->resolverVisit .= '            $visitor->resolverVisitResolvedReferenceProperty("' .
-                                            $member->getName() . '", "' . $member->getReferencedType() .
+                                            $member->getName() . '", "' . $type->getReferencedType() .
                                             '", ' . '$this->resolved' . \ucfirst($member->getName()) .
                                             ');' . "\n";
         $this->resolverVisit .= "        }\n";
@@ -204,7 +204,7 @@ class Storable implements \Good\Service\Modifier
         $this->debugInfo .= '            "' . $this->classVariable . '" => $this->' . $this->classVariable . ',' . "\n";
         $this->debugInfo .= '            "is' . \ucfirst($this->classVariable) . 'Dirty" => $this->is' . \ucfirst($this->classVariable) . 'Dirty,' . "\n";
     }
-    public function visitTextMember(Schema\TextMember $member)
+    public function visitTextMember(Schema\Member $member, Schema\Type\TextType $type)
     {
         $this->classVariable = $member->getName();
         $this->classMembers[] = $this->classVariable;
@@ -223,7 +223,7 @@ class Storable implements \Good\Service\Modifier
 
         $this->visitNonReference($member);
     }
-    public function visitIntMember(Schema\IntMember $member)
+    public function visitIntMember(Schema\Member $member, Schema\Type\IntType $type)
     {
         $this->classVariable = $member->getName();
         $this->classMembers[] = $this->classVariable;
@@ -242,7 +242,7 @@ class Storable implements \Good\Service\Modifier
 
         $this->visitNonReference($member);
     }
-    public function visitFloatMember(Schema\FloatMember $member)
+    public function visitFloatMember(Schema\Member $member, Schema\Type\FloatType $type)
     {
         $this->classVariable = $member->getName();
         $this->classMembers[] = $this->classVariable;
@@ -261,7 +261,7 @@ class Storable implements \Good\Service\Modifier
 
         $this->visitNonReference($member);
     }
-    public function visitDatetimeMember(Schema\DatetimeMember $member)
+    public function visitDatetimeMember(Schema\Member $member, Schema\Type\DateTimeType $type)
     {
         $this->classVariable = $member->getName();
         $this->classMembers[] = $this->classVariable;

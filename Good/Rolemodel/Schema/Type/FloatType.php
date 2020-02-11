@@ -1,15 +1,15 @@
 <?php
 
-namespace Good\Rolemodel\Schema;
+namespace Good\Rolemodel\Schema\Type;
 
-use Good\Rolemodel\SchemaVisitor;
+use Good\Rolemodel\TypeVisitor;
 
-class DatetimeMember extends PrimitiveMember
+class FloatType extends PrimitiveType
 {
-    public function acceptSchemaVisitor(SchemaVisitor $visitor)
+    public function acceptTypeVisitor(TypeVisitor $visitor)
     {
         // visit this, there are no children to pass visitor on to
-        $visitor->visitDatetimeMember($this);
+        $visitor->visitFloatType($this);
     }
 
     function getValidParameterTypeModifiers()

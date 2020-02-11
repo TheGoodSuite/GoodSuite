@@ -49,7 +49,7 @@ class Rolemodel
         $datatypeBegin = '\\s*datatype\\s+(?<datatypeName>' . $identifier . ')\s*{';
         $dataTypeEnd = '\\s*}';
 
-        $factory = new PrimitiveFactory();
+        $factory = new PrimitiveTypeFactory();
         $types = array();
 
         while (preg_match('/^' . $datatypeBegin . '/', $input, $matches) === 1)
@@ -78,7 +78,7 @@ class Rolemodel
                 // Type
                 if (array_key_exists('referenceType', $matches) && $matches['referenceType'] !== "")
                 {
-                    $members[] = new Schema\ReferenceMember($attributes, $varName, $matches['referenceType']);
+                    $type = new Schema\Type\ReferenceType($matches['referenceType']);
                 }
                 else
                 {
@@ -118,8 +118,10 @@ class Rolemodel
                         }
                     }
 
-                    $members[] = $factory->makePrimitive($attributes, $varName, $matches['primitiveType'], $typeModifiers);
+                    $type = $factory->makePrimitiveType($matches['primitiveType'], $typeModifiers, $varName);
                 }
+
+                $members[] = new Schema\Member($attributes, $varName, $type);
             }
 
             if (preg_match('/^' . $dataTypeEnd . '\s*/', $input, $matches) !== 1)
@@ -130,7 +132,7 @@ class Rolemodel
 
             $input = substr($input, strlen($matches[0]));
 
-            $types[] = new Schema\DataType($file, $datatypeName, $members);
+            $types[] = new Schema\TypeDefinition($file, $datatypeName, $members);
         }
 
         if (preg_match("/^\s*$/", $input) !== 1)

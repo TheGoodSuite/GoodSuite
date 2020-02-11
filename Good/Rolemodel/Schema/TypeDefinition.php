@@ -4,7 +4,7 @@ namespace Good\Rolemodel\Schema;
 
 use Good\Rolemodel\SchemaVisitor;
 
-class DataType
+class TypeDefinition
 {
     private $sourceFileName;
     private $name;
@@ -18,16 +18,9 @@ class DataType
         $this->members = $members;
     }
 
-    public function acceptSchemaVisitor(SchemaVisitor $visitor)
+    public function getMembers()
     {
-        // visit this
-        $visitor->visitDataType($this);
-
-        // and move the visitor to your children
-        foreach ($this->members as $member)
-        {
-            $member->acceptSchemaVisitor($visitor);
-        }
+        return $this->members;
     }
 
     public function getSourceFileName()
@@ -46,7 +39,7 @@ class DataType
 
         foreach ($this->members as $member)
         {
-            $newElement = $member->getReferencedTypeIfAny();
+            $newElement = $member->getType()->getReferencedTypeIfAny();
 
             if ($newElement != null)
             {

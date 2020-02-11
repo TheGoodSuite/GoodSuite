@@ -1,16 +1,16 @@
 <?php
 
-namespace Good\Rolemodel\Schema;
+namespace Good\Rolemodel\Schema\Type;
 
-use Good\Rolemodel\SchemaVisitor;
+use Good\Rolemodel\TypeVisitor;
 use Good\Rolemodel\InvalidTypeModifierException;
 
-class TextMember extends PrimitiveMember
+class TextType extends PrimitiveType
 {
-    public function acceptSchemaVisitor(SchemaVisitor $visitor)
+    public function acceptTypeVisitor(TypeVisitor $visitor)
     {
         // visit this, there are no children to pass visitor on to
-        $visitor->visitTextMember($this);
+        $visitor->visitTextType($this);
     }
 
     function getValidParameterTypeModifiers()

@@ -1,17 +1,17 @@
 <?php
 
-namespace Good\Rolemodel\Schema;
+namespace Good\Rolemodel\Schema\Type;
 
-use Good\Rolemodel\SchemaVisitor;
+use Good\Rolemodel\TypeVisitor;
 use Good\Rolemodel\InvalidTypeModifierException;
 
-class IntMember extends PrimitiveMember
+class IntType extends PrimitiveType
 {
 
-    public function acceptSchemaVisitor(SchemaVisitor $visitor)
+    public function acceptTypeVisitor(TypeVisitor $visitor)
     {
         // visit this, there are no children to pass visitor on to
-        $visitor->visitIntMember($this);
+        $visitor->visitIntType($this);
     }
 
     function getValidParameterTypeModifiers()

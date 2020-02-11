@@ -3,6 +3,13 @@
 namespace Good\Service\Modifier;
 
 use Good\Rolemodel\Schema;
+use Good\Rolemodel\Schema\Member;
+use Good\Rolemodel\Schema\TypeDefinition;
+use Good\Rolemodel\Schema\Type\DateTimeType;
+use Good\Rolemodel\Schema\Type\FloatType;
+use Good\Rolemodel\Schema\Type\IntType;
+use Good\Rolemodel\Schema\Type\ReferenceType;
+use Good\Rolemodel\Schema\Type\TextType;
 
 class Observable implements \Good\Service\Modifier
 {
@@ -28,17 +35,6 @@ class Observable implements \Good\Service\Modifier
     {
         return '';
     }
-
-    public function visitSchema(Schema $schema) {}
-    public function visitSchemaEnd() {}
-
-    public function visitDataType(Schema\DataType $dataType) {}
-
-    public function visitReferenceMember(Schema\ReferenceMember $member) {}
-    public function visitTextMember(Schema\TextMember $member) {}
-    public function visitIntMember(Schema\IntMember $member) {}
-    public function visitFloatMember(Schema\FloatMember $member) {}
-    public function visitDatetimeMember(Schema\DatetimeMember $member) {}
 
     public function varDefinitionBefore() {return '';}
     public function varDefinitionAfter() {return '';}
@@ -87,6 +83,15 @@ class Observable implements \Good\Service\Modifier
 
     public function bottomOfFile() {return '';}
     public function extraFiles() {return array();}
+
+    public function visitSchema(Schema $schema) {}
+    public function visitSchemaEnd() {}
+    public function visitTypeDefinition(TypeDefinition $typeDefinition) {}
+    public function visitDatetimeMember(Member $member, DateTimeType $type) {}
+    public function visitFloatMember(Member $member, FloatType $type) {}
+    public function visitIntMember(Member $member, IntType $type) {}
+    public function visitReferenceMember(Member $member, ReferenceType $type) {}
+    public function visitTextMember(Member $member, TextType $type) {}
 }
 
 ?>

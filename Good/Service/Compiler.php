@@ -4,7 +4,7 @@ namespace Good\Service;
 
 use Good\Rolemodel\Schema;
 
-class Compiler implements \Good\Rolemodel\SchemaVisitor
+class Compiler implements \Good\Rolemodel\TypeVisitor
 {
     // TODO: prevent namespace collisions between things between
     //       modifiers and generated variables / accessors
@@ -23,6 +23,9 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
     private $getters = null;
     private $setters = null;
 
+    // Refactoring 2020
+    private $member;
+
     public function __construct($modifiers, $outputDir)
     {
         $this->outputDir = $outputDir;
@@ -32,6 +35,50 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
     public function compiledFiles()
     {
         return $this->outputFiles;
+    }
+
+    public function compile(Schema $schema)
+    {
+        $this->visitSchema($schema);
+
+        foreach ($schema->getTypeDefitions() as $typeDefinition)
+        {
+            $this->visitTypeDefinition($typeDefinition);
+
+            foreach ($typeDefinition->getMembers() as $member)
+            {
+                $this->member = $member;
+
+                $member->getType()->acceptTypeVisitor($this);
+            }
+        }
+
+        $this->visitSchemaEnd();
+    }
+
+    public function visitDateTimeType(Schema\Type\DateTimeType $type)
+    {
+        $this->visitDatetimeMember($this->member, $type);
+    }
+
+    public function visitIntType(Schema\Type\IntType $type)
+    {
+        $this->visitIntMember($this->member, $type);
+    }
+
+    public function visitFloatType(Schema\Type\FloatType $type)
+    {
+        $this->visitFloatMember($this->member, $type);
+    }
+
+    public function visitReferenceType(Schema\Type\ReferenceType $type)
+    {
+        $this->visitReferenceMember($this->member, $type);
+    }
+
+    public function visitTextType(Schema\Type\TextType $type)
+    {
+        $this->visitTextMember($this->member, $type);
     }
 
     public function visitSchema(Schema $schema)
@@ -114,7 +161,7 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
         }
     }
 
-    public function visitDataType(Schema\DataType $dataType)
+    public function visitTypeDefinition(Schema\TypeDefinition $typeDefinition)
     {
         if ($this->output != null)
         {
@@ -123,22 +170,22 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
 
         foreach ($this->modifiers as $modifier)
         {
-            $modifier->visitDataType($dataType);
+            $modifier->visitTypeDefinition($typeDefinition);
         }
 
-        $this->className = $dataType->getName();
+        $this->className = $typeDefinition->getName();
 
         $this->includes = array();
 
-        $this->output = 'class ' . $dataType->getName() . " extends GeneratedBaseClass\n";
+        $this->output = 'class ' . $typeDefinition->getName() . " extends GeneratedBaseClass\n";
 
         $this->output .= "{\n";
-        $this->inputFile = $dataType->getSourceFileName();
+        $this->inputFile = $typeDefinition->getSourceFileName();
         // TODO: make following line independant of execution path at any time
         //       and escape some stuff
         // Note: This was previously based on the input file namespace
         //       But I changed it to dataType name instead
-        $this->outputFile = $this->outputDir . $dataType->getName() . '.datatype.php';
+        $this->outputFile = $this->outputDir . $typeDefinition->getName() . '.datatype.php';
         $this->outputFiles[] = $this->outputFile;
 
         $this->getters  = '    public function __get($property)' . "\n";
@@ -148,7 +195,7 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
 
         foreach ($this->modifiers as $modifier)
         {
-            $this->getters .= $modifier->topOfGetterSwitch($dataType);
+            $this->getters .= $modifier->topOfGetterSwitch($typeDefinition);
         }
 
         $this->setters  = '    public function __set($property, $value)' . "\n";
@@ -215,29 +262,29 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
         \file_put_contents($this->outputFile, $this->output);
     }
 
-    public function visitReferenceMember(Schema\ReferenceMember $member)
+    public function visitReferenceMember(Schema\Member $member, Schema\Type\ReferenceType $type)
     {
         foreach ($this->modifiers as $modifier)
         {
-            $modifier->visitReferenceMember($member);
+            $modifier->visitReferenceMember($member, $type);
         }
 
-        $varType = $member->getReferencedType();
+        $varType = $type->getReferencedType();
         $typeCheck = null;
 
-        $includes[] = $member->getReferencedType();
+        $includes[] = $type->getReferencedType();
 
         $this->commitVariable($member, $varType, $typeCheck);
     }
 
-    public function visitTextMember(Schema\TextMember $member)
+    public function visitTextMember(Schema\Member $member, Schema\Type\TextType $type)
     {
         foreach ($this->modifiers as $modifier)
         {
-            $modifier->visitTextMember($member);
+            $modifier->visitTextMember($member, $type);
         }
 
-        $typeModifiers = $member->getTypeModifiers();
+        $typeModifiers = $type->getTypeModifiers();
 
         $varType = 'string';
         $typeCheck = '\\Good\\Service\\TypeChecker::checkString($value, ' . $typeModifiers['minLength'];
@@ -252,14 +299,14 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
         $this->commitVariable($member, $varType, $typeCheck);
     }
 
-    public function visitIntMember(Schema\IntMember $member)
+    public function visitIntMember(Schema\Member $member, Schema\Type\IntType $type)
     {
         foreach ($this->modifiers as $modifier)
         {
-            $modifier->visitIntMember($member);
+            $modifier->visitIntMember($member, $type);
         }
 
-        $typeModifiers = $member->getTypeModifiers();
+        $typeModifiers = $type->getTypeModifiers();
 
         $varType = 'int';
         $typeCheck = '\\Good\\Service\\TypeChecker::checkInt($value, ' . $typeModifiers['minValue'];
@@ -268,11 +315,11 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
         $this->commitVariable($member, $varType, $typeCheck);
     }
 
-    public function visitFloatMember(Schema\FloatMember $member)
+    public function visitFloatMember(Schema\Member $member, Schema\Type\FloatType $type)
     {
         foreach ($this->modifiers as $modifier)
         {
-            $modifier->visitFloatMember($member);
+            $modifier->visitFloatMember($member, $type);
         }
 
         $varType = 'float';
@@ -281,11 +328,11 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
         $this->commitVariable($member, $varType, $typeCheck);
     }
 
-    public function visitDatetimeMember(Schema\DatetimeMember $member)
+    public function visitDatetimeMember(Schema\Member $member, Schema\Type\DatetimeType $type)
     {
         foreach ($this->modifiers as $modifier)
         {
-            $modifier->visitDatetimeMember($member);
+            $modifier->visitDatetimeMember($member, $type);
         }
 
         $varType = 'datetime';
