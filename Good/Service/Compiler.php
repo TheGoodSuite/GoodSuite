@@ -51,6 +51,8 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
 
                 $member->getType()->acceptTypeVisitor($this);
             }
+
+            $this->saveOutput($typeDefinition);
         }
 
         $this->visitSchemaEnd();
@@ -83,11 +85,6 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
 
     public function visitSchema(Schema $schema)
     {
-        foreach ($this->modifiers as $modifier)
-        {
-            $modifier->visitSchema($schema);
-        }
-
         // TODO: prevent namespace and filename collisions here
         // Build the base class
         $output  = "<?php\n";
@@ -140,17 +137,7 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
 
     public function visitSchemaEnd()
     {
-        if ($this->output != null)
-        {
-            $this->saveOutput();
-        }
-
         $this->output = null;
-
-        foreach ($this->modifiers as $modifier)
-        {
-            $modifier->visitSchemaEnd();
-        }
 
         foreach ($this->modifiers as $modifier)
         {
@@ -163,16 +150,6 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
 
     public function visitTypeDefinition(Schema\TypeDefinition $typeDefinition)
     {
-        if ($this->output != null)
-        {
-            $this->saveOutput();
-        }
-
-        foreach ($this->modifiers as $modifier)
-        {
-            $modifier->visitTypeDefinition($typeDefinition);
-        }
-
         $this->className = $typeDefinition->getName();
 
         $this->includes = array();
@@ -204,7 +181,7 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
         $this->setters .= "        {\n";
     }
 
-    private function saveOutput()
+    private function saveOutput(Schema\TypeDefinition $typeDefinition)
     {
         $this->getters .= '            default:' . "\n";
         $this->getters .= '                throw new \Exception("Unknown or non-public property");' . "\n";
@@ -222,7 +199,7 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
 
         foreach ($this->modifiers as $modifier)
         {
-            $this->output .= $modifier->classBody();
+            $this->output .= $modifier->classBody($typeDefinition);
         }
 
         $this->output .= "}\n";
@@ -264,11 +241,6 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
 
     public function visitReferenceMember(Schema\Member $member, Schema\Type\ReferenceType $type)
     {
-        foreach ($this->modifiers as $modifier)
-        {
-            $modifier->visitReferenceMember($member, $type);
-        }
-
         $varType = $type->getReferencedType();
         $typeCheck = null;
 
@@ -279,11 +251,6 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
 
     public function visitTextMember(Schema\Member $member, Schema\Type\TextType $type)
     {
-        foreach ($this->modifiers as $modifier)
-        {
-            $modifier->visitTextMember($member, $type);
-        }
-
         $typeModifiers = $type->getTypeModifiers();
 
         $varType = 'string';
@@ -301,11 +268,6 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
 
     public function visitIntMember(Schema\Member $member, Schema\Type\IntType $type)
     {
-        foreach ($this->modifiers as $modifier)
-        {
-            $modifier->visitIntMember($member, $type);
-        }
-
         $typeModifiers = $type->getTypeModifiers();
 
         $varType = 'int';
@@ -317,11 +279,6 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
 
     public function visitFloatMember(Schema\Member $member, Schema\Type\FloatType $type)
     {
-        foreach ($this->modifiers as $modifier)
-        {
-            $modifier->visitFloatMember($member, $type);
-        }
-
         $varType = 'float';
         $typeCheck = '\\Good\\Service\\TypeChecker::checkFloat($value)';
 
@@ -330,11 +287,6 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
 
     public function visitDatetimeMember(Schema\Member $member, Schema\Type\DatetimeType $type)
     {
-        foreach ($this->modifiers as $modifier)
-        {
-            $modifier->visitDatetimeMember($member, $type);
-        }
-
         $varType = 'datetime';
         $typeCheck = '\\Good\\Service\\TypeChecker::checkDateTime($value)';
 
@@ -389,7 +341,7 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
 
         foreach ($this->modifiers as $modifier)
         {
-            $this->output .= $modifier->varDefinitionBefore();
+            $this->output .= $modifier->varDefinitionBefore($member);
         }
 
         $this->output .= '    private $' . $member->getName() . " = null;\n";
@@ -397,7 +349,7 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
 
         foreach ($this->modifiers as $modifier)
         {
-            $this->output .= $modifier->varDefinitionAfter();
+            $this->output .= $modifier->varDefinitionAfter($member);
         }
 
         // accessors
@@ -408,7 +360,7 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
 
         foreach ($this->modifiers as $modifier)
         {
-            $this->output .= $modifier->getterBegin();
+            $this->output .= $modifier->getterBegin($member);
         }
 
         $this->output .= '        return $this->' . $member->getName() . ";\n";
@@ -435,14 +387,14 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
 
         foreach ($this->modifiers as $modifier)
         {
-            $this->output .= $modifier->setterBegin();
+            $this->output .= $modifier->setterBegin($member);
         }
 
         $this->output .= '        $this->' . $member->getName() . ' = $value;' . "\n";
 
         foreach ($this->modifiers as $modifier)
         {
-            $this->output .= $modifier->setterEnd();
+            $this->output .= $modifier->setterEnd($member);
         }
 
         $this->output .= "    }\n";

@@ -4,13 +4,8 @@ namespace Good\Manners\Modifier;
 
 use Good\Rolemodel\Schema;
 
-class Storable implements \Good\Service\Modifier
+class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 {
-    private $className;
-    private $classMembers;
-    private $classVariable;
-    private $classVariableIsReference;
-    private $firstClass;
     private $accept;
     private $setFromArray;
     private $toArray;
@@ -20,8 +15,11 @@ class Storable implements \Good\Service\Modifier
     private $resolverVisit = null;
     private $extraFiles;
 
+    private $member;
+
     public function __construct()
     {
+        $this->extraFiles = array();
     }
 
     public function baseClassTopOfFile()
@@ -38,6 +36,7 @@ class Storable implements \Good\Service\Modifier
     {
         return '';
     }
+
     public function baseClassBody()
     {
         $res  = "    // Storable\n";
@@ -79,296 +78,43 @@ class Storable implements \Good\Service\Modifier
         return $res;
     }
 
-    public function visitSchema(Schema $schema)
-    {
-        $this->extraFiles = array();
-        $this->firstClass = true;
-    }
-    public function visitSchemaEnd()
-    {
-        $this->finishDataType();
-    }
-
-    public function visitTypeDefinition(Schema\TypeDefinition $dataType)
-    {
-        if ($this->firstClass)
-        {
-            $this->firstClass = false;
-        }
-        else
-        {
-            $this->finishDataType();
-        }
-
-        $this->className = $dataType->getName();
-        $this->classMembers = array();
-
-        $this->accept  = '    public function acceptStorableVisitor(\\Good\\Manners\\StorableVisitor $visitor)' . "\n";
-        $this->accept .= "    {\n";
-
-        $this->setFromArray  = '    public function setFromArray(array $data)' . "\n";
-        $this->setFromArray .= "    {\n";
-        $this->setFromArray .= '        foreach ($data as $field => $value)' . "\n";
-        $this->setFromArray .= "        {\n";
-        $this->setFromArray .= '            switch ($field)' . "\n";
-        $this->setFromArray .= "            {\n";
-
-        $this->toArray  = '    public function toArray($datesToIso)' . "\n";
-        $this->toArray .= "    {\n";
-        $this->toArray .= "        return [\n";
-        $this->toArray .= '            "id" => $this->id,' . "\n";
-
-        $this->debugInfo  = '    public function __debugInfo()' . "\n";
-        $this->debugInfo .= "    {\n";
-        $this->debugInfo .= "        return [\n";
-        $this->debugInfo .= '            "id" => $this->id,' . "\n";
-
-        $this->resolver  = "<?php\n";
-        $this->resolver .= "\n";
-        $this->resolver .= 'class ' . $dataType->getName() . 'Resolver extends \\Good\\Manners\\BaseResolver' . "\n";
-        $this->resolver .= "{\n";
-        $this->resolver .= '    public function getType()' . "\n";
-        $this->resolver .= "    {\n";
-        $this->resolver .= '        return "' . $this->className . '";' . "\n";
-        $this->resolver .= "    }\n";
-        $this->resolver .= "    \n";
-
-        $this->resolverVisit  = '    public function acceptResolverVisitor' .
-                                                '(\\Good\\Manners\\ResolverVisitor $visitor)' . "\n";
-        $this->resolverVisit .= "    {\n";
-    }
-
-    private function finishDataType()
-    {
-        $this->resolverVisit .= "    }\n";
-        $this->resolverVisit .= "    \n";
-
-        $this->resolver .= $this->resolverVisit;
-
-        $this->resolver .= "}\n";
-        $this->resolver .= "\n";
-        $this->resolver .= "?>";
-
-        $this->extraFiles[$this->className . 'Resolver.php'] = $this->resolver;
-    }
-
-    public function visitReferenceMember(Schema\Member $member, Schema\Type\ReferenceType $type)
-    {
-        $this->classVariable = $member->getName();
-        $this->classMembers[] = $this->classVariable;
-
-        $this->classVariableIsReference = true;
-
-        $this->accept .= '        $visitor->visitReferenceProperty("' . $member->getName() . '", ' .
-                                            '"' . $type->getReferencedType() . '", ' .
-                                            '$this->is' . \ucfirst($member->getName()) . 'Dirty, ' .
-                                            '$this->' . $member->getName() . ');' . "\n";
-
-        $this->setFromArray .= '                case "' . $this->classVariable . '":' . "\n";
-        $this->setFromArray .= '                    $this->set' . \ucfirst($this->classVariable) . '($value);'. "\n";
-        $this->setFromArray .= '                    break;' . "\n";
-
-        $this->toArray .= '            "' . $this->classVariable . '" => $this->' . $this->classVariable . ' == null ?' . "\n";
-        $this->toArray .= '                null : $this->' . $this->classVariable . '->toArray($datesToIso),' . "\n";
-
-        $this->resolver .= '    private $resolved' . \ucfirst($member->getName()) . ' = null;' . "\n";
-        $this->resolver .= "    \n";
-        $this->resolver .= '    public function resolve' . \ucfirst($member->getName()) . '()' . "\n";
-        $this->resolver .= "    {\n";
-        $this->resolver .= '        $this->resolved' . \ucfirst($member->getName()) . ' = ' .
-                                        'new ' . $type->getReferencedType() .
-                                                                'Resolver($this->root);' . "\n";
-        $this->resolver .= "        \n";
-        $this->resolver .= '        return $this->resolved' . \ucfirst($member->getName()) . ';' . "\n";
-        $this->resolver .= "    }\n";
-        $this->resolver .= "    \n";
-        $this->resolver .= '    public function get' . \ucfirst($member->getName()) . '()' . "\n";
-        $this->resolver .= "    {\n";
-        $this->resolver .= '        return $this->resolved' . \ucfirst($member->getName()) . ';' . "\n";
-        $this->resolver .= "    }\n";
-        $this->resolver .= "    \n";
-
-        $this->resolverVisit .= '        if ($this->resolved' . \ucfirst($member->getName()) . ' != null)' . "\n";
-        $this->resolverVisit .= "        {\n";
-        $this->resolverVisit .= '            $visitor->resolverVisitResolvedReferenceProperty("' .
-                                            $member->getName() . '", "' . $type->getReferencedType() .
-                                            '", ' . '$this->resolved' . \ucfirst($member->getName()) .
-                                            ');' . "\n";
-        $this->resolverVisit .= "        }\n";
-        $this->resolverVisit .= '        else' . "\n";
-        $this->resolverVisit .= "        {\n";
-        $this->resolverVisit .= '            $visitor->resolverVisitUnresolvedReferenceProperty(' .
-                                            '"' . $member->getName() . '");' . "\n";
-        $this->resolverVisit .= "        }\n";
-
-        $this->debugInfo .= '            "' . $this->classVariable . '" => $this->' . $this->classVariable . ',' . "\n";
-        $this->debugInfo .= '            "is' . \ucfirst($this->classVariable) . 'Dirty" => $this->is' . \ucfirst($this->classVariable) . 'Dirty,' . "\n";
-    }
-    public function visitTextMember(Schema\Member $member, Schema\Type\TextType $type)
-    {
-        $this->classVariable = $member->getName();
-        $this->classMembers[] = $this->classVariable;
-
-        $this->classVariableIsReference = false;
-
-        $this->accept .= '        $visitor->visitTextProperty("' . $member->getName() . '", ' .
-                                            '$this->is' . \ucfirst($member->getName()) . 'Dirty, ' .
-                                            '$this->' . $member->getName() . ');' . "\n";
-
-        $this->setFromArray .= '                case "' . $this->classVariable . '":' . "\n";
-        $this->setFromArray .= '                    $this->set' . \ucfirst($this->classVariable) . '(\strval($value));'. "\n";
-        $this->setFromArray .= '                    break;' . "\n";
-
-        $this->toArray .= '            "' . $this->classVariable . '" => $this->' . $this->classVariable . ',' . "\n";
-
-        $this->visitNonReference($member);
-    }
-    public function visitIntMember(Schema\Member $member, Schema\Type\IntType $type)
-    {
-        $this->classVariable = $member->getName();
-        $this->classMembers[] = $this->classVariable;
-
-        $this->classVariableIsReference = false;
-
-        $this->accept .= '        $visitor->visitIntProperty("' . $member->getName() . '", ' .
-                                            '$this->is' . \ucfirst($member->getName()) . 'Dirty, ' .
-                                            '$this->' . $member->getName() . ');' . "\n";
-
-        $this->setFromArray .= '                case "' . $this->classVariable . '":' . "\n";
-        $this->setFromArray .= '                    $this->set' . \ucfirst($this->classVariable) . '(\intval($value));'. "\n";
-        $this->setFromArray .= '                    break;' . "\n";
-
-        $this->toArray .= '            "' . $this->classVariable . '" => $this->' . $this->classVariable . ',' . "\n";
-
-        $this->visitNonReference($member);
-    }
-    public function visitFloatMember(Schema\Member $member, Schema\Type\FloatType $type)
-    {
-        $this->classVariable = $member->getName();
-        $this->classMembers[] = $this->classVariable;
-
-        $this->classVariableIsReference = false;
-
-        $this->accept .= '        $visitor->visitFloatProperty("' . $member->getName() . '", ' .
-                                            '$this->is' . \ucfirst($member->getName()) . 'Dirty, ' .
-                                            '$this->' . $member->getName() . ');' . "\n";
-
-        $this->setFromArray .= '                case "' . $this->classVariable . '":' . "\n";
-        $this->setFromArray .= '                    $this->set' . \ucfirst($this->classVariable) . '(\floatval($value));'. "\n";
-        $this->setFromArray .= '                    break;' . "\n";
-
-        $this->toArray .= '            "' . $this->classVariable . '" => $this->' . $this->classVariable . ',' . "\n";
-
-        $this->visitNonReference($member);
-    }
-    public function visitDatetimeMember(Schema\Member $member, Schema\Type\DateTimeType $type)
-    {
-        $this->classVariable = $member->getName();
-        $this->classMembers[] = $this->classVariable;
-
-        $this->classVariableIsReference = false;
-
-        $this->accept .= '        $visitor->visitDatetimeProperty("' . $member->getName() . '", ' .
-                                            '$this->is' . \ucfirst($member->getName()) . 'Dirty, ' .
-                                            '$this->' . $member->getName() . ');' . "\n";
-
-        $this->setFromArray .= '                case "' . $this->classVariable . '":' . "\n";
-        $this->setFromArray .= '                    if ($value === null || $value instanceof \DateTimeImmutable)' . "\n";
-        $this->setFromArray .= "                    {\n";
-        $this->setFromArray .= '                        $this->set' . \ucfirst($this->classVariable) . '($value);'. "\n";
-        $this->setFromArray .= "                    }\n";
-        $this->setFromArray .= '                    else' . "\n";
-        $this->setFromArray .= "                    {\n";
-        $this->setFromArray .= '                        $this->set' . \ucfirst($this->classVariable) . '(new DateTimeImmutable($value, new DateTimeZone("UTC")));'. "\n";
-        $this->setFromArray .= "                    }\n";
-        $this->setFromArray .= '                    break;' . "\n";
-
-        $this->toArray .= '            "' . $this->classVariable . '" => $datesToIso && $this->' . $this->classVariable . ' != null ?' . "\n";
-        $this->toArray .= '                $this->' . $this->classVariable . '->format(\DateTimeImmutable::ATOM) : $this->' . $this->classVariable . ',' . "\n";
-
-        $this->visitNonReference($member);
-    }
-
-    private function visitNonReference($member)
-    {
-        $this->resolver .= '    private $orderNumber' . \ucfirst($member->getName()) . ' = -1;' . "\n";
-        $this->resolver .= '    private $orderDirection' . \ucfirst($member->getName()) . ' = -1;' . "\n";
-        $this->resolver .= "    \n";
-        $this->resolver .= '    public function orderBy' . \ucfirst($member->getName()) . 'Asc()' . "\n";
-        $this->resolver .= "    {\n";
-        $this->resolver .= '        $this->orderNumber' . \ucfirst($member->getName()) .
-                                                        ' = $this->drawOrderTicket();' . "\n";
-        $this->resolver .= '        $this->orderDirection' . \ucfirst($member->getName()) .
-                                                        ' = self::ORDER_DIRECTION_ASC;' . "\n";
-        $this->resolver .= '        return $this;' . "\n";
-        $this->resolver .= "    }\n";
-        $this->resolver .= "    \n";
-        $this->resolver .= '    public function orderBy' . \ucfirst($member->getName()) . 'Desc()' . "\n";
-        $this->resolver .= "    {\n";
-        $this->resolver .= '        $this->orderNumber' . \ucfirst($member->getName()) .
-                                                        ' = $this->drawOrderTicket();' . "\n";
-        $this->resolver .= '        $this->orderDirection' . \ucfirst($member->getName()) .
-                                                        ' = self::ORDER_DIRECTION_DESC;' . "\n";
-        $this->resolver .= '        return $this;' . "\n";
-        $this->resolver .= "    }\n";
-        $this->resolver .= "    \n";
-
-        $this->resolverVisit .= '        $visitor->resolverVisitNonReferenceProperty("' .
-                                                            $member->getName() . '");' . "\n";
-        $this->resolverVisit .= '        if ($this->orderNumber' . \ucfirst($member->getName()) . ' != -1)' . "\n";
-        $this->resolverVisit .= "        {\n";
-        $this->resolverVisit .= '            if ($this->orderDirection' . \ucfirst($member->getName()) .
-                                                        '== self::ORDER_DIRECTION_ASC)' . "\n";
-        $this->resolverVisit .= "            {\n";
-        $this->resolverVisit .= '                $visitor->resolverVisitOrderAsc($this->orderNumber'
-                                                    . \ucfirst($member->getName()) . ', "'
-                                                    . $member->getName() . '");' . "\n";
-        $this->resolverVisit .= "            }\n";
-        $this->resolverVisit .= '            else' . "\n";
-        $this->resolverVisit .= "            {\n";
-        $this->resolverVisit .= '                $visitor->resolverVisitOrderDesc($this->orderNumber'
-                                                    . \ucfirst($member->getName()) . ', "'
-                                                    . $member->getName() . '");' . "\n";
-        $this->resolverVisit .= "            }\n";
-        $this->resolverVisit .= "        }\n";
-
-        $this->debugInfo .= '            "' . $this->classVariable . '" => $this->' . $this->classVariable . ',' . "\n";
-        $this->debugInfo .= '            "is' . \ucfirst($this->classVariable) . 'Dirty" => $this->is' . \ucfirst($this->classVariable) . 'Dirty,' . "\n";
-    }
-
-    public function varDefinitionBefore() {return '';}
-    public function varDefinitionAfter()
+    public function varDefinitionBefore(Schema\Member $member) {return '';}
+    public function varDefinitionAfter(Schema\Member $member)
     {
         // ucfirst: upper case first letter (it's a php built-in)
-        $res  = '    private $is' . \ucfirst($this->classVariable) . 'Dirty =  false;' . "\n";
+        $res  = '    private $is' . \ucfirst($member->getName()) . 'Dirty =  false;' . "\n";
         $res .= "    \n";
 
         return $res;
     }
-    public function getterBegin()
+
+    public function getterBegin(Schema\Member $member)
     {
         $res  = '        $this->GMMStorable_checkValidationToken();' . "\n";
         $res .= "        \n";
 
         return $res;
     }
-    public function setterBegin()
+
+    public function setterBegin(Schema\Member $member)
     {
         $res  = '        $this->GMMStorable_checkValidationToken();' . "\n";
         $res .= "        \n";
 
         return $res;
     }
-    public function setterEnd()
+
+    public function setterEnd(Schema\Member $member)
     {
         $res  = "        \n";
         // ucfirst: upper case first letter (it's a php built-in)
-        $res .= '        $this->is' . \ucfirst($this->classVariable) . 'Dirty = true;' . "\n";
+        $res .= '        $this->is' . \ucfirst($member->getName()) . 'Dirty = true;' . "\n";
         $res .= '        $this->GMMStorable_makeDirty();' . "\n";
 
         return $res;
     }
-    public function topOfGetterSwitch()
+
+    public function topOfGetterSwitch(Schema\TypeDefinition $typeDefinition)
     {
         $res  = '            case "id":' . "\n";
         $res .= '                return $this->getid();' . "\n";
@@ -382,7 +128,7 @@ class Storable implements \Good\Service\Modifier
         return '';
     }
 
-    public function classBody()
+    public function classBody(Schema\TypeDefinition $typeDefinition)
     {
         $res  = '    private $dirty = false;' . "\n";
         $res .= "    \n";
@@ -399,10 +145,12 @@ class Storable implements \Good\Service\Modifier
         $res .= "    {\n";
         $res .= '        $this->dirty = false;' . "\n";
         $res .= "        \n";
-        foreach ($this->classMembers as $member)
+
+        foreach ($typeDefinition->getMembers() as $member)
         {
-            $res .= '        $this->is' . ucfirst($member) . 'Dirty = false;' . "\n";
+            $res .= '        $this->is' . ucfirst($member->getName()) . 'Dirty = false;' . "\n";
         }
+
         $res .= "    }\n";
         $res .= "    \n";
         $res .= '    public function isDirty()' . "\n";
@@ -449,24 +197,77 @@ class Storable implements \Good\Service\Modifier
 
         $res .= '    public static function resolver()' . "\n";
         $res .= "    {\n";
-        $res .= '        return new ' . $this->className . 'Resolver();' . "\n";
+        $res .= '        return new ' . $typeDefinition->getName() . 'Resolver();' . "\n";
         $res .= "    }\n";
         $res .= "    \n";
         $res .= '    public static function id($storage, $id)' . "\n";
         $res .= "    {\n";
-        $res .= '        return new \Good\Manners\Id(new ' . $this->className . '(), $storage, $id);' . "\n";
+        $res .= '        return new \Good\Manners\Id(new ' . $typeDefinition->getName() . '(), $storage, $id);' . "\n";
         $res .= "    }\n";
         $res .= "    \n";
         $res .= '    public function getType()' . "\n";
         $res .= "    {\n";
-        $res .= '        return "' . $this->className . '";' . "\n";
+        $res .= '        return "' . $typeDefinition->getName() . '";' . "\n";
         $res .= "    }\n";
         $res .= "    \n";
 
-        $this->accept .= "    }\n";
-        $this->accept .= "    \n";
+        $this->generateIncludableFragments($typeDefinition);
+
+        $this->extraFiles[$typeDefinition->getName() . 'Resolver.php'] = $this->resolver;
 
         $res .= $this->accept;
+        $res .= $this->setFromArray;
+        $res .= $this->toArray;
+        $res .= $this->debugInfo;
+
+        return $res;
+    }
+
+    public function generateIncludableFragments(Schema\TypeDefinition $typeDefinition)
+    {
+        $this->accept  = '    public function acceptStorableVisitor(\\Good\\Manners\\StorableVisitor $visitor)' . "\n";
+        $this->accept .= "    {\n";
+
+        $this->setFromArray  = '    public function setFromArray(array $data)' . "\n";
+        $this->setFromArray .= "    {\n";
+        $this->setFromArray .= '        foreach ($data as $field => $value)' . "\n";
+        $this->setFromArray .= "        {\n";
+        $this->setFromArray .= '            switch ($field)' . "\n";
+        $this->setFromArray .= "            {\n";
+
+        $this->toArray  = '    public function toArray($datesToIso)' . "\n";
+        $this->toArray .= "    {\n";
+        $this->toArray .= "        return [\n";
+        $this->toArray .= '            "id" => $this->id,' . "\n";
+
+        $this->debugInfo  = '    public function __debugInfo()' . "\n";
+        $this->debugInfo .= "    {\n";
+        $this->debugInfo .= "        return [\n";
+        $this->debugInfo .= '            "id" => $this->id,' . "\n";
+
+        $this->resolver  = "<?php\n";
+        $this->resolver .= "\n";
+        $this->resolver .= 'class ' . $typeDefinition->getName() . 'Resolver extends \\Good\\Manners\\BaseResolver' . "\n";
+        $this->resolver .= "{\n";
+        $this->resolver .= '    public function getType()' . "\n";
+        $this->resolver .= "    {\n";
+        $this->resolver .= '        return "' . $typeDefinition->getName() . '";' . "\n";
+        $this->resolver .= "    }\n";
+        $this->resolver .= "    \n";
+
+        $this->resolverVisit  = '    public function acceptResolverVisitor' .
+                                                '(\\Good\\Manners\\ResolverVisitor $visitor)' . "\n";
+        $this->resolverVisit .= "    {\n";
+
+        foreach ($typeDefinition->getMembers() as $member)
+        {
+            $this->member = $member;
+
+            $member->getType()->acceptTypeVisitor($this);
+        }
+
+        $this->accept .= "    }\n";
+        $this->accept .= "    \n";
 
         $this->setFromArray .= '                default:' . "\n";
         $this->setFromArray .= '                    throw new Exception("Unrecognised field in setFromArray array.");' . "\n";
@@ -475,27 +276,194 @@ class Storable implements \Good\Service\Modifier
         $this->setFromArray .= "        }\n";
         $this->setFromArray .= "    }\n";
 
-        $res .= $this->setFromArray;
-
         $this->toArray .= "        ];\n";
         $this->toArray .= "    }\n";
         $this->toArray .= "\n";
-
-        $res .= $this->toArray;
 
         $this->debugInfo .= "        ];\n";
         $this->debugInfo .= "    }\n";
         $this->debugInfo .= "\n";
 
-        $res .= $this->debugInfo;
+        $this->resolverVisit .= "    }\n";
+        $this->resolverVisit .= "    \n";
 
-        return $res;
+        $this->resolver .= $this->resolverVisit;
+
+        $this->resolver .= "}\n";
+        $this->resolver .= "\n";
+        $this->resolver .= "?>";
     }
+
+    public function visitDateTimeType(Schema\Type\DateTimeType $type)
+    {
+        $this->accept .= '        $visitor->visitDatetimeProperty("' . $this->member->getName() . '", ' .
+                                            '$this->is' . \ucfirst($this->member->getName()) . 'Dirty, ' .
+                                            '$this->' . $this->member->getName() . ');' . "\n";
+
+        $this->setFromArray .= '                case "' . $this->member->getName() . '":' . "\n";
+        $this->setFromArray .= '                    if ($value === null || $value instanceof \DateTimeImmutable)' . "\n";
+        $this->setFromArray .= "                    {\n";
+        $this->setFromArray .= '                        $this->set' . \ucfirst($this->member->getName()) . '($value);'. "\n";
+        $this->setFromArray .= "                    }\n";
+        $this->setFromArray .= '                    else' . "\n";
+        $this->setFromArray .= "                    {\n";
+        $this->setFromArray .= '                        $this->set' . \ucfirst($this->member->getName()) . '(new DateTimeImmutable($value, new DateTimeZone("UTC")));'. "\n";
+        $this->setFromArray .= "                    }\n";
+        $this->setFromArray .= '                    break;' . "\n";
+
+        $this->toArray .= '            "' . $this->member->getName() . '" => $datesToIso && $this->' . $this->member->getName() . ' != null ?' . "\n";
+        $this->toArray .= '                $this->' . $this->member->getName() . '->format(\DateTimeImmutable::ATOM) : $this->' . $this->member->getName() . ',' . "\n";
+
+        $this->visitNonReference();
+    }
+
+    public function visitIntType(Schema\Type\IntType $type)
+    {
+        $this->accept .= '        $visitor->visitIntProperty("' . $this->member->getName() . '", ' .
+                                            '$this->is' . \ucfirst($this->member->getName()) . 'Dirty, ' .
+                                            '$this->' . $this->member->getName() . ');' . "\n";
+
+        $this->setFromArray .= '                case "' . $this->member->getName() . '":' . "\n";
+        $this->setFromArray .= '                    $this->set' . \ucfirst($this->member->getName()) . '(\intval($value));'. "\n";
+        $this->setFromArray .= '                    break;' . "\n";
+
+        $this->toArray .= '            "' . $this->member->getName() . '" => $this->' . $this->member->getName() . ',' . "\n";
+
+        $this->visitNonReference();
+    }
+
+    public function visitFloatType(Schema\Type\FloatType $type)
+    {
+        $this->accept .= '        $visitor->visitFloatProperty("' . $this->member->getName() . '", ' .
+                                            '$this->is' . \ucfirst($this->member->getName()) . 'Dirty, ' .
+                                            '$this->' . $this->member->getName() . ');' . "\n";
+
+        $this->setFromArray .= '                case "' . $this->member->getName() . '":' . "\n";
+        $this->setFromArray .= '                    $this->set' . \ucfirst($this->member->getName()) . '(\floatval($value));'. "\n";
+        $this->setFromArray .= '                    break;' . "\n";
+
+        $this->toArray .= '            "' . $this->member->getName() . '" => $this->' . $this->member->getName() . ',' . "\n";
+
+        $this->visitNonReference();
+    }
+
+    public function visitReferenceType(Schema\Type\ReferenceType $type)
+    {
+        $this->accept .= '        $visitor->visitReferenceProperty("' . $this->member->getName() . '", ' .
+                                            '"' . $type->getReferencedType() . '", ' .
+                                            '$this->is' . \ucfirst($this->member->getName()) . 'Dirty, ' .
+                                            '$this->' . $this->member->getName() . ');' . "\n";
+
+        $this->setFromArray .= '                case "' . $this->member->getName() . '":' . "\n";
+        $this->setFromArray .= '                    $this->set' . \ucfirst($this->member->getName()) . '($value);'. "\n";
+        $this->setFromArray .= '                    break;' . "\n";
+
+        $this->toArray .= '            "' . $this->member->getName() . '" => $this->' . $this->member->getName() . ' == null ?' . "\n";
+        $this->toArray .= '                null : $this->' . $this->member->getName() . '->toArray($datesToIso),' . "\n";
+
+        $this->resolver .= '    private $resolved' . \ucfirst($this->member->getName()) . ' = null;' . "\n";
+        $this->resolver .= "    \n";
+        $this->resolver .= '    public function resolve' . \ucfirst($this->member->getName()) . '()' . "\n";
+        $this->resolver .= "    {\n";
+        $this->resolver .= '        $this->resolved' . \ucfirst($this->member->getName()) . ' = ' .
+                                                        'new ' . $type->getReferencedType() .
+                                                                'Resolver($this->root);' . "\n";
+        $this->resolver .= "        \n";
+        $this->resolver .= '        return $this->resolved' . \ucfirst($this->member->getName()) . ';' . "\n";
+        $this->resolver .= "    }\n";
+        $this->resolver .= "    \n";
+        $this->resolver .= '    public function get' . \ucfirst($this->member->getName()) . '()' . "\n";
+        $this->resolver .= "    {\n";
+        $this->resolver .= '        return $this->resolved' . \ucfirst($this->member->getName()) . ';' . "\n";
+        $this->resolver .= "    }\n";
+        $this->resolver .= "    \n";
+
+        $this->resolverVisit .= '        if ($this->resolved' . \ucfirst($this->member->getName()) . ' != null)' . "\n";
+        $this->resolverVisit .= "        {\n";
+        $this->resolverVisit .= '            $visitor->resolverVisitResolvedReferenceProperty("' .
+                                            $this->member->getName() . '", "' . $type->getReferencedType() .
+                                            '", ' . '$this->resolved' . \ucfirst($this->member->getName()) .
+                                            ');' . "\n";
+        $this->resolverVisit .= "        }\n";
+        $this->resolverVisit .= '        else' . "\n";
+        $this->resolverVisit .= "        {\n";
+        $this->resolverVisit .= '            $visitor->resolverVisitUnresolvedReferenceProperty(' .
+                                            '"' . $this->member->getName() . '");' . "\n";
+        $this->resolverVisit .= "        }\n";
+
+        $this->debugInfo .= '            "' . $this->member->getName() . '" => $this->' . $this->member->getName() . ',' . "\n";
+        $this->debugInfo .= '            "is' . \ucfirst($this->member->getName()) . 'Dirty" => $this->is' . \ucfirst($this->member->getName()) . 'Dirty,' . "\n";
+    }
+
+    public function visitTextType(Schema\Type\TextType $type)
+    {
+        $this->accept .= '        $visitor->visitTextProperty("' . $this->member->getName() . '", ' .
+                                            '$this->is' . \ucfirst($this->member->getName()) . 'Dirty, ' .
+                                            '$this->' . $this->member->getName() . ');' . "\n";
+
+        $this->setFromArray .= '                case "' . $this->member->getName() . '":' . "\n";
+        $this->setFromArray .= '                    $this->set' . \ucfirst($this->member->getName()) . '(\strval($value));'. "\n";
+        $this->setFromArray .= '                    break;' . "\n";
+
+        $this->toArray .= '            "' . $this->member->getName() . '" => $this->' . $this->member->getName() . ',' . "\n";
+
+        $this->visitNonReference();
+    }
+
+    private function visitNonReference()
+    {
+        $this->resolver .= '    private $orderNumber' . \ucfirst($this->member->getName()) . ' = -1;' . "\n";
+        $this->resolver .= '    private $orderDirection' . \ucfirst($this->member->getName()) . ' = -1;' . "\n";
+        $this->resolver .= "    \n";
+        $this->resolver .= '    public function orderBy' . \ucfirst($this->member->getName()) . 'Asc()' . "\n";
+        $this->resolver .= "    {\n";
+        $this->resolver .= '        $this->orderNumber' . \ucfirst($this->member->getName()) .
+                                                        ' = $this->drawOrderTicket();' . "\n";
+        $this->resolver .= '        $this->orderDirection' . \ucfirst($this->member->getName()) .
+                                                        ' = self::ORDER_DIRECTION_ASC;' . "\n";
+        $this->resolver .= '        return $this;' . "\n";
+        $this->resolver .= "    }\n";
+        $this->resolver .= "    \n";
+        $this->resolver .= '    public function orderBy' . \ucfirst($this->member->getName()) . 'Desc()' . "\n";
+        $this->resolver .= "    {\n";
+        $this->resolver .= '        $this->orderNumber' . \ucfirst($this->member->getName()) .
+                                                        ' = $this->drawOrderTicket();' . "\n";
+        $this->resolver .= '        $this->orderDirection' . \ucfirst($this->member->getName()) .
+                                                        ' = self::ORDER_DIRECTION_DESC;' . "\n";
+        $this->resolver .= '        return $this;' . "\n";
+        $this->resolver .= "    }\n";
+        $this->resolver .= "    \n";
+
+        $this->resolverVisit .= '        $visitor->resolverVisitNonReferenceProperty("' .
+                                                                            $this->member->getName() . '");' . "\n";
+        $this->resolverVisit .= '        if ($this->orderNumber' . \ucfirst($this->member->getName()) . ' != -1)' . "\n";
+        $this->resolverVisit .= "        {\n";
+        $this->resolverVisit .= '            if ($this->orderDirection' . \ucfirst($this->member->getName()) .
+                                                                '== self::ORDER_DIRECTION_ASC)' . "\n";
+        $this->resolverVisit .= "            {\n";
+        $this->resolverVisit .= '                $visitor->resolverVisitOrderAsc($this->orderNumber'
+                                                                        . \ucfirst($this->member->getName()) . ', "'
+                                                                        . $this->member->getName() . '");' . "\n";
+        $this->resolverVisit .= "            }\n";
+        $this->resolverVisit .= '            else' . "\n";
+        $this->resolverVisit .= "            {\n";
+        $this->resolverVisit .= '                $visitor->resolverVisitOrderDesc($this->orderNumber'
+                                                    . \ucfirst($this->member->getName()) . ', "'
+                                                    . $this->member->getName() . '");' . "\n";
+        $this->resolverVisit .= "            }\n";
+        $this->resolverVisit .= "        }\n";
+
+        $this->debugInfo .= '            "' . $this->member->getName() . '" => $this->' . $this->member->getName() . ',' . "\n";
+        $this->debugInfo .= '            "is' . \ucfirst($this->member->getName()) . 'Dirty" => $this->is' . \ucfirst($this->member->getName()) . 'Dirty,' . "\n";
+    }
+
     public function bottomOfFile() {return '';}
 
     public function extraFiles()
     {
         return $this->extraFiles;
+
+        $this->extraFiles = array();
     }
 }
 
