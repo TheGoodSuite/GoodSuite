@@ -10,7 +10,7 @@ interface ConditionProcessor
     public function processGreaterOrEqualCondition(Storable $to);
     public function processLessThanCondition(Storable $to);
     public function processLessOrEqualCondition(Storable $to);
-    
+
     public function processAndCondition(Condition $condition1, Condition $condition2);
     public function processOrCondition(Condition $condition1, Condition $condition2);
 }

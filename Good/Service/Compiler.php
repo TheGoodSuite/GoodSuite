@@ -12,7 +12,7 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
     // Compiler level data
     private $outputDir;
     private $modifiers;
-    
+
     // file level data
     private $inputFile = null;
     private $outputFile = null;
@@ -22,27 +22,27 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
     private $className = null;
     private $getters = null;
     private $setters = null;
-    
+
     public function __construct($modifiers, $outputDir)
     {
         $this->outputDir = $outputDir;
         $this->modifiers = $modifiers;
     }
-    
+
     public function compiledFiles()
     {
         return $this->outputFiles;
     }
-    
+
     public function visitSchema(Schema $schema)
     {
         foreach ($this->modifiers as $modifier)
         {
             $modifier->visitSchema($schema);
         }
-        
+
         // TODO: prevent namespace and filename collisions here
-        // Build the base class 
+        // Build the base class
         $output  = "<?php\n";
         $output .= "\n";
         foreach ($this->modifiers as $modifier)
@@ -50,7 +50,7 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
             $output .= $modifier->baseClassTopOfFile();
         }
         $output .= "abstract class GeneratedBaseClass";
-        
+
         $first = true;
         foreach ($this->modifiers as $modifier)
         {
@@ -67,9 +67,9 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
                 }
             }
         }
-        
+
         $output .= "\n";
-        
+
         $output .= "{\n";
         $output .= "    public function __construct()\n";
         $output .= "    {\n";
@@ -86,25 +86,25 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
         $output .= "}\n";
         $output .= "\n";
         $output .= '?>';
-        
+
         \file_put_contents($this->outputDir . 'GeneratedBaseClass.php', $output);
     }
-    
-    
+
+
     public function visitSchemaEnd()
     {
         if ($this->output != null)
         {
             $this->saveOutput();
         }
-        
+
         $this->output = null;
-        
+
         foreach ($this->modifiers as $modifier)
         {
             $modifier->visitSchemaEnd();
         }
-        
+
         foreach ($this->modifiers as $modifier)
         {
             foreach($modifier->extraFiles() as $filename => $contents)
@@ -113,25 +113,25 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
             }
         }
     }
-    
+
     public function visitDataType(Schema\DataType $dataType)
     {
         if ($this->output != null)
         {
             $this->saveOutput();
         }
-        
+
         foreach ($this->modifiers as $modifier)
         {
             $modifier->visitDataType($dataType);
         }
-        
+
         $this->className = $dataType->getName();
-        
+
         $this->includes = array();
-        
+
         $this->output = 'class ' . $dataType->getName() . " extends GeneratedBaseClass\n";
-        
+
         $this->output .= "{\n";
         $this->inputFile = $dataType->getSourceFileName();
         // TODO: make following line independant of execution path at any time
@@ -140,53 +140,53 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
         //       But I changed it to dataType name instead
         $this->outputFile = $this->outputDir . $dataType->getName() . '.datatype.php';
         $this->outputFiles[] = $this->outputFile;
-        
+
         $this->getters  = '    public function __get($property)' . "\n";
         $this->getters .= "    {\n";
         $this->getters .= '        switch ($property)' . "\n";
         $this->getters .= "        {\n";
-        
+
         foreach ($this->modifiers as $modifier)
         {
             $this->getters .= $modifier->topOfGetterSwitch($dataType);
         }
-        
+
         $this->setters  = '    public function __set($property, $value)' . "\n";
         $this->setters .= "    {\n";
         $this->setters .= '        switch ($property)' . "\n";
         $this->setters .= "        {\n";
     }
-    
+
     private function saveOutput()
     {
         $this->getters .= '            default:' . "\n";
         $this->getters .= '                throw new \Exception("Unknown or non-public property");' . "\n";
         $this->getters .= "        }\n";
         $this->getters .= "    }\n";
-        
+
         $this->setters .= '            default:' . "\n";
         $this->setters .= '                throw new \Exception("Unknown or non-public property");' . "\n";
         $this->setters .= "        }\n";
         $this->setters .= "    }\n";
-        
+
         $this->output .= $this->getters;
-        
+
         $this->output .= $this->setters;
-        
+
         foreach ($this->modifiers as $modifier)
         {
             $this->output .= $modifier->classBody();
         }
-        
+
         $this->output .= "}\n";
-        
+
         // neatly start the file
         $top  = "<?php\n";
         $top .= "\n";
-        
+
         $top .= "include_once 'GeneratedBaseClass.php';\n";
         $top .= "\n";
-        
+
         // TODO: fix includes
         //       (we can do without for now, as we don't force the type yet,
         //          don't actually use the includes yet)
@@ -195,111 +195,111 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
         //{
         //
         //}
-        
+
         foreach ($this->modifiers as $modifier)
         {
             $top .= $modifier->topOfFile();
         }
-        
+
         $this->output = $top . $this->output;
-        
+
         foreach ($this->modifiers as $modifier)
         {
             $this->output .= $modifier->bottomOfFile();
         }
-        
+
         // close the file off
         $this->output .= "\n";
         $this->output .= "?>";
-        
+
         \file_put_contents($this->outputFile, $this->output);
     }
-    
+
     public function visitReferenceMember(Schema\ReferenceMember $member)
     {
         foreach ($this->modifiers as $modifier)
         {
             $modifier->visitReferenceMember($member);
         }
-        
+
         $varType = $member->getReferencedType();
         $typeCheck = null;
-        
+
         $includes[] = $member->getReferencedType();
-        
+
         $this->commitVariable($member, $varType, $typeCheck);
     }
-    
+
     public function visitTextMember(Schema\TextMember $member)
     {
         foreach ($this->modifiers as $modifier)
         {
             $modifier->visitTextMember($member);
         }
-        
+
         $typeModifiers = $member->getTypeModifiers();
-        
+
         $varType = 'string';
         $typeCheck = '\\Good\\Service\\TypeChecker::checkString($value, ' . $typeModifiers['minLength'];
-        
+
         if (array_key_exists('maxLength', $typeModifiers))
         {
             $typeCheck .= ', ' . $typeModifiers['maxLength'];
         }
-        
+
         $typeCheck .= ')';
-        
+
         $this->commitVariable($member, $varType, $typeCheck);
     }
-    
+
     public function visitIntMember(Schema\IntMember $member)
     {
         foreach ($this->modifiers as $modifier)
         {
             $modifier->visitIntMember($member);
         }
-        
+
         $typeModifiers = $member->getTypeModifiers();
-        
+
         $varType = 'int';
         $typeCheck = '\\Good\\Service\\TypeChecker::checkInt($value, ' . $typeModifiers['minValue'];
         $typeCheck .= ', ' . $typeModifiers['maxValue'] . ')';
-        
+
         $this->commitVariable($member, $varType, $typeCheck);
     }
-    
+
     public function visitFloatMember(Schema\FloatMember $member)
     {
         foreach ($this->modifiers as $modifier)
         {
             $modifier->visitFloatMember($member);
         }
-        
+
         $varType = 'float';
         $typeCheck = '\\Good\\Service\\TypeChecker::checkFloat($value)';
-        
+
         $this->commitVariable($member, $varType, $typeCheck);
     }
-    
+
     public function visitDatetimeMember(Schema\DatetimeMember $member)
     {
         foreach ($this->modifiers as $modifier)
         {
             $modifier->visitDatetimeMember($member);
         }
-        
+
         $varType = 'datetime';
         $typeCheck = '\\Good\\Service\\TypeChecker::checkDateTime($value)';
-        
+
         $this->commitVariable($member, $varType, $typeCheck);
     }
-    
+
     private function commitVariable(Schema\Member $member, $varType, $typeCheck)
     {
         // Var type is currently unused but might be used when I do typechecking
         // (then again, I might actually do it differently)
         $access = null;
-        
+
         foreach ($member->getAttributes() as $attribute)
         {
             switch ($attribute)
@@ -312,58 +312,58 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
                     if ($access != null)
                     {
                         // TODO: better error handling
-                        throw new \Exception('Error: More than one attribute specifying access on variable ' . 
+                        throw new \Exception('Error: More than one attribute specifying access on variable ' .
                                 $member->getName() . ' from ' . $this->inputFile . '.');
                     }
                     $access = 'protected';
                 break;
-                
+
                 case 'public':
                     if ($access != null)
                     {
                         // TODO: better error handling
-                        throw new \Exception('Error: More than one attribute specifying access on variable ' . 
+                        throw new \Exception('Error: More than one attribute specifying access on variable ' .
                                 $member->getName() . ' from ' . $this->inputFile . '.');
                     }
                     $access = 'public';
                 break;
-                
+
                 default:
                 break;
             }
         }
-        
+
         // default access is public
         if ($access == null)
         {
             $access = 'public';
         }
-        
-        
+
+
         foreach ($this->modifiers as $modifier)
         {
             $this->output .= $modifier->varDefinitionBefore();
         }
-        
+
         $this->output .= '    private $' . $member->getName() . " = null;\n";
         $this->output .= "    \n";
-        
+
         foreach ($this->modifiers as $modifier)
         {
             $this->output .= $modifier->varDefinitionAfter();
         }
-        
+
         // accessors
-        
+
         //getter
         $this->output .= '    ' . $access . ' function get' . \ucfirst($member->getName()) . "()\n";
         $this->output .= "    {\n";
-        
+
         foreach ($this->modifiers as $modifier)
         {
             $this->output .= $modifier->getterBegin();
         }
-        
+
         $this->output .= '        return $this->' . $member->getName() . ";\n";
         $this->output .= "    }\n";
         $this->output .= "    \n";
@@ -374,33 +374,33 @@ class Compiler implements \Good\Rolemodel\SchemaVisitor
             $this->getters .= '                return $this->get' . \ucfirst($member->getName()) . "();\n";
             $this->getters .= "            \n";
         }
-        
+
         //setter
         $this->output .= '    ' . $access . ' function set' . \ucfirst($member->getName()) . '($value)' . "\n";
-        
+
         $this->output .= "    {\n";
-        
+
         if ($typeCheck != null)
         {
             $this->output .= '        ' . $typeCheck . ";\n";
             $this->output .= "        \n";
         }
-        
+
         foreach ($this->modifiers as $modifier)
         {
             $this->output .= $modifier->setterBegin();
         }
-        
+
         $this->output .= '        $this->' . $member->getName() . ' = $value;' . "\n";
-        
+
         foreach ($this->modifiers as $modifier)
         {
             $this->output .= $modifier->setterEnd();
         }
-        
+
         $this->output .= "    }\n";
         $this->output .= "    \n";
-        
+
         if ($access == 'public')
         {
             $this->setters .= '            case \'' . $member->getName() . "':\n";

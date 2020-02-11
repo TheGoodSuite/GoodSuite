@@ -5,21 +5,21 @@ namespace Good\Service\Modifier;
 use Good\Rolemodel\Schema;
 
 class Observable implements \Good\Service\Modifier
-{    
+{
     public function __construct()
     {
     }
-    
+
     public function baseClassTopOfFile()
     {
         return '';
     }
-    
+
     public function implementingInterfaces()
     {
         return array('\\Good\\Service\\Observable');
     }
-    
+
     public function baseClassConstructor()
     {
         return '';
@@ -28,18 +28,18 @@ class Observable implements \Good\Service\Modifier
     {
         return '';
     }
-    
+
     public function visitSchema(Schema $schema) {}
     public function visitSchemaEnd() {}
-    
+
     public function visitDataType(Schema\DataType $dataType) {}
-    
+
     public function visitReferenceMember(Schema\ReferenceMember $member) {}
     public function visitTextMember(Schema\TextMember $member) {}
     public function visitIntMember(Schema\IntMember $member) {}
     public function visitFloatMember(Schema\FloatMember $member) {}
     public function visitDatetimeMember(Schema\DatetimeMember $member) {}
-    
+
     public function varDefinitionBefore() {return '';}
     public function varDefinitionAfter() {return '';}
     public function getterBegin() {return '';}
@@ -48,11 +48,11 @@ class Observable implements \Good\Service\Modifier
     {
         $res  = "        \n";
         $res .= '        $this->GSMObservable_notifyObservers();' . "\n";
-        
+
         return $res;
     }
     public function topOfGetterSwitch() { return ''; }
-    
+
     public function topOfFile() {return '';}
     public function classBody()
     {
@@ -81,10 +81,10 @@ class Observable implements \Good\Service\Modifier
         $res .= "        }\n";
         $res .= "    }\n";
         $res .= "    \n";
-        
+
         return $res;
     }
-    
+
     public function bottomOfFile() {return '';}
     public function extraFiles() {return array();}
 }

@@ -7,39 +7,39 @@ use Good\Rolemodel\InvalidTypeModifierException;
 abstract class PrimitiveMember extends Member
 {
     private $typeModifiers;
-    
+
     abstract function getValidParameterTypeModifiers();
     abstract function getValidNonParameterTypeModifiers();
     abstract function processTypeModifiers(array $typeModifiers);
     abstract function getDefaultTypeModifierValues();
-    
+
     public function __construct(array $attributes, $name, array $typeModifiers)
     {
         parent::__construct($attributes, $name);
-        
+
         $this->validateTypeModifiers($typeModifiers);
         $typeModifiers = $this->processTypeModifiers($typeModifiers);
         $typeModifiers = array_merge($this->getDefaultTypeModifierValues(), $typeModifiers);
-        
+
         $this->typeModifiers = $typeModifiers;
     }
-    
+
     public function getReferencedTypeIfAny()
     {
         return null;
     }
-    
+
     public function getTypeModifiers()
     {
         return $this->typeModifiers;
     }
-    
+
     private function validateTypeModifiers(array $typeModifiers)
     {
         // Turn them into "sets" that have O(1) lookup
         $allowedParameterModifiers = array_flip($this->getValidParameterTypeModifiers());
         $allowedNonParameterModifiers = array_flip($this->getValidNonParameterTypeModifiers());
-        
+
         foreach ($typeModifiers as $modifier => $value)
         {
             if ($value === true) // strict check!

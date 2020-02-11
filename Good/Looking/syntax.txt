@@ -12,8 +12,8 @@ Code
   or the end of a code block (:>)
 - Control structures consists of:
   - an "opener", which is closed by a colon (:)
-  - a body of a mix of zero or more other expressions, 
-    direct text (between ":>" and "<:"...) and further 
+  - a body of a mix of zero or more other expressions,
+    direct text (between ":>" and "<:"...) and further
     control structures.
   - the matching "closer" followed by a semicolon (;)
 
@@ -25,7 +25,7 @@ Expressions
   with operators between them
 - A term is one of:
   - an exprression between brackets ('(' and ')')
-  - a call to a function, in the form of: 
+  - a call to a function, in the form of:
     "functionname(argument)" where arguments is a comma-seperated
     list of of expressions
   - A literal:
@@ -42,9 +42,9 @@ Expressions
 
 Functions
 
-- No functions have been implemented yet, so it's not yet valid 
+- No functions have been implemented yet, so it's not yet valid
   to use them
-- Quite a number of function are planned, but the some of the 
+- Quite a number of function are planned, but the some of the
   most urgent ones are:
   - include() (what's the value of a template system without it?)
   - noEscape() (print things to the output without escaping)
@@ -79,19 +79,19 @@ Control Structures:
 The control structures are:
 	- if (condition): {body} endif;
       {body} will be if the expression condition evaluates to true
-      
+
 	- foreach(array as $varName): {body} endforeach;
       {body} will be executed once for each element in the collection
       (arrray or Traversable) - $varName will take the value of one of
       the elements in the collection each time, following the order of
       the collection
-      
+
 	- forrange(beginValue --> endValue) {body} endforrange;
       {body} will be executed once for beginValue, once for
       endValue and once for each integer in between.
       Both beginValue and endValue are expressions which will
       be casted to integers.
-      
+
     - forrange(beginValue --> endValue as $var) {body} endforrange;
       behaves like the previous entry, but also has $var take the
       values in the range (starting as beginValue, decreasing one

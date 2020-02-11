@@ -11,22 +11,22 @@ class FloatMember extends PrimitiveMember
         // visit this, there are no children to pass visitor on to
         $visitor->visitFloatMember($this);
     }
-    
+
     function getValidParameterTypeModifiers()
     {
         return array();
     }
-    
+
     function getValidNonParameterTypeModifiers()
     {
         return array();
     }
-    
+
     function processTypeModifiers(array $typeModifiers)
     {
         return $typeModifiers;
     }
-    
+
     function getDefaultTypeModifierValues()
     {
         return array();

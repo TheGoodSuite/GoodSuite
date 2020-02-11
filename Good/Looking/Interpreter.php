@@ -14,22 +14,22 @@ class Interpreter
     private $userVars = array();
     private $functionHandlers = array();
     private $functionHelper;
-    
+
     public function __construct($vars)
     {
         $this->templateVars = $vars;
     }
-    
+
     public function interpret($compiledTemplate, FunctionHelper $functionHelper)
     {
         $this->functionHelper = $functionHelper;
         require $compiledTemplate;
     }
-    
+
     //
     // Functions that should be called by compiled template
     //
-    
+
     private function getVar($varName)
     {
         if (isset($this->templateVars[$varName]))
@@ -49,7 +49,7 @@ class Interpreter
             throw new \Exception("Template uses unknown variable");
         }
     }
-    
+
     private function setVar($varName, $value)
     {
         if (isset($this->templateVars[$varName]))
@@ -66,7 +66,7 @@ class Interpreter
             return '';
         }
     }
-    
+
     private function setVars($vars, $value)
     {
         foreach ($vars as $var)
@@ -74,7 +74,7 @@ class Interpreter
             $this->setVar($var, $value);
         }
     }
-    
+
     private function checkVarName($varName)
     {
         if (isset($this->templateVars[$varName]))
@@ -94,22 +94,22 @@ class Interpreter
             throw new \Exception("Can't use existing user variable for loop");
         }
     }
-    
+
     private function unsetVar($varName)
     {
         // only applies to automatic vars
         unset($this->automaticVars[$varName]);
     }
-    
+
     private function arrayItem($array, $item)
     {
         return $array[$item];
     }
-    
+
     //
     // Functions that should be called by a function helper
     //
-    
+
     public function pushContext()
     {
         $this->hiddenVarsStack[] = $this->hiddenVars;
@@ -119,7 +119,7 @@ class Interpreter
         $this->automaticVars = array();
         $this->freedAutomaticVars = array();
     }
-    
+
     public function popContext()
     {
         $this->hiddenVars = array_pop($this->hiddenVarsStack);

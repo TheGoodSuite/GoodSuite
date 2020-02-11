@@ -8,10 +8,10 @@ class StorableCollection implements \Good\Manners\StorableCollection
     protected $dbresult;
     private $joins;
     private $type;
-    
+
     private $firstStorable;
     private $lastStorable;
-    
+
     private $reachedEnd;
 
     public function __construct($storage, $dbresult, $joins, $type)
@@ -20,16 +20,16 @@ class StorableCollection implements \Good\Manners\StorableCollection
         $this->dbresult = $dbresult;
         $this->joins = $joins;
         $this->type = $type;
-        
+
         $this->firstStorable = new LinkedListElement();
         $this->lastStorable = $this->firstStorable;
         $this->reachedEnd = false;
     }
-    
+
     public function getNext()
     {
         $ret = $this->lastStorable;
-    
+
         if ($this->moveNext())
         {
             return $ret->value;
@@ -39,17 +39,17 @@ class StorableCollection implements \Good\Manners\StorableCollection
             return null;
         }
     }
-    
+
     public function moveNext()
     {
         $row = $this->dbresult->fetch();
-        
+
         if ($row !== null && !$this->reachedEnd)
         {
             $this->lastStorable->value = $this->storage->createStorable($row, $this->joins, $this->type);
             $this->lastStorable->next = new LinkedListElement();
             $this->lastStorable = $this->lastStorable->next;
-            
+
             return true;
         }
         else
@@ -58,14 +58,14 @@ class StorableCollection implements \Good\Manners\StorableCollection
             return false;
         }
     }
-    
+
     public function getIterator()
     {
         if ($this->firstStorable->value == null)
         {
             $this->moveNext();
         }
-        
+
         return new StorableCollectionIterator($this, $this->firstStorable);
     }
 }

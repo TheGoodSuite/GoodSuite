@@ -11,7 +11,7 @@ an entire framework.
 It should be said that some of that original sentiment has been kept, though.
 Even as the features of the system grow, everything is still made with a very
 modular approack. This means that if you want nothing but a template engine,
-you can use GoodLooking and just not install any other part of the Good Suite. 
+you can use GoodLooking and just not install any other part of the Good Suite.
 This also means that instead of a template engine, you want only a way to make
 your database access easier, you can just install only the components for that.
 Of course, the richest experience will be when you use the entire system, but
