@@ -8,7 +8,6 @@ use Good\Rolemodel\Schema\TypeDefinition;
 
 interface Modifier
 {
-    public function baseClassTopOfFile();
     public function implementingInterfaces();
     public function baseClassBody();
     public function baseClassConstructor();
@@ -17,10 +16,7 @@ interface Modifier
     public function getterBegin(Schema\Member $member);
     public function setterBegin(Schema\Member $member);
     public function setterEnd(Schema\Member $member);
-    public function varDefinitionBefore(Schema\Member $member);
     public function varDefinitionAfter(Schema\Member $member);
-    public function topOfFile();
-    public function bottomOfFile();
     public function extraFiles();
 }
 

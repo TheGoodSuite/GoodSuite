@@ -89,10 +89,6 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
         // Build the base class
         $output  = "<?php\n";
         $output .= "\n";
-        foreach ($this->modifiers as $modifier)
-        {
-            $output .= $modifier->baseClassTopOfFile();
-        }
         $output .= "abstract class GeneratedBaseClass";
 
         $first = true;
@@ -220,17 +216,7 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
         //
         //}
 
-        foreach ($this->modifiers as $modifier)
-        {
-            $top .= $modifier->topOfFile();
-        }
-
         $this->output = $top . $this->output;
-
-        foreach ($this->modifiers as $modifier)
-        {
-            $this->output .= $modifier->bottomOfFile();
-        }
 
         // close the file off
         $this->output .= "\n";
@@ -336,12 +322,6 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
         if ($access == null)
         {
             $access = 'public';
-        }
-
-
-        foreach ($this->modifiers as $modifier)
-        {
-            $this->output .= $modifier->varDefinitionBefore($member);
         }
 
         $this->output .= '    private $' . $member->getName() . " = null;\n";

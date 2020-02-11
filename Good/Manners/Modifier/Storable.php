@@ -22,11 +22,6 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->extraFiles = array();
     }
 
-    public function baseClassTopOfFile()
-    {
-        return '';
-    }
-
     public function implementingInterfaces()
     {
         return array('\\Good\\Manners\\GeneratedStorable');
@@ -78,7 +73,6 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         return $res;
     }
 
-    public function varDefinitionBefore(Schema\Member $member) {return '';}
     public function varDefinitionAfter(Schema\Member $member)
     {
         // ucfirst: upper case first letter (it's a php built-in)
@@ -121,11 +115,6 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $res .= "            \n";
 
         return $res;
-    }
-
-    public function topOfFile()
-    {
-        return '';
     }
 
     public function classBody(Schema\TypeDefinition $typeDefinition)
@@ -456,8 +445,6 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->debugInfo .= '            "' . $this->member->getName() . '" => $this->' . $this->member->getName() . ',' . "\n";
         $this->debugInfo .= '            "is' . \ucfirst($this->member->getName()) . 'Dirty" => $this->is' . \ucfirst($this->member->getName()) . 'Dirty,' . "\n";
     }
-
-    public function bottomOfFile() {return '';}
 
     public function extraFiles()
     {

@@ -11,11 +11,6 @@ class Observable implements \Good\Service\Modifier
     {
     }
 
-    public function baseClassTopOfFile()
-    {
-        return '';
-    }
-
     public function implementingInterfaces()
     {
         return array('\\Good\\Service\\Observable');
@@ -30,7 +25,6 @@ class Observable implements \Good\Service\Modifier
         return '';
     }
 
-    public function varDefinitionBefore(Schema\Member $member) {return '';}
     public function varDefinitionAfter(Schema\Member $member) {return '';}
     public function getterBegin(Schema\Member $member) {return '';}
     public function setterBegin(Schema\Member $member) {return '';}
@@ -43,7 +37,6 @@ class Observable implements \Good\Service\Modifier
     }
     public function topOfGetterSwitch(TypeDefinition $typeDefinition) { return ''; }
 
-    public function topOfFile() {return '';}
     public function classBody(TypeDefinition $typeDefinition)
     {
         $res  = "    // Observer pattern (Observable)\n";
@@ -75,7 +68,6 @@ class Observable implements \Good\Service\Modifier
         return $res;
     }
 
-    public function bottomOfFile() {return '';}
     public function extraFiles() {return array();}
 }
 
