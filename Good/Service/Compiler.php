@@ -173,6 +173,10 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
         $this->commitVariable($this->member, $typeCheck);
     }
 
+    public function visitCollectionType(Schema\Type\CollectionType $type)
+    {
+    }
+
     private function commitVariable(Schema\Member $member, $typeCheck)
     {
         $access = null;

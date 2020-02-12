@@ -41,7 +41,8 @@ class Rolemodel
         // some complexity was added through nextTypeModifier, which is there to ensure that firstSeparator captures the first separator instead of the last
         // (without extra backtracking)
         $regexTypeModifiers = '(?P<firstTypeModifierPart>\\s*' . $regexTypeModifier . '\\s*)(?:(?P<nextTypeModifier>(?P<firstSeparator>,)\\s*(?P>typeModifier)\\s*)(?P>nextTypeModifier)*)?';
-        $regexType = '(?:(?P<primitiveType>' . $identifier . ')(?:\\((?:(?<typeModifiers>' . $regexTypeModifiers . ')|\\s*)\\))?|"(?P<referenceType>' . $identifier . ')")';
+        $regexBaseType = '(?:(?P<primitiveType>' . $identifier . ')(?:\\((?:(?<typeModifiers>' . $regexTypeModifiers . ')|\\s*)\\))?|"(?P<referenceType>' . $identifier . ')")';
+        $regexType = '(?:' . $regexBaseType . '(?P<collection>\[\])?)';
         $regexName = '(?P<name>' . $identifier . ')';
         $memberFinisher = ';';
         $memberDefinition = '\\s*(' . $regexAttributes . '\\s*)?' . $regexType . '\\s+' . $regexName . '\\s*' . $memberFinisher;
@@ -119,6 +120,11 @@ class Rolemodel
                     }
 
                     $type = $factory->makePrimitiveType($matches['primitiveType'], $typeModifiers, $varName);
+                }
+
+                if (array_key_exists('collection', $matches) && $matches['collection'] !== "")
+                {
+                    $type = new Schema\Type\CollectionType($type);
                 }
 
                 $members[] = new Schema\Member($attributes, $varName, $type);

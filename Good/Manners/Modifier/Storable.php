@@ -399,6 +399,10 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->visitNonReference();
     }
 
+    public function visitCollectionType(Schema\Type\CollectionType $type)
+    {
+    }
+
     private function visitNonReference()
     {
         $this->resolver .= '    private $orderNumber' . \ucfirst($this->member->getName()) . ' = -1;' . "\n";
