@@ -12,17 +12,17 @@ require_once dirname(__FILE__) . '/ModifierObservableBaseTest.php';
  */
 class GoodServiceModifierObservableIntegrationTest extends GoodServiceModifierObservableBaseTest
 {
-    protected function compile($types, $modifiers = null)
+    protected function compile($types, $modifiers = null, $inputFiles = null)
     {
         global $allModifiers;
 
         if ($modifiers == null)
         {
-            parent::compile($types, $allModifiers);
+            parent::compile($types, $allModifiers, $inputFiles);
         }
         else
         {
-            parent::compile($types, $modifiers);
+            parent::compile($types, $modifiers, $inputFiles);
         }
     }
 }

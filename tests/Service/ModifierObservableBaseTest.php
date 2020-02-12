@@ -14,15 +14,15 @@ require_once dirname(__FILE__) . '/GoodServiceBaseTest.php';
 abstract class GoodServiceModifierObservableBaseTest extends GoodServiceBaseTest
 {
 
-    protected function compile($types, $modifiers = null)
+    protected function compile($types, $modifiers = null, $inputFiles = null)
     {
         if ($modifiers == null)
         {
-            parent::compile($types, array(new \Good\Service\Modifier\Observable()));
+            parent::compile($types, array(new \Good\Service\Modifier\Observable()), $inputFiles);
         }
         else
         {
-            parent::compile($types, $modifiers);
+            parent::compile($types, $modifiers, $inputFiles);
         }
     }
 
@@ -30,7 +30,7 @@ abstract class GoodServiceModifierObservableBaseTest extends GoodServiceBaseTest
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int myInt; }');
-        $this->compile(array($this->inputDir . 'MyType.datatype'));
+        $this->compile(array('MyType'));
 
         $observable = new MyType();
 
@@ -53,7 +53,7 @@ abstract class GoodServiceModifierObservableBaseTest extends GoodServiceBaseTest
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int myInt; }');
-        $this->compile(array($this->inputDir . 'MyType.datatype'));
+        $this->compile(array('MyType'));
 
         $observable = new MyType();
 
@@ -89,7 +89,7 @@ abstract class GoodServiceModifierObservableBaseTest extends GoodServiceBaseTest
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int myInt; }');
-        $this->compile(array($this->inputDir . 'MyType.datatype'));
+        $this->compile(array('MyType'));
 
         $observable = new MyType();
         $observable2 = new MyType();
@@ -126,7 +126,7 @@ abstract class GoodServiceModifierObservableBaseTest extends GoodServiceBaseTest
     {
         file_put_contents($this->inputDir . 'MyType.datatype',
                             'datatype MyType { int myInt; }');
-        $this->compile(array($this->inputDir . 'MyType.datatype'));
+        $this->compile(array('MyType'));
 
         $observable = new MyType();
 
