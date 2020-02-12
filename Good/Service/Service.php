@@ -13,8 +13,6 @@ class Service
         $compiler = new Compiler($modifiers, $outputDir);
 
         $compiler->compile($model);
-
-        return $compiler->compiledFiles();
     }
 }
 

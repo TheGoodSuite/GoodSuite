@@ -7,23 +7,16 @@ use Good\Rolemodel\Schema;
 class Compiler implements \Good\Rolemodel\TypeVisitor
 {
     // TODO: prevent namespace collisions between things between
-    //       modifiers and generated variables / accessors
+    //       modifiers and generated variables / accessors / type name
 
-    // Compiler level data
     private $outputDir;
     private $modifiers;
 
-    // file level data
     private $inputFile = null;
-    private $outputFile = null;
-    private $outputFiles = array();
     private $output = null;
-    private $includes = null;
-    private $className = null;
     private $getters = null;
     private $setters = null;
 
-    // Refactoring 2020
     private $member;
 
     public function __construct($modifiers, $outputDir)
@@ -32,18 +25,16 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
         $this->modifiers = $modifiers;
     }
 
-    public function compiledFiles()
-    {
-        return $this->outputFiles;
-    }
-
     public function compile(Schema $schema)
     {
-        $this->visitSchema($schema);
+
+        $this->generateBaseClass($schema);
 
         foreach ($schema->getTypeDefitions() as $typeDefinition)
         {
-            $this->visitTypeDefinition($typeDefinition);
+            $this->inputFile = $typeDefinition->getSourceFileName();
+
+            $this->startType($typeDefinition);
 
             foreach ($typeDefinition->getMembers() as $member)
             {
@@ -52,38 +43,24 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
                 $member->getType()->acceptTypeVisitor($this);
             }
 
-            $this->saveOutput($typeDefinition);
+            $this->wrapUpType($typeDefinition);
+
+            $outputFile = $this->outputDir . $typeDefinition->getName() . '.datatype.php';
+            \file_put_contents($outputFile, $this->output);
         }
 
-        $this->visitSchemaEnd();
+        $this->output = null;
+
+        foreach ($this->modifiers as $modifier)
+        {
+            foreach($modifier->extraFiles() as $filename => $contents)
+            {
+                \file_put_contents($this->outputDir . $filename, $contents);
+            }
+        }
     }
 
-    public function visitDateTimeType(Schema\Type\DateTimeType $type)
-    {
-        $this->visitDatetimeMember($this->member, $type);
-    }
-
-    public function visitIntType(Schema\Type\IntType $type)
-    {
-        $this->visitIntMember($this->member, $type);
-    }
-
-    public function visitFloatType(Schema\Type\FloatType $type)
-    {
-        $this->visitFloatMember($this->member, $type);
-    }
-
-    public function visitReferenceType(Schema\Type\ReferenceType $type)
-    {
-        $this->visitReferenceMember($this->member, $type);
-    }
-
-    public function visitTextType(Schema\Type\TextType $type)
-    {
-        $this->visitTextMember($this->member, $type);
-    }
-
-    public function visitSchema(Schema $schema)
+    private function generateBaseClass(Schema $schema)
     {
         // TODO: prevent namespace and filename collisions here
         // Build the base class
@@ -130,37 +107,11 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
         \file_put_contents($this->outputDir . 'GeneratedBaseClass.php', $output);
     }
 
-
-    public function visitSchemaEnd()
+    private function startType(Schema\TypeDefinition $typeDefinition)
     {
-        $this->output = null;
-
-        foreach ($this->modifiers as $modifier)
-        {
-            foreach($modifier->extraFiles() as $filename => $contents)
-            {
-                \file_put_contents($this->outputDir . $filename, $contents);
-            }
-        }
-    }
-
-    public function visitTypeDefinition(Schema\TypeDefinition $typeDefinition)
-    {
-        $this->className = $typeDefinition->getName();
-
-        $this->includes = array();
-
         $this->output = 'class ' . $typeDefinition->getName() . " extends GeneratedBaseClass\n";
 
         $this->output .= "{\n";
-        $this->inputFile = $typeDefinition->getSourceFileName();
-        // TODO: make following line independant of execution path at any time
-        //       and escape some stuff
-        // Note: This was previously based on the input file namespace
-        //       But I changed it to dataType name instead
-        $this->outputFile = $this->outputDir . $typeDefinition->getName() . '.datatype.php';
-        $this->outputFiles[] = $this->outputFile;
-
         $this->getters  = '    public function __get($property)' . "\n";
         $this->getters .= "    {\n";
         $this->getters .= '        switch ($property)' . "\n";
@@ -177,69 +128,39 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
         $this->setters .= "        {\n";
     }
 
-    private function saveOutput(Schema\TypeDefinition $typeDefinition)
+    public function visitDateTimeType(Schema\Type\DateTimeType $type)
     {
-        $this->getters .= '            default:' . "\n";
-        $this->getters .= '                throw new \Exception("Unknown or non-public property");' . "\n";
-        $this->getters .= "        }\n";
-        $this->getters .= "    }\n";
+        $typeCheck = '\\Good\\Service\\TypeChecker::checkDateTime($value)';
 
-        $this->setters .= '            default:' . "\n";
-        $this->setters .= '                throw new \Exception("Unknown or non-public property");' . "\n";
-        $this->setters .= "        }\n";
-        $this->setters .= "    }\n";
-
-        $this->output .= $this->getters;
-
-        $this->output .= $this->setters;
-
-        foreach ($this->modifiers as $modifier)
-        {
-            $this->output .= $modifier->classBody($typeDefinition);
-        }
-
-        $this->output .= "}\n";
-
-        // neatly start the file
-        $top  = "<?php\n";
-        $top .= "\n";
-
-        $top .= "include_once 'GeneratedBaseClass.php';\n";
-        $top .= "\n";
-
-        // TODO: fix includes
-        //       (we can do without for now, as we don't force the type yet,
-        //          don't actually use the includes yet)
-        // includes
-        //foreach ($includes as $include)
-        //{
-        //
-        //}
-
-        $this->output = $top . $this->output;
-
-        // close the file off
-        $this->output .= "\n";
-        $this->output .= "?>";
-
-        \file_put_contents($this->outputFile, $this->output);
+        $this->commitVariable($this->member, $typeCheck);
     }
 
-    public function visitReferenceMember(Schema\Member $member, Schema\Type\ReferenceType $type)
-    {
-        $varType = $type->getReferencedType();
-        $typeCheck = null;
-
-        $includes[] = $type->getReferencedType();
-
-        $this->commitVariable($member, $varType, $typeCheck);
-    }
-
-    public function visitTextMember(Schema\Member $member, Schema\Type\TextType $type)
+    public function visitIntType(Schema\Type\IntType $type)
     {
         $typeModifiers = $type->getTypeModifiers();
 
-        $varType = 'string';
+        $typeCheck = '\\Good\\Service\\TypeChecker::checkInt($value, ' . $typeModifiers['minValue'];
+        $typeCheck .= ', ' . $typeModifiers['maxValue'] . ')';
+
+        $this->commitVariable($this->member, $typeCheck);
+    }
+
+    public function visitFloatType(Schema\Type\FloatType $type)
+    {
+        $typeCheck = '\\Good\\Service\\TypeChecker::checkFloat($value)';
+
+        $this->commitVariable($this->member, $typeCheck);
+    }
+
+    public function visitReferenceType(Schema\Type\ReferenceType $type)
+    {
+        $this->commitVariable($this->member, null);
+    }
+
+    public function visitTextType(Schema\Type\TextType $type)
+    {
+        $typeModifiers = $type->getTypeModifiers();
+
         $typeCheck = '\\Good\\Service\\TypeChecker::checkString($value, ' . $typeModifiers['minLength'];
 
         if (array_key_exists('maxLength', $typeModifiers))
@@ -249,40 +170,11 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
 
         $typeCheck .= ')';
 
-        $this->commitVariable($member, $varType, $typeCheck);
+        $this->commitVariable($this->member, $typeCheck);
     }
 
-    public function visitIntMember(Schema\Member $member, Schema\Type\IntType $type)
+    private function commitVariable(Schema\Member $member, $typeCheck)
     {
-        $typeModifiers = $type->getTypeModifiers();
-
-        $varType = 'int';
-        $typeCheck = '\\Good\\Service\\TypeChecker::checkInt($value, ' . $typeModifiers['minValue'];
-        $typeCheck .= ', ' . $typeModifiers['maxValue'] . ')';
-
-        $this->commitVariable($member, $varType, $typeCheck);
-    }
-
-    public function visitFloatMember(Schema\Member $member, Schema\Type\FloatType $type)
-    {
-        $varType = 'float';
-        $typeCheck = '\\Good\\Service\\TypeChecker::checkFloat($value)';
-
-        $this->commitVariable($member, $varType, $typeCheck);
-    }
-
-    public function visitDatetimeMember(Schema\Member $member, Schema\Type\DatetimeType $type)
-    {
-        $varType = 'datetime';
-        $typeCheck = '\\Good\\Service\\TypeChecker::checkDateTime($value)';
-
-        $this->commitVariable($member, $varType, $typeCheck);
-    }
-
-    private function commitVariable(Schema\Member $member, $varType, $typeCheck)
-    {
-        // Var type is currently unused but might be used when I do typechecking
-        // (then again, I might actually do it differently)
         $access = null;
 
         foreach ($member->getAttributes() as $attribute)
@@ -387,6 +279,43 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
             $this->setters .= "                break;\n";
             $this->setters .= "            \n";
         }
+    }
+
+    private function wrapUpType(Schema\TypeDefinition $typeDefinition)
+    {
+        $this->getters .= '            default:' . "\n";
+        $this->getters .= '                throw new \Exception("Unknown or non-public property");' . "\n";
+        $this->getters .= "        }\n";
+        $this->getters .= "    }\n";
+
+        $this->setters .= '            default:' . "\n";
+        $this->setters .= '                throw new \Exception("Unknown or non-public property");' . "\n";
+        $this->setters .= "        }\n";
+        $this->setters .= "    }\n";
+
+        $this->output .= $this->getters;
+
+        $this->output .= $this->setters;
+
+        foreach ($this->modifiers as $modifier)
+        {
+            $this->output .= $modifier->classBody($typeDefinition);
+        }
+
+        $this->output .= "}\n";
+
+        // neatly start the file
+        $top  = "<?php\n";
+        $top .= "\n";
+
+        $top .= "include_once 'GeneratedBaseClass.php';\n";
+        $top .= "\n";
+
+        $this->output = $top . $this->output;
+
+        // close the file off
+        $this->output .= "\n";
+        $this->output .= "?>";
     }
 }
 
