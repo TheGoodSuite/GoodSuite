@@ -72,7 +72,6 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
 
     public function tearDown(): void
     {
-        return;
         foreach($this->files as $file)
         {
             unlink($file);
