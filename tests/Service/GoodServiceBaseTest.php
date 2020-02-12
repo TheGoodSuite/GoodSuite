@@ -65,8 +65,11 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
             $this->files[] = $file;
 
             $file = $this->outputDir . $type . 'Resolver.php';
-            require $file;
-            $this->files[] = $file;
+
+            if (file_exists($file))
+            {
+                $this->files[] = $file;
+            }
         }
     }
 
