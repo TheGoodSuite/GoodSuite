@@ -14,6 +14,11 @@ class CollectionType implements Type
         $this->collectedType = $collectedType;
     }
 
+    public function getCollectedType()
+    {
+        return $this->collectedType;
+    }
+
     public function acceptTypeVisitor(TypeVisitor $visitor)
     {
         // visit this, there are no children to pass visitor on to

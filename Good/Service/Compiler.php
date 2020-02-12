@@ -16,6 +16,8 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
     private $output = null;
     private $getters = null;
     private $setters = null;
+    private $constructor = null;
+    private $checkCollectionItem = null;
 
     private $member;
 
@@ -109,9 +111,8 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
 
     private function startType(Schema\TypeDefinition $typeDefinition)
     {
-        $this->output = 'class ' . $typeDefinition->getName() . " extends GeneratedBaseClass\n";
+        $this->output = '';
 
-        $this->output .= "{\n";
         $this->getters  = '    public function __get($property)' . "\n";
         $this->getters .= "    {\n";
         $this->getters .= '        switch ($property)' . "\n";
@@ -126,58 +127,62 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
         $this->setters .= "    {\n";
         $this->setters .= '        switch ($property)' . "\n";
         $this->setters .= "        {\n";
+
+        $this->constructor  = "    public function __construct()\n";
+        $this->constructor .= "    {\n";
+
+        $this->checkCollectionItem  = '    public function checkCollectionItem($collection, $value)' . "\n";
+        $this->checkCollectionItem .= "    {\n";
+        $this->checkCollectionItem .= '        switch($collection)' . "\n";
+        $this->checkCollectionItem .= "        {\n";
     }
 
     public function visitDateTimeType(Schema\Type\DateTimeType $type)
     {
-        $typeCheck = '\\Good\\Service\\TypeChecker::checkDateTime($value)';
-
-        $this->commitVariable($this->member, $typeCheck);
+        $this->commitVariable($this->member, $type, true);
     }
 
     public function visitIntType(Schema\Type\IntType $type)
     {
-        $typeModifiers = $type->getTypeModifiers();
-
-        $typeCheck = '\\Good\\Service\\TypeChecker::checkInt($value, ' . $typeModifiers['minValue'];
-        $typeCheck .= ', ' . $typeModifiers['maxValue'] . ')';
-
-        $this->commitVariable($this->member, $typeCheck);
+        $this->commitVariable($this->member, $type, true);
     }
 
     public function visitFloatType(Schema\Type\FloatType $type)
     {
-        $typeCheck = '\\Good\\Service\\TypeChecker::checkFloat($value)';
-
-        $this->commitVariable($this->member, $typeCheck);
+        $this->commitVariable($this->member, $type, true);
     }
 
     public function visitReferenceType(Schema\Type\ReferenceType $type)
     {
-        $this->commitVariable($this->member, null);
+        $this->commitVariable($this->member, $type, true);
     }
 
     public function visitTextType(Schema\Type\TextType $type)
     {
-        $typeModifiers = $type->getTypeModifiers();
-
-        $typeCheck = '\\Good\\Service\\TypeChecker::checkString($value, ' . $typeModifiers['minLength'];
-
-        if (array_key_exists('maxLength', $typeModifiers))
-        {
-            $typeCheck .= ', ' . $typeModifiers['maxLength'];
-        }
-
-        $typeCheck .= ')';
-
-        $this->commitVariable($this->member, $typeCheck);
+        $this->commitVariable($this->member, $type, true);
     }
 
     public function visitCollectionType(Schema\Type\CollectionType $type)
     {
+        $typeCheckWriter = new TypeCheckWriter();
+        $typeCheck = $typeCheckWriter->getTypeCheck($type->getCollectedType());
+
+        $this->checkCollectionItem .= '            case "' . $this->member->getName() . '":' . "\n";
+        if ($typeCheck != null)
+        {
+            $this->checkCollectionItem .= '                ' . $typeCheck . ";\n";
+        }
+        $this->checkCollectionItem .= "                break;\n";
+        $this->checkCollectionItem .= "\n";
+
+        $this->constructor .= '        $this->' . $this->member->getName()
+            . ' = new \Good\Service\Collection('
+            . '$this, "' . $this->member->getName() . '");' . "\n";
+
+        $this->commitVariable($this->member, $type, false);
     }
 
-    private function commitVariable(Schema\Member $member, $typeCheck)
+    private function commitVariable(Schema\Member $member, Schema\Type $type, $settable)
     {
         $access = null;
 
@@ -230,7 +235,7 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
 
         // accessors
 
-        //getter
+        // getter
         $this->output .= '    ' . $access . ' function get' . \ucfirst($member->getName()) . "()\n";
         $this->output .= "    {\n";
 
@@ -251,35 +256,50 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
         }
 
         //setter
-        $this->output .= '    ' . $access . ' function set' . \ucfirst($member->getName()) . '($value)' . "\n";
-
-        $this->output .= "    {\n";
-
-        if ($typeCheck != null)
+        if ($settable)
         {
-            $this->output .= '        ' . $typeCheck . ";\n";
-            $this->output .= "        \n";
+            $this->output .= '    ' . $access . ' function set' . \ucfirst($member->getName()) . '($value)' . "\n";
+
+            $this->output .= "    {\n";
+
+            $typeCheckWriter = new TypeCheckWriter();
+            $typeCheck = $typeCheckWriter->getTypeCheck($type);
+
+            if ($typeCheck != null)
+            {
+                $this->output .= '        ' . $typeCheck . ";\n";
+                $this->output .= "        \n";
+            }
+
+            foreach ($this->modifiers as $modifier)
+            {
+                $this->output .= $modifier->setterBegin($member);
+            }
+
+            $this->output .= '        $this->' . $member->getName() . ' = $value;' . "\n";
+
+            foreach ($this->modifiers as $modifier)
+            {
+                $this->output .= $modifier->setterEnd($member);
+            }
+
+            $this->output .= "    }\n";
+            $this->output .= "    \n";
         }
-
-        foreach ($this->modifiers as $modifier)
-        {
-            $this->output .= $modifier->setterBegin($member);
-        }
-
-        $this->output .= '        $this->' . $member->getName() . ' = $value;' . "\n";
-
-        foreach ($this->modifiers as $modifier)
-        {
-            $this->output .= $modifier->setterEnd($member);
-        }
-
-        $this->output .= "    }\n";
-        $this->output .= "    \n";
 
         if ($access == 'public')
         {
             $this->setters .= '            case \'' . $member->getName() . "':\n";
-            $this->setters .= '                $this->set' . \ucfirst($member->getName()) . '($value);' . "\n";
+
+            if ($settable)
+            {
+                $this->setters .= '                $this->set' . \ucfirst($member->getName()) . '($value);' . "\n";
+            }
+            else
+            {
+                $this->setters .= '                throw new \Exception("Property \"' . $member->getName() . '\" cannot be set");' . "\n";
+            }
+
             $this->setters .= "                break;\n";
             $this->setters .= "            \n";
         }
@@ -291,15 +311,24 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
         $this->getters .= '                throw new \Exception("Unknown or non-public property");' . "\n";
         $this->getters .= "        }\n";
         $this->getters .= "    }\n";
+        $this->getters .= "\n";
 
         $this->setters .= '            default:' . "\n";
         $this->setters .= '                throw new \Exception("Unknown or non-public property");' . "\n";
         $this->setters .= "        }\n";
         $this->setters .= "    }\n";
+        $this->setters .= "\n";
 
         $this->output .= $this->getters;
-
         $this->output .= $this->setters;
+
+        $this->checkCollectionItem .= '            default:' . "\n";
+        $this->checkCollectionItem .= '                throw new \Exception("Check requested for unknown collection");' . "\n";
+        $this->checkCollectionItem .= "        }\n";
+        $this->checkCollectionItem .= "    }\n";
+        $this->checkCollectionItem .= "\n";
+
+        $this->output .= $this->checkCollectionItem;
 
         foreach ($this->modifiers as $modifier)
         {
@@ -308,12 +337,22 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
 
         $this->output .= "}\n";
 
+        $this->constructor .= "    }\n";
+        $this->constructor .= "\n";
+
         // neatly start the file
         $top  = "<?php\n";
         $top .= "\n";
 
         $top .= "include_once 'GeneratedBaseClass.php';\n";
         $top .= "\n";
+
+        // Start class
+        // This was moved here so the constructor could be on top
+        $top .= 'class ' . $typeDefinition->getName() . " extends GeneratedBaseClass\n";
+        $top .= "{\n";
+
+        $top .= $this->constructor;
 
         $this->output = $top . $this->output;
 
