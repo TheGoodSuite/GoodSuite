@@ -2,8 +2,12 @@
 
 namespace Good\Service;
 
-class Collection
+use Ds\Set;
+
+class Collection implements \IteratorAggregate
 {
+    private $items;
+
     private $owner;
     private $ownerProperty;
 
@@ -11,11 +15,25 @@ class Collection
     {
         $this->owner = $owner;
         $this->ownerProperty = $ownerProperty;
+
+        $this->items = new Set();
     }
 
     public function add($value)
     {
-        $this->owner->checkCollectionItem($ownerProperty, $value);
+        $this->owner->checkCollectionItem($this->ownerProperty, $value);
+
+        $this->items->add($value);
+    }
+
+    public function remove($value)
+    {
+        $this->items.remove($value);
+    }
+
+    public function getIterator()
+    {
+        return new \IteratorIterator($this->items);
     }
 }
 
