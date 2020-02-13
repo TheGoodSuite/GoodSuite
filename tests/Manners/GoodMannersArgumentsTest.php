@@ -3,8 +3,8 @@
 /**
  * @runTestsInSeparateProcesses
  *
- * Uses a type that has a name and a field that are both a SQL keywords
- * to test that both table and column names are escaped properly.
+ * Tests the different sets of arguments you should and shouldn't be able
+ * to pass to the `getCollection()` method.
  */
 abstract class GoodMannersArgumentsTest extends \PHPUnit\Framework\TestCase
 {
