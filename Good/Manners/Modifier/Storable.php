@@ -3,6 +3,8 @@
 namespace Good\Manners\Modifier;
 
 use Good\Rolemodel\Schema;
+use Good\Manners\Modifier\Helpers\FromArrayParserWriter;
+use Good\Manners\Modifier\Helpers\ToArrayFormatterWriter;
 
 class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 {
@@ -285,53 +287,63 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
     public function visitDateTimeType(Schema\Type\DateTimeType $type)
     {
+        $fromArrayParserWriter = new FromArrayParserWriter();
+        $fromArrayParser = $fromArrayParserWriter->writeFromArrayParser($type);
+
         $this->accept .= '        $visitor->visitDatetimeProperty("' . $this->member->getName() . '", ' .
                                             '$this->is' . \ucfirst($this->member->getName()) . 'Dirty, ' .
                                             '$this->' . $this->member->getName() . ');' . "\n";
 
         $this->setFromArray .= '                case "' . $this->member->getName() . '":' . "\n";
-        $this->setFromArray .= '                    if ($value === null || $value instanceof \DateTimeImmutable)' . "\n";
-        $this->setFromArray .= "                    {\n";
-        $this->setFromArray .= '                        $this->set' . \ucfirst($this->member->getName()) . '($value);'. "\n";
-        $this->setFromArray .= "                    }\n";
-        $this->setFromArray .= '                    else' . "\n";
-        $this->setFromArray .= "                    {\n";
-        $this->setFromArray .= '                        $this->set' . \ucfirst($this->member->getName()) . '(new DateTimeImmutable($value, new DateTimeZone("UTC")));'. "\n";
-        $this->setFromArray .= "                    }\n";
+        $this->setFromArray .= '                    $this->set' . \ucfirst($this->member->getName()) . '(' . $fromArrayParser . ');'. "\n";
         $this->setFromArray .= '                    break;' . "\n";
 
-        $this->toArray .= '            "' . $this->member->getName() . '" => $datesToIso && $this->' . $this->member->getName() . ' != null ?' . "\n";
-        $this->toArray .= '                $this->' . $this->member->getName() . '->format(\DateTimeImmutable::ATOM) : $this->' . $this->member->getName() . ',' . "\n";
+        $toArrayFormatterWriter = new ToArrayFormatterWriter();
+        $toArrayFormatter = $toArrayFormatterWriter->writeToArrayFormatter('$this->' . $this->member->getName(), $type);
+
+        $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
 
         $this->visitNonReference();
     }
 
     public function visitIntType(Schema\Type\IntType $type)
     {
+        $fromArrayParserWriter = new FromArrayParserWriter();
+        $fromArrayParser = $fromArrayParserWriter->writeFromArrayParser($type);
+
         $this->accept .= '        $visitor->visitIntProperty("' . $this->member->getName() . '", ' .
                                             '$this->is' . \ucfirst($this->member->getName()) . 'Dirty, ' .
                                             '$this->' . $this->member->getName() . ');' . "\n";
 
         $this->setFromArray .= '                case "' . $this->member->getName() . '":' . "\n";
-        $this->setFromArray .= '                    $this->set' . \ucfirst($this->member->getName()) . '(\intval($value));'. "\n";
+        $this->setFromArray .= '                    $this->set' . \ucfirst($this->member->getName()) . '(' . $fromArrayParser . ');'. "\n";
         $this->setFromArray .= '                    break;' . "\n";
 
-        $this->toArray .= '            "' . $this->member->getName() . '" => $this->' . $this->member->getName() . ',' . "\n";
+        $toArrayFormatterWriter = new ToArrayFormatterWriter();
+        $toArrayFormatter = $toArrayFormatterWriter->writeToArrayFormatter('$this->' . $this->member->getName(), $type);
+
+        $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
 
         $this->visitNonReference();
     }
 
     public function visitFloatType(Schema\Type\FloatType $type)
     {
+        $fromArrayParserWriter = new FromArrayParserWriter();
+        $fromArrayParser = $fromArrayParserWriter->writeFromArrayParser($type);
+
         $this->accept .= '        $visitor->visitFloatProperty("' . $this->member->getName() . '", ' .
                                             '$this->is' . \ucfirst($this->member->getName()) . 'Dirty, ' .
                                             '$this->' . $this->member->getName() . ');' . "\n";
 
         $this->setFromArray .= '                case "' . $this->member->getName() . '":' . "\n";
-        $this->setFromArray .= '                    $this->set' . \ucfirst($this->member->getName()) . '(\floatval($value));'. "\n";
+        $this->setFromArray .= '                    $this->set' . \ucfirst($this->member->getName()) . '(' . $fromArrayParser . ');'. "\n";
         $this->setFromArray .= '                    break;' . "\n";
 
-        $this->toArray .= '            "' . $this->member->getName() . '" => $this->' . $this->member->getName() . ',' . "\n";
+        $toArrayFormatterWriter = new ToArrayFormatterWriter();
+        $toArrayFormatter = $toArrayFormatterWriter->writeToArrayFormatter('$this->' . $this->member->getName(), $type);
+
+        $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
 
         $this->visitNonReference();
     }
@@ -347,8 +359,10 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->setFromArray .= '                    $this->set' . \ucfirst($this->member->getName()) . '($value);'. "\n";
         $this->setFromArray .= '                    break;' . "\n";
 
-        $this->toArray .= '            "' . $this->member->getName() . '" => $this->' . $this->member->getName() . ' == null ?' . "\n";
-        $this->toArray .= '                null : $this->' . $this->member->getName() . '->toArray($datesToIso),' . "\n";
+        $toArrayFormatterWriter = new ToArrayFormatterWriter();
+        $toArrayFormatter = $toArrayFormatterWriter->writeToArrayFormatter('$this->' . $this->member->getName(), $type);
+
+        $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
 
         $this->resolver .= '    private $resolved' . \ucfirst($this->member->getName()) . ' = null;' . "\n";
         $this->resolver .= "    \n";
@@ -386,21 +400,44 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
     public function visitTextType(Schema\Type\TextType $type)
     {
+        $fromArrayParserWriter = new FromArrayParserWriter();
+        $fromArrayParser = $fromArrayParserWriter->writeFromArrayParser($type);
+
         $this->accept .= '        $visitor->visitTextProperty("' . $this->member->getName() . '", ' .
                                             '$this->is' . \ucfirst($this->member->getName()) . 'Dirty, ' .
                                             '$this->' . $this->member->getName() . ');' . "\n";
 
         $this->setFromArray .= '                case "' . $this->member->getName() . '":' . "\n";
-        $this->setFromArray .= '                    $this->set' . \ucfirst($this->member->getName()) . '(\strval($value));'. "\n";
+        $this->setFromArray .= '                    $this->set' . \ucfirst($this->member->getName()) . '(' . $fromArrayParser . ');'. "\n";
         $this->setFromArray .= '                    break;' . "\n";
 
-        $this->toArray .= '            "' . $this->member->getName() . '" => $this->' . $this->member->getName() . ',' . "\n";
+        $toArrayFormatterWriter = new ToArrayFormatterWriter();
+        $toArrayFormatter = $toArrayFormatterWriter->writeToArrayFormatter('$this->' . $this->member->getName(), $type);
+
+        $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
 
         $this->visitNonReference();
     }
 
     public function visitCollectionType(Schema\Type\CollectionType $type)
     {
+        $fromArrayParserWriter = new FromArrayParserWriter();
+        $fromArrayParser = $fromArrayParserWriter->writeFromArrayParser($type);
+
+        $this->setFromArray .= '                case "' . $this->member->getName() . '":' . "\n";
+        $this->setFromArray .= '                    $this->' . $this->member->getName() . '->clear();'. "\n";
+        $this->setFromArray .= '                    foreach(' . $fromArrayParser . ' as $singleValue)'. "\n";
+        $this->setFromArray .= "                    {\n";
+        $this->setFromArray .= '                        $this->' . $this->member->getName() . '->add($singleValue);'. "\n";
+        $this->setFromArray .= "                    }\n";
+        $this->setFromArray .= '                    break;' . "\n";
+
+        $toArrayFormatterWriter = new ToArrayFormatterWriter();
+        $toArrayFormatter = $toArrayFormatterWriter->writeToArrayFormatter('$this->' . $this->member->getName(), $type);
+
+        $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
+
+        $this->visitNonReference();
     }
 
     private function visitNonReference()
