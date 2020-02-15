@@ -5,11 +5,6 @@
  */
 class GoodMannersCollectionTest extends \PHPUnit\Framework\TestCase
 {
-    //abstract public function getNewStorage();
-    //abstract public function getNewDb();
-    // this function should be removed, but is used for clearing the database at the moment
-    //abstract public function truncateTable($table);
-
     // This could be done just once for all the tests and it would even be necessary
     // to run the tests in this class in a single process.
     // However, since we can't run these tests in the same process as those from other
@@ -60,29 +55,11 @@ class GoodMannersCollectionTest extends \PHPUnit\Framework\TestCase
     public function setUp(): void
     {
         $this->_setUpBeforeClass();
-
-        // just doubling this up (from tearDown) to be sure
-        // this should be handled natively once that is implemented
-        //$this->truncateTable('persistencetype');
-
-        //$this->storage = $this->getNewStorage();
     }
 
     public function tearDown(): void
     {
-        // Just doing this already to make sure the deconstructor will hasve
-        // side-effects at an unspecified moment...
-        // (at which point the database will probably be in a wrong state for this)
-        //$this->storage->flush();
-
-        // this should be handled through the GoodManners API once that is implemented
-        //$this->truncateTable('persistencetype');
-
         $this->_tearDownAfterClass();
-    }
-
-    public function populateDatabase()
-    {
     }
 
     public function testIntCollectionSetFromArray()

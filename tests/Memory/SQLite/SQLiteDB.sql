@@ -111,4 +111,34 @@ CREATE TABLE `create` (
 	`as` DATETIME,
 	PRIMARY KEY(id)
 );
+CREATE TABLE `collectiontype` (
+	`id`	INTEGER,
+	`someint` INTEGER,
+	PRIMARY KEY(id)
+);
+CREATE TABLE `collectiontype_myints` (
+	`owner`	INTEGER,
+	`value` INTEGER,
+	PRIMARY KEY(owner, value)
+);
+CREATE TABLE `collectiontype_myfloats` (
+	`owner`	INTEGER,
+	`value` REAL,
+	PRIMARY KEY(owner, value)
+);
+CREATE TABLE `collectiontype_mytexts` (
+	`owner`	INTEGER,
+	`value` TEXT,
+	PRIMARY KEY(owner, value)
+);
+CREATE TABLE `collectiontype_mydatetimes` (
+	`owner`	INTEGER,
+	`value` DATETIME,
+	PRIMARY KEY(owner, value)
+);
+CREATE TABLE `collectiontype_myreferences` (
+	`owner`	INTEGER,
+	`value` INTEGER,
+	PRIMARY KEY(owner, value)
+);
 COMMIT;

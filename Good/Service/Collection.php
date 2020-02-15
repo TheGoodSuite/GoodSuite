@@ -46,6 +46,11 @@ class Collection implements \IteratorAggregate
     {
         return new \IteratorIterator($this->items);
     }
+
+    public function getCollectedType()
+    {
+        return $this->collectedType;
+    }
 }
 
 ?>

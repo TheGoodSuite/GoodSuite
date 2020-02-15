@@ -190,6 +190,8 @@ class AdvancedUpdater implements StorableVisitor
             }
         }
     }
+
+    public function visitCollectionProperty($name, $value) {}
 }
 
 ?>
