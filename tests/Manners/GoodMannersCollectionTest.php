@@ -3,7 +3,7 @@
 /**
  * @runTestsInSeparateProcesses
  */
-class GoodMannersArgumentsTest extends \PHPUnit\Framework\TestCase
+class GoodMannersCollectionTest extends \PHPUnit\Framework\TestCase
 {
     //abstract public function getNewStorage();
     //abstract public function getNewDb();
