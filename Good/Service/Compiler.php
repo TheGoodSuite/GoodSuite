@@ -17,7 +17,7 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
     private $getters = null;
     private $setters = null;
     private $constructor = null;
-    private $checkCollectionItem = null;
+    private $staticInitalize = null;
 
     private $member;
 
@@ -131,10 +131,8 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
         $this->constructor  = "    public function __construct()\n";
         $this->constructor .= "    {\n";
 
-        $this->checkCollectionItem  = '    public function checkCollectionItem($collection, $value)' . "\n";
-        $this->checkCollectionItem .= "    {\n";
-        $this->checkCollectionItem .= '        switch($collection)' . "\n";
-        $this->checkCollectionItem .= "        {\n";
+        $this->staticInitalize  = "    public static function staticInitalize()\n";
+        $this->staticInitalize .= "    {\n";
     }
 
     public function visitDateTimeType(Schema\Type\DateTimeType $type)
@@ -164,20 +162,9 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
 
     public function visitCollectionType(Schema\Type\CollectionType $type)
     {
-        $typeCheckWriter = new TypeCheckWriter();
-        $typeCheck = $typeCheckWriter->getTypeCheck($type->getCollectedType());
-
-        $this->checkCollectionItem .= '            case "' . $this->member->getName() . '":' . "\n";
-        if ($typeCheck != null)
-        {
-            $this->checkCollectionItem .= '                ' . $typeCheck . ";\n";
-        }
-        $this->checkCollectionItem .= "                break;\n";
-        $this->checkCollectionItem .= "\n";
-
         $this->constructor .= '        $this->' . $this->member->getName()
             . ' = new \Good\Service\Collection('
-            . '$this, "' . $this->member->getName() . '");' . "\n";
+            . 'self::$' . $this->member->getName() . 'Type->getCollectedType());' . "\n";
 
         $this->commitVariable($this->member, $type, false);
     }
@@ -225,6 +212,14 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
             $access = 'public';
         }
 
+        $this->output .= '    static private $' . $this->member->getName() . "Type;\n";
+        $this->output .= "\n";
+
+        $typeGeneratorWriter = new TypeGeneratorWriter();
+        $typeGenerator = $typeGeneratorWriter->getTypeGenerator($type, $this->member->getName());
+
+        $this->staticInitalize .= '        self::$' . $this->member->getName() . 'Type = ' . $typeGenerator . ";\n";
+
         $this->output .= '    private $' . $member->getName() . " = null;\n";
         $this->output .= "    \n";
 
@@ -262,14 +257,8 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
 
             $this->output .= "    {\n";
 
-            $typeCheckWriter = new TypeCheckWriter();
-            $typeCheck = $typeCheckWriter->getTypeCheck($type);
-
-            if ($typeCheck != null)
-            {
-                $this->output .= '        ' . $typeCheck . ";\n";
-                $this->output .= "        \n";
-            }
+            $this->output .= '        self::$' . $member->getName() . 'Type->checkValue($value);' . "\n";
+            $this->output .= "\n";
 
             foreach ($this->modifiers as $modifier)
             {
@@ -322,23 +311,21 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
         $this->output .= $this->getters;
         $this->output .= $this->setters;
 
-        $this->checkCollectionItem .= '            default:' . "\n";
-        $this->checkCollectionItem .= '                throw new \Exception("Check requested for unknown collection");' . "\n";
-        $this->checkCollectionItem .= "        }\n";
-        $this->checkCollectionItem .= "    }\n";
-        $this->checkCollectionItem .= "\n";
-
-        $this->output .= $this->checkCollectionItem;
-
         foreach ($this->modifiers as $modifier)
         {
             $this->output .= $modifier->classBody($typeDefinition);
         }
 
         $this->output .= "}\n";
+        $this->output .= "\n";
+        $this->output .= $typeDefinition->getName() . "::staticInitalize();\n";
+        $this->output .= "\n";
 
         $this->constructor .= "    }\n";
         $this->constructor .= "\n";
+
+        $this->staticInitalize .= "    }\n";
+        $this->staticInitalize .= "\n";
 
         // neatly start the file
         $top  = "<?php\n";
@@ -353,6 +340,7 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
         $top .= "{\n";
 
         $top .= $this->constructor;
+        $top .= $this->staticInitalize;
 
         $this->output = $top . $this->output;
 

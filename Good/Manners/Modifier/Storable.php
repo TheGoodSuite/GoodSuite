@@ -62,7 +62,11 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $res .= "    \n";
         $res .= '    public function setId($value)' . "\n";
         $res .= "    {\n";
-        $res .= '        \\Good\\Service\\TypeChecker::checkString($value, 1);' . "\n";;
+        $res .= '        if (!is_string($value) || strlen($value) == 0)' . "\n";
+        $res .= "        {\n";
+        $res .= '            throw new InvalidParameterException("Id must be a non-empty string");' . "\n";
+        $res .= "        }\n";
+        $res .= "\n";
         $res .= '        $this->id = $value;' . "\n";
         $res .= "    }\n";
         $res .= "    \n";

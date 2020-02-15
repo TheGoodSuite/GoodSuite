@@ -8,20 +8,18 @@ class Collection implements \IteratorAggregate
 {
     private $items;
 
-    private $owner;
-    private $ownerProperty;
+    private $collectedType;
 
-    public function __construct($owner, $ownerProperty)
+    public function __construct(Type $collectedType)
     {
-        $this->owner = $owner;
-        $this->ownerProperty = $ownerProperty;
+        $this->collectedType = $collectedType;
 
         $this->items = new Set();
     }
 
     public function add($value)
     {
-        $this->owner->checkCollectionItem($this->ownerProperty, $value);
+        $this->collectedType->checkValue($value);
 
         $this->items->add($value);
     }
