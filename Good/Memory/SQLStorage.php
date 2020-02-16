@@ -285,7 +285,7 @@ class SQLStorage extends Storage
         return $this->numberOfJoins;
     }
 
-    public function createStorable(array $data, $joins, $type, $tableNumber = 0, &$nextTable = 0, $dataPreparsed = false)
+    public function createStorable(array $data, $joins, $type, $tableNumber = 0, $dataPreparsed = false)
     {
         if (!$dataPreparsed)
         {
@@ -300,7 +300,6 @@ class SQLStorage extends Storage
         }
 
         $table = 't' . $tableNumber;
-        $nextTable++;
 
         if (array_key_exists($data[$table]["id"],
         // todo: allow for proper checking again, after solving the problems that brought with it.
@@ -327,15 +326,13 @@ class SQLStorage extends Storage
                 if ($value === null)
                 {
                     $storableData[$field] = null;
-                    $nextTable++;
                 }
                 else
                 {
                     $storableData[$field] = $this->createStorable($data,
                                                                   $joins,
                                                                   $joins[$tableNumber][$field]->tableNameDestination,
-                                                                  $nextTable,
-                                                                  $nextTable,
+                                                                  $joins[$tableNumber][$field]->tableNumberDestination,
                                                                   true);
                 }
             }
