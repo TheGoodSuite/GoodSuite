@@ -99,14 +99,9 @@ class Selecter implements ResolverVisitor
         $this->sql .= '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($name) . '`';
         $this->sql .= ' AS `t' . $this->currentTable . '_' . $this->storage->fieldNamify($name) . '`';
 
-        $join = $this->storage->getJoin($this->currentTable, $name);
-
-        if ($join == -1)
-        {
-            $join = $this->storage->createJoin($this->currentTable,
-                                               $name,
-                                               $datatypeName);
-        }
+        $join = $this->storage->createJoin($this->currentTable,
+                                           $name,
+                                           $datatypeName);
 
         $this->sql .= ', ';
         $this->sql .= '`t' . $join . '`.`id` AS `t' . $join . '_id`';
