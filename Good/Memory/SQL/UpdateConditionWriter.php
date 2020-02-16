@@ -246,7 +246,7 @@ class UpdateConditionWriter implements StorableVisitor,
                 {
                     if ($join == -1)
                     {
-                        $join = $this->storage->createJoin($this->currentTable, $name, $datatypeName);
+                        $join = $this->storage->createJoin($this->currentTable, $name, $datatypeName, 'id');
                     }
 
                     $subWriter = new UpdateConditionWriter($this->storage, $join);

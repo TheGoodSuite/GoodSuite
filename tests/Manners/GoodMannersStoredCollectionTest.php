@@ -1,5 +1,7 @@
 <?php
 
+use Good\Manners\Condition\EqualTo;
+
 /**
  * @runTestsInSeparateProcesses
  */
@@ -50,8 +52,6 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
     public static function _tearDownAfterClass()
     {
-        return;
-
         unlink(dirname(__FILE__) . '/../testInputFiles/CollectionType.datatype');
         unlink(dirname(__FILE__) . '/../generated/CollectionType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/CollectionTypeResolver.php');
@@ -97,6 +97,38 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->_tearDownAfterClass();
     }
 
+    public function populateDatabase()
+    {
+        $storage = $this->getNewStorage();
+
+        $myCollectionType = new CollectionType();
+        $myCollectionType->someInt = 4;
+
+        $myCollectionType->myInts->add(2);
+        $myCollectionType->myInts->add(4);
+
+        $myCollectionType->myFloats->add(2.2);
+        $myCollectionType->myFloats->add(4.4);
+
+        $myCollectionType->myTexts->add("abc");
+        $myCollectionType->myTexts->add("def");
+
+        $now = new DateTimeImmutable();
+
+        $myCollectionType->myDatetimes->add(new DateTimeImmutable('2001-01-01'));
+        $myCollectionType->myDatetimes->add(new DateTimeImmutable('2002-02-02'));
+
+        $reference = new CollectionType();
+        $reference->someInt = 1;
+
+        $myCollectionType->myReferences->add($reference);
+        $myCollectionType->myReferences->add($myCollectionType);
+
+        $storage->insert($myCollectionType);
+
+        $storage->flush();
+    }
+
     public function testInsertCollection()
     {
         $myCollectionType = new CollectionType();
@@ -125,6 +157,173 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->storage->flush();
 
         $this->assertNoExceptions();
+    }
+
+    public function testFetchIntCollection()
+    {
+        $this->populateDatabase();
+
+        $resolver = CollectionType::resolver()->resolveMyInts();
+        $conditionObject = new CollectionType();
+        $conditionObject->someInt = 4;
+        $condition = new EqualTo($conditionObject);
+
+        $results = $this->storage->getCollection($condition, $resolver);
+
+        foreach ($results as $result)
+        {
+            $expected = [2, 4];
+            $i = 0;
+
+            $this->assertSame(2, $result->myInts->count());
+
+            foreach ($result->myInts as $myInt)
+            {
+                $this->assertSame($expected[$i], $myInt);
+                $i++;
+            }
+        }
+    }
+
+    public function testFetchFloatCollection()
+    {
+        $this->populateDatabase();
+
+        $resolver = CollectionType::resolver()->resolveMyFloats();
+        $conditionObject = new CollectionType();
+        $conditionObject->someInt = 4;
+        $condition = new EqualTo($conditionObject);
+
+        $results = $this->storage->getCollection($condition, $resolver);
+
+        foreach ($results as $result)
+        {
+            $expected = [2.2, 4.4];
+            $i = 0;
+
+            $this->assertSame(2, $result->myFloats->count());
+
+            foreach ($result->myFloats as $myFloat)
+            {
+                $this->assertSame($expected[$i], $myFloat);
+                $i++;
+            }
+        }
+    }
+
+    public function testFetchDatetimeCollection()
+    {
+        $this->populateDatabase();
+
+        $resolver = CollectionType::resolver()->resolveMyDatetimes();
+        $conditionObject = new CollectionType();
+        $conditionObject->someInt = 4;
+        $condition = new EqualTo($conditionObject);
+
+        $results = $this->storage->getCollection($condition, $resolver);
+
+        foreach ($results as $result)
+        {
+            $expected = [new DateTimeImmutable('2001-01-01'), new DateTimeImmutable('2002-02-02')];
+            $i = 0;
+
+            $this->assertSame(2, $result->myDatetimes->count());
+
+            foreach ($result->myDatetimes as $myDatetime)
+            {
+                $this->assertEquals($expected[$i]->format(DateTimeImmutable::ATOM), $myDatetime->format(DateTimeImmutable::ATOM));
+                $i++;
+            }
+        }
+    }
+
+    public function testFetchTextCollection()
+    {
+        $this->populateDatabase();
+
+        $resolver = CollectionType::resolver()->resolveMyTexts();
+        $conditionObject = new CollectionType();
+        $conditionObject->someInt = 4;
+        $condition = new EqualTo($conditionObject);
+
+        $results = $this->storage->getCollection($condition, $resolver);
+
+        foreach ($results as $result)
+        {
+            $expected = ["abc", "def"];
+            $i = 0;
+
+            $this->assertSame(2, $result->myTexts->count());
+
+            foreach ($result->myTexts as $myText)
+            {
+                $this->assertEquals($expected[$i], $myText);
+                $i++;
+            }
+        }
+    }
+
+    public function testFetchMultipleCollectionsOnOneObject()
+    {
+        $this->populateDatabase();
+
+        $resolver = CollectionType::resolver();
+        $resolver->resolveMyInts();
+        $resolver->resolveMyFloats();
+        $conditionObject = new CollectionType();
+        $conditionObject->someInt = 4;
+        $condition = new EqualTo($conditionObject);
+
+        $results = $this->storage->getCollection($condition, $resolver);
+
+        foreach ($results as $result)
+        {
+            $expected = [2.2, 4.4];
+            $i = 0;
+
+            $this->assertSame(2, $result->myFloats->count());
+
+            foreach ($result->myFloats as $myFloat)
+            {
+                $this->assertSame($expected[$i], $myFloat);
+                $i++;
+            }
+
+            $expected = [2, 4];
+            $i = 0;
+
+            $this->assertSame(2, $result->myInts->count());
+
+            foreach ($result->myInts as $myInt)
+            {
+                $this->assertSame($expected[$i], $myInt);
+                $i++;
+            }
+        }
+    }
+
+    public function testFetchReferenceCollection()
+    {
+        $this->markTestIncomplete();
+
+        $this->populateDatabase();
+
+        $resolver = CollectionType::resolver()->resolveMyReferences();
+        $conditionObject = new CollectionType();
+        $conditionObject->someInt = 4;
+        $condition = new EqualTo($conditionObject);
+
+        $results = $this->storage->getCollection($condition, $resolver);
+
+        foreach ($results as $result)
+        {
+            $references = $result->myReferences->toArray();
+
+            $this->assertSame(2, count($references));
+            $this->assertSame($result, $references[0]);
+            $this->assertNotSame($result, $references[0]);
+            $this->assertNotSame($result->id, $references[0]->id);
+        }
     }
 }
 

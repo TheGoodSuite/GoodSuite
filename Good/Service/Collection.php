@@ -26,7 +26,7 @@ class Collection implements \IteratorAggregate
 
     public function remove($value)
     {
-        $this->items.remove($value);
+        $this->items->remove($value);
     }
 
     public function clear()
@@ -50,6 +50,11 @@ class Collection implements \IteratorAggregate
     public function getCollectedType()
     {
         return $this->collectedType;
+    }
+
+    public function count()
+    {
+        return $this->items->count();
     }
 }
 

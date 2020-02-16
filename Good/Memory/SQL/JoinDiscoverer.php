@@ -34,7 +34,8 @@ class JoinDiscoverer implements StorableVisitor
             {
                 $join = $this->storage->createJoin($this->currentTable,
                                                  $name,
-                                                 $datatypeName);
+                                                 $datatypeName,
+                                                 'id');
             }
 
             $recursionDiscoverer = new JoinDiscoverer($this->storage, $join);

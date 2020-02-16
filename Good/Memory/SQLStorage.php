@@ -263,7 +263,7 @@ class SQLStorage extends Storage
         return $this->joins;
     }
 
-    public function createJoin($tableNumberOrigin, $fieldNameOrigin, $tableNameDestination)
+    public function createJoin($tableNumberOrigin, $fieldNameOrigin, $tableNameDestination, $fieldNameDestination, $reusableJoin = true)
     {
         // we start off with increment because joins index is numberOfJoins + 1 (index 0 is for base table)
         $this->numberOfJoins++;
@@ -271,13 +271,21 @@ class SQLStorage extends Storage
         $join = new SQL\Join($tableNumberOrigin,
                              $fieldNameOrigin,
                              $tableNameDestination,
-                             $this->numberOfJoins);
+                             $this->numberOfJoins,
+                             $fieldNameDestination);
 
         // We fieldnamify the key here because it's the most flexible
         // It means you can get the join if you have the non fieldnamified type
         // (you can just call fieldnamify on it) as well as when you do have the
         // fieldnamified type.
-        $this->joins[$tableNumberOrigin][$this->fieldNamify($fieldNameOrigin)] = $join;
+        if ($reusableJoin)
+        {
+            $this->joins[$tableNumberOrigin][$this->fieldNamify($fieldNameOrigin)] = $join;
+        }
+        else
+        {
+            $this->joins[$tableNumberOrigin][] = $join;
+        }
 
         $this->joins[$this->numberOfJoins] = array();
         $this->joinsReverse[$this->numberOfJoins] = $join;
@@ -285,8 +293,10 @@ class SQLStorage extends Storage
         return $this->numberOfJoins;
     }
 
-    public function createStorable(array $data, $joins, $type, $tableNumber = 0, $dataPreparsed = false)
+    public function createStorable(array $allData, $joins, $type, $tableNumber = 0, $dataPreparsed = false)
     {
+        $data = $allData[0];
+
         if (!$dataPreparsed)
         {
             $parsed = array();
@@ -297,6 +307,8 @@ class SQLStorage extends Storage
             }
 
             $data = $parsed;
+
+            $allData[0] = $parsed;
         }
 
         $table = 't' . $tableNumber;
@@ -329,7 +341,7 @@ class SQLStorage extends Storage
                 }
                 else
                 {
-                    $storableData[$field] = $this->createStorable($data,
+                    $storableData[$field] = $this->createStorable($allData,
                                                                   $joins,
                                                                   $joins[$tableNumber][$field]->tableNameDestination,
                                                                   $joins[$tableNumber][$field]->tableNumberDestination,
@@ -347,6 +359,20 @@ class SQLStorage extends Storage
 
         $denamifier = new FieldDenamifier($this);
         $storableData = $denamifier->denamifyFields($storableData, $ret);
+
+        foreach ($allData as $key => $row)
+        {
+            if ($key != 0 && $row[$table . '_id'] === $data[$table]['id'])
+            {
+                foreach ($storableData as $fieldName => $value)
+                {
+                    if (is_array($value))
+                    {
+                        $storableData[$fieldName][] = $row[$table . '_' . $this->tableNamify($fieldName)];
+                    }
+                }
+            }
+        }
 
         $ret->setFromArray($storableData);
         $ret->setId(strval($data[$table]["id"]));

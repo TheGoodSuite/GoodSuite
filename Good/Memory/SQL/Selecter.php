@@ -18,6 +18,7 @@ class Selecter implements ResolverVisitor
 
     private $sql;
     private $currentTable;
+    private $currentTableName;
 
     private $order = array();
 
@@ -28,9 +29,10 @@ class Selecter implements ResolverVisitor
         $this->currentTable = $currentTable;
     }
 
-
     public function select($datatypeName, Condition $condition, Resolver $resolver)
     {
+        $this->currentTableName = $this->storage->tableNamify($datatypeName);
+
         $this->sql = "SELECT `t0`.`id` AS `t0_id`";
 
         $resolver->acceptResolverVisitor($this);
@@ -58,7 +60,7 @@ class Selecter implements ResolverVisitor
                                                     '` AS `t' . $join->tableNumberDestination . '`';
                 $sql .= ' ON `t' . $join->tableNumberOrigin . '`.`' .
                                             $this->storage->fieldNamify($join->fieldNameOrigin) . '`';
-                $sql .= ' = `t' . $join->tableNumberDestination . '`.`id`';
+                $sql .= ' = `t' . $join->tableNumberDestination . '`.`' . $join->fieldNameDestination . '`';
             }
         }
 
@@ -86,37 +88,66 @@ class Selecter implements ResolverVisitor
 
     public function resolverVisitResolvedReferenceProperty($name, $datatypeName, Resolver $resolver)
     {
-        if ($resolver == null)
+        $this->writeSelectJoinedFields($datatypeName, $resolver, $name, 'id', false, $name);
+    }
+
+    public function resolverVisitResolvedCollectionProperty($name)
+    {
+        $this->writeSelectJoinedFields($this->currentTableName . '_' . $name, null, 'id', 'owner', true, $name);
+    }
+
+    public function writeSelectJoinedFields($joinTable, ?Resolver $resolver,
+        $currentTableJoinField, $otherTableJoinField, $isCollectionJoin, $joinTriggerField)
+    {
+        if (!$isCollectionJoin)
         {
-            // resolver should only be null if resolved is false
-            // just checking here (maybe this should throw an error,
-            // but I'd say it's only a flaw in Good not outside it
-            // that can trigger this)
-            throw new \Exception();
+            $this->sql .= ', ';
+            $this->sql .= '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($currentTableJoinField) . '`';
+            $this->sql .= ' AS `t' . $this->currentTable . '_' . $this->storage->fieldNamify($currentTableJoinField) . '`';
         }
 
-        $this->sql .= ', ';
-        $this->sql .= '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($name) . '`';
-        $this->sql .= ' AS `t' . $this->currentTable . '_' . $this->storage->fieldNamify($name) . '`';
-
         $join = $this->storage->createJoin($this->currentTable,
-                                           $name,
-                                           $datatypeName);
+                                           $currentTableJoinField,
+                                           $joinTable,
+                                           $otherTableJoinField,
+                                           !$isCollectionJoin);
 
-        $this->sql .= ', ';
-        $this->sql .= '`t' . $join . '`.`id` AS `t' . $join . '_id`';
+        if ($isCollectionJoin)
+        {
+            $this->sql .= ', ';
+            $this->sql .= '`t' . $join . '`.`value`';
+            $this->sql .= ' AS `t' . $this->currentTable . '_' . $this->storage->fieldNamify($joinTriggerField) . '`';
+        }
+        else
+        {
+            $this->sql .= ', ';
+            $this->sql .= '`t' . $join . '`.`id` AS `t' . $join . '_id`';
+        }
 
         $currentTable = $this->currentTable;
+        $currentTableName = $this->currentTableName;
         $this->currentTable = $join;
-        $resolver->acceptResolverVisitor($this);
+        $this->currentTableName = $joinTable;
+
+        if ($resolver != null)
+        {
+            $resolver->acceptResolverVisitor($this);
+        }
+
+
         $this->currentTable = $currentTable;
+        $this->currentTableName = $currentTableName;
     }
 
     public function resolverVisitUnresolvedReferenceProperty($name)
     {
     }
 
-    public function resolverVisitNonReferenceProperty($name)
+    public function resolverVisitUnresolvedCollectionProperty($name)
+    {
+    }
+
+    public function resolverVisitScalarProperty($name)
     {
         $this->sql .= ', ';
 

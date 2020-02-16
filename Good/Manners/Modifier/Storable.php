@@ -307,7 +307,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
 
-        $this->visitNonReference();
+        $this->visitNonReference(true);
     }
 
     public function visitIntType(Schema\Type\IntType $type)
@@ -328,7 +328,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
 
-        $this->visitNonReference();
+        $this->visitNonReference(true);
     }
 
     public function visitFloatType(Schema\Type\FloatType $type)
@@ -349,7 +349,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
 
-        $this->visitNonReference();
+        $this->visitNonReference(true);
     }
 
     public function visitReferenceType(Schema\Type\ReferenceType $type)
@@ -368,23 +368,6 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
 
-        $this->resolver .= '    private $resolved' . \ucfirst($this->member->getName()) . ' = null;' . "\n";
-        $this->resolver .= "    \n";
-        $this->resolver .= '    public function resolve' . \ucfirst($this->member->getName()) . '()' . "\n";
-        $this->resolver .= "    {\n";
-        $this->resolver .= '        $this->resolved' . \ucfirst($this->member->getName()) . ' = ' .
-                                                        'new ' . $type->getReferencedType() .
-                                                                'Resolver($this->root);' . "\n";
-        $this->resolver .= "        \n";
-        $this->resolver .= '        return $this->resolved' . \ucfirst($this->member->getName()) . ';' . "\n";
-        $this->resolver .= "    }\n";
-        $this->resolver .= "    \n";
-        $this->resolver .= '    public function get' . \ucfirst($this->member->getName()) . '()' . "\n";
-        $this->resolver .= "    {\n";
-        $this->resolver .= '        return $this->resolved' . \ucfirst($this->member->getName()) . ';' . "\n";
-        $this->resolver .= "    }\n";
-        $this->resolver .= "    \n";
-
         $this->resolverVisit .= '        if ($this->resolved' . \ucfirst($this->member->getName()) . ' != null)' . "\n";
         $this->resolverVisit .= "        {\n";
         $this->resolverVisit .= '            $visitor->resolverVisitResolvedReferenceProperty("' .
@@ -400,6 +383,8 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->debugInfo .= '            "' . $this->member->getName() . '" => $this->' . $this->member->getName() . ',' . "\n";
         $this->debugInfo .= '            "is' . \ucfirst($this->member->getName()) . 'Dirty" => $this->is' . \ucfirst($this->member->getName()) . 'Dirty,' . "\n";
+
+        $this->writeResolvableMemberToResolver($this->member->getName(), $type->getReferencedType());
     }
 
     public function visitTextType(Schema\Type\TextType $type)
@@ -420,7 +405,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
 
-        $this->visitNonReference();
+        $this->visitNonReference(true);
     }
 
     public function visitCollectionType(Schema\Type\CollectionType $type)
@@ -444,10 +429,24 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
 
-        $this->visitNonReference();
+        $this->resolverVisit .= '        if ($this->resolved' . \ucfirst($this->member->getName()) . ' !== null && $this->resolved' . \ucfirst($this->member->getName()) . ' !== false )' . "\n";
+        $this->resolverVisit .= "        {\n";
+        $this->resolverVisit .= '            $visitor->resolverVisitResolvedCollectionProperty("' .
+                                            $this->member->getName() . '"' .
+                                            ");\n";
+        $this->resolverVisit .= "        }\n";
+        $this->resolverVisit .= '        else' . "\n";
+        $this->resolverVisit .= "        {\n";
+        $this->resolverVisit .= '            $visitor->resolverVisitUnresolvedCollectionProperty(' .
+                                            '"' . $this->member->getName() . '");' . "\n";
+        $this->resolverVisit .= "        }\n";
+
+        $this->visitNonReference(false);
+        // A bit of a misuse of getReferencedTypeIfAny: if I ever want to remove it, I shouldn't let this get in the way!
+        $this->writeResolvableMemberToResolver($this->member->getName(), $type->getCollectedType()->getReferencedTypeIfAny());
     }
 
-    private function visitNonReference()
+    private function visitNonReference($isScalar)
     {
         $this->resolver .= '    private $orderNumber' . \ucfirst($this->member->getName()) . ' = -1;' . "\n";
         $this->resolver .= '    private $orderDirection' . \ucfirst($this->member->getName()) . ' = -1;' . "\n";
@@ -471,8 +470,12 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->resolver .= "    }\n";
         $this->resolver .= "    \n";
 
-        $this->resolverVisit .= '        $visitor->resolverVisitNonReferenceProperty("' .
+        if ($isScalar)
+        {
+            $this->resolverVisit .= '        $visitor->resolverVisitScalarProperty("' .
                                                                             $this->member->getName() . '");' . "\n";
+        }
+
         $this->resolverVisit .= '        if ($this->orderNumber' . \ucfirst($this->member->getName()) . ' != -1)' . "\n";
         $this->resolverVisit .= "        {\n";
         $this->resolverVisit .= '            if ($this->orderDirection' . \ucfirst($this->member->getName()) .
@@ -492,6 +495,52 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->debugInfo .= '            "' . $this->member->getName() . '" => $this->' . $this->member->getName() . ',' . "\n";
         $this->debugInfo .= '            "is' . \ucfirst($this->member->getName()) . 'Dirty" => $this->is' . \ucfirst($this->member->getName()) . 'Dirty,' . "\n";
+    }
+
+    public function writeResolvableMemberToResolver($memberName, $resolveType)
+    {
+        $this->resolver .= '    private $resolved' . \ucfirst($memberName) . ' = ' . "\n";
+
+        if ($resolveType === null)
+        {
+            $this->resolver .= 'false;';
+        }
+        else {
+            $this->resolver .= 'null;';
+        }
+
+        $this->resolver .= "    \n";
+        $this->resolver .= '    public function resolve' . \ucfirst($memberName) . '()' . "\n";
+        $this->resolver .= "    {\n";
+        $this->resolver .= '        $this->resolved' . \ucfirst($memberName) . ' = ';
+
+        if ($resolveType === null)
+        {
+            $this->resolver .= "true;\n";
+        }
+        else
+        {
+            $this->resolver .= 'new ' . $resolveType . 'Resolver($this->root);' . "\n";
+        }
+
+        $this->resolver .= "        \n";
+
+        if ($resolveType === null)
+        {
+            $this->resolver .= '        return $this;' . ";\n";
+        }
+        else
+        {
+            $this->resolver .= '        return $this->resolved' . \ucfirst($memberName) . ";\n";
+        }
+
+        $this->resolver .= "    }\n";
+        $this->resolver .= "    \n";
+        $this->resolver .= '    public function get' . \ucfirst($memberName) . '()' . "\n";
+        $this->resolver .= "    {\n";
+        $this->resolver .= '        return $this->resolved' . \ucfirst($memberName) . ';' . "\n";
+        $this->resolver .= "    }\n";
+        $this->resolver .= "    \n";
     }
 
     public function extraFiles()

@@ -24,6 +24,8 @@ class StorableCollection implements \Good\Manners\StorableCollection
         $this->firstStorable = new LinkedListElement();
         $this->lastStorable = $this->firstStorable;
         $this->reachedEnd = false;
+
+        $this->queuedRow = null;
     }
 
     public function getNext()
@@ -42,11 +44,46 @@ class StorableCollection implements \Good\Manners\StorableCollection
 
     public function moveNext()
     {
-        $row = $this->dbresult->fetch();
-
-        if ($row !== null && !$this->reachedEnd)
+        if ($this->reachedEnd)
         {
-            $this->lastStorable->value = $this->storage->createStorable($row, $this->joins, $this->type);
+            return false;
+        }
+
+        if ($this->queuedRow != null)
+        {
+            $row = $this->queuedRow;
+        }
+        else
+        {
+            $row = $this->dbresult->fetch();
+        }
+
+        if ($row !== null)
+        {
+            $rows = [$row];
+            $keepGoing = true;
+
+            while ($keepGoing)
+            {
+                $row = $this->dbresult->fetch();
+
+                if ($row === null)
+                {
+                    $keepGoing = false;
+                    $this->reachedEnd = true;
+                }
+                else if ($row['t0_id'] !== $rows[0]['t0_id'])
+                {
+                    $keepGoing = false;
+                    $this->queuedRow = $row;
+                }
+                else
+                {
+                    $rows[] = $row;
+                }
+            }
+
+            $this->lastStorable->value = $this->storage->createStorable($rows, $this->joins, $this->type);
             $this->lastStorable->next = new LinkedListElement();
             $this->lastStorable = $this->lastStorable->next;
 
