@@ -499,7 +499,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
     public function writeResolvableMemberToResolver($memberName, $resolveType)
     {
-        $this->resolver .= '    private $resolved' . \ucfirst($memberName) . ' = ' . "\n";
+        $this->resolver .= '    private $resolved' . \ucfirst($memberName) . ' = ';
 
         if ($resolveType === null)
         {
@@ -509,6 +509,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
             $this->resolver .= 'null;';
         }
 
+        $this->resolver .= "\n";
         $this->resolver .= "    \n";
         $this->resolver .= '    public function resolve' . \ucfirst($memberName) . '()' . "\n";
         $this->resolver .= "    {\n";
