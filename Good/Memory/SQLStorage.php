@@ -263,8 +263,13 @@ class SQLStorage extends Storage
         return $this->joins;
     }
 
-    public function createJoin($tableNumberOrigin, $fieldNameOrigin, $tableNameDestination, $fieldNameDestination, $reusableJoin = true)
+    public function createJoin($tableNumberOrigin, $fieldNameOrigin, $tableNameDestination, $fieldNameDestination, $selectedFieldName = null)
     {
+        if ($selectedFieldName == null)
+        {
+            $selectedFieldName = $fieldNameOrigin;
+        }
+
         // we start off with increment because joins index is numberOfJoins + 1 (index 0 is for base table)
         $this->numberOfJoins++;
 
@@ -278,14 +283,7 @@ class SQLStorage extends Storage
         // It means you can get the join if you have the non fieldnamified type
         // (you can just call fieldnamify on it) as well as when you do have the
         // fieldnamified type.
-        if ($reusableJoin)
-        {
-            $this->joins[$tableNumberOrigin][$this->fieldNamify($fieldNameOrigin)] = $join;
-        }
-        else
-        {
-            $this->joins[$tableNumberOrigin][] = $join;
-        }
+        $this->joins[$tableNumberOrigin][$this->fieldNamify($selectedFieldName)] = $join;
 
         $this->joins[$this->numberOfJoins] = array();
         $this->joinsReverse[$this->numberOfJoins] = $join;
@@ -295,22 +293,24 @@ class SQLStorage extends Storage
 
     public function createStorable(array $allData, $joins, $type, $tableNumber = 0, $dataPreparsed = false, $offset = 0)
     {
-        $data = $allData[$offset];
-
         if (!$dataPreparsed)
         {
             $parsed = array();
 
-            foreach ($data as $field => $value)
+            foreach ($allData as $index => $dataRow)
             {
-                $parsed[strstr($field, '_', true)][substr($field, strpos($field, '_') + 1)] = $value;
+                $parsed[$index] = [];
+
+                foreach ($dataRow as $field => $value)
+                {
+                    $parsed[$index][strstr($field, '_', true)][substr($field, strpos($field, '_') + 1)] = $value;
+                }
             }
 
-            $data = $parsed;
-
-            $allData[0] = $parsed;
+            $allData = $parsed;
         }
 
+        $data = $allData[$offset];
         $table = 't' . $tableNumber;
 
         if (array_key_exists($data[$table]["id"],
@@ -335,7 +335,6 @@ class SQLStorage extends Storage
                 $joins,
                 $tableNumber,
                 $allData,
-                true,
                 0);
         }
 
@@ -346,7 +345,7 @@ class SQLStorage extends Storage
 
         foreach ($allData as $key => $row)
         {
-            if ($key != 0 && $row[$table . '_id'] === $data[$table]['id'])
+            if ($key != 0 && $row[$table]['id'] === $data[$table]['id'])
             {
                 foreach ($storableData as $fieldName => $value)
                 {
@@ -354,11 +353,10 @@ class SQLStorage extends Storage
                     {
                         $storableData[$fieldName][] = $this->getStorableOrValue(
                             $this->tableNamify($fieldName),
-                            $row[$table . '_' . $this->tableNamify($fieldName)],
+                            $row[$table][$this->tableNamify($fieldName)],
                             $joins,
                             $tableNumber,
                             $allData,
-                            false,
                             $key);
                     }
                 }
@@ -377,27 +375,37 @@ class SQLStorage extends Storage
         return $ret;
     }
 
-    private function getStorableOrValue($field, $value, $joins, $tableNumber, $allData, $preparsed, $dataRow)
+    private function getStorableOrValue($field, $value, $joins, $tableNumber, $allData, $dataRow)
     {
-        if (array_key_exists($field, $joins[$tableNumber]))
+        if ($value === null)
+        {
+            return null;
+        }
+
+        if (array_key_exists($field, $joins[$tableNumber])
+            && $joins[$tableNumber][$field]->fieldNameDestination == 'id')
         {
             // this is a resolved reference
-            // unresolved referenced are completely absent, and
-            // non-references aren't in the joins table
+            return $this->createStorable($allData,
+                                         $joins,
+                                         $joins[$tableNumber][$field]->tableNameDestination,
+                                         $joins[$tableNumber][$field]->tableNumberDestination,
+                                         true,
+                                         $dataRow);
+        }
+        else if (array_key_exists($field, $joins[$tableNumber])
+            && $joins[$tableNumber][$field]->fieldNameDestination == 'owner')
+        {
+            // collection
+            $destinationTable = $joins[$tableNumber][$field]->tableNumberDestination;
 
-            if ($value === null)
-            {
-                return null;
-            }
-            else
-            {
-                return $this->createStorable($allData,
-                                             $joins,
-                                             $joins[$tableNumber][$field]->tableNameDestination,
-                                             $joins[$tableNumber][$field]->tableNumberDestination,
-                                             $preparsed,
-                                             $dataRow);
-            }
+            return $this->getStorableOrValue(
+                'value',
+                $value,
+                $joins,
+                $destinationTable,
+                $allData,
+                $dataRow);
         }
         else
         {

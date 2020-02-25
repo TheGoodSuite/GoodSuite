@@ -58,7 +58,7 @@ class Selecter implements ResolverVisitor
             {
                 $sql .= ' LEFT JOIN `' . $this->storage->tableNamify($join->tableNameDestination) .
                                                     '` AS `t' . $join->tableNumberDestination . '`';
-                $sql .= ' ON `t' . $join->tableNumberOrigin . '_' .
+                $sql .= ' ON `t' . $join->tableNumberOrigin . '`.`' .
                                             $this->storage->fieldNamify($join->fieldNameOrigin) . '`';
                 $sql .= ' = `t' . $join->tableNumberDestination . '`.`' . $join->fieldNameDestination . '`';
             }
@@ -88,35 +88,35 @@ class Selecter implements ResolverVisitor
 
     public function resolverVisitResolvedReferenceProperty($name, $datatypeName, Resolver $resolver)
     {
-        $this->writeSelectJoinedFields($datatypeName, $resolver, $name, 'id', null, true);
+        $this->writeSelectJoinedFields($this->currentTable, $datatypeName, $resolver, $name, 'id', null, true);
     }
 
     public function resolverVisitResolvedScalarCollectionProperty($name)
     {
-        $this->writeSelectJoinedFields($this->currentTableName . '_' . $name, null, 'id', 'owner', $name, false);
+        $this->writeSelectJoinedFields($this->currentTable, $this->currentTableName . '_' . $name, null, 'id', 'owner', $name, false);
     }
 
     public function resolverVisitResolvedReferenceCollectionProperty($name, $typeName, Resolver $resolver)
     {
-        $this->writeSelectJoinedFields($this->currentTableName . '_' . $name, null, 'id', 'owner', $name, false);
-        $this->writeSelectJoinedFields($typeName, $resolver, $name, 'id', null, false);
+        $table = $this->writeSelectJoinedFields($this->currentTable, $this->currentTableName . '_' . $name, null, 'id', 'owner', $name, false, true);
+        $this->writeSelectJoinedFields($table, $typeName, $resolver, 'value', 'id', null, false);
     }
 
-    public function writeSelectJoinedFields($joinTable, ?Resolver $resolver,
-        $currentTableJoinField, $otherTableJoinField, $collectionField, $selectJoinField)
+    public function writeSelectJoinedFields($leftTableNumber, $joinTable, ?Resolver $resolver,
+        $currentTableJoinField, $otherTableJoinField, $collectionField, $selectJoinField, $tmp = false)
     {
         if ($selectJoinField)
         {
             $this->sql .= ', ';
-            $this->sql .= '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($currentTableJoinField) . '`';
-            $this->sql .= ' AS `t' . $this->currentTable . '_' . $this->storage->fieldNamify($currentTableJoinField) . '`';
+            $this->sql .= '`t' . $leftTableNumber . '`.`' . $this->storage->fieldNamify($currentTableJoinField) . '`';
+            $this->sql .= ' AS `t' . $leftTableNumber . '_' . $this->storage->fieldNamify($currentTableJoinField) . '`';
         }
 
-        $join = $this->storage->createJoin($this->currentTable,
+        $join = $this->storage->createJoin($leftTableNumber,
                                            $currentTableJoinField,
                                            $joinTable,
                                            $otherTableJoinField,
-                                           $collectionField === null);
+                                           $collectionField);
 
         if ($collectionField === null)
         {
@@ -127,7 +127,7 @@ class Selecter implements ResolverVisitor
         {
             $this->sql .= ', ';
             $this->sql .= '`t' . $join . '`.`value`';
-            $this->sql .= ' AS `t' . $this->currentTable . '_' . $this->storage->fieldNamify($collectionField) . '`';
+            $this->sql .= ' AS `t' . $leftTableNumber . '_' . $this->storage->fieldNamify($collectionField) . '`';
         }
 
         $currentTable = $this->currentTable;
@@ -142,6 +142,8 @@ class Selecter implements ResolverVisitor
 
         $this->currentTable = $currentTable;
         $this->currentTableName = $currentTableName;
+
+        return $join;
     }
 
     public function resolverVisitUnresolvedReferenceProperty($name)
