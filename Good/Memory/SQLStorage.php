@@ -293,9 +293,9 @@ class SQLStorage extends Storage
         return $this->numberOfJoins;
     }
 
-    public function createStorable(array $allData, $joins, $type, $tableNumber = 0, $dataPreparsed = false)
+    public function createStorable(array $allData, $joins, $type, $tableNumber = 0, $dataPreparsed = false, $offset = 0)
     {
-        $data = $allData[0];
+        $data = $allData[$offset];
 
         if (!$dataPreparsed)
         {
@@ -329,30 +329,14 @@ class SQLStorage extends Storage
 
         foreach ($data[$table] as $field => $value)
         {
-            if (array_key_exists($field, $joins[$tableNumber]))
-            {
-                // this is a resolved reference
-                // unresolved referenced are completely absent, and
-                // non-references aren't in the joins table
-
-                if ($value === null)
-                {
-                    $storableData[$field] = null;
-                }
-                else
-                {
-                    $storableData[$field] = $this->createStorable($allData,
-                                                                  $joins,
-                                                                  $joins[$tableNumber][$field]->tableNameDestination,
-                                                                  $joins[$tableNumber][$field]->tableNumberDestination,
-                                                                  true);
-                }
-            }
-            else
-            {
-                // non-reference
-                $storableData[$field] = $value;
-            }
+            $storableData[$field] = $this->getStorableOrValue(
+                $field,
+                $value,
+                $joins,
+                $tableNumber,
+                $allData,
+                true,
+                0);
         }
 
         $ret = $this->storableFactory->createStorable($type);
@@ -368,7 +352,14 @@ class SQLStorage extends Storage
                 {
                     if (is_array($value))
                     {
-                        $storableData[$fieldName][] = $row[$table . '_' . $this->tableNamify($fieldName)];
+                        $storableData[$fieldName][] = $this->getStorableOrValue(
+                            $this->tableNamify($fieldName),
+                            $row[$table . '_' . $this->tableNamify($fieldName)],
+                            $joins,
+                            $tableNumber,
+                            $allData,
+                            false,
+                            $key);
                     }
                 }
             }
@@ -384,6 +375,35 @@ class SQLStorage extends Storage
         $this->created[$type][$data[$table]["id"]] = $ret;
 
         return $ret;
+    }
+
+    private function getStorableOrValue($field, $value, $joins, $tableNumber, $allData, $preparsed, $dataRow)
+    {
+        if (array_key_exists($field, $joins[$tableNumber]))
+        {
+            // this is a resolved reference
+            // unresolved referenced are completely absent, and
+            // non-references aren't in the joins table
+
+            if ($value === null)
+            {
+                return null;
+            }
+            else
+            {
+                return $this->createStorable($allData,
+                                             $joins,
+                                             $joins[$tableNumber][$field]->tableNameDestination,
+                                             $joins[$tableNumber][$field]->tableNumberDestination,
+                                             $preparsed,
+                                             $dataRow);
+            }
+        }
+        else
+        {
+            // non-reference
+            return $value;
+        }
     }
 }
 

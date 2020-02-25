@@ -304,8 +304,6 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
     public function testFetchReferenceCollection()
     {
-        $this->markTestIncomplete();
-
         $this->populateDatabase();
 
         $resolver = CollectionType::resolver()->resolveMyReferences();
@@ -320,9 +318,11 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
             $references = $result->myReferences->toArray();
 
             $this->assertSame(2, count($references));
-            $this->assertSame($result, $references[0]);
-            $this->assertNotSame($result, $references[0]);
-            $this->assertNotSame($result->id, $references[0]->id);
+            $this->assertSame($result->id, $references[0]->id);
+            $this->assertSame(4, $references[0]->someInt);
+            $this->assertNotSame($result, $references[1]);
+            $this->assertNotSame($result->id, $references[1]->id);
+            $this->assertSame(1, $references[1]->someInt);
         }
     }
 }

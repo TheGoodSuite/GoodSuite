@@ -431,9 +431,17 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->resolverVisit .= '        if ($this->resolved' . \ucfirst($this->member->getName()) . ' !== null && $this->resolved' . \ucfirst($this->member->getName()) . ' !== false )' . "\n";
         $this->resolverVisit .= "        {\n";
-        $this->resolverVisit .= '            $visitor->resolverVisitResolvedCollectionProperty("' .
-                                            $this->member->getName() . '"' .
-                                            ");\n";
+        if ($type->getCollectedType()->getReferencedTypeIfAny() === null)
+        {
+            $this->resolverVisit .= '            $visitor->resolverVisitResolvedScalarCollectionProperty("' .
+                                                $this->member->getName() . '");' . "\n";
+        }
+        else
+        {
+            $this->resolverVisit .= '            $visitor->resolverVisitResolvedReferenceCollectionProperty(' .
+                '"' . $this->member->getName() . '", "' . $type->getCollectedType()->getReferencedTypeIfAny() . '", ' .
+                '$this->resolved' . \ucfirst($this->member->getName()) .");\n";
+        }
         $this->resolverVisit .= "        }\n";
         $this->resolverVisit .= '        else' . "\n";
         $this->resolverVisit .= "        {\n";

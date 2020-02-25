@@ -8,7 +8,8 @@ interface ResolverVisitor
                                                             Resolver $resolver);
     public function resolverVisitUnresolvedReferenceProperty($name);
 
-    public function resolverVisitResolvedCollectionProperty($name);
+    public function resolverVisitResolvedScalarCollectionProperty($name);
+    public function resolverVisitResolvedReferenceCollectionProperty($name, $typeName, Resolver $resolver);
     public function resolverVisitUnresolvedCollectionProperty($name);
 
     public function resolverVisitScalarProperty($name);

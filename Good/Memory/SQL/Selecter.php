@@ -58,7 +58,7 @@ class Selecter implements ResolverVisitor
             {
                 $sql .= ' LEFT JOIN `' . $this->storage->tableNamify($join->tableNameDestination) .
                                                     '` AS `t' . $join->tableNumberDestination . '`';
-                $sql .= ' ON `t' . $join->tableNumberOrigin . '`.`' .
+                $sql .= ' ON `t' . $join->tableNumberOrigin . '_' .
                                             $this->storage->fieldNamify($join->fieldNameOrigin) . '`';
                 $sql .= ' = `t' . $join->tableNumberDestination . '`.`' . $join->fieldNameDestination . '`';
             }
@@ -88,18 +88,24 @@ class Selecter implements ResolverVisitor
 
     public function resolverVisitResolvedReferenceProperty($name, $datatypeName, Resolver $resolver)
     {
-        $this->writeSelectJoinedFields($datatypeName, $resolver, $name, 'id', false, $name);
+        $this->writeSelectJoinedFields($datatypeName, $resolver, $name, 'id', null, true);
     }
 
-    public function resolverVisitResolvedCollectionProperty($name)
+    public function resolverVisitResolvedScalarCollectionProperty($name)
     {
-        $this->writeSelectJoinedFields($this->currentTableName . '_' . $name, null, 'id', 'owner', true, $name);
+        $this->writeSelectJoinedFields($this->currentTableName . '_' . $name, null, 'id', 'owner', $name, false);
+    }
+
+    public function resolverVisitResolvedReferenceCollectionProperty($name, $typeName, Resolver $resolver)
+    {
+        $this->writeSelectJoinedFields($this->currentTableName . '_' . $name, null, 'id', 'owner', $name, false);
+        $this->writeSelectJoinedFields($typeName, $resolver, $name, 'id', null, false);
     }
 
     public function writeSelectJoinedFields($joinTable, ?Resolver $resolver,
-        $currentTableJoinField, $otherTableJoinField, $isCollectionJoin, $joinTriggerField)
+        $currentTableJoinField, $otherTableJoinField, $collectionField, $selectJoinField)
     {
-        if (!$isCollectionJoin)
+        if ($selectJoinField)
         {
             $this->sql .= ', ';
             $this->sql .= '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($currentTableJoinField) . '`';
@@ -110,18 +116,18 @@ class Selecter implements ResolverVisitor
                                            $currentTableJoinField,
                                            $joinTable,
                                            $otherTableJoinField,
-                                           !$isCollectionJoin);
+                                           $collectionField === null);
 
-        if ($isCollectionJoin)
+        if ($collectionField === null)
         {
             $this->sql .= ', ';
-            $this->sql .= '`t' . $join . '`.`value`';
-            $this->sql .= ' AS `t' . $this->currentTable . '_' . $this->storage->fieldNamify($joinTriggerField) . '`';
+            $this->sql .= '`t' . $join . '`.`id` AS `t' . $join . '_id`';
         }
         else
         {
             $this->sql .= ', ';
-            $this->sql .= '`t' . $join . '`.`id` AS `t' . $join . '_id`';
+            $this->sql .= '`t' . $join . '`.`value`';
+            $this->sql .= ' AS `t' . $this->currentTable . '_' . $this->storage->fieldNamify($collectionField) . '`';
         }
 
         $currentTable = $this->currentTable;
@@ -133,7 +139,6 @@ class Selecter implements ResolverVisitor
         {
             $resolver->acceptResolverVisitor($this);
         }
-
 
         $this->currentTable = $currentTable;
         $this->currentTableName = $currentTableName;
