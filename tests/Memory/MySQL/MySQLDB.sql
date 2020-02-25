@@ -227,6 +227,42 @@ CREATE TABLE IF NOT EXISTS `create` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
 
+CREATE TABLE `collectiontype` (
+	`id`	int(11) NOT NULL AUTO_INCREMENT,
+	`someint` int(11),
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE `collectiontype_myints` (
+	`owner`	int(11),
+	`value` int(11),
+	PRIMARY KEY(owner, value)
+);
+
+CREATE TABLE `collectiontype_myfloats` (
+	`owner`	int(11),
+	`value` float,
+	PRIMARY KEY(owner, value)
+);
+
+CREATE TABLE `collectiontype_mytexts` (
+	`owner`	int(11),
+	`value` TEXT,
+	PRIMARY KEY(owner, value)
+);
+
+CREATE TABLE `collectiontype_mydatetimes` (
+	`owner`	int(11),
+	`value` DATETIME,
+	PRIMARY KEY(owner, value)
+);
+
+CREATE TABLE `collectiontype_myreferences` (
+	`owner`	int(11),
+	`value` INTEGER,
+	PRIMARY KEY(owner, value)
+);
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
