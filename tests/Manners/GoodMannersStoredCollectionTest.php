@@ -1,6 +1,7 @@
 <?php
 
 use Good\Manners\Condition\EqualTo;
+use Good\Manners\Condition\GreaterThan;
 
 /**
  * @runTestsInSeparateProcesses
@@ -123,6 +124,14 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         $myCollectionType->myReferences->add($reference);
         $myCollectionType->myReferences->add($myCollectionType);
+
+        $storage->insert($myCollectionType);
+
+        $myCollectionType = new CollectionType();
+        $myCollectionType->someInt = 5;
+
+        $myCollectionType->myInts->add(3);
+        $myCollectionType->myInts->add(5);
 
         $storage->insert($myCollectionType);
 
@@ -323,6 +332,71 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
             $this->assertNotSame($result, $references[1]);
             $this->assertNotSame($result->id, $references[1]->id);
             $this->assertSame(1, $references[1]->someInt);
+        }
+    }
+
+    public function testOrderingCollection()
+    {
+        $this->populateDatabase();
+
+        $resolver = CollectionType::resolver()->resolveMyInts();
+        $resolver->orderByMyIntsAsc();
+
+        $conditionObject = new CollectionType();
+        $conditionObject->someInt = 2;
+        $condition = new GreaterThan($conditionObject);
+
+        $results = $this->storage->getCollection($condition, $resolver);
+
+        $count = 0;
+
+        foreach ($results as $result)
+        {
+            $ints = $result->myInts->toArray();
+
+            $this->assertSame(2, count($ints));
+            $this->assertSame($ints[1], $ints[0] + 2);
+
+            $count++;
+        }
+
+        $this->assertSame(2, $count);
+    }
+
+    public function testOrderingCollectionAndBaseObject()
+    {
+        $this->populateDatabase();
+
+        $resolver = CollectionType::resolver()->resolveMyInts();
+        $resolver->orderByMyIntsDesc();
+        $resolver->orderBySomeIntAsc();
+
+        $conditionObject = new CollectionType();
+        $conditionObject->someInt = 2;
+        $condition = new GreaterThan($conditionObject);
+
+        $results = $this->storage->getCollection($condition, $resolver);
+
+        $ints = [
+            [4, 2],
+            [5, 3]
+        ];
+
+        $i = 0;
+
+        foreach ($results as $result)
+        {
+            $j = 0;
+
+
+            foreach ($result->myInts as $myInt)
+            {
+                $this->assertSame($ints[$i][$j], $myInt);
+
+                $j++;
+            }
+
+            $i++;
         }
     }
 }

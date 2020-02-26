@@ -307,7 +307,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
 
-        $this->visitNonReference(true);
+        $this->visitNonReference(true, true);
     }
 
     public function visitIntType(Schema\Type\IntType $type)
@@ -328,7 +328,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
 
-        $this->visitNonReference(true);
+        $this->visitNonReference(true, true);
     }
 
     public function visitFloatType(Schema\Type\FloatType $type)
@@ -349,7 +349,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
 
-        $this->visitNonReference(true);
+        $this->visitNonReference(true, true);
     }
 
     public function visitReferenceType(Schema\Type\ReferenceType $type)
@@ -405,7 +405,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
 
-        $this->visitNonReference(true);
+        $this->visitNonReference(true, true);
     }
 
     public function visitCollectionType(Schema\Type\CollectionType $type)
@@ -449,57 +449,68 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
                                             '"' . $this->member->getName() . '");' . "\n";
         $this->resolverVisit .= "        }\n";
 
-        $this->visitNonReference(false);
+        $orderableCheck  = '        if ($this->resolved' . \ucfirst($this->member->getName()) . ' === false)' . "\n";
+        $orderableCheck .= "        {\n";
+        $orderableCheck .= '            throw new Exception("Unable to order unresolved collection");' . "\n";
+        $orderableCheck .= "        }\n";
+        $orderableCheck .= "\n";
+
         // A bit of a misuse of getReferencedTypeIfAny: if I ever want to remove it, I shouldn't let this get in the way!
+        $this->visitNonReference(false, $type->getCollectedType()->getReferencedTypeIfAny() == null, $orderableCheck);
         $this->writeResolvableMemberToResolver($this->member->getName(), $type->getCollectedType()->getReferencedTypeIfAny());
     }
 
-    private function visitNonReference($isScalar)
+    private function visitNonReference($isScalar, $isOrderable, $orderableCheck = '')
     {
-        $this->resolver .= '    private $orderNumber' . \ucfirst($this->member->getName()) . ' = -1;' . "\n";
-        $this->resolver .= '    private $orderDirection' . \ucfirst($this->member->getName()) . ' = -1;' . "\n";
-        $this->resolver .= "    \n";
-        $this->resolver .= '    public function orderBy' . \ucfirst($this->member->getName()) . 'Asc()' . "\n";
-        $this->resolver .= "    {\n";
-        $this->resolver .= '        $this->orderNumber' . \ucfirst($this->member->getName()) .
-                                                        ' = $this->drawOrderTicket();' . "\n";
-        $this->resolver .= '        $this->orderDirection' . \ucfirst($this->member->getName()) .
-                                                        ' = self::ORDER_DIRECTION_ASC;' . "\n";
-        $this->resolver .= '        return $this;' . "\n";
-        $this->resolver .= "    }\n";
-        $this->resolver .= "    \n";
-        $this->resolver .= '    public function orderBy' . \ucfirst($this->member->getName()) . 'Desc()' . "\n";
-        $this->resolver .= "    {\n";
-        $this->resolver .= '        $this->orderNumber' . \ucfirst($this->member->getName()) .
-                                                        ' = $this->drawOrderTicket();' . "\n";
-        $this->resolver .= '        $this->orderDirection' . \ucfirst($this->member->getName()) .
-                                                        ' = self::ORDER_DIRECTION_DESC;' . "\n";
-        $this->resolver .= '        return $this;' . "\n";
-        $this->resolver .= "    }\n";
-        $this->resolver .= "    \n";
-
         if ($isScalar)
         {
             $this->resolverVisit .= '        $visitor->resolverVisitScalarProperty("' .
                                                                             $this->member->getName() . '");' . "\n";
         }
 
-        $this->resolverVisit .= '        if ($this->orderNumber' . \ucfirst($this->member->getName()) . ' != -1)' . "\n";
-        $this->resolverVisit .= "        {\n";
-        $this->resolverVisit .= '            if ($this->orderDirection' . \ucfirst($this->member->getName()) .
-                                                                '== self::ORDER_DIRECTION_ASC)' . "\n";
-        $this->resolverVisit .= "            {\n";
-        $this->resolverVisit .= '                $visitor->resolverVisitOrderAsc($this->orderNumber'
-                                                                        . \ucfirst($this->member->getName()) . ', "'
-                                                                        . $this->member->getName() . '");' . "\n";
-        $this->resolverVisit .= "            }\n";
-        $this->resolverVisit .= '            else' . "\n";
-        $this->resolverVisit .= "            {\n";
-        $this->resolverVisit .= '                $visitor->resolverVisitOrderDesc($this->orderNumber'
-                                                    . \ucfirst($this->member->getName()) . ', "'
-                                                    . $this->member->getName() . '");' . "\n";
-        $this->resolverVisit .= "            }\n";
-        $this->resolverVisit .= "        }\n";
+        if ($isOrderable)
+        {
+            $this->resolver .= '    private $orderNumber' . \ucfirst($this->member->getName()) . ' = -1;' . "\n";
+            $this->resolver .= '    private $orderDirection' . \ucfirst($this->member->getName()) . ' = -1;' . "\n";
+            $this->resolver .= "    \n";
+            $this->resolver .= '    public function orderBy' . \ucfirst($this->member->getName()) . 'Asc()' . "\n";
+            $this->resolver .= "    {\n";
+            $this->resolver .= $orderableCheck;
+            $this->resolver .= '        $this->orderNumber' . \ucfirst($this->member->getName()) .
+                                                            ' = $this->drawOrderTicket();' . "\n";
+            $this->resolver .= '        $this->orderDirection' . \ucfirst($this->member->getName()) .
+                                                            ' = self::ORDER_DIRECTION_ASC;' . "\n";
+            $this->resolver .= '        return $this;' . "\n";
+            $this->resolver .= "    }\n";
+            $this->resolver .= "    \n";
+            $this->resolver .= '    public function orderBy' . \ucfirst($this->member->getName()) . 'Desc()' . "\n";
+            $this->resolver .= "    {\n";
+            $this->resolver .= $orderableCheck;
+            $this->resolver .= '        $this->orderNumber' . \ucfirst($this->member->getName()) .
+                                                            ' = $this->drawOrderTicket();' . "\n";
+            $this->resolver .= '        $this->orderDirection' . \ucfirst($this->member->getName()) .
+                                                            ' = self::ORDER_DIRECTION_DESC;' . "\n";
+            $this->resolver .= '        return $this;' . "\n";
+            $this->resolver .= "    }\n";
+            $this->resolver .= "    \n";
+
+            $this->resolverVisit .= '        if ($this->orderNumber' . \ucfirst($this->member->getName()) . ' != -1)' . "\n";
+            $this->resolverVisit .= "        {\n";
+            $this->resolverVisit .= '            if ($this->orderDirection' . \ucfirst($this->member->getName()) .
+                                                                    '== self::ORDER_DIRECTION_ASC)' . "\n";
+            $this->resolverVisit .= "            {\n";
+            $this->resolverVisit .= '                $visitor->resolverVisitOrderAsc($this->orderNumber'
+                                                                            . \ucfirst($this->member->getName()) . ', "'
+                                                                            . $this->member->getName() . '");' . "\n";
+            $this->resolverVisit .= "            }\n";
+            $this->resolverVisit .= '            else' . "\n";
+            $this->resolverVisit .= "            {\n";
+            $this->resolverVisit .= '                $visitor->resolverVisitOrderDesc($this->orderNumber'
+                                                        . \ucfirst($this->member->getName()) . ', "'
+                                                        . $this->member->getName() . '");' . "\n";
+            $this->resolverVisit .= "            }\n";
+            $this->resolverVisit .= "        }\n";
+        }
 
         $this->debugInfo .= '            "' . $this->member->getName() . '" => $this->' . $this->member->getName() . ',' . "\n";
         $this->debugInfo .= '            "is' . \ucfirst($this->member->getName()) . 'Dirty" => $this->is' . \ucfirst($this->member->getName()) . 'Dirty,' . "\n";
@@ -536,7 +547,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         if ($resolveType === null)
         {
-            $this->resolver .= '        return $this;' . ";\n";
+            $this->resolver .= '        return $this;' . "\n";
         }
         else
         {

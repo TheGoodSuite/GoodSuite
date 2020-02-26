@@ -20,7 +20,10 @@ class Selecter implements ResolverVisitor
     private $currentTable;
     private $currentTableName;
 
-    private $order = array();
+    private $orderRootLayer;
+    private $orderLayer;
+
+    private $currentPropertyIsCollection;
 
     public function __construct(SQLStorage $storage, Database\Database $db, $currentTable)
     {
@@ -31,6 +34,10 @@ class Selecter implements ResolverVisitor
 
     public function select($datatypeName, Condition $condition, Resolver $resolver)
     {
+        $this->orderRootLayer = new OrderLayer(0);
+        $this->orderLayer = $this->orderRootLayer;
+        $this->currentPropertyIsCollection = false;
+
         $this->currentTableName = $this->storage->tableNamify($datatypeName);
 
         $this->sql = "SELECT `t0`.`id` AS `t0_id`";
@@ -66,44 +73,61 @@ class Selecter implements ResolverVisitor
 
         $sql .= ' WHERE ' . $conditionWriter->getCondition();
 
-        // Code below can't simply be replaced by a foreach or implode,
-        // because that will happen in the order the entries are created
-        // and we want to use the numerical indices as order.
-        // One could use "ksort", but I believe this is more efficient
-        // in most cases.
-        for ($i = 0; $i < \count($this->order); $i++)
+        $order = $this->gatherOrderClauses($this->orderRootLayer);
+
+        if (\count($order) > 0)
         {
-            if ($i == 0)
-            {
-                $sql .= ' ORDER BY ' . $this->order[$i];
-            }
-            else
-            {
-                $sql .= ', ' . $this->order[$i];
-            }
+            $sql .= ' ORDER BY ';
+            $sql .= \implode(', ', $order);
         }
 
         return $sql;
     }
 
+    private function gatherOrderClauses($orderLayer)
+    {
+        $orderClauses = $orderLayer->orderClauses;
+        \ksort($orderClauses);
+
+        if (count($orderLayer->childLayers) > 0)
+        {
+            $orderClauses[] = '`t' . $orderLayer->rootTableNumber . '`.`id` ASC';
+        }
+
+        foreach ($orderLayer->childLayers as $childLayer)
+        {
+            $childOrderClauses = $this->gatherOrderClauses($childLayer);
+
+            $orderClauses = array_merge($orderClauses, $childOrderClauses);
+        }
+
+        return $orderClauses;
+    }
+
     public function resolverVisitResolvedReferenceProperty($name, $datatypeName, Resolver $resolver)
     {
+        $this->currentPropertyIsCollection = false;
+
         $this->writeSelectJoinedFields($this->currentTable, $datatypeName, $resolver, $name, 'id', null, true);
     }
 
     public function resolverVisitResolvedScalarCollectionProperty($name)
     {
+        $this->currentPropertyIsCollection = true;
+
         $this->writeSelectJoinedFields($this->currentTable, $this->currentTableName . '_' . $name, null, 'id', 'owner', $name, false);
     }
 
     public function resolverVisitResolvedReferenceCollectionProperty($name, $typeName, Resolver $resolver)
     {
-        $table = $this->writeSelectJoinedFields($this->currentTable, $this->currentTableName . '_' . $name, null, 'id', 'owner', $name, false, true);
+        $this->currentPropertyIsCollection = true;
+
+        $table = $this->writeSelectJoinedFields($this->currentTable, $this->currentTableName . '_' . $name, null, 'id', 'owner', $name, false);
         $this->writeSelectJoinedFields($table, $typeName, $resolver, 'value', 'id', null, false);
     }
 
     public function writeSelectJoinedFields($leftTableNumber, $joinTable, ?Resolver $resolver,
-        $currentTableJoinField, $otherTableJoinField, $collectionField, $selectJoinField, $tmp = false)
+        $currentTableJoinField, $otherTableJoinField, $collectionField, $selectJoinField)
     {
         if ($selectJoinField)
         {
@@ -130,32 +154,48 @@ class Selecter implements ResolverVisitor
             $this->sql .= ' AS `t' . $leftTableNumber . '_' . $this->storage->fieldNamify($collectionField) . '`';
         }
 
-        $currentTable = $this->currentTable;
-        $currentTableName = $this->currentTableName;
-        $this->currentTable = $join;
-        $this->currentTableName = $joinTable;
-
         if ($resolver != null)
         {
-            $resolver->acceptResolverVisitor($this);
-        }
+            $currentTable = $this->currentTable;
+            $currentTableName = $this->currentTableName;
+            $this->currentTable = $join;
+            $this->currentTableName = $joinTable;
 
-        $this->currentTable = $currentTable;
-        $this->currentTableName = $currentTableName;
+            if ($collectionField !== null)
+            {
+                $orderLayer = $this->orderLayer;
+                $this->orderLayer = new OrderLayer($join);
+                $orderLayer->childLayers[] = $this->orderLayer;
+            }
+
+            $resolver->acceptResolverVisitor($this);
+
+            if ($collectionField !== null)
+            {
+                $this->orderLayer = $orderLayer;
+            }
+
+            $this->currentTable = $currentTable;
+            $this->currentTableName = $currentTableName;
+        }
 
         return $join;
     }
 
     public function resolverVisitUnresolvedReferenceProperty($name)
     {
+        $this->currentPropertyIsCollection = false;
     }
 
     public function resolverVisitUnresolvedCollectionProperty($name)
     {
+        $this->currentPropertyIsCollection = true;
     }
 
     public function resolverVisitScalarProperty($name)
     {
+        $this->currentPropertyIsCollection = false;
+
         $this->sql .= ', ';
 
         $this->sql .= '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($name) . '`';
@@ -164,14 +204,29 @@ class Selecter implements ResolverVisitor
 
     public function resolverVisitOrderAsc($number, $name)
     {
-        $this->order[$number] = '`t' . $this->currentTable . '_' .
-                        $this->storage->fieldnamify($name) . '` ASC';
+        $this->writeOrderTerm($number, $name, 'ASC');
     }
 
     public function resolverVisitOrderDesc($number, $name)
     {
-        $this->order[$number] = '`t' . $this->currentTable . '_' .
-                        $this->storage->fieldnamify($name) . '` DESC';
+        $this->writeOrderTerm($number, $name, 'DESC');
+    }
+
+    private function writeOrderTerm($number, $name, $direction)
+    {
+        $clause = '`t' . $this->currentTable . '_' .
+            $this->storage->fieldnamify($name) . '` ' . $direction;
+
+        if ($this->currentPropertyIsCollection)
+        {
+            // We don't know the table number here, but we do know it's not relevant...
+            $childOrderLayer = new OrderLayer(null, [$number => $clause]);
+            $this->orderLayer->childLayers[] = $childOrderLayer;
+        }
+        else
+        {
+            $this->orderLayer->orderClauses[$number] = $clause;
+        }
     }
 }
 
