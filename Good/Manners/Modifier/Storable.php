@@ -20,6 +20,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
     private $classBodyContent;
     private $clean;
     private $markUnresolved;
+    private $isDirty;
 
     private $member;
 
@@ -112,8 +113,8 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
     {
         $res  = "        \n";
         // ucfirst: upper case first letter (it's a php built-in)
-        $res .= '        $this->is' . \ucfirst($member->getName()) . 'Dirty = true;' . "\n";
         $res .= '        $this->GMMStorable_makeDirty();' . "\n";
+        $res .= '        $this->is' . \ucfirst($member->getName()) . 'Dirty = true;' . "\n";
 
         return $res;
     }
@@ -129,20 +130,12 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
     public function classBody(Schema\TypeDefinition $typeDefinition)
     {
-        $res  = '    private $dirty = false;' . "\n";
-        $res .= "    \n";
-        $res .= '    private function GMMStorable_makeDirty()' . "\n";
+        $res  = '    private function GMMStorable_makeDirty()' . "\n";
         $res .= "    {\n";
         $res .= '        if (!$this->isDirty() && $this->storage != null)' . "\n";
         $res .= "        {\n";
-        $res .= '            $this->dirty = true;' . "\n";
         $res .= '            $this->storage->dirtyStorable($this);' . "\n";
         $res .= "        }\n";
-        $res .= "    }\n";
-        $res .= "    \n";
-        $res .= '    public function isDirty()' . "\n";
-        $res .= "    {\n";
-        $res .= '        return $this->dirty;' . "\n";
         $res .= "    }\n";
         $res .= "    \n";
         $res .= '    private $validationToken = null;' . "\n";
@@ -202,6 +195,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->extraFiles[$typeDefinition->getName() . 'Resolver.php'] = $this->resolver;
 
+        $res .= $this->isDirty;
         $res .= $this->clean;
         $res .= $this->markUnresolved;
         $res .= $this->classBodyContent;
@@ -254,8 +248,10 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->clean  = '    public function clean()' . "\n";
         $this->clean .= "    {\n";
-        $this->clean .= '        $this->dirty = false;' . "\n";
-        $this->clean .= "        \n";
+
+        $this->isDirty  = '    public function isDirty()' . "\n";
+        $this->isDirty .= "    {\n";
+        $this->isDirty .= '        return $this->deleted';
 
         $this->markUnresolved  = '    public function markCollectionsUnresolved()' . "\n";
         $this->markUnresolved .= "    {\n";
@@ -271,6 +267,10 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->markUnresolved .= "    }\n";
         $this->markUnresolved .= "    \n";
+
+        $this->isDirty .= ";\n";
+        $this->isDirty .= "    }\n";
+        $this->isDirty .= "    \n";
 
         $this->clean .= "    }\n";
         $this->clean .= "    \n";
@@ -397,6 +397,9 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->debugInfo .= '            "' . $this->member->getName() . '" => $this->' . $this->member->getName() . ',' . "\n";
         $this->debugInfo .= '            "is' . \ucfirst($this->member->getName()) . 'Dirty" => $this->is' . \ucfirst($this->member->getName()) . 'Dirty,' . "\n";
+
+        $this->isDirty .= "\n";
+        $this->isDirty .= '            || $this->is' . \ucfirst($this->member->getName()) . 'Dirty';
 
         $this->writeResolvableMemberToResolver($this->member->getName(), $type->getReferencedType());
     }
@@ -540,6 +543,9 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->debugInfo .= '            "' . $this->member->getName() . '" => $this->' . $this->member->getName() . ',' . "\n";
         $this->debugInfo .= '            "is' . \ucfirst($this->member->getName()) . 'Dirty" => $this->is' . \ucfirst($this->member->getName()) . 'Dirty,' . "\n";
+
+        $this->isDirty .= "\n";
+        $this->isDirty .= '            || $this->is' . \ucfirst($this->member->getName()) . 'Dirty';
     }
 
     public function writeResolvableMemberToResolver($memberName, $resolveType)
