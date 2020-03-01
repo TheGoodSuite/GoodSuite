@@ -151,7 +151,7 @@ class SimpleUpdater implements StorableVisitor
         }
     }
 
-    public function visitCollectionProperty($name, $value) {}
+    public function visitCollectionProperty($name, $value, $modifier) {}
 }
 
 ?>

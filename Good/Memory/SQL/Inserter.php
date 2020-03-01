@@ -205,7 +205,7 @@ class Inserter implements StorableVisitor
         }
     }
 
-    public function visitCollectionProperty($name, $collection)
+    public function visitCollectionProperty($name, $collection, $modifier)
     {
         foreach ($collection as $value)
         {

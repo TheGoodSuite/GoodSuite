@@ -10,7 +10,7 @@ interface StorableVisitor
     public function visitFloatProperty($name, $dirty, $value);
     public function visitDatetimeProperty($name, $dirty, $value);
 
-    public function visitCollectionProperty($name, $value);
+    public function visitCollectionProperty($name, $value, $modifier);
 }
 
 ?>

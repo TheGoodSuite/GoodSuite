@@ -428,7 +428,8 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
     public function visitCollectionType(Schema\Type\CollectionType $type)
     {
         $this->accept .= '        $visitor->visitCollectionProperty("' . $this->member->getName() . '", ' .
-                                            '$this->' . $this->member->getName() . ');' . "\n";
+                                            '$this->' . $this->member->getName() . ', ' .
+                                            '$this->' . $this->member->getName() . 'Modifier);' . "\n";
 
         $fromArrayParserWriter = new FromArrayParserWriter();
         $fromArrayParser = $fromArrayParserWriter->writeFromArrayParser($type);

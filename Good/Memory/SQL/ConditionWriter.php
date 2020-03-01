@@ -254,7 +254,7 @@ class ConditionWriter implements StorableVisitor,
         }
     }
 
-    public function visitCollectionProperty($name, $value) {}
+    public function visitCollectionProperty($name, $value, $modifier) {}
 
     private function writeBracketOrAnd()
     {
