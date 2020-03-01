@@ -78,6 +78,13 @@ class StorableCollectionModifier implements CollectionBehaviorModifier
     {
         $this->resolved = false;
     }
+
+    public function isDirty()
+    {
+        return $this->cleared
+            || count($this->addedItems) != 0
+            || count($this->removedItems) != 0;
+    }
 }
 
 ?>

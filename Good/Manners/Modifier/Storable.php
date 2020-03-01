@@ -484,6 +484,9 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $orderableCheck .= "        }\n";
         $orderableCheck .= "\n";
 
+        $this->isDirty .= "\n";
+        $this->isDirty .= '            || $this->' . $this->member->getName() . 'Modifier->isDirty()';
+
         // A bit of a misuse of getReferencedTypeIfAny: if I ever want to remove it, I shouldn't let this get in the way!
         $this->visitNonReference(false, $type->getCollectedType()->getReferencedTypeIfAny() == null, $orderableCheck);
         $this->writeResolvableMemberToResolver($this->member->getName(), $type->getCollectedType()->getReferencedTypeIfAny());
