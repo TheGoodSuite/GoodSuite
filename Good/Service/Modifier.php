@@ -17,6 +17,7 @@ interface Modifier
     public function setterBegin(Schema\Member $member);
     public function setterEnd(Schema\Member $member);
     public function varDefinitionAfter(Schema\Member $member);
+    public function constructor();
     public function extraFiles();
 }
 

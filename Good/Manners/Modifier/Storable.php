@@ -16,6 +16,10 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
     private $resolver = null;
     private $resolverVisit = null;
     private $extraFiles;
+    private $constructor;
+    private $classBodyContent;
+    private $clean;
+    private $markUnresolved;
 
     private $member;
 
@@ -136,18 +140,6 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $res .= "        }\n";
         $res .= "    }\n";
         $res .= "    \n";
-        $res .= '    public function clean()' . "\n";
-        $res .= "    {\n";
-        $res .= '        $this->dirty = false;' . "\n";
-        $res .= "        \n";
-
-        foreach ($typeDefinition->getMembers() as $member)
-        {
-            $res .= '        $this->is' . ucfirst($member->getName()) . 'Dirty = false;' . "\n";
-        }
-
-        $res .= "    }\n";
-        $res .= "    \n";
         $res .= '    public function isDirty()' . "\n";
         $res .= "    {\n";
         $res .= '        return $this->dirty;' . "\n";
@@ -210,6 +202,9 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->extraFiles[$typeDefinition->getName() . 'Resolver.php'] = $this->resolver;
 
+        $res .= $this->clean;
+        $res .= $this->markUnresolved;
+        $res .= $this->classBodyContent;
         $res .= $this->accept;
         $res .= $this->setFromArray;
         $res .= $this->toArray;
@@ -254,12 +249,31 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
                                                 '(\\Good\\Manners\\ResolverVisitor $visitor)' . "\n";
         $this->resolverVisit .= "    {\n";
 
+        $this->constructor = '';
+        $this->classBodyContent = '';
+
+        $this->clean  = '    public function clean()' . "\n";
+        $this->clean .= "    {\n";
+        $this->clean .= '        $this->dirty = false;' . "\n";
+        $this->clean .= "        \n";
+
+        $this->markUnresolved  = '    public function markCollectionsUnresolved()' . "\n";
+        $this->markUnresolved .= "    {\n";
+        $this->markUnresolved .= "        \n";
+
         foreach ($typeDefinition->getMembers() as $member)
         {
             $this->member = $member;
+            $this->clean .= '        $this->is' . ucfirst($member->getName()) . 'Dirty = false;' . "\n";
 
             $member->getType()->acceptTypeVisitor($this);
         }
+
+        $this->markUnresolved .= "    }\n";
+        $this->markUnresolved .= "    \n";
+
+        $this->clean .= "    }\n";
+        $this->clean .= "    \n";
 
         $this->accept .= "    }\n";
         $this->accept .= "    \n";
@@ -449,6 +463,18 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
                                             '"' . $this->member->getName() . '");' . "\n";
         $this->resolverVisit .= "        }\n";
 
+        $this->constructor .= '        $this->' . $this->member->getName() . 'Modifier = ';
+        $this->constructor .= 'new \Good\Manners\StorableCollectionModifier();' . "\n";
+        $this->constructor .= '        $this->' . $this->member->getName() . '->registerBehaviorModifier(';
+        $this->constructor .= '$this->' . $this->member->getName() . 'Modifier);' . "\n";
+
+        $this->classBodyContent .= '    private $' . $this->member->getName() . 'Modifier;' . "\n";
+        $this->classBodyContent .= "\n";
+
+        $this->clean .= '        $this->' . $this->member->getName() . 'Modifier->clean();' . "\n";
+
+        $this->markUnresolved .= '        $this->' . $this->member->getName() . 'Modifier->markUnresolved();' . "\n";
+
         $orderableCheck  = '        if ($this->resolved' . \ucfirst($this->member->getName()) . ' === false)' . "\n";
         $orderableCheck .= "        {\n";
         $orderableCheck .= '            throw new Exception("Unable to order unresolved collection");' . "\n";
@@ -561,6 +587,11 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->resolver .= '        return $this->resolved' . \ucfirst($memberName) . ';' . "\n";
         $this->resolver .= "    }\n";
         $this->resolver .= "    \n";
+    }
+
+    public function constructor()
+    {
+        return $this->constructor;
     }
 
     public function extraFiles()

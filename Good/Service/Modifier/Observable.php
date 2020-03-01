@@ -68,6 +68,7 @@ class Observable implements \Good\Service\Modifier
         return $res;
     }
 
+    public function constructor() { return ''; }
     public function extraFiles() {return array();}
 }
 

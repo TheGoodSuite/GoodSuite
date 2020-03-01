@@ -10,6 +10,8 @@ class Collection implements \IteratorAggregate
 
     private $collectedType;
 
+    private $behaviorModifiers = [];
+
     public function __construct(Type $collectedType)
     {
         $this->collectedType = $collectedType;
@@ -17,8 +19,18 @@ class Collection implements \IteratorAggregate
         $this->items = new Set();
     }
 
+    public function registerBehaviorModifier(CollectionBehaviorModifier $modifier)
+    {
+        $this->behaviorModifiers[] = $modifier;
+    }
+
     public function add($value)
     {
+        foreach($this->behaviorModifiers as $modifier)
+        {
+            $modifier->add($value);
+        }
+
         $this->collectedType->checkValue($value);
 
         $this->items->add($value);
@@ -26,24 +38,44 @@ class Collection implements \IteratorAggregate
 
     public function remove($value)
     {
+        foreach($this->behaviorModifiers as $modifier)
+        {
+            $modifier->remove($value);
+        }
+
         $this->items->remove($value);
     }
 
     public function clear()
     {
+        foreach($this->behaviorModifiers as $modifier)
+        {
+            $modifier->clear();
+        }
+
         foreach ($this->items as $item)
         {
-            $this->remove($item);
+            $this->items->remove($value);
         }
     }
 
     public function toArray()
     {
+        foreach($this->behaviorModifiers as $modifier)
+        {
+            $modifier->toArray();
+        }
+
         return $this->items->toArray();
     }
 
     public function getIterator()
     {
+        foreach($this->behaviorModifiers as $modifier)
+        {
+            $modifier->getIterator();
+        }
+
         return new \IteratorIterator($this->items);
     }
 
@@ -54,6 +86,11 @@ class Collection implements \IteratorAggregate
 
     public function count()
     {
+        foreach($this->behaviorModifiers as $modifier)
+        {
+            $modifier->count();
+        }
+
         return $this->items->count();
     }
 }

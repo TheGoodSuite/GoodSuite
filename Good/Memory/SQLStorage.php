@@ -363,6 +363,8 @@ class SQLStorage extends Storage
             }
         }
 
+        $ret->markCollectionsUnresolved();
+
         $ret->setFromArray($storableData);
         $ret->setId(strval($data[$table]["id"]));
 

@@ -321,6 +321,11 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
         $this->output .= $typeDefinition->getName() . "::staticInitalize();\n";
         $this->output .= "\n";
 
+        foreach ($this->modifiers as $modifier)
+        {
+            $this->constructor .= $modifier->constructor();
+        }
+
         $this->constructor .= "    }\n";
         $this->constructor .= "\n";
 

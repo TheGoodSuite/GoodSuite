@@ -29,6 +29,7 @@ class StorableCollectionEntry implements Storable, TypeVisitor
     public function isDirty() {}
     public function clean() {}
     public function getType() {}
+    public function markCollectionsUnresolved() {}
 
     private $storableVisitor;
 
