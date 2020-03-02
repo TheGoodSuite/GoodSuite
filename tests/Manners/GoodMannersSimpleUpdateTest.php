@@ -383,9 +383,6 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
                 $myref = new AnotherType();
                 $myref->yourInt = 144;
                 $type->myReference = $myref;
-
-                // todo: make this line unnecessary
-                $this->storage1->insert($myref);
             }
         }
 

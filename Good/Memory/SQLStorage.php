@@ -7,6 +7,7 @@ use Good\Manners\Storable;
 use Good\Manners\Condition;
 use Good\Manners\Condition\EqualTo;
 use Good\Manners\Resolver;
+use Good\Memory\SQL\IndirectInsertionFinder;
 
 class SQLStorage extends Storage
 {
@@ -113,6 +114,8 @@ class SQLStorage extends Storage
             return;
         }
 
+        $this->findIndirectInsertions();
+
         $this->flushing = true;
 
         // Sort all the Storables in $this->dirties
@@ -194,6 +197,23 @@ class SQLStorage extends Storage
             $this->reflush = false;
             $this->flush();
         }
+    }
+
+    private function findIndirectInsertions()
+    {
+        $indirectInsertions = [];
+        $indirectInsertionFinder = new IndirectInsertionFinder();
+
+        foreach ($this->dirties as $dirty)
+        {
+            array_push(
+                $indirectInsertions,
+                ...$indirectInsertionFinder->findIndirectInsertions($dirty));
+        }
+
+        array_push(
+            $this->dirties,
+            ...$indirectInsertions);
     }
 
     public function tableNamify($value)
