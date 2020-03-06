@@ -171,8 +171,8 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $res .= "    \n";
         $res .= '    public function delete()'. "\n";
         $res .= "    {\n";
-        $res .= '        $this->deleted = true;' . "\n";
         $res .= '        $this->GMMStorable_makeDirty();' . "\n";
+        $res .= '        $this->deleted = true;' . "\n";
         $res .= "    }\n";
 
         $res .= '    public static function resolver()' . "\n";
