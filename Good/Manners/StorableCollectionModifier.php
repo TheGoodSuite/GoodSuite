@@ -55,7 +55,7 @@ class StorableCollectionModifier implements CollectionBehaviorModifier
     {
         if (!$this->resolved)
         {
-            throw new \Exception("Unable to convert unresolved collection to array");
+            throw new \Exception("Unable to iterate unresolved collection");
         }
     }
 
@@ -63,7 +63,7 @@ class StorableCollectionModifier implements CollectionBehaviorModifier
     {
         if (!$this->resolved)
         {
-            throw new \Exception("Unable to convert unresolved collection to array");
+            throw new \Exception("Unable to count unresolved collection");
         }
     }
 
