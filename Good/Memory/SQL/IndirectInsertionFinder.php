@@ -70,9 +70,9 @@ class IndirectInsertionFinder implements StorableVisitor, TypeVisitor
             return;
         }
 
-        if ($reference->isNew() && !$this->storage->hasDirtyStorable($reference))
+        if ($reference->isNew() && !$this->storage->isManagedStorable($reference))
         {
-            $this->storage->dirtyStorable($reference);
+            $this->storage->insert($reference);
 
             $reference->acceptStorableVisitor($this);
         }

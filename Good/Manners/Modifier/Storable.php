@@ -113,7 +113,6 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
     {
         $res  = "        \n";
         // ucfirst: upper case first letter (it's a php built-in)
-        $res .= '        $this->GMMStorable_makeDirty();' . "\n";
         $res .= '        $this->is' . \ucfirst($member->getName()) . 'Dirty = true;' . "\n";
 
         return $res;
@@ -130,15 +129,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
     public function classBody(Schema\TypeDefinition $typeDefinition)
     {
-        $res  = '    private function GMMStorable_makeDirty()' . "\n";
-        $res .= "    {\n";
-        $res .= '        if (!$this->isDirty() && $this->storage != null)' . "\n";
-        $res .= "        {\n";
-        $res .= '            $this->storage->dirtyStorable($this);' . "\n";
-        $res .= "        }\n";
-        $res .= "    }\n";
-        $res .= "    \n";
-        $res .= '    private $validationToken = null;' . "\n";
+        $res  = '    private $validationToken = null;' . "\n";
         $res .= "    \n";
         $res .= '    private function GMMStorable_checkValidationToken()' . "\n";
         $res .= "    {\n";
@@ -171,7 +162,6 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $res .= "    \n";
         $res .= '    public function delete()'. "\n";
         $res .= "    {\n";
-        $res .= '        $this->GMMStorable_makeDirty();' . "\n";
         $res .= '        $this->deleted = true;' . "\n";
         $res .= "    }\n";
 

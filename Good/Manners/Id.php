@@ -30,8 +30,8 @@ class Id implements Storable
 
     public function delete()
     {
+        $this->storage->insert($this);
         $this->deleted = true;
-        $this->storage->dirtyStorable($this);
     }
 
     public function isDeleted()

@@ -49,8 +49,6 @@ abstract class Storage
     abstract public function getCollection($condition, Resolver $resolver = null);
 
     abstract public function flush();
-
-    abstract public function dirtyStorable(Storable $storable);
 }
 
 ?>

@@ -413,19 +413,11 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         foreach ($results as $result)
         {
-            // Necessary because something hasn't been implemented yet
-            // (particularly: picking up on changes in a collection if no
-            //  non-collection changes were made **first** on the same object)
-            // This is definitely on my todo-list!!
-            $result->someInt = 44;
-
             $result->myInts->add(5);
         }
 
         $this->storage->flush();
 
-        $conditionObject->someInt = 44;
-        $condition = new EqualTo($conditionObject);
         $resolver->orderByMyIntsAsc();
         $results = $this->getNewStorage()->getCollection($condition, $resolver);
 
@@ -449,19 +441,11 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         foreach ($results as $result)
         {
-            // Necessary because something hasn't been implemented yet
-            // (particularly: picking up on changes in a collection if no
-            //  non-collection changes were made **first** on the same object)
-            // This is definitely on my todo-list!!
-            $result->someInt = 44;
-
             $result->myInts->add(5);
         }
 
         $this->storage->flush();
 
-        $conditionObject->someInt = 44;
-        $condition = new EqualTo($conditionObject);
         $resolver = CollectionType::resolver()->resolveMyInts();
         $resolver->orderByMyIntsAsc();
         $results = $this->getNewStorage()->getCollection($condition, $resolver);
@@ -488,19 +472,11 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         foreach ($results as $result)
         {
-            // Necessary because something hasn't been implemented yet
-            // (particularly: picking up on changes in a collection if no
-            //  non-collection changes were made **first** on the same object)
-            // This is definitely on my todo-list!!
-            $result->someInt = 44;
-
             $result->myInts->remove(2);
         }
 
         $this->storage->flush();
 
-        $conditionObject->someInt = 44;
-        $condition = new EqualTo($conditionObject);
         $resolver->orderByMyIntsAsc();
         $results = $this->getNewStorage()->getCollection($condition, $resolver);
 
@@ -522,18 +498,11 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         foreach ($results as $result)
         {
-            // Necessary because something hasn't been implemented yet
-            // (particularly: picking up on changes in a collection if no
-            //  non-collection changes were made **first** on the same object)
-            // This is definitely on my todo-list!!
-            $result->someInt = 44;
-
             $result->myInts->remove(2);
         }
 
         $this->storage->flush();
 
-        $conditionObject->someInt = 44;
         $condition = new EqualTo($conditionObject);
         $resolver = CollectionType::resolver()->resolveMyInts();
         $resolver->orderByMyIntsAsc();
@@ -559,20 +528,12 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         foreach ($results as $result)
         {
-            // Necessary because something hasn't been implemented yet
-            // (particularly: picking up on changes in a collection if no
-            //  non-collection changes were made **first** on the same object)
-            // This is definitely on my todo-list!!
-            $result->someInt = 44;
-
             $result->myInts->clear();
             $result->myInts->add(123);
         }
 
         $this->storage->flush();
 
-        $conditionObject->someInt = 44;
-        $condition = new EqualTo($conditionObject);
         $resolver->orderByMyIntsAsc();
         $results = $this->getNewStorage()->getCollection($condition, $resolver);
 
@@ -594,20 +555,12 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         foreach ($results as $result)
         {
-            // Necessary because something hasn't been implemented yet
-            // (particularly: picking up on changes in a collection if no
-            //  non-collection changes were made **first** on the same object)
-            // This is definitely on my todo-list!!
-            $result->someInt = 44;
-
             $result->myInts->clear();
             $result->myInts->add(123);
         }
 
         $this->storage->flush();
 
-        $conditionObject->someInt = 44;
-        $condition = new EqualTo($conditionObject);
         $resolver = CollectionType::resolver()->resolveMyInts();
         $resolver->orderByMyIntsAsc();
         $results = $this->getNewStorage()->getCollection($condition, $resolver);
@@ -639,12 +592,6 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         foreach ($results as $result)
         {
-            // Necessary because something hasn't been implemented yet
-            // (particularly: picking up on changes in a collection if no
-            //  non-collection changes were made **first** on the same object)
-            // This is definitely on my todo-list!!
-            $result->someInt = 44;
-
             $result->myReferences->remove($one);
             $result->myReferences->add($five);
             $result->myReferences->add($six);
@@ -652,8 +599,6 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         $this->storage->flush();
 
-        $conditionObject->someInt = 44;
-        $condition = new EqualTo($conditionObject);
         $resolver->getMyReferences()->orderBySomeIntAsc();
         $results = $this->getNewStorage()->getCollection($condition, $resolver);
 
@@ -662,9 +607,9 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->assertSame(null, $results->getNext());
         $this->assertSame(3, count($result->myReferences->toArray()));
         $ref1 = $result->myReferences->toArray()[0];
-        $this->assertEquals(5, $result->myReferences->toArray()[0]->someInt);
-        $this->assertEquals(6, $result->myReferences->toArray()[1]->someInt);
-        $this->assertEquals(44, $result->myReferences->toArray()[2]->someInt);
+        $this->assertEquals(4, $result->myReferences->toArray()[0]->someInt);
+        $this->assertEquals(5, $result->myReferences->toArray()[1]->someInt);
+        $this->assertEquals(6, $result->myReferences->toArray()[2]->someInt);
     }
 
     public function testManipulateUnresolvedReferenceCollection()
@@ -685,12 +630,6 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         foreach ($results as $result)
         {
-            // Necessary because something hasn't been implemented yet
-            // (particularly: picking up on changes in a collection if no
-            //  non-collection changes were made **first** on the same object)
-            // This is definitely on my todo-list!!
-            $result->someInt = 44;
-
             $result->myReferences->remove($one);
             $result->myReferences->add($five);
             $result->myReferences->add($six);
@@ -698,8 +637,6 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         $this->storage->flush();
 
-        $conditionObject->someInt = 44;
-        $condition = new EqualTo($conditionObject);
         $resolver = CollectionType::resolver()->resolveMyReferences()->orderBySomeIntAsc();
         $results = $this->getNewStorage()->getCollection($condition, $resolver);
 
@@ -707,9 +644,9 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         $this->assertSame(null, $results->getNext());
         $this->assertSame(3, count($result->myReferences->toArray()));
-        $this->assertEquals(5, $result->myReferences->toArray()[0]->someInt);
-        $this->assertEquals(6, $result->myReferences->toArray()[1]->someInt);
-        $this->assertEquals(44, $result->myReferences->toArray()[2]->someInt);
+        $this->assertEquals(4, $result->myReferences->toArray()[0]->someInt);
+        $this->assertEquals(5, $result->myReferences->toArray()[1]->someInt);
+        $this->assertEquals(6, $result->myReferences->toArray()[2]->someInt);
     }
 
     private function getCollectionObjectBySomeInt($value)

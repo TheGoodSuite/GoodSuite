@@ -20,7 +20,7 @@ class SQLStorage extends Storage
     private $joinsReverse = array();
     private $numberOfJoins = 0;
 
-    private $dirties;
+    private $managedStorables;
 
     private $postponed = array();
 
@@ -30,20 +30,17 @@ class SQLStorage extends Storage
 
         $this->db = $db;
 
-        $this->dirties =  new Set();
+        $this->managedStorables = new Set();
     }
 
     public function insert(Storable $storable)
     {
-        $this->dirties->add($storable);
+        $this->managedStorables->add($storable);
     }
 
     public function modifyAny(Condition $condition, Storable $modifications)
     {
-        if (count($this->dirties) > 0)
-        {
-            $this->flush();
-        }
+        $this->flush();
 
         $this->joins = array(0 => array());
         $this->numberOfJoins = 0;
@@ -103,14 +100,9 @@ class SQLStorage extends Storage
         return new StorableCollection($this, $resultset, $this->joins, $resolver->getType());
     }
 
-    public function dirtyStorable(Storable $storable)
+    public function isManagedStorable(Storable $storable)
     {
-        $this->dirties->add($storable);
-    }
-
-    public function hasDirtyStorable(Storable $storable)
-    {
-        return $this->dirties->contains($storable);
+        return $this->managedStorables->contains($storable);
     }
 
     private $flushing =  false;
@@ -129,16 +121,16 @@ class SQLStorage extends Storage
         $collectionEntryStorables = $this->processCollections();
 
         // Add to end: nothing can depend on a collection entry, so that's safe
-        $this->dirties->add(...$collectionEntryStorables);
+        $storables = $this->managedStorables->copy();
+        $storables->add(...$collectionEntryStorables);
 
         $this->flushing = true;
 
-        // Sort all the Storables in $this->dirties
         $deleted = array();
         $modified = array();
         $new = array();
 
-        foreach ($this->dirties as $dirty)
+        foreach ($storables as $dirty)
         {
             if ($dirty->isDeleted() && !$dirty->isNew())
             {
@@ -148,13 +140,11 @@ class SQLStorage extends Storage
             {
                 $new[] = $dirty;
             }
-            else if (!$dirty->isNew())
+            else if (!$dirty->isNew() && $dirty->isDirty())
             {
                 $modified[] = $dirty;
             }
         }
-
-        $this->dirties->clear();
 
         if (count($new) > 0)
         {
@@ -218,7 +208,7 @@ class SQLStorage extends Storage
     {
         $indirectInsertionFinder = new IndirectInsertionFinder($this);
 
-        foreach ($this->dirties->copy() as $dirty)
+        foreach ($this->managedStorables->copy() as $dirty)
         {
             $indirectInsertionFinder->findIndirectInsertions($dirty);
         }
@@ -229,7 +219,7 @@ class SQLStorage extends Storage
         $collectionEntryStorables = [];
         $collectionProcessor = new CollectionProcessor($this->db, $this);
 
-        foreach ($this->dirties as $dirty)
+        foreach ($this->managedStorables as $dirty)
         {
             array_push(
                 $collectionEntryStorables,
@@ -416,6 +406,7 @@ class SQLStorage extends Storage
         $ret->setStorage($this);
 
         $this->created[$type][$data[$table]["id"]] = $ret;
+        $this->managedStorables->add($ret);
 
         return $ret;
     }
