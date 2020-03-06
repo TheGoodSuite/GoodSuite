@@ -2,6 +2,8 @@
 
 namespace Good\Memory;
 
+use Ds\Set;
+
 use Good\Manners\Storage;
 use Good\Manners\Storable;
 use Good\Manners\Condition;
@@ -17,7 +19,7 @@ class SQLStorage extends Storage
     private $joinsReverse = array();
     private $numberOfJoins = 0;
 
-    private $dirties = array();
+    private $dirties;
 
     private $postponed = array();
 
@@ -26,11 +28,13 @@ class SQLStorage extends Storage
         parent::__construct();
 
         $this->db = $db;
+
+        $this->dirties =  new Set();
     }
 
     public function insert(Storable $storable)
     {
-        $this->dirties[] = $storable;
+        $this->dirties->add($storable);
     }
 
     public function modifyAny(Condition $condition, Storable $modifications)
@@ -100,7 +104,12 @@ class SQLStorage extends Storage
 
     public function dirtyStorable(Storable $storable)
     {
-        $this->dirties[] = $storable;
+        $this->dirties->add($storable);
+    }
+
+    public function hasDirtyStorable(Storable $storable)
+    {
+        return $this->dirties->contains($storable);
     }
 
     private $flushing =  false;
@@ -139,7 +148,7 @@ class SQLStorage extends Storage
             }
         }
 
-        $this->dirties = array();
+        $this->dirties->clear();
 
         if (count($new) > 0)
         {
@@ -201,19 +210,12 @@ class SQLStorage extends Storage
 
     private function findIndirectInsertions()
     {
-        $indirectInsertions = [];
-        $indirectInsertionFinder = new IndirectInsertionFinder();
+        $indirectInsertionFinder = new IndirectInsertionFinder($this);
 
-        foreach ($this->dirties as $dirty)
+        foreach ($this->dirties->copy() as $dirty)
         {
-            array_push(
-                $indirectInsertions,
-                ...$indirectInsertionFinder->findIndirectInsertions($dirty));
+            $indirectInsertionFinder->findIndirectInsertions($dirty);
         }
-
-        array_push(
-            $this->dirties,
-            ...$indirectInsertions);
     }
 
     public function tableNamify($value)
