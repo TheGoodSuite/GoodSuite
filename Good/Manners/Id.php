@@ -79,6 +79,8 @@ class Id implements Storable
         // ?
     }
 
+    public function markCollectionsUnresolved() {}
+
     public function getType()
     {
         return $this->base->getType();
