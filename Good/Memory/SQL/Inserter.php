@@ -22,8 +22,6 @@ class Inserter implements StorableVisitor
     private $inserting;
     private $postponed;
 
-    private $collectionEntries;
-
     public function __construct(SQLStorage $storage, Database\Database $db)
     {
         $this->db = $db;
@@ -34,8 +32,6 @@ class Inserter implements StorableVisitor
 
     public function insert($datatypeName, Storable $value)
     {
-        $this->collectionEntries = [];
-
         $this->sql = "INSERT INTO `" . $this->storage->tableNamify($datatypeName) . '` (';
         $this->values = 'VALUES (';
         $this->first = true;
@@ -56,16 +52,6 @@ class Inserter implements StorableVisitor
         $value->clean();
 
         $collectionEntryInserter = new Inserter($this->storage, $this->db);
-
-        foreach ($this->collectionEntries as $collectionEntry)
-        {
-            $collectionEntry->setOwner($value);
-
-            $collectionEntryInserter->insert($datatypeName . '_' . $collectionEntry->getCollectionFieldName(), $collectionEntry);
-            $this->postponed = \array_merge($this->postponed, $collectionEntryInserter->getPostponed());
-        }
-
-        $this->collectionEntries = [];
     }
 
     private function comma()
@@ -207,14 +193,8 @@ class Inserter implements StorableVisitor
 
     public function visitCollectionProperty($name, $collection, $modifier)
     {
-        foreach ($collection as $value)
-        {
-            $collectionEntry = new StorableCollectionEntry($collection->getCollectedType());
-            $collectionEntry->setValue($value);
-            $collectionEntry->setCollectionFieldName($name);
-
-            $this->collectionEntries[] = $collectionEntry;
-        }
+        // The CollectionProcessor has already made CollectionEntries for
+        // the collections, so no need to do anything here
     }
 }
 

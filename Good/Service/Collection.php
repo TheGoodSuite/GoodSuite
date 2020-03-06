@@ -55,7 +55,7 @@ class Collection implements \IteratorAggregate
 
         foreach ($this->items as $item)
         {
-            $this->items->remove($value);
+            $this->items->remove($item);
         }
     }
 

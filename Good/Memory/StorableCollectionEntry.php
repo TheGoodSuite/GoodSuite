@@ -17,10 +17,7 @@ use Good\Rolemodel\TypeVisitor;
 
 class StorableCollectionEntry implements Storable, TypeVisitor
 {
-    public function delete() {}
-    public function isDeleted() {}
     public function setNew($value) {}
-    public function isNew() {}
     public function setStorage(Storage $storage) {}
     public function setValidationToken(ValidationToken $token) {}
     public function getId() {}
@@ -28,8 +25,8 @@ class StorableCollectionEntry implements Storable, TypeVisitor
     public function hasValidId() {}
     public function isDirty() {}
     public function clean() {}
-    public function getType() {}
     public function markCollectionsUnresolved() {}
+    public function delete() {}
 
     private $storableVisitor;
 
@@ -37,8 +34,13 @@ class StorableCollectionEntry implements Storable, TypeVisitor
     {
         $visitor->visitReferenceProperty("owner", $this->owner->getType(), true, $this->owner);
 
+        $this->acceptStorableVisitorValueOnly($visitor);
+    }
+
+    public function acceptStorableVisitorValueOnly(StorableVisitor $visitor)
+    {
         $this->storableVisitor = $visitor;
-        $this->type->acceptTypeVisitor($this);
+        $this->collectedType->acceptTypeVisitor($this);
     }
 
     public function visitCollectionType(CollectionType $type)
@@ -71,14 +73,31 @@ class StorableCollectionEntry implements Storable, TypeVisitor
         $this->storableVisitor->visitTextProperty("value", true, $this->value);
     }
 
+    public function getType()
+    {
+        return $this->typeName;
+    }
+
+    public function isDeleted()
+    {
+        return false;
+    }
+
+    public function isNew()
+    {
+        return true;
+    }
+
     private $owner;
     private $value;
     private $collectionFieldName;
-    private $type;
+    private $typeName;
+    private $collectedType;
 
-    public function __construct(Type $type)
+    public function __construct(Type $collectedType, $typeName)
     {
-        $this->type = $type;
+        $this->collectedType = $collectedType;
+        $this->typeName = $typeName;
     }
 
     public function setOwner(Storable $owner)

@@ -85,6 +85,26 @@ class StorableCollectionModifier implements CollectionBehaviorModifier
             || count($this->addedItems) != 0
             || count($this->removedItems) != 0;
     }
+
+    public function isResolved()
+    {
+        return $this->resolved;
+    }
+
+    public function getAddedItems()
+    {
+        return $this->addedItems;
+    }
+
+    public function getRemovedItems()
+    {
+        return $this->removedItems;
+    }
+
+    public function wasCleared()
+    {
+        return $this->cleared;
+    }
 }
 
 ?>

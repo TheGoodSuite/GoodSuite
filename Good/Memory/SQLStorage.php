@@ -10,6 +10,7 @@ use Good\Manners\Condition;
 use Good\Manners\Condition\EqualTo;
 use Good\Manners\Resolver;
 use Good\Memory\SQL\IndirectInsertionFinder;
+use Good\Memory\SQL\CollectionProcessor;
 
 class SQLStorage extends Storage
 {
@@ -125,6 +126,11 @@ class SQLStorage extends Storage
 
         $this->findIndirectInsertions();
 
+        $collectionEntryStorables = $this->processCollections();
+
+        // Add to end: nothing can depend on a collection entry, so that's safe
+        $this->dirties->add(...$collectionEntryStorables);
+
         $this->flushing = true;
 
         // Sort all the Storables in $this->dirties
@@ -216,6 +222,21 @@ class SQLStorage extends Storage
         {
             $indirectInsertionFinder->findIndirectInsertions($dirty);
         }
+    }
+
+    private function processCollections()
+    {
+        $collectionEntryStorables = [];
+        $collectionProcessor = new CollectionProcessor($this->db, $this);
+
+        foreach ($this->dirties as $dirty)
+        {
+            array_push(
+                $collectionEntryStorables,
+                ...$collectionProcessor->processCollections($dirty));
+        }
+
+        return $collectionEntryStorables;
     }
 
     public function tableNamify($value)

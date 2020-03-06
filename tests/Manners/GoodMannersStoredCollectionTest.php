@@ -399,6 +399,329 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
             $i++;
         }
     }
+
+    public function testAddItemToResolvedCollection()
+    {
+        $this->populateDatabase();
+
+        $resolver = CollectionType::resolver()->resolveMyInts();
+        $conditionObject = new CollectionType();
+        $conditionObject->someInt = 4;
+        $condition = new EqualTo($conditionObject);
+
+        $results = $this->storage->getCollection($condition, $resolver);
+
+        foreach ($results as $result)
+        {
+            // Necessary because something hasn't been implemented yet
+            // (particularly: picking up on changes in a collection if no
+            //  non-collection changes were made **first** on the same object)
+            // This is definitely on my todo-list!!
+            $result->someInt = 44;
+
+            $result->myInts->add(5);
+        }
+
+        $this->storage->flush();
+
+        $conditionObject->someInt = 44;
+        $condition = new EqualTo($conditionObject);
+        $resolver->orderByMyIntsAsc();
+        $results = $this->getNewStorage()->getCollection($condition, $resolver);
+
+        $result = $results->getNext();
+
+        $this->assertSame(null, $results->getNext());
+        $this->assertSame(3, count($result->myInts->toArray()));
+        $this->assertEquals(2, $result->myInts->toArray()[0]);
+        $this->assertEquals(4, $result->myInts->toArray()[1]);
+        $this->assertEquals(5, $result->myInts->toArray()[2]);
+    }
+
+    public function testAddItemToUnresolvedCollection()
+    {
+        $this->populateDatabase();
+        $conditionObject = new CollectionType();
+        $conditionObject->someInt = 4;
+        $condition = new EqualTo($conditionObject);
+
+        $results = $this->storage->getCollection($condition);
+
+        foreach ($results as $result)
+        {
+            // Necessary because something hasn't been implemented yet
+            // (particularly: picking up on changes in a collection if no
+            //  non-collection changes were made **first** on the same object)
+            // This is definitely on my todo-list!!
+            $result->someInt = 44;
+
+            $result->myInts->add(5);
+        }
+
+        $this->storage->flush();
+
+        $conditionObject->someInt = 44;
+        $condition = new EqualTo($conditionObject);
+        $resolver = CollectionType::resolver()->resolveMyInts();
+        $resolver->orderByMyIntsAsc();
+        $results = $this->getNewStorage()->getCollection($condition, $resolver);
+
+        $result = $results->getNext();
+
+        $this->assertSame(null, $results->getNext());
+        $this->assertSame(3, count($result->myInts->toArray()));
+        $this->assertEquals(2, $result->myInts->toArray()[0]);
+        $this->assertEquals(4, $result->myInts->toArray()[1]);
+        $this->assertEquals(5, $result->myInts->toArray()[2]);
+    }
+
+    public function testRemoveItemFromResolvedCollection()
+    {
+        $this->populateDatabase();
+
+        $resolver = CollectionType::resolver()->resolveMyInts();
+        $conditionObject = new CollectionType();
+        $conditionObject->someInt = 4;
+        $condition = new EqualTo($conditionObject);
+
+        $results = $this->storage->getCollection($condition, $resolver);
+
+        foreach ($results as $result)
+        {
+            // Necessary because something hasn't been implemented yet
+            // (particularly: picking up on changes in a collection if no
+            //  non-collection changes were made **first** on the same object)
+            // This is definitely on my todo-list!!
+            $result->someInt = 44;
+
+            $result->myInts->remove(2);
+        }
+
+        $this->storage->flush();
+
+        $conditionObject->someInt = 44;
+        $condition = new EqualTo($conditionObject);
+        $resolver->orderByMyIntsAsc();
+        $results = $this->getNewStorage()->getCollection($condition, $resolver);
+
+        $result = $results->getNext();
+
+        $this->assertSame(null, $results->getNext());
+        $this->assertSame(1, count($result->myInts->toArray()));
+        $this->assertEquals(4, $result->myInts->toArray()[0]);
+    }
+
+    public function testRemoveItemFromUnresolvedCollection()
+    {
+        $this->populateDatabase();
+        $conditionObject = new CollectionType();
+        $conditionObject->someInt = 4;
+        $condition = new EqualTo($conditionObject);
+
+        $results = $this->storage->getCollection($condition);
+
+        foreach ($results as $result)
+        {
+            // Necessary because something hasn't been implemented yet
+            // (particularly: picking up on changes in a collection if no
+            //  non-collection changes were made **first** on the same object)
+            // This is definitely on my todo-list!!
+            $result->someInt = 44;
+
+            $result->myInts->remove(2);
+        }
+
+        $this->storage->flush();
+
+        $conditionObject->someInt = 44;
+        $condition = new EqualTo($conditionObject);
+        $resolver = CollectionType::resolver()->resolveMyInts();
+        $resolver->orderByMyIntsAsc();
+        $results = $this->getNewStorage()->getCollection($condition, $resolver);
+
+        $result = $results->getNext();
+
+        $this->assertSame(null, $results->getNext());
+        $this->assertSame(1, count($result->myInts->toArray()));
+        $this->assertEquals(4, $result->myInts->toArray()[0]);
+    }
+
+    public function testClearResolvedCollection()
+    {
+        $this->populateDatabase();
+
+        $resolver = CollectionType::resolver()->resolveMyInts();
+        $conditionObject = new CollectionType();
+        $conditionObject->someInt = 4;
+        $condition = new EqualTo($conditionObject);
+
+        $results = $this->storage->getCollection($condition, $resolver);
+
+        foreach ($results as $result)
+        {
+            // Necessary because something hasn't been implemented yet
+            // (particularly: picking up on changes in a collection if no
+            //  non-collection changes were made **first** on the same object)
+            // This is definitely on my todo-list!!
+            $result->someInt = 44;
+
+            $result->myInts->clear();
+            $result->myInts->add(123);
+        }
+
+        $this->storage->flush();
+
+        $conditionObject->someInt = 44;
+        $condition = new EqualTo($conditionObject);
+        $resolver->orderByMyIntsAsc();
+        $results = $this->getNewStorage()->getCollection($condition, $resolver);
+
+        $result = $results->getNext();
+
+        $this->assertSame(null, $results->getNext());
+        $this->assertSame(1, count($result->myInts->toArray()));
+        $this->assertEquals(123, $result->myInts->toArray()[0]);
+    }
+
+    public function testClearUnresolvedCollection()
+    {
+        $this->populateDatabase();
+        $conditionObject = new CollectionType();
+        $conditionObject->someInt = 4;
+        $condition = new EqualTo($conditionObject);
+
+        $results = $this->storage->getCollection($condition);
+
+        foreach ($results as $result)
+        {
+            // Necessary because something hasn't been implemented yet
+            // (particularly: picking up on changes in a collection if no
+            //  non-collection changes were made **first** on the same object)
+            // This is definitely on my todo-list!!
+            $result->someInt = 44;
+
+            $result->myInts->clear();
+            $result->myInts->add(123);
+        }
+
+        $this->storage->flush();
+
+        $conditionObject->someInt = 44;
+        $condition = new EqualTo($conditionObject);
+        $resolver = CollectionType::resolver()->resolveMyInts();
+        $resolver->orderByMyIntsAsc();
+        $results = $this->getNewStorage()->getCollection($condition, $resolver);
+
+        $result = $results->getNext();
+
+        $this->assertSame(null, $results->getNext());
+        $this->assertSame(1, count($result->myInts->toArray()));
+        $this->assertEquals(123, $result->myInts->toArray()[0]);
+    }
+
+    public function testManipulateResolvedReferenceCollection()
+    {
+        $this->populateDatabase();
+
+        $one = $this->getCollectionObjectBySomeInt(1);
+        $five = $this->getCollectionObjectBySomeInt(5);
+
+        $six = new CollectionType();
+        $six->someInt = 6;
+
+        $resolver = CollectionType::resolver();
+        $resolver->resolveMyReferences();
+        $conditionObject = new CollectionType();
+        $conditionObject->someInt = 4;
+        $condition = new EqualTo($conditionObject);
+
+        $results = $this->storage->getCollection($condition, $resolver);
+
+        foreach ($results as $result)
+        {
+            // Necessary because something hasn't been implemented yet
+            // (particularly: picking up on changes in a collection if no
+            //  non-collection changes were made **first** on the same object)
+            // This is definitely on my todo-list!!
+            $result->someInt = 44;
+
+            $result->myReferences->remove($one);
+            $result->myReferences->add($five);
+            $result->myReferences->add($six);
+        }
+
+        $this->storage->flush();
+
+        $conditionObject->someInt = 44;
+        $condition = new EqualTo($conditionObject);
+        $resolver->getMyReferences()->orderBySomeIntAsc();
+        $results = $this->getNewStorage()->getCollection($condition, $resolver);
+
+        $result = $results->getNext();
+
+        $this->assertSame(null, $results->getNext());
+        $this->assertSame(3, count($result->myReferences->toArray()));
+        $ref1 = $result->myReferences->toArray()[0];
+        $this->assertEquals(5, $result->myReferences->toArray()[0]->someInt);
+        $this->assertEquals(6, $result->myReferences->toArray()[1]->someInt);
+        $this->assertEquals(44, $result->myReferences->toArray()[2]->someInt);
+    }
+
+    public function testManipulateUnresolvedReferenceCollection()
+    {
+        $this->populateDatabase();
+
+        $one = $this->getCollectionObjectBySomeInt(1);
+        $five = $this->getCollectionObjectBySomeInt(5);
+
+        $six = new CollectionType();
+        $six->someInt = 6;
+
+        $conditionObject = new CollectionType();
+        $conditionObject->someInt = 4;
+        $condition = new EqualTo($conditionObject);
+
+        $results = $this->storage->getCollection($condition);
+
+        foreach ($results as $result)
+        {
+            // Necessary because something hasn't been implemented yet
+            // (particularly: picking up on changes in a collection if no
+            //  non-collection changes were made **first** on the same object)
+            // This is definitely on my todo-list!!
+            $result->someInt = 44;
+
+            $result->myReferences->remove($one);
+            $result->myReferences->add($five);
+            $result->myReferences->add($six);
+        }
+
+        $this->storage->flush();
+
+        $conditionObject->someInt = 44;
+        $condition = new EqualTo($conditionObject);
+        $resolver = CollectionType::resolver()->resolveMyReferences()->orderBySomeIntAsc();
+        $results = $this->getNewStorage()->getCollection($condition, $resolver);
+
+        $result = $results->getNext();
+
+        $this->assertSame(null, $results->getNext());
+        $this->assertSame(3, count($result->myReferences->toArray()));
+        $this->assertEquals(5, $result->myReferences->toArray()[0]->someInt);
+        $this->assertEquals(6, $result->myReferences->toArray()[1]->someInt);
+        $this->assertEquals(44, $result->myReferences->toArray()[2]->someInt);
+    }
+
+    private function getCollectionObjectBySomeInt($value)
+    {
+        $compared = new CollectionType();
+        $compared->someInt = $value;
+        $condition = new EqualTo($compared);
+
+        $results = $this->storage->getCollection($condition);
+
+        return $results->getNext();
+    }
 }
 
 ?>
