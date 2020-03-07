@@ -395,7 +395,13 @@ class UpdateConditionWriter implements StorableVisitor,
         }
     }
 
-    public function visitCollectionProperty($name, $value, $modifier) {}
+    public function visitCollectionProperty($name, $value, $modifier)
+    {
+        if ($modifier->isDirty())
+        {
+            throw new \Exception("Comparison conditions cannot be applied to changes to collections");
+        }
+    }
 
     private function writeBracketOrAnd()
     {

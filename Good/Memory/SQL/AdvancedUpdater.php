@@ -191,7 +191,13 @@ class AdvancedUpdater implements StorableVisitor
         }
     }
 
-    public function visitCollectionProperty($name, $value, $modifier) {}
+    public function visitCollectionProperty($name, $value, $modifier)
+    {
+        if ($modifier->isDirty())
+        {
+            throw new \Exception("Changing a collection through a `modifyAny` call is not (yet?) supported");
+        }
+    }
 }
 
 ?>
