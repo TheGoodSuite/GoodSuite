@@ -128,8 +128,7 @@ CREATE TABLE `collectiontype_myfloats` (
 );
 CREATE TABLE `collectiontype_mytexts` (
 	`owner`	INTEGER,
-	`value` TEXT,
-	PRIMARY KEY(owner, value)
+	`value` TEXT
 );
 CREATE TABLE `collectiontype_mydatetimes` (
 	`owner`	INTEGER,
