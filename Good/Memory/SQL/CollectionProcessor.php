@@ -6,7 +6,7 @@ use Good\Manners\Storable;
 use Good\Manners\StorableVisitor;
 use Good\Memory\Database\Database;
 use Good\Memory\SQLStorage;
-use Good\Memory\StorableCollectionEntry;
+use Good\Memory\CollectionEntryStorable;
 use Good\Service\Type;
 use Good\Rolemodel\TypeVisitor;
 use Good\Rolemodel\Schema\Type\ReferenceType;
@@ -55,7 +55,7 @@ class CollectionProcessor implements StorableVisitor, TypeVisitor
         {
             foreach ($modifier->getAddedItems() as $item)
             {
-                $entry = $this->createStorableCollectionEntry($value->getCollectedType(), $this->currentOwner, $name, $item);
+                $entry = $this->createCollectionEntryStorable($value->getCollectedType(), $this->currentOwner, $name, $item);
 
                 $this->storables[] = $entry;
             }
@@ -96,11 +96,11 @@ class CollectionProcessor implements StorableVisitor, TypeVisitor
         return $sql;
     }
 
-    private function createStorableCollectionEntry(Type $collectedType, Storable $owner, $collectionFieldName, $value)
+    private function createCollectionEntryStorable(Type $collectedType, Storable $owner, $collectionFieldName, $value)
     {
         $typeName = $owner->getType() . '_' . $collectionFieldName;
 
-        $collectionEntry = new StorableCollectionEntry($collectedType, $typeName);
+        $collectionEntry = new CollectionEntryStorable($collectedType, $typeName);
         $collectionEntry->setValue($value);
         $collectionEntry->setOwner($owner);
 
