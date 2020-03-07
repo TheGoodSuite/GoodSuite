@@ -6,7 +6,7 @@ use Ds\Set;
 
 use Good\Service\CollectionBehaviorModifier;
 
-class StorableCollectionModifier implements CollectionBehaviorModifier
+class CollectionModifierStorable implements CollectionBehaviorModifier
 {
     private $cleared;
     private $resolved;

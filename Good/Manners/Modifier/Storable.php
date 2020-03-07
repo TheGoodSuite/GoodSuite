@@ -458,7 +458,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->resolverVisit .= "        }\n";
 
         $this->constructor .= '        $this->' . $this->member->getName() . 'Modifier = ';
-        $this->constructor .= 'new \Good\Manners\StorableCollectionModifier();' . "\n";
+        $this->constructor .= 'new \Good\Manners\CollectionModifierStorable();' . "\n";
         $this->constructor .= '        $this->' . $this->member->getName() . '->registerBehaviorModifier(';
         $this->constructor .= '$this->' . $this->member->getName() . 'Modifier);' . "\n";
 
