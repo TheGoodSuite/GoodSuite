@@ -250,9 +250,9 @@ abstract class GoodMannersChildTypesTest extends \PHPUnit\Framework\TestCase
     {
         $resolver = new ParentType1Resolver();
         $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($resolver);
+        $results = $this->storage->fetchAll($resolver);
 
-        foreach ($collection as $obj)
+        foreach ($results as $obj)
         {
             $this->assertInstanceOf($type1, $obj);
 

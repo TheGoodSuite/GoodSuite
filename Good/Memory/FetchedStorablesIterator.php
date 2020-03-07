@@ -2,13 +2,13 @@
 
 namespace Good\Memory;
 
-class StorableCollectionIterator implements \Iterator
+class FetchedStorablesIterator implements \Iterator
 {
     private $collection;
     private $firstElement;
     private $currentElement;
 
-    public function __construct(StorableCollection $collection, LinkedListElement $firstElement)
+    public function __construct(FetchedStorables $collection, LinkedListElement $firstElement)
     {
         $this->collection = $collection;
         $this->firstElement = $firstElement;

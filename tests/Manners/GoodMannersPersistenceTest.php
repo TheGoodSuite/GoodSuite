@@ -156,9 +156,9 @@ abstract class GoodMannersPersistenceTest extends \PHPUnit\Framework\TestCase
         $expectedResults[] = $ins;
 
         $resolver = new PersistenceTypeResolver();
-        $collection = $storage->getCollection($resolver);
+        $results = $storage->fetchAll($resolver);
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 

@@ -167,9 +167,9 @@ abstract class GoodMannersDeleteTest extends \PHPUnit\Framework\TestCase
 
     private function checkResults($expected)
     {
-        $collection = $this->storage2->getCollection(DeleteType::resolver());
+        $results = $this->storage2->fetchAll(DeleteType::resolver());
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expected);
 
@@ -181,9 +181,9 @@ abstract class GoodMannersDeleteTest extends \PHPUnit\Framework\TestCase
 
     public function testDelete()
     {
-        $collection = $this->storage1->getCollection(DeleteType::resolver());
+        $results = $this->storage1->fetchAll(DeleteType::resolver());
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             if ($type->myInt == 5 || $type->myInt == 10)
             {

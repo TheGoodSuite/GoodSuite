@@ -200,9 +200,9 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
     {
         $resolver = new SimpleUpdateTypeResolver();
         $resolver->resolveMyReference();
-        $collection = $this->storage2->getCollection($resolver);
+        $results = $this->storage2->fetchAll($resolver);
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expected);
 
@@ -216,9 +216,9 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
     {
         $resolver = new SimpleUpdateTypeResolver();
         $resolver->resolveMyReference();
-        $collection = $this->storage1->getCollection($resolver);
+        $results = $this->storage1->fetchAll($resolver);
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $type->myInt = 2;
             $type->myFloat = 1.1;
@@ -282,9 +282,9 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
     {
         $resolver = new SimpleUpdateTypeResolver();
         $resolver->resolveMyReference();
-        $collection = $this->storage1->getCollection($resolver);
+        $results = $this->storage1->fetchAll($resolver);
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             if ($type->myInt == 5)
             {
@@ -361,11 +361,11 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
         $resolver = new SimpleUpdateTypeResolver();
         $resolver->resolveMyReference();
         $resolver->orderByMyIntAsc();
-        $collection = $this->storage1->getCollection($resolver);
+        $results = $this->storage1->fetchAll($resolver);
 
         $ref = null;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             if ($type->myInt == 8)
             {

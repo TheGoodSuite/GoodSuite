@@ -50,7 +50,7 @@ class SQLStorage extends Storage
         $updater->update($modifications->getType(), $condition, $modifications);
     }
 
-    public function getCollection($conditionOrResolver, Resolver $resolver = null)
+    public function fetchAll($conditionOrResolver, Resolver $resolver = null)
     {
         if ($resolver == null)
         {
@@ -97,7 +97,7 @@ class SQLStorage extends Storage
         //  but even if it does, it makes for confusing code to rely on it)
         $resultset = $selecter->select($resolver->getType(), $condition, $resolver);
 
-        return new StorableCollection($this, $resultset, $this->joins, $resolver->getType());
+        return new FetchedStorables($this, $resultset, $this->joins, $resolver->getType());
     }
 
     public function isManagedStorable(Storable $storable)

@@ -2,7 +2,7 @@
 
 namespace Good\Manners;
 
-interface StorableCollection extends \IteratorAggregate
+interface FetchedStorables extends \IteratorAggregate
 {
     function getNext();
 }

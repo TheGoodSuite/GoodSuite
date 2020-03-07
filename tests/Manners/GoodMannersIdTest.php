@@ -147,16 +147,16 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
         $type->myText = 'b';
         $any = new \Good\Manners\Condition\EqualTo($type);
 
-        $collection = $this->storage->getCollection($any, IdType::resolver());
+        $results = $this->storage->fetchAll($any, IdType::resolver());
 
-        $idHolder = $collection->getNext();
+        $idHolder = $results->getNext();
 
         $resolver = IdType::resolver();
         $resolver->resolveReference();
 
         $id = IdType::id($this->storage, $idHolder->getId());
 
-        $result = $id->get($resolver);
+        $result = $id->fetch($resolver);
 
         $expected = new IdType();
         $expected->myText = 'b';
@@ -175,9 +175,9 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
         $type->myText = 'b';
         $any = new \Good\Manners\Condition\EqualTo($type);
 
-        $collection = $this->storage->getCollection($any, IdType::resolver());
+        $results = $this->storage->fetchAll($any, IdType::resolver());
 
-        $idHolder = $collection->getNext();
+        $idHolder = $results->getNext();
 
         $id = IdType::id($this->storage, $idHolder->getId());
         $id->delete();
@@ -186,7 +186,7 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
 
         $resolver = IdType::resolver();
         $resolver->resolveReference();
-        $collection = $this->storage->getCollection($resolver);
+        $results = $this->storage->fetchAll($resolver);
 
         $expectedResults = array();
 
@@ -201,7 +201,7 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
         $expected->reference->myText = 'a';
         $expectedResults[] = $expected;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
@@ -220,9 +220,9 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
         $type->myText = 'a';
         $any = new \Good\Manners\Condition\EqualTo($type);
 
-        $collection = $this->storage->getCollection($any, IdType::resolver());
+        $results = $this->storage->fetchAll($any, IdType::resolver());
 
-        $idHolder = $collection->getNext();
+        $idHolder = $results->getNext();
 
         $id = IdType::id($this->storage, $idHolder->getId());
         $referencing = new IdType();
@@ -232,7 +232,7 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
 
         $resolver = IdType::resolver();
         $resolver->resolveReference();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $results = $this->storage->fetchAll($any, $resolver);
 
         $expectedResults = array();
 
@@ -248,7 +248,7 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
         $expected->reference->myText = 'a';
         $expectedResults[] = $expected;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
@@ -264,17 +264,17 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
         $type->myText = 'a';
         $any = new \Good\Manners\Condition\EqualTo($type);
 
-        $collection = $this->storage->getCollection($any, IdType::resolver());
+        $results = $this->storage->fetchAll($any, IdType::resolver());
 
-        $a = $collection->getNext();
+        $a = $results->getNext();
 
         $type = new IdType();
         $type->myText = 'b';
         $any = new \Good\Manners\Condition\EqualTo($type);
 
-        $collection = $this->storage->getCollection($any, IdType::resolver());
+        $results = $this->storage->fetchAll($any, IdType::resolver());
 
-        $b = $collection->getNext();
+        $b = $results->getNext();
 
         $id = IdType::id($this->storage, $b->getId());
 
@@ -284,7 +284,7 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
 
         $resolver = IdType::resolver();
         $resolver->resolveReference();
-        $collection = $this->storage->getCollection($resolver);
+        $results = $this->storage->fetchAll($resolver);
 
         $expectedResults = array();
 
@@ -306,7 +306,7 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
         $expected->reference->myText = 'a';
         $expectedResults[] = $expected;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
@@ -322,9 +322,9 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
         $type->myText = 'b';
         $any = new \Good\Manners\Condition\EqualTo($type);
 
-        $collection = $this->storage->getCollection($any, IdType::resolver());
+        $results = $this->storage->fetchAll($any, IdType::resolver());
 
-        $idHolder = $collection->getNext();
+        $idHolder = $results->getNext();
 
         $id = IdType::id($this->storage, $idHolder->getId());
 
@@ -344,7 +344,7 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
 
         $resolver = IdType::resolver();
         $resolver->resolveReference();
-        $collection = $this->storage->getCollection($resolver);
+        $results = $this->storage->fetchAll($resolver);
 
         $expectedResults = array();
 
@@ -366,7 +366,7 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
         $expected->reference->myText = 'a';
         $expectedResults[] = $expected;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 

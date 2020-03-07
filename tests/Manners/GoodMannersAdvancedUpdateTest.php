@@ -257,7 +257,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $resolver->resolveMyReference();
         $resolver->resolveRef()->resolveRef();
 
-        $collection = $this->storage2->getCollection($resolver);
+        $collection = $this->storage2->fetchAll($resolver);
 
         foreach ($collection as $type)
         {
@@ -501,7 +501,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
 
         $resolver = new AdvancedUpdateTypeResolver();
         $resolver->resolveMyReference();
-        $collection = $this->storage1->getCollection($any, $resolver);
+        $collection = $this->storage1->fetchAll($any, $resolver);
 
         $type= $collection->getNext();
         $ref = $type->myReference;
@@ -580,7 +580,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $type->yourInt = 20;
         $cond = new \Good\Manners\Condition\EqualTo($type);
 
-        $collection = $this->storage2->getCollection($cond, new YetAnotherTypeResolver());
+        $collection = $this->storage2->fetchAll($cond, new YetAnotherTypeResolver());
 
         $collection->getNext();
 
@@ -733,7 +733,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $type = new YetAnotherType();
         $cond = new \Good\Manners\Condition\EqualTo($type);
 
-        $collection = $this->storage2->getCollection($cond, new YetAnotherTypeResolver());
+        $collection = $this->storage2->fetchAll($cond, new YetAnotherTypeResolver());
 
         $i = 0;
 
@@ -1521,7 +1521,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $any = new \Good\Manners\Condition\EqualTo($type);
         $resolver = new AdvancedUpdateTypeResolver();
         $resolver->resolveMyReference();
-        $collection = $this->storage1->getCollection($any, $resolver);
+        $collection = $this->storage1->fetchAll($any, $resolver);
         $ref = $collection->getNext()->myReference;
         $type = new AdvancedUpdateType();
         $type->myInt = 10;
@@ -1537,7 +1537,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $any = new \Good\Manners\Condition\EqualTo($type);
         $resolver = new AdvancedUpdateTypeResolver();
         $resolver->resolveMyReference();
-        $collection = $this->storage1->getCollection($any, $resolver);
+        $collection = $this->storage1->fetchAll($any, $resolver);
         $ref = $collection->getNext()->myReference;
 
         // And now we can finally do the real test
@@ -1693,7 +1693,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
     {
         $resolver = new AdvancedUpdateTypeResolver();
         $resolver->resolveRef();
-        $collection = $this->storage1->getCollection($resolver);
+        $collection = $this->storage1->fetchAll($resolver);
 
         foreach ($collection as $type)
         {
@@ -1817,7 +1817,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
     {
         $resolver = new AdvancedUpdateTypeResolver();
         $resolver->resolveRef();
-        $collection = $this->storage1->getCollection($resolver);
+        $collection = $this->storage1->fetchAll($resolver);
 
         foreach ($collection as $type)
         {

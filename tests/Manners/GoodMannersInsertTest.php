@@ -138,9 +138,9 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
     {
         $resolver = new InsertTypeResolver();
         $resolver->resolveMyCircularReference();
-        $collection = $this->storage2->getCollection($resolver);
+        $results = $this->storage2->fetchAll($resolver);
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expected);
 
@@ -330,7 +330,7 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
         $five = new InsertType();
         $five->myInt = 5;
         $cond = new \Good\Manners\Condition\EqualTo($five);
-        $results = $this->storage2->getCollection($cond, new InsertTypeResolver());
+        $results = $this->storage2->fetchAll($cond, new InsertTypeResolver());
 
         $n = 0;
 
@@ -345,7 +345,7 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
         $seven = new InsertType();
         $seven->myInt = 7;
         $cond = new \Good\Manners\Condition\EqualTo($seven);
-        $results = $this->storage2->getCollection($cond, new InsertTypeResolver());
+        $results = $this->storage2->fetchAll($cond, new InsertTypeResolver());
 
         $n = 0;
 

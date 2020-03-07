@@ -91,11 +91,11 @@ class Id implements Storable
         // This doesn't need to do anything, because we don't care about the fields of an id
     }
 
-    public function get(Resolver $resolver = null)
+    public function fetch(Resolver $resolver = null)
     {
-        $collection = $this->storage->getCollection(new EqualTo($this), $resolver);
+        $results = $this->storage->fetchAll(new EqualTo($this), $resolver);
 
-        $first = $collection->getNext();
+        $first = $results->getNext();
 
         if ($first === null)
         {

@@ -4,7 +4,7 @@
  * @runTestsInSeparateProcesses
  *
  * Tests the different sets of arguments you should and shouldn't be able
- * to pass to the `getCollection()` method.
+ * to pass to the `fetchAll()` method.
  */
 abstract class GoodMannersArgumentsTest extends \PHPUnit\Framework\TestCase
 {
@@ -121,7 +121,7 @@ abstract class GoodMannersArgumentsTest extends \PHPUnit\Framework\TestCase
         $resolver = PersistenceType::resolver();
         $resolver->orderByMyIntDesc();
 
-        $results = $this->storage->getCollection($condition, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $result = $results->getNext();
         $this->assertSame(6, $result->myInt);
@@ -140,7 +140,7 @@ abstract class GoodMannersArgumentsTest extends \PHPUnit\Framework\TestCase
         $compare->myInt = 4;
         $condition = new \Good\Manners\Condition\GreaterThan($compare);
 
-        $results = $this->storage->getCollection($condition);
+        $results = $this->storage->fetchAll($condition);
 
         $result = $results->getNext();
         $result = $results->getNext();
@@ -154,7 +154,7 @@ abstract class GoodMannersArgumentsTest extends \PHPUnit\Framework\TestCase
         $resolver = PersistenceType::resolver();
         $resolver->orderByMyIntDesc();
 
-        $results = $this->storage->getCollection($resolver);
+        $results = $this->storage->fetchAll($resolver);
 
         $result = $results->getNext();
         $this->assertSame(6, $result->myInt);
@@ -172,14 +172,14 @@ abstract class GoodMannersArgumentsTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException("InvalidArgumentException");
 
-        $results = $this->storage->getCollection("a");
+        $results = $this->storage->fetchAll("a");
     }
 
     public function testGetCollectionExceptionTwoResolvers()
     {
         $this->expectException("InvalidArgumentException");
 
-        $results = $this->storage->getCollection(PersistenceType::resolver(), PersistenceType::resolver());
+        $results = $this->storage->fetchAll(PersistenceType::resolver(), PersistenceType::resolver());
     }
 }
 

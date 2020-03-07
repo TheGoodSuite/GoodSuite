@@ -61,7 +61,7 @@ CREATE TABLE `idtype` (
 	`reference`	INTEGER,
 	PRIMARY KEY(id)
 );
-CREATE TABLE `mygettype` (
+CREATE TABLE `myfetchtype` (
 	`id`	INTEGER,
 	`myint`	INTEGER,
 	`myfloat`	REAL,

@@ -1,13 +1,13 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../Manners/GoodMannersGetTest.php';
+require_once dirname(__FILE__) . '/../../Manners/GoodMannersFetchTest.php';
 
 /**
  * @runTestsInSeparateProcesses
  * @group database
  * @group mysql
  */
-class GoodMemoryMySQLGetTest extends GoodMannersGetTest
+class GoodMemoryMySQLFetchTest extends GoodMannersFetchTest
 {
     public function getNewDb()
     {

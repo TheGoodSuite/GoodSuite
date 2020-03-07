@@ -46,7 +46,7 @@ abstract class Storage
 
     abstract public function insert(Storable $storable);
     abstract public function modifyAny(Condition $condition, Storable $modifications);
-    abstract public function getCollection($condition, Resolver $resolver = null);
+    abstract public function fetchAll($condition, Resolver $resolver = null);
 
     abstract public function flush();
 }

@@ -3,7 +3,7 @@
 /**
  * @runTestsInSeparateProcesses
  */
-abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
+abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
 {
     private $storage;
 
@@ -24,41 +24,41 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         // Garbage collector causes segmentation fault, so we disable
         // for the duration of the test case
         gc_disable();
-        file_put_contents(dirname(__FILE__) . '/../testInputFiles/MyGetType.datatype',
-                                                                            "datatype MyGetType\n" .
+        file_put_contents(dirname(__FILE__) . '/../testInputFiles/MyFetchType.datatype',
+                                                                            "datatype MyFetchType\n" .
                                                                             "{" .
                                                                             "   int myInt;\n" .
                                                                             "   float myFloat;\n".
                                                                             "   text myText;\n" .
                                                                             "   datetime myDatetime;\n" .
                                                                             '   "OtherType" myOtherType;' . "\n" .
-                                                                            '   "MyGetType" myCircular;' . "\n" .
+                                                                            '   "MyFetchType" myCircular;' . "\n" .
                                                                             "}\n");
 
         file_put_contents(dirname(__FILE__) . '/../testInputFiles/OtherType.datatype',
                                                                             "datatype OtherType { int yourInt; }");
 
         $rolemodel = new \Good\Rolemodel\Rolemodel();
-        $schema = $rolemodel->createSchema(array(dirname(__FILE__) . '/../testInputFiles/MyGetType.datatype',
+        $schema = $rolemodel->createSchema(array(dirname(__FILE__) . '/../testInputFiles/MyFetchType.datatype',
                                                    dirname(__FILE__) . '/../testInputFiles/OtherType.datatype'));
 
         $service = new \Good\Service\Service();
         $service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');
 
-        require dirname(__FILE__) . '/../generated/MyGetType.datatype.php';
+        require dirname(__FILE__) . '/../generated/MyFetchType.datatype.php';
         require dirname(__FILE__) . '/../generated/OtherType.datatype.php';
 
-        require dirname(__FILE__) . '/../generated/MyGetTypeResolver.php';
+        require dirname(__FILE__) . '/../generated/MyFetchTypeResolver.php';
         require dirname(__FILE__) . '/../generated/OtherTypeResolver.php';
     }
 
     public static function _tearDownAfterClass()
     {
-        unlink(dirname(__FILE__) . '/../testInputFiles/MyGetType.datatype');
+        unlink(dirname(__FILE__) . '/../testInputFiles/MyFetchType.datatype');
         unlink(dirname(__FILE__) . '/../testInputFiles/OtherType.datatype');
-        unlink(dirname(__FILE__) . '/../generated/MyGetType.datatype.php');
+        unlink(dirname(__FILE__) . '/../generated/MyFetchType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/OtherType.datatype.php');
-        unlink(dirname(__FILE__) . '/../generated/MyGetTypeResolver.php');
+        unlink(dirname(__FILE__) . '/../generated/MyFetchTypeResolver.php');
         unlink(dirname(__FILE__) . '/../generated/OtherTypeResolver.php');
         unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');
 
@@ -74,12 +74,12 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
 
         // just doubling this up (from tearDown) to be sure
         // this should be handled natively once that is implemented
-        $this->truncateTable('mygettype');
+        $this->truncateTable('myfetchtype');
         $this->truncateTable('othertype');
 
         $storage = $this->getNewStorage();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
@@ -90,7 +90,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $storage->insert($ins);
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
@@ -101,7 +101,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $storage->insert($ins);
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
@@ -112,7 +112,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $storage->insert($ins);
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
@@ -121,7 +121,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $storage->insert($ins);
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
         $ins->myText = "Twenty";
@@ -146,7 +146,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $this->storage->flush();
 
         // this should be handled through the GoodManners API once that is implemented
-        $this->truncateTable('mygettype');
+        $this->truncateTable('myfetchtype');
         $this->truncateTable('othertype');
 
         $this->_tearDownAfterClass();
@@ -207,15 +207,15 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         return $pos;
     }
 
-    public function testGetAll()
+    public function testFetchAll()
     {
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($resolver);
+        $results = $this->storage->fetchAll($resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
@@ -226,7 +226,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
@@ -237,7 +237,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
@@ -248,7 +248,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
@@ -257,7 +257,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
         $ins->myText = "Twenty";
@@ -268,7 +268,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
@@ -278,19 +278,19 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(array(), $expectedResults);
     }
 
-    public function testGetLessThan()
+    public function testFetchLessThan()
     {
-        $type = new MyGetType();
+        $type = new MyFetchType();
         $type->myInt = 5;
         $any = new \Good\Manners\Condition\LessThan($type);
 
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $results = $this->storage->fetchAll($any, $resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
@@ -301,7 +301,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
@@ -311,19 +311,19 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(array(), $expectedResults);
     }
 
-    public function testGetLessOrEqual()
+    public function testFetchLessOrEqual()
     {
-        $type = new MyGetType();
+        $type = new MyFetchType();
         $type->myInt = 5;
         $any = new \Good\Manners\Condition\LessOrEqual($type);
 
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $results = $this->storage->fetchAll($any, $resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
@@ -334,7 +334,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
@@ -345,7 +345,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
@@ -355,19 +355,19 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(array(), $expectedResults);
     }
 
-    public function testGetGreaterThan()
+    public function testFetchGreaterThan()
     {
-        $type = new MyGetType();
+        $type = new MyFetchType();
         $type->myInt = 5;
         $any = new \Good\Manners\Condition\GreaterThan($type);
 
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $results = $this->storage->fetchAll($any, $resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
@@ -378,7 +378,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
@@ -387,7 +387,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
@@ -397,19 +397,19 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(array(), $expectedResults);
     }
 
-    public function testGetGreaterOrEqual()
+    public function testFetchGreaterOrEqual()
     {
-        $type = new MyGetType();
+        $type = new MyFetchType();
         $type->myInt = 5;
         $any = new \Good\Manners\Condition\GreaterOrEqual($type);
 
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $results = $this->storage->fetchAll($any, $resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
@@ -420,7 +420,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
@@ -431,7 +431,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
@@ -440,7 +440,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
@@ -450,19 +450,19 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(array(), $expectedResults);
     }
 
-    public function testGetEqualTo()
+    public function testFetchEqualTo()
     {
-        $type = new MyGetType();
+        $type = new MyFetchType();
         $type->myInt = 5;
         $any = new \Good\Manners\Condition\EqualTo($type);
 
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $results = $this->storage->fetchAll($any, $resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
@@ -473,7 +473,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
@@ -483,19 +483,19 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(array(), $expectedResults);
     }
 
-    public function testGetNotEqualTo()
+    public function testFetchNotEqualTo()
     {
-        $type = new MyGetType();
+        $type = new MyFetchType();
         $type->myInt = 5;
         $any = new \Good\Manners\Condition\NotEqualTo($type);
 
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $results = $this->storage->fetchAll($any, $resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
@@ -506,7 +506,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
@@ -517,7 +517,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
@@ -526,7 +526,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
@@ -537,9 +537,9 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @depends testGetEqualTo
+     * @depends testFetchEqualTo
      */
-    public function testGetEqualToReference()
+    public function testFetchEqualToReference()
     {
         // First, we get the referenced object
         // (we have to do this to get the id of the object,
@@ -550,22 +550,22 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
 
         $any = new \Good\Manners\Condition\EqualTo($otherType);
 
-        $collection = $this->storage->getCollection($any);
+        $results = $this->storage->fetchAll($any);
 
-        $referenced = $collection->getNext();
+        $referenced = $results->getNext();
 
         // Then, we get the result with that reference
-        $type = new MyGetType();
+        $type = new MyFetchType();
         $type->myOtherType = $referenced;
         $any = new \Good\Manners\Condition\EqualTo($type);
 
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $results = $this->storage->fetchAll($any, $resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
@@ -576,7 +576,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
@@ -587,28 +587,28 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @depends testGetLessThan
-     * @depends testGetGreaterThan
+     * @depends testFetchLessThan
+     * @depends testFetchGreaterThan
      */
-    public function testGetAnd()
+    public function testFetchAnd()
     {
-        $type = new MyGetType();
+        $type = new MyFetchType();
         $type->myInt = 4;
         $greater = new \Good\Manners\Condition\GreaterThan($type);
 
-        $type = new MyGetType();
+        $type = new MyFetchType();
         $type->myInt = 10;
         $less = new \Good\Manners\Condition\LessThan($type);
 
         $and = new \Good\Manners\Condition\AndCondition($less, $greater);
 
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($and, $resolver);
+        $results = $this->storage->fetchAll($and, $resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
@@ -619,7 +619,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
@@ -630,7 +630,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
@@ -641,30 +641,30 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @depends testGetLessThan
-     * @depends testGetGreaterThan
+     * @depends testFetchLessThan
+     * @depends testFetchGreaterThan
      */
-    public function testGetOr()
+    public function testFetchOr()
     {
-        $type = new MyGetType();
+        $type = new MyFetchType();
         $type->myInt = 5;
         $greater = new \Good\Manners\Condition\GreaterThan($type);
 
         $less = new \Good\Manners\Condition\LessThan($type);
 
-        $type = new MyGetType();
+        $type = new MyFetchType();
         $type->myInt = 8;
         $greater = new \Good\Manners\Condition\GreaterThan($type);
 
         $and = new \Good\Manners\Condition\OrCondition($less, $greater);
 
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($and, $resolver);
+        $results = $this->storage->fetchAll($and, $resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
@@ -675,7 +675,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
@@ -684,7 +684,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
@@ -694,19 +694,19 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(array(), $expectedResults);
     }
 
-    public function testGetReferenceIsNull()
+    public function testFetchReferenceIsNull()
     {
-        $type = new MyGetType();
+        $type = new MyFetchType();
         $type->myOtherType = null;
         $any = new \Good\Manners\Condition\EqualTo($type);
 
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $results = $this->storage->fetchAll($any, $resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
@@ -715,7 +715,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
@@ -725,19 +725,19 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(array(), $expectedResults);
     }
 
-    public function testGetReferenceIsNotNull()
+    public function testFetchReferenceIsNotNull()
     {
-        $type = new MyGetType();
+        $type = new MyFetchType();
         $type->myOtherType = null;
         $any = new \Good\Manners\Condition\NotEqualTo($type);
 
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $results = $this->storage->fetchAll($any, $resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
@@ -748,7 +748,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
@@ -759,7 +759,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
@@ -770,7 +770,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
         $ins->myText = "Twenty";
@@ -781,7 +781,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
@@ -792,22 +792,22 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @depends testGetLessThan
+     * @depends testFetchLessThan
      */
-    public function testGetByPropertyOfReference()
+    public function testFetchByPropertyOfReference()
     {
-        $type = new MyGetType();
+        $type = new MyFetchType();
         $type->myOtherType = new OtherType();
         $type->myOtherType->yourInt = 85;
         $any = new \Good\Manners\Condition\LessThan($type);
 
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $results = $this->storage->fetchAll($any, $resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
@@ -818,7 +818,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
@@ -829,7 +829,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
         $ins->myText = "Twenty";
@@ -840,7 +840,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
@@ -851,26 +851,26 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @depends testGetGreaterThan
-     * @depends testGetByPropertyOfReference
+     * @depends testFetchGreaterThan
+     * @depends testFetchByPropertyOfReference
      */
-    public function testGetByTwoValuesInOneCondition()
+    public function testFetchByTwoValuesInOneCondition()
     {
         // At the moment we don't have a proper api to get any,
         // but this trick does do the same
-        $type = new MyGetType();
+        $type = new MyFetchType();
         $type->myInt = 4;
         $type->myOtherType = new OtherType();
         $type->myOtherType->yourInt = 45;
         $any = new \Good\Manners\Condition\GreaterThan($type);
 
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $results = $this->storage->fetchAll($any, $resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
@@ -881,7 +881,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
@@ -892,22 +892,22 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @depends testGetGreaterThan
+     * @depends testFetchGreaterThan
      */
-    public function testGetByFloat()
+    public function testFetchByFloat()
     {
         // Ints are already tested as we use them above everywhere
-        $type = new MyGetType();
+        $type = new MyFetchType();
         $type->myFloat = 6.0;
         $any = new \Good\Manners\Condition\GreaterThan($type);
 
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $results = $this->storage->fetchAll($any, $resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
@@ -918,7 +918,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
@@ -927,7 +927,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
         $ins->myText = "Twenty";
@@ -938,7 +938,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
@@ -949,21 +949,21 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @depends testGetEqualTo
+     * @depends testFetchEqualTo
      */
-    public function testGetByText()
+    public function testFetchByText()
     {
-        $type = new MyGetType();
+        $type = new MyFetchType();
         $type->myText = "Twenty";
         $any = new \Good\Manners\Condition\EqualTo($type);
 
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $results = $this->storage->fetchAll($any, $resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
         $ins->myText = "Twenty";
@@ -974,7 +974,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
@@ -985,21 +985,21 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @depends testGetGreaterThan
+     * @depends testFetchGreaterThan
      */
-    public function testGetByDatetime()
+    public function testFetchByDatetime()
     {
-        $type = new MyGetType();
+        $type = new MyFetchType();
         $type->myDatetime = new DateTimeImmutable('2006-06-06');
         $any = new \Good\Manners\Condition\GreaterThan($type);
 
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $results = $this->storage->fetchAll($any, $resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
@@ -1010,7 +1010,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
@@ -1019,7 +1019,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
@@ -1030,21 +1030,21 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @depends testGetEqualTo
+     * @depends testFetchEqualTo
      */
-    public function testGetByIntIsNull()
+    public function testFetchByIntIsNull()
     {
-        $type = new MyGetType();
+        $type = new MyFetchType();
         $type->myInt = null;
         $any = new \Good\Manners\Condition\EqualTo($type);
 
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $results = $this->storage->fetchAll($any, $resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
         $ins->myText = "Twenty";
@@ -1055,7 +1055,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
@@ -1066,21 +1066,21 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @depends testGetEqualTo
+     * @depends testFetchEqualTo
      */
-    public function testGetByFloatIsNull()
+    public function testFetchByFloatIsNull()
     {
-        $type = new MyGetType();
+        $type = new MyFetchType();
         $type->myFloat = null;
         $any = new \Good\Manners\Condition\EqualTo($type);
 
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $results = $this->storage->fetchAll($any, $resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
@@ -1091,7 +1091,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
@@ -1102,21 +1102,21 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @depends testGetEqualTo
+     * @depends testFetchEqualTo
      */
-    public function testGetByTextIsNull()
+    public function testFetchByTextIsNull()
     {
-        $type = new MyGetType();
+        $type = new MyFetchType();
         $type->myText = null;
         $any = new \Good\Manners\Condition\EqualTo($type);
 
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $results = $this->storage->fetchAll($any, $resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
@@ -1127,7 +1127,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
@@ -1138,21 +1138,21 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @depends testGetEqualTo
+     * @depends testFetchEqualTo
      */
-    public function testGetByDatetimeIsNull()
+    public function testFetchByDatetimeIsNull()
     {
-        $type = new MyGetType();
+        $type = new MyFetchType();
         $type->myDatetime = null;
         $any = new \Good\Manners\Condition\EqualTo($type);
 
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $results = $this->storage->fetchAll($any, $resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
         $ins->myText = "Twenty";
@@ -1163,7 +1163,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
@@ -1174,23 +1174,23 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @depends testGetNotEqualTo
+     * @depends testFetchNotEqualTo
      */
-    public function testGetByIntIsNotNull()
+    public function testFetchByIntIsNotNull()
     {
         // At the moment we don't have a proper api to get any,
         // but this trick does do the same
-        $type = new MyGetType();
+        $type = new MyFetchType();
         $type->myInt = null;
         $any = new \Good\Manners\Condition\NotEqualTo($type);
 
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $results = $this->storage->fetchAll($any, $resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
@@ -1201,7 +1201,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
@@ -1212,7 +1212,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
@@ -1223,7 +1223,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
@@ -1232,7 +1232,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
@@ -1243,21 +1243,21 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @depends testGetNotEqualTo
+     * @depends testFetchNotEqualTo
      */
-    public function testGetByFloatIsNotNull()
+    public function testFetchByFloatIsNotNull()
     {
-        $type = new MyGetType();
+        $type = new MyFetchType();
         $type->myFloat = null;
         $any = new \Good\Manners\Condition\NotEqualTo($type);
 
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $results = $this->storage->fetchAll($any, $resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
@@ -1268,7 +1268,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
@@ -1279,7 +1279,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
@@ -1288,7 +1288,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
         $ins->myText = "Twenty";
@@ -1299,7 +1299,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
@@ -1310,21 +1310,21 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @depends testGetNotEqualTo
+     * @depends testFetchNotEqualTo
      */
-    public function testGetByTextIsNotNull()
+    public function testFetchByTextIsNotNull()
     {
-        $type = new MyGetType();
+        $type = new MyFetchType();
         $type->myText = null;
         $any = new \Good\Manners\Condition\NotEqualTo($type);
 
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $results = $this->storage->fetchAll($any, $resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
@@ -1335,7 +1335,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
@@ -1345,7 +1345,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myOtherType = $ref;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
@@ -1354,7 +1354,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
         $ins->myText = "Twenty";
@@ -1365,7 +1365,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
@@ -1376,21 +1376,21 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @depends testGetNotEqualTo
+     * @depends testFetchNotEqualTo
      */
-    public function testGetByDatetimeIsNotNull()
+    public function testFetchByDatetimeIsNotNull()
     {
-        $type = new MyGetType();
+        $type = new MyFetchType();
         $type->myDatetime = null;
         $any = new \Good\Manners\Condition\NotEqualTo($type);
 
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $collection = $this->storage->getCollection($any, $resolver);
+        $results = $this->storage->fetchAll($any, $resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
@@ -1401,7 +1401,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
@@ -1412,7 +1412,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
@@ -1423,7 +1423,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
@@ -1432,7 +1432,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
@@ -1443,18 +1443,18 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @depends testGetAll
+     * @depends testFetchAll
      */
-    public function testGetSortedAscending()
+    public function testFetchSortedAscending()
     {
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
         $resolver->orderByMyIntAsc();
-        $collection = $this->storage->getCollection($resolver);
+        $results = $this->storage->fetchAll($resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
         $ins->myText = "Twenty";
@@ -1465,12 +1465,12 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $type = $collection->getNext();
+        $type = $results->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
@@ -1481,12 +1481,12 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $type = $collection->getNext();
+        $type = $results->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
@@ -1497,12 +1497,12 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $type = $collection->getNext();
+        $type = $results->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
@@ -1513,12 +1513,12 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $type = $collection->getNext();
+        $type = $results->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
@@ -1527,25 +1527,25 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $type = $collection->getNext();
+        $type = $results->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
-        $this->assertSame(null, $collection->getNext());
+        $this->assertSame(null, $results->getNext());
     }
 
     /**
-     * @depends testGetAll
+     * @depends testFetchAll
      */
-    public function testGetSortedDescending()
+    public function testFetchSortedDescending()
     {
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
         $resolver->orderByMyIntDesc();
-        $collection = $this->storage->getCollection($resolver);
+        $results = $this->storage->fetchAll($resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
@@ -1554,12 +1554,12 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $type = $collection->getNext();
+        $type = $results->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
@@ -1570,12 +1570,12 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $type = $collection->getNext();
+        $type = $results->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
@@ -1586,12 +1586,12 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $type = $collection->getNext();
+        $type = $results->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
@@ -1602,12 +1602,12 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $type = $collection->getNext();
+        $type = $results->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
         $ins->myText = "Twenty";
@@ -1618,28 +1618,28 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $type = $collection->getNext();
+        $type = $results->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
-        $this->assertSame(null, $collection->getNext());
+        $this->assertSame(null, $results->getNext());
     }
 
     /**
-     * @depends testGetAll
-     * @depends testGetSortedAscending
-     * @depends testGetSortedDescending
+     * @depends testFetchAll
+     * @depends testFetchSortedAscending
+     * @depends testFetchSortedDescending
      */
-    public function testGetDoubleSorted()
+    public function testFetchDoubleSorted()
     {
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
         $resolver->orderByMyFloatAsc();
         $resolver->orderByMyIntDesc();
-        $collection = $this->storage->getCollection($resolver);
+        $results = $this->storage->fetchAll($resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
@@ -1650,12 +1650,12 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $type = $collection->getNext();
+        $type = $results->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
@@ -1666,12 +1666,12 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $type = $collection->getNext();
+        $type = $results->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
@@ -1680,12 +1680,12 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $type = $collection->getNext();
+        $type = $results->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
@@ -1695,12 +1695,12 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myOtherType = $ref;
         $expectedResults[] = $ins;
 
-        $type = $collection->getNext();
+        $type = $results->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
         $ins->myText = "Twenty";
@@ -1711,25 +1711,25 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $type = $collection->getNext();
+        $type = $results->getNext();
         $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
 
         $expectedResults = array();
 
-        $this->assertSame(null, $collection->getNext());
+        $this->assertSame(null, $results->getNext());
     }
 
     /**
-     * @depends testGetAll
+     * @depends testFetchAll
      */
-    public function testGetAllUnresolvedReference()
+    public function testFetchAllUnresolvedReference()
     {
-        $resolver = new MyGetTypeResolver();
-        $collection = $this->storage->getCollection($resolver);
+        $resolver = new MyFetchTypeResolver();
+        $results = $this->storage->fetchAll($resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
@@ -1738,7 +1738,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
@@ -1747,7 +1747,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
@@ -1756,7 +1756,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
@@ -1765,7 +1765,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
         $ins->myText = "Twenty";
@@ -1774,7 +1774,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             // do an isResolved check here
             // and then set to null (because you can't access unresolved properties)
@@ -1789,15 +1789,15 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @depends testGetAll
+     * @depends testFetchAll
      */
-    public function testGetCircularReference()
+    public function testFetchCircularReference()
     {
         // First, we need to create a circular reference:
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->orderByMyIntAsc();
-        $collection = $this->storage->getCollection($resolver);
-        foreach ($collection as $type)
+        $results = $this->storage->fetchAll($resolver);
+        foreach ($results as $type)
         {
             if ($type->myInt == 4)
             {
@@ -1811,14 +1811,14 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         }
         $this->storage->flush();
 
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyCircular();
 
-        $collection = $this->storage->getCollection($resolver);
+        $results = $this->storage->fetchAll($resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
@@ -1827,7 +1827,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $expectedResults[] = $ins;
         $int4 = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
@@ -1836,7 +1836,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
@@ -1845,7 +1845,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
@@ -1855,7 +1855,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $expectedResults[] = $ins;
         $int4->myCircular = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
         $ins->myText = "Twenty";
@@ -1864,7 +1864,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             // do an isResolved check here
             // and then set to null (because you can't access unresolved properties)
@@ -1879,18 +1879,18 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @depends testGetAll
+     * @depends testFetchAll
      */
-    public function testNestedForeachOnStorableCollection()
+    public function testNestedForeachOnStorableresults()
     {
-        $resolver = new MyGetTypeResolver();
+        $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
         $resolver->orderByMyIntDesc();
-        $collection = $this->storage->getCollection($resolver);
+        $results = $this->storage->fetchAll($resolver);
 
         $expectedResults = array();
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 10;
         $ins->myFloat = 10.10;
         $ins->myText = "Ten";
@@ -1899,7 +1899,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 8;
         $ins->myFloat = 10.10;
         $ins->myText = null;
@@ -1910,7 +1910,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 5;
         $ins->myFloat = null;
         $ins->myText = "Five";
@@ -1921,7 +1921,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
@@ -1932,7 +1932,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
-        $ins = new MyGetType();
+        $ins = new MyFetchType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
         $ins->myText = "Twenty";
@@ -1945,7 +1945,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
 
         $exp1 = $expectedResults;
 
-        foreach ($collection as $type)
+        foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $exp1);
 
@@ -1953,7 +1953,7 @@ abstract class GoodMannersGetTest extends \PHPUnit\Framework\TestCase
 
             $exp2 = $expectedResults;
 
-            foreach ($collection as $type)
+            foreach ($results as $type)
             {
                 $pos = $this->assertContainsAndReturnIndex_specific($type, $exp2);
 

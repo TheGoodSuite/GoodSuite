@@ -2,7 +2,7 @@
 
 namespace Good\Memory;
 
-class StorableCollection implements \Good\Manners\StorableCollection
+class FetchedStorables implements \Good\Manners\FetchedStorables
 {
     protected $storage;
     protected $dbresult;
@@ -103,7 +103,7 @@ class StorableCollection implements \Good\Manners\StorableCollection
             $this->moveNext();
         }
 
-        return new StorableCollectionIterator($this, $this->firstStorable);
+        return new FetchedStorablesIterator($this, $this->firstStorable);
     }
 }
 

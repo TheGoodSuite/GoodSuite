@@ -177,7 +177,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $conditionObject->someInt = 4;
         $condition = new EqualTo($conditionObject);
 
-        $results = $this->storage->getCollection($condition, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         foreach ($results as $result)
         {
@@ -203,7 +203,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $conditionObject->someInt = 4;
         $condition = new EqualTo($conditionObject);
 
-        $results = $this->storage->getCollection($condition, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         foreach ($results as $result)
         {
@@ -229,7 +229,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $conditionObject->someInt = 4;
         $condition = new EqualTo($conditionObject);
 
-        $results = $this->storage->getCollection($condition, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         foreach ($results as $result)
         {
@@ -255,7 +255,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $conditionObject->someInt = 4;
         $condition = new EqualTo($conditionObject);
 
-        $results = $this->storage->getCollection($condition, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         foreach ($results as $result)
         {
@@ -283,7 +283,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $conditionObject->someInt = 4;
         $condition = new EqualTo($conditionObject);
 
-        $results = $this->storage->getCollection($condition, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         foreach ($results as $result)
         {
@@ -320,7 +320,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $conditionObject->someInt = 4;
         $condition = new EqualTo($conditionObject);
 
-        $results = $this->storage->getCollection($condition, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         foreach ($results as $result)
         {
@@ -346,7 +346,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $conditionObject->someInt = 2;
         $condition = new GreaterThan($conditionObject);
 
-        $results = $this->storage->getCollection($condition, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $count = 0;
 
@@ -375,7 +375,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $conditionObject->someInt = 2;
         $condition = new GreaterThan($conditionObject);
 
-        $results = $this->storage->getCollection($condition, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $ints = [
             [4, 2],
@@ -409,7 +409,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $conditionObject->someInt = 4;
         $condition = new EqualTo($conditionObject);
 
-        $results = $this->storage->getCollection($condition, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         foreach ($results as $result)
         {
@@ -419,7 +419,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->storage->flush();
 
         $resolver->orderByMyIntsAsc();
-        $results = $this->getNewStorage()->getCollection($condition, $resolver);
+        $results = $this->getNewStorage()->fetchAll($condition, $resolver);
 
         $result = $results->getNext();
 
@@ -437,7 +437,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $conditionObject->someInt = 4;
         $condition = new EqualTo($conditionObject);
 
-        $results = $this->storage->getCollection($condition);
+        $results = $this->storage->fetchAll($condition);
 
         foreach ($results as $result)
         {
@@ -448,7 +448,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         $resolver = CollectionType::resolver()->resolveMyInts();
         $resolver->orderByMyIntsAsc();
-        $results = $this->getNewStorage()->getCollection($condition, $resolver);
+        $results = $this->getNewStorage()->fetchAll($condition, $resolver);
 
         $result = $results->getNext();
 
@@ -468,7 +468,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $conditionObject->someInt = 4;
         $condition = new EqualTo($conditionObject);
 
-        $results = $this->storage->getCollection($condition, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         foreach ($results as $result)
         {
@@ -478,7 +478,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->storage->flush();
 
         $resolver->orderByMyIntsAsc();
-        $results = $this->getNewStorage()->getCollection($condition, $resolver);
+        $results = $this->getNewStorage()->fetchAll($condition, $resolver);
 
         $result = $results->getNext();
 
@@ -494,7 +494,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $conditionObject->someInt = 4;
         $condition = new EqualTo($conditionObject);
 
-        $results = $this->storage->getCollection($condition);
+        $results = $this->storage->fetchAll($condition);
 
         foreach ($results as $result)
         {
@@ -506,7 +506,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $condition = new EqualTo($conditionObject);
         $resolver = CollectionType::resolver()->resolveMyInts();
         $resolver->orderByMyIntsAsc();
-        $results = $this->getNewStorage()->getCollection($condition, $resolver);
+        $results = $this->getNewStorage()->fetchAll($condition, $resolver);
 
         $result = $results->getNext();
 
@@ -524,7 +524,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $conditionObject->someInt = 4;
         $condition = new EqualTo($conditionObject);
 
-        $results = $this->storage->getCollection($condition, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         foreach ($results as $result)
         {
@@ -535,7 +535,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->storage->flush();
 
         $resolver->orderByMyIntsAsc();
-        $results = $this->getNewStorage()->getCollection($condition, $resolver);
+        $results = $this->getNewStorage()->fetchAll($condition, $resolver);
 
         $result = $results->getNext();
 
@@ -551,7 +551,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $conditionObject->someInt = 4;
         $condition = new EqualTo($conditionObject);
 
-        $results = $this->storage->getCollection($condition);
+        $results = $this->storage->fetchAll($condition);
 
         foreach ($results as $result)
         {
@@ -563,7 +563,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         $resolver = CollectionType::resolver()->resolveMyInts();
         $resolver->orderByMyIntsAsc();
-        $results = $this->getNewStorage()->getCollection($condition, $resolver);
+        $results = $this->getNewStorage()->fetchAll($condition, $resolver);
 
         $result = $results->getNext();
 
@@ -588,7 +588,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $conditionObject->someInt = 4;
         $condition = new EqualTo($conditionObject);
 
-        $results = $this->storage->getCollection($condition, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         foreach ($results as $result)
         {
@@ -600,7 +600,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->storage->flush();
 
         $resolver->getMyReferences()->orderBySomeIntAsc();
-        $results = $this->getNewStorage()->getCollection($condition, $resolver);
+        $results = $this->getNewStorage()->fetchAll($condition, $resolver);
 
         $result = $results->getNext();
 
@@ -626,7 +626,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $conditionObject->someInt = 4;
         $condition = new EqualTo($conditionObject);
 
-        $results = $this->storage->getCollection($condition);
+        $results = $this->storage->fetchAll($condition);
 
         foreach ($results as $result)
         {
@@ -638,7 +638,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->storage->flush();
 
         $resolver = CollectionType::resolver()->resolveMyReferences()->orderBySomeIntAsc();
-        $results = $this->getNewStorage()->getCollection($condition, $resolver);
+        $results = $this->getNewStorage()->fetchAll($condition, $resolver);
 
         $result = $results->getNext();
 
@@ -655,7 +655,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $compared->someInt = $value;
         $condition = new EqualTo($compared);
 
-        $results = $this->storage->getCollection($condition);
+        $results = $this->storage->fetchAll($condition);
 
         return $results->getNext();
     }
