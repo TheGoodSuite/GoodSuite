@@ -4,7 +4,7 @@ namespace Good\Manners;
 
 interface Condition
 {
-    public function process(ConditionProcessor $processor);
+    public function processCondition(ConditionProcessor $processor);
     public function getTargetType();
 }
 

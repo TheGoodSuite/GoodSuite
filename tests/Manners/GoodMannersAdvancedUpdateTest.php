@@ -57,6 +57,10 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         require dirname(__FILE__) . '/../generated/AdvancedUpdateTypeResolver.php';
         require dirname(__FILE__) . '/../generated/YetAnotherTypeResolver.php';
         require dirname(__FILE__) . '/../generated/ThirdTypeResolver.php';
+
+        require dirname(__FILE__) . '/../generated/AdvancedUpdateTypeCondition.php';
+        require dirname(__FILE__) . '/../generated/YetAnotherTypeCondition.php';
+        require dirname(__FILE__) . '/../generated/ThirdTypeCondition.php';
     }
 
     public static function _tearDownAfterClass()
@@ -70,6 +74,9 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         unlink(dirname(__FILE__) . '/../generated/AdvancedUpdateTypeResolver.php');
         unlink(dirname(__FILE__) . '/../generated/YetAnotherTypeResolver.php');
         unlink(dirname(__FILE__) . '/../generated/ThirdTypeResolver.php');
+        unlink(dirname(__FILE__) . '/../generated/AdvancedUpdateTypeCondition.php');
+        unlink(dirname(__FILE__) . '/../generated/YetAnotherTypeCondition.php');
+        unlink(dirname(__FILE__) . '/../generated/ThirdTypeCondition.php');
         unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');
 
         if (ini_get('zend.enable_gc'))
@@ -271,13 +278,11 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
 
     public function testAdvancedUpdate()
     {
-        $type = new AdvancedUpdateType();
-        $type->myInt = -1;
-        $greatInt = new \Good\Manners\Condition\GreaterThan($type);
+        $greatInt = AdvancedUpdateType::condition();
+        $greatInt->myInt = new \Good\Manners\Comparison\GreaterThan(-1);
 
-        $type = new AdvancedUpdateType();
-        $type->myInt = null;
-        $noInt = new \Good\Manners\Condition\EqualTo($type);
+        $noInt = AdvancedUpdateType::condition();
+        $noInt->myInt = null;
 
         $any = new \Good\Manners\Condition\OrCondition($greatInt, $noInt);
 
@@ -349,13 +354,11 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
 
     public function testAdavancedUpdateSetToNull()
     {
-        $type = new AdvancedUpdateType();
-        $type->myInt = 5;
-        $greater = new \Good\Manners\Condition\GreaterThan($type);
+        $greater = AdvancedUpdateType::condition();
+        $greater->myInt = new \Good\Manners\Comparison\GreaterThan(5);
 
-        $type = new AdvancedUpdateType();
-        $type->myFloat = 20.0;
-        $less = new \Good\Manners\Condition\LessThan($type);
+        $less = AdvancedUpdateType::condition();
+        $less->myFloat = new \Good\Manners\Comparison\LessThan(20.0);
 
         $and = new \Good\Manners\Condition\AndCondition($greater, $less);
 
@@ -427,14 +430,13 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
 
     public function testAdvancedUpdateSetReferenceToNull()
     {
-        $type = new AdvancedUpdateType();
-        $type->myInt = 8;
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myInt = 8;
 
         $modifications = new AdvancedUpdateType();
         $modifications->myReference = null;
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
         $expectedResults = array();
 
@@ -494,26 +496,23 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
 
     public function testAdvancedUpdateSetReferenceToExistingObject()
     {
-        // first, we're fetching the object
-        $type = new AdvancedUpdateType();
-        $type->myInt = 10;
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myInt = 10;
 
         $resolver = new AdvancedUpdateTypeResolver();
         $resolver->resolveMyReference();
-        $collection = $this->storage1->fetchAll($any, $resolver);
+        $collection = $this->storage1->fetchAll($condition, $resolver);
 
         $type= $collection->getNext();
         $ref = $type->myReference;
 
-        $type = new AdvancedUpdateType();
-        $type->myInt = 8;
-        $any = new \Good\Manners\Condition\LessThan($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myInt = new \Good\Manners\Comparison\LessThan(8);
 
         $modifications = new AdvancedUpdateType();
         $modifications->myReference = $ref;
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
         $expectedResults = array();
 
@@ -576,11 +575,10 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
 
         // Check the object wasn't duplicated
 
-        $type = new YetAnotherType();
-        $type->yourInt = 20;
-        $cond = new \Good\Manners\Condition\EqualTo($type);
+        $condition = YetAnotherType::condition();
+        $condition->yourInt = 20;
 
-        $collection = $this->storage2->fetchAll($cond, new YetAnotherTypeResolver());
+        $collection = $this->storage2->fetchAll($condition, new YetAnotherTypeResolver());
 
         $collection->getNext();
 
@@ -589,9 +587,8 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
 
     public function testAdvancedUpdateSetReferenceToNewObject()
     {
-        $type = new AdvancedUpdateType();
-        $type->myInt = 8;
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myInt = 8;
 
         $modifications = new AdvancedUpdateType();
         $ref = new YetAnotherType();
@@ -599,7 +596,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $modifications->myReference = $ref;
         $this->storage1->insert($ref);
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
         $expectedResults = array();
 
@@ -661,8 +658,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
 
     public function testAdvancedUpdateSetPropertyOfReference()
     {
-        $type = new AdvancedUpdateType();
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $any = AdvancedUpdateType::condition();
 
         $modifications = new AdvancedUpdateType();
         $ref = new YetAnotherType();
@@ -730,10 +726,9 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
 
         // Check there are still 4 separate YetAnotherType objects
 
-        $type = new YetAnotherType();
-        $cond = new \Good\Manners\Condition\EqualTo($type);
+        $condition = YetAnotherType::condition();
 
-        $collection = $this->storage2->fetchAll($cond, new YetAnotherTypeResolver());
+        $collection = $this->storage2->fetchAll($condition);
 
         $i = 0;
 
@@ -748,64 +743,58 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
     public function testAdvancedUpdateComparisons()
     {
         // EqualTo
-        $type = new AdvancedUpdateType();
-        $type->myInt = 4;
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myInt = 4;
 
         $modifications = new AdvancedUpdateType();
         $modifications->myInt = 1;
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
         // NotEqualTo
-        $type = new AdvancedUpdateType();
-        $type->myInt = 1;
-        $any = new \Good\Manners\Condition\NotEqualTo($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myInt = new \Good\Manners\Comparison\NotEqualTo(1);
 
         $modifications = new AdvancedUpdateType();
         $modifications->myText = "Hello World!";
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
         // LessThan
-        $type = new AdvancedUpdateType();
-        $type->myInt = 5;
-        $any = new \Good\Manners\Condition\LessThan($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myInt = new \Good\Manners\Comparison\LessThan(5);
 
         $modifications = new AdvancedUpdateType();
         $modifications->myText = "Goodbye";
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
         // LessOrEqual
-        $type = new AdvancedUpdateType();
-        $type->myInt = 5;
-        $any = new \Good\Manners\Condition\LessOrEqual($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myInt = new \Good\Manners\Comparison\LessOrEqual(5);
 
         $modifications = new AdvancedUpdateType();
         $modifications->myFloat = 47.47;
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
         // GreaterThan
-        $type = new AdvancedUpdateType();
-        $type->myInt = 8;
-        $any = new \Good\Manners\Condition\GreaterThan($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myInt = new \Good\Manners\Comparison\GreaterThan(8);
 
         $modifications = new AdvancedUpdateType();
         $modifications->myFloat = 11.11;
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
         // GreaterOrEqual
-        $type = new AdvancedUpdateType();
-        $type->myInt = 8;
-        $any = new \Good\Manners\Condition\GreaterOrEqual($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myInt = new \Good\Manners\Comparison\GreaterOrEqual(8);
 
         $modifications = new AdvancedUpdateType();
         $modifications->myDatetime = new DateTimeImmutable('1989-04-11');
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
         $expectedResults = array();
 
@@ -864,37 +853,115 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $this->checkResults($expectedResults);
     }
 
-    public function testAdvancedUpdateAndOr()
+    public function testAdvancedUpdateAndOrConditions()
     {
-        $type = new AdvancedUpdateType();
-        $type->myInt = 10;
-        $less = new \Good\Manners\Condition\LessThan($type);
+        $less = AdvancedUpdateType::condition();
+        $less->myInt = new \Good\Manners\Comparison\LessThan(10);
 
-        $type = new AdvancedUpdateType();
-        $type->myInt = 4;
-        $greater = new \Good\Manners\Condition\GreaterThan($type);
+        $greater = AdvancedUpdateType::condition();
+        $greater->myInt = new \Good\Manners\Comparison\GreaterThan(4);
 
-        $any = new \Good\Manners\Condition\AndCondition($less, $greater);
+        $condition = new \Good\Manners\Condition\AndCondition($less, $greater);
 
         $modifications = new AdvancedUpdateType();
         $modifications->myFloat = 66.67;
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
-        $type = new AdvancedUpdateType();
-        $type->myInt = 5;
-        $less = new \Good\Manners\Condition\LessThan($type);
+        $less = AdvancedUpdateType::condition();
+        $less->myInt = new \Good\Manners\Comparison\LessThan(5);
 
-        $type = new AdvancedUpdateType();
-        $type->myInt = 8;
-        $greater = new \Good\Manners\Condition\GreaterThan($type);
+        $greater = AdvancedUpdateType::condition();
+        $greater->myInt = new \Good\Manners\Comparison\GreaterThan(8);
 
-        $any = new \Good\Manners\Condition\OrCondition($less, $greater);
+        $condition = new \Good\Manners\Condition\OrCondition($less, $greater);
 
         $modifications = new AdvancedUpdateType();
         $modifications->myText = "My oh My";
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
+
+        $expectedResults = array();
+
+        $ins = new AdvancedUpdateType();
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "My oh My";
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
+        $ins->myReference = null;
+        $ins->ref = null;
+        $expectedResults[] = $ins;
+
+        $ins = new AdvancedUpdateType();
+        $ins->myInt = 5;
+        $ins->myFloat = 66.67;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
+        $ref = new YetAnotherType();
+        $ref->yourInt = 40;
+        $ins->myReference = $ref;
+        $ins->ref = null;
+        $expectedResults[] = $ins;
+
+        $ins = new AdvancedUpdateType();
+        $ins->myInt = 8;
+        $ins->myFloat = 66.67;
+        $ins->myText = null;
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
+        $ref = new YetAnotherType();
+        $ref->yourInt = 30;
+        $ins->myReference = $ref;
+        $ins->ref = null;
+        $expectedResults[] = $ins;
+
+        $ins = new AdvancedUpdateType();
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "My oh My";
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
+        $ref = new YetAnotherType();
+        $ref->yourInt = 20;
+        $ins->myReference = $ref;
+        $ins->ref = null;
+        $expectedResults[] = $ins;
+
+        $ins = new AdvancedUpdateType();
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
+        $ref = new YetAnotherType();
+        $ref->yourInt = 10;
+        $ins->myReference = $ref;
+        $ins->ref = null;
+        $expectedResults[] = $ins;
+
+        $this->checkResults($expectedResults);
+    }
+
+    public function testAdvancedUpdateAndOrComparisons()
+    {
+        $less = new \Good\Manners\Comparison\LessThan(10);
+        $greater = new \Good\Manners\Comparison\GreaterThan(4);
+
+        $condition = AdvancedUpdateType::condition();
+        $condition->myInt = new \Good\Manners\Comparison\AndComparison($less, $greater);
+
+        $modifications = new AdvancedUpdateType();
+        $modifications->myFloat = 66.67;
+
+        $this->storage1->modifyAny($condition, $modifications);
+
+        $less = new \Good\Manners\Comparison\LessThan(5);
+        $greater = new \Good\Manners\Comparison\GreaterThan(8);
+
+        $condition = AdvancedUpdateType::condition();
+        $condition->myInt = new \Good\Manners\Comparison\OrComparison($less, $greater);
+
+        $modifications = new AdvancedUpdateType();
+        $modifications->myText = "My oh My";
+
+        $this->storage1->modifyAny($condition, $modifications);
 
         $expectedResults = array();
 
@@ -956,17 +1023,14 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
 
     public function testAdvancedUpdateMultipleInOneCondition()
     {
-        $type = new AdvancedUpdateType();
-        $type->myInt = 5;
-        $type->myReference = new YetAnotherType();
-        $type->myReference->yourInt = 10;
-
-        $any = new \Good\Manners\Condition\GreaterThan($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myInt = new \Good\Manners\Comparison\GreaterThan(5);
+        $condition->myReference->yourInt = new \Good\Manners\Comparison\GreaterThan(10);
 
         $modifications = new AdvancedUpdateType();
         $modifications->myText = "Something else";
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
         $expectedResults = array();
 
@@ -1028,15 +1092,13 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
 
     public function testAdvancedUpdateByDate()
     {
-        $type = new AdvancedUpdateType();
-        $type->myDatetime = new DateTimeImmutable('2005-05-05');
-
-        $any = new \Good\Manners\Condition\GreaterThan($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myDatetime = new \Good\Manners\Comparison\GreaterThan(new DateTimeImmutable('2005-05-05'));
 
         $modifications = new AdvancedUpdateType();
         $modifications->myInt = -1;
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
         $expectedResults = array();
 
@@ -1098,15 +1160,13 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
 
     public function testAdvancedUpdateByText()
     {
-        $type = new AdvancedUpdateType();
-        $type->myText = "Four";
-
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myText = new \Good\Manners\Comparison\EqualTo("Four");
 
         $modifications = new AdvancedUpdateType();
         $modifications->myInt = 455;
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
         $expectedResults = array();
 
@@ -1168,55 +1228,45 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
 
     public function testAdvancedUpdateEqualsNull()
     {
-        $type = new AdvancedUpdateType();
-        $type->myInt = null;
-
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myInt = null;
 
         $modifications = new AdvancedUpdateType();
         $modifications->myFloat = 666.666;
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
-        $type = new AdvancedUpdateType();
-        $type->myFloat = null;
-
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myFloat = null;
 
         $modifications = new AdvancedUpdateType();
         $modifications->myInt = 666;
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
-        $type = new AdvancedUpdateType();
-        $type->myText = null;
-
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myText = null;
 
         $modifications = new AdvancedUpdateType();
         $modifications->myDatetime = new DateTimeImmutable('2066-06-06');
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
-        $type = new AdvancedUpdateType();
-        $type->myDatetime = null;
-
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myDatetime = null;
 
         $modifications = new AdvancedUpdateType();
         $modifications->myText = "Six Six Six";
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
-        $type = new AdvancedUpdateType();
-        $type->myReference = null;
-
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myReference = null;
 
         $modifications = new AdvancedUpdateType();
         $modifications->myInt = 777;
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
         $expectedResults = array();
 
@@ -1278,25 +1328,21 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
 
     public function testAdvancedUpdateDoesNotEqualNullIntAndText()
     {
-        $type = new AdvancedUpdateType();
-        $type->myInt = null;
-
-        $any = new \Good\Manners\Condition\NotEqualTo($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myInt = new \Good\Manners\Comparison\NotEqualTo(null);
 
         $modifications = new AdvancedUpdateType();
         $modifications->myFloat = 666.666;
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
-        $type = new AdvancedUpdateType();
-        $type->myText = null;
-
-        $any = new \Good\Manners\Condition\NotEqualTo($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myText = new \Good\Manners\Comparison\NotEqualTo(null);
 
         $modifications = new AdvancedUpdateType();
         $modifications->myDatetime = new DateTimeImmutable('2066-06-06');
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
         $expectedResults = array();
 
@@ -1358,25 +1404,21 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
 
     public function testAdvancedUpdateDoesNotEqualNullFloatAndDate()
     {
-        $type = new AdvancedUpdateType();
-        $type->myFloat = null;
-
-        $any = new \Good\Manners\Condition\NotEqualTo($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myFloat = new \Good\Manners\Comparison\NotEqualTo(null);
 
         $modifications = new AdvancedUpdateType();
         $modifications->myInt = 666;
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
-        $type = new AdvancedUpdateType();
-        $type->myDatetime = null;
-
-        $any = new \Good\Manners\Condition\NotEqualTo($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myDatetime = new \Good\Manners\Comparison\NotEqualTo(null);
 
         $modifications = new AdvancedUpdateType();
         $modifications->myText = "Six Six Six";
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
         $expectedResults = array();
 
@@ -1438,15 +1480,13 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
 
     public function testAdvancedUpdateDoesNotEqualNullReference()
     {
-        $type = new AdvancedUpdateType();
-        $type->myReference = null;
-
-        $any = new \Good\Manners\Condition\NotEqualTo($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myReference = new \Good\Manners\Comparison\NotEqualTo(null);
 
         $modifications = new AdvancedUpdateType();
         $modifications->myInt = 777;
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
         $expectedResults = array();
 
@@ -1510,46 +1550,40 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
     {
         // Let's firt mess up the data a little, so we can test
         // it changes exactly as much as it should
-        $type = new YetAnotherType();
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $any = YetAnotherType::condition();
         $modifications = new YetAnotherType();
         $modifications->yourInt = 42;
         $this->storage1->modifyAny($any, $modifications);
         // one more change:
-        $type = new AdvancedUpdateType();
-        $type->myInt = 8;
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myInt = 8;
         $resolver = new AdvancedUpdateTypeResolver();
         $resolver->resolveMyReference();
-        $collection = $this->storage1->fetchAll($any, $resolver);
+        $collection = $this->storage1->fetchAll($condition, $resolver);
         $ref = $collection->getNext()->myReference;
-        $type = new AdvancedUpdateType();
-        $type->myInt = 10;
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myInt = 10;
         $modifications = new AdvancedUpdateType();
         $modifications->myReference = $ref;
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
         // Now we get our reference
         // (it's already in $ref, but it would be mixing of concerns if we relied on that)
-        $type = new AdvancedUpdateType();
-        $type->myInt = 10;
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myInt = 10;
         $resolver = new AdvancedUpdateTypeResolver();
         $resolver->resolveMyReference();
-        $collection = $this->storage1->fetchAll($any, $resolver);
+        $collection = $this->storage1->fetchAll($condition, $resolver);
         $ref = $collection->getNext()->myReference;
 
         // And now we can finally do the real test
-        $type = new AdvancedUpdateType();
-        $type->myReference = $ref;
-
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myReference = $ref;
 
         $modifications = new AdvancedUpdateType();
         $modifications->myInt = 1;
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
         $expectedResults = array();
 
@@ -1611,25 +1645,16 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
 
     public function testAdvancedUpdateObjectAndReference()
     {
-        $type = new AdvancedUpdateType();
-        $type->myInt = 5;
-
-        $cond1 = new \Good\Manners\Condition\GreaterThan($type);
-
-        $type = new AdvancedUpdateType();
-        $type->myReference = new YetAnotherType();
-        $type->myReference->yourInt = 10;
-
-        $cond2 = new \Good\Manners\Condition\GreaterThan($type);
-
-        $any = new \Good\Manners\Condition\AndCondition($cond1, $cond2);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myInt = new \Good\Manners\Comparison\GreaterThan(5);
+        $condition->myReference->yourInt = new \Good\Manners\Comparison\GreaterThan(10);
 
         $modifications = new AdvancedUpdateType();
         $modifications->myInt = 100;
         $modifications->myReference = new YetAnotherType();
         $modifications->myReference->yourInt = 100;
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
         $expectedResults = array();
 
@@ -1735,17 +1760,13 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
             }
         }
 
-        $type = new AdvancedUpdateType();
-        $type->ref = new ThirdType();
-        $type->ref->ref = new YetAnotherType();
-        $type->ref->ref->yourInt = 300;
-
-        $any = new \Good\Manners\Condition\GreaterThan($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->ref->ref->yourInt = new \Good\Manners\Comparison\GreaterThan(300);
 
         $modifications = new AdvancedUpdateType();
         $modifications->myInt = 99999;
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
         $expectedResults = array();
 
@@ -1859,17 +1880,15 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
             }
         }
 
-        $type = new AdvancedUpdateType();
-        $type->myInt = 5;
-
-        $any = new \Good\Manners\Condition\GreaterThan($type);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myInt = new \Good\Manners\Comparison\GreaterThan(5);
 
         $modifications = new AdvancedUpdateType();
         $modifications->ref = new ThirdType();
         $modifications->ref->ref = new YetAnotherType();
         $modifications->ref->ref->yourInt = 666;
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
         $expectedResults = array();
 
@@ -1939,28 +1958,19 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
 
     public function testCircularUpdateAndConditionBug()
     {
+        // issue #38
         $this->markTestSkipped();
 
-        // issue #38
-        $type = new AdvancedUpdateType();
-        $type->myInt = 5;
-
-        $cond1 = new \Good\Manners\Condition\GreaterThan($type);
-
-        $type = new AdvancedUpdateType();
-        $type->myReference = new YetAnotherType();
-        $type->myReference->yourInt = 10;
-
-        $cond2 = new \Good\Manners\Condition\GreaterThan($type);
-
-        $any = new \Good\Manners\Condition\AndCondition($cond1, $cond2);
+        $condition = AdvancedUpdateType::condition();
+        $condition->myInt = new \Good\Manners\Comparison\GreaterThan(5);
+        $condition->myReference->yourInt = new \Good\Manners\Comparison\GreaterThan(10);
 
         $modifications = new AdvancedUpdateType();
         $modifications->myInt = 1;
         $modifications->myReference = new YetAnotherType();
         $modifications->myReference->yourInt = 1;
 
-        $this->storage1->modifyAny($any, $modifications);
+        $this->storage1->modifyAny($condition, $modifications);
 
         $ins = new AdvancedUpdateType();
         $ins->myInt = 4;

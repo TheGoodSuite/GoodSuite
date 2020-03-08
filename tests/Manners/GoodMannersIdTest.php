@@ -33,6 +33,7 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
         require dirname(__FILE__) . '/../generated/IdType.datatype.php';
 
         require dirname(__FILE__) . '/../generated/IdTypeResolver.php';
+        require dirname(__FILE__) . '/../generated/IdTypeCondition.php';
     }
 
     public static function _tearDownAfterClass()
@@ -40,6 +41,7 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
         unlink(dirname(__FILE__) . '/../testInputFiles/IdType.datatype');
         unlink(dirname(__FILE__) . '/../generated/IdType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/IdTypeResolver.php');
+        unlink(dirname(__FILE__) . '/../generated/IdTypeCondition.php');
         unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');
 
         if (ini_get('zend.enable_gc'))
@@ -143,11 +145,10 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
         // first we get a result from the database to find out what irs id is
 
         // Get the object with text == 'b'
-        $type = new IdType();
-        $type->myText = 'b';
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $condition = IdType::condition();
+        $condition->myText = 'b';
 
-        $results = $this->storage->fetchAll($any, IdType::resolver());
+        $results = $this->storage->fetchAll($condition, IdType::resolver());
 
         $idHolder = $results->getNext();
 
@@ -171,11 +172,10 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
         // first we get a result from the database to find out what irs id is
 
         // Get the object with text == 'b'
-        $type = new IdType();
-        $type->myText = 'b';
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $condition = IdType::condition();
+        $condition->myText = 'b';
 
-        $results = $this->storage->fetchAll($any, IdType::resolver());
+        $results = $this->storage->fetchAll($condition, IdType::resolver());
 
         $idHolder = $results->getNext();
 
@@ -216,23 +216,20 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
         // first we get a result from the database to find out what irs id is
 
         // Get the object with text == 'a'
-        $type = new IdType();
-        $type->myText = 'a';
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $condition = IdType::condition();
+        $condition->myText = 'a';
 
-        $results = $this->storage->fetchAll($any, IdType::resolver());
+        $results = $this->storage->fetchAll($condition, IdType::resolver());
 
         $idHolder = $results->getNext();
 
         $id = IdType::id($this->storage, $idHolder->getId());
-        $referencing = new IdType();
-        $referencing->reference = $id;
-
-        $any = new \Good\Manners\Condition\EqualTo($referencing);
+        $condition = IdType::condition();
+        $condition->reference = $id;
 
         $resolver = IdType::resolver();
         $resolver->resolveReference();
-        $results = $this->storage->fetchAll($any, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $expectedResults = array();
 
@@ -260,19 +257,17 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
 
     public function testIdInModification()
     {
-        $type = new IdType();
-        $type->myText = 'a';
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $condition = IdType::condition();
+        $condition->myText = 'a';
 
-        $results = $this->storage->fetchAll($any, IdType::resolver());
+        $results = $this->storage->fetchAll($condition, IdType::resolver());
 
         $a = $results->getNext();
 
-        $type = new IdType();
-        $type->myText = 'b';
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $condition = IdType::condition();
+        $condition->myText = 'b';
 
-        $results = $this->storage->fetchAll($any, IdType::resolver());
+        $results = $this->storage->fetchAll($condition, IdType::resolver());
 
         $b = $results->getNext();
 
@@ -318,24 +313,21 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
 
     public function testIdInModifyAny()
     {
-        $type = new IdType();
-        $type->myText = 'b';
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $condition = IdType::condition();
+        $condition->myText = 'b';
 
-        $results = $this->storage->fetchAll($any, IdType::resolver());
+        $results = $this->storage->fetchAll($condition, IdType::resolver());
 
         $idHolder = $results->getNext();
 
         $id = IdType::id($this->storage, $idHolder->getId());
 
-        $a = new IdType();
+        $a = IdType::condition();
         $a->myText = 'a';
-        $b = new IdType();
+        $b = IdType::condition();
         $b->myText = 'b';
 
-        $aOrB = new \Good\Manners\Condition\OrCondition(
-            new \Good\Manners\Condition\EqualTo($a),
-            new \Good\Manners\Condition\EqualTo($b));
+        $aOrB = new \Good\Manners\Condition\OrCondition($a, $b);
 
         $referenceIsId = new IdType();
         $referenceIsId->reference = $id;

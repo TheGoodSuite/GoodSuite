@@ -3,16 +3,20 @@
 namespace Good\Memory\SQL;
 
 use Good\Memory\SQLStorage;
+use Good\Memory\SQL\ConditionWriter\DateTimeFragmentWriter;
+use Good\Memory\SQL\ConditionWriter\FloatFragmentWriter;
+use Good\Memory\SQL\ConditionWriter\IntFragmentWriter;
+use Good\Memory\SQL\ConditionWriter\ReferenceFragmentWriter;
+use Good\Memory\SQL\ConditionWriter\TextFragmentWriter;
 use Good\Manners\Storable;
-use Good\Manners\StorableVisitor;
 use Good\Manners\Condition;
 use Good\Manners\ConditionProcessor;
+use Good\Manners\Comparison;
+use Good\Manners\Comparison\EqualityComparison;
 
-class ConditionWriter implements StorableVisitor,
-                                 ConditionProcessor
+class ConditionWriter implements ConditionProcessor
 {
     private $storage;
-    private $comparison;
     private $condition;
     private $first;
 
@@ -31,54 +35,15 @@ class ConditionWriter implements StorableVisitor,
 
     public function writeCondition(Condition $condition)
     {
-        $condition->process($this);
-    }
-
-    public function writeComparisonCondition(Storable $to, $comparison)
-    {
-        $this->comparison = $comparison;
         $this->first = true;
         $this->condition = '';
 
-        $to->acceptStorableVisitor($this);
+        $condition->processCondition($this);
 
         if ($this->first)
         {
-            if ($to->hasValidId())
-            {
-                $this->condition .= '`t' . $this->currentTable . '`.`id`' .
-                                        ' ' . $this->comparison . ' ' . \intval($to->getId());
-            }
-            else
-            {
-                $this->condition = '1 = 1';
-            }
+            $this->condition = '1 = 1';
         }
-    }
-
-    public function processEqualToCondition(Storable $to)
-    {
-        $this->writeComparisonCondition($to, '=');
-    }
-    public function processNotEqualToCondition(Storable $to)
-    {
-        $this->writeComparisonCondition($to, '<>');
-    }
-    public function processGreaterThanCondition(Storable $to)
-    {
-        $this->writeComparisonCondition($to, '>');
-    }
-    public function processGreaterOrEqualCondition(Storable $to)
-    {
-        $this->writeComparisonCondition($to, '>=');
-    }
-    public function processLessThanCondition(Storable $to)
-    {
-        $this->writeComparisonCondition($to, '<');
-    }
-    public function processLessOrEqualCondition(Storable $to)
-    {
-        $this->writeComparisonCondition($to, '<=');
     }
 
     public function processAndCondition(Condition $condition1, Condition $condition2)
@@ -91,6 +56,7 @@ class ConditionWriter implements StorableVisitor,
 
         $this->condition = '(' . $sqlCondition1 . ' AND ' . $sqlCondition2 . ')';
     }
+
     public function processOrCondition(Condition $condition1, Condition $condition2)
     {
         $this->writeCondition($condition1);
@@ -102,164 +68,81 @@ class ConditionWriter implements StorableVisitor,
         $this->condition = '(' . $sqlCondition1 . ' OR ' . $sqlCondition2 . ')';
     }
 
-    public function visitReferenceProperty($name, $datatypeName, $dirty,
-                                                            Storable $value = null)
+    public function processStorableConditionId(EqualityComparison $comparison)
     {
-        if ($dirty)
-        {
-            $this->writeBracketOrAnd();
+        $this->writeBracketOrAnd();
 
-            if($value === null)
-            {
-                if ($this->comparison == '=')
-                {
-                    $this->condition .= '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($name) .
-                                                '` IS NULL';
-                }
-                else // if ($this->comparison == '<>')
-                {
-                    $this->condition .= '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($name) .
-                                                '` IS NOT NULL';
-                }
+        $field = '`t' . $this->currentTable . '`.`id`';
+        $fragmentWriter = new IntFragmentWriter($this->storage, $field);
 
-                // todo: error out if not EqualTo or NotEqualTo
-            }
-            else if (!$value->isNew())
-            {
-                $this->condition .= '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($name) .
-                                            '` ' . $this->comparison . ' ' . \intval($value->getId());
-
-                // todo: error out if not EqualTo or NotEqualTo
-            }
-            else
-            {
-                $join = $this->storage->getJoin($this->currentTable, $name);
-
-                if ($join == -1)
-                {
-                    $join = $this->storage->createJoin($this->currentTable, $name, $datatypeName, 'id');
-                }
-
-                $subWriter = new ConditionWriter($this->storage, $join);
-                $subWriter->writeComparisonCondition($value, $this->comparison);
-
-                $this->condition .= $subWriter->getCondition();
-            }
-        }
+        $this->condition .= $fragmentWriter->writeFragment($comparison);
     }
 
-    public function visitTextProperty($name, $dirty, $value)
+    public function processStorableConditionReferenceAsCondition($name, $datatypeName, $condition)
     {
-        if($dirty)
+        $this->writeBracketOrAnd();
+
+        $join = $this->storage->getJoin($this->currentTable, $name);
+
+        if ($join == -1)
         {
-            $this->writeBracketOrAnd();
-
-            $this->condition .= '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($name) . '` ';
-            if ($value === null)
-            {
-                if ($this->comparison == '=')
-                {
-                    $this->condition .= ' IS NULL';
-                }
-                else // if ($this->comparison == '<>')
-                {
-                    $this->condition .= ' IS NOT NULL';
-                }
-
-                // todo: error out if not EqualTo or NotEqualTo
-            }
-            else
-            {
-                $this->condition .= $this->comparison . ' ' . $this->storage->parseText($value);
-            }
-
+            $join = $this->storage->createJoin($this->currentTable, $name, $datatypeName, 'id');
         }
-    }
-    public function visitIntProperty($name, $dirty, $value)
-    {
-        if($dirty)
-        {
-            $this->writeBracketOrAnd();
 
-            $this->condition .= '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($name) . '` ';
-            if ($value === null)
-            {
-                if ($this->comparison == '=')
-                {
-                    $this->condition .= ' IS NULL';
-                }
-                else // if ($this->comparison == '<>')
-                {
-                    $this->condition .= ' IS NOT NULL';
-                }
+        $subWriter = new ConditionWriter($this->storage, $join);
+        $subWriter->writeCondition($condition);
 
-                // todo: error out if not EqualTo or NotEqualTo
-            }
-            else
-            {
-                $this->condition .= $this->comparison . ' ' . $this->storage->parseInt($value);
-            }
-        }
-    }
-    public function visitFloatProperty($name, $dirty, $value)
-    {
-        if($dirty)
-        {
-            $this->writeBracketOrAnd();
-
-            $this->condition .= '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($name) . '` ';
-            if ($value === null)
-            {
-                if ($this->comparison == '=')
-                {
-                    $this->condition .= ' IS NULL';
-                }
-                else // if ($this->comparison == '<>')
-                {
-                    $this->condition .= ' IS NOT NULL';
-                }
-
-                // todo: error out if not EqualTo or NotEqualTo
-            }
-            else
-            {
-                $this->condition .= $this->comparison . ' ' . $this->storage->parseFloat($value);
-            }
-        }
-    }
-    public function visitDatetimeProperty($name, $dirty, $value)
-    {
-        if($dirty)
-        {
-            $this->writeBracketOrAnd();
-
-            $this->condition .= '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($name) . '` ';
-            if ($value === null)
-            {
-                if ($this->comparison == '=')
-                {
-                    $this->condition .= ' IS NULL';
-                }
-                else // if ($this->comparison == '<>')
-                {
-                    $this->condition .= ' IS NOT NULL';
-                }
-
-                // todo: error out if not equality or NotEqualTo
-            }
-            else
-            {
-                $this->condition .= $this->comparison . ' ' . $this->storage->parseDatetime($value);
-            }
-        }
+        $this->condition .= $subWriter->getCondition();
     }
 
-    public function visitCollectionProperty($name, $value, $modifier)
+    public function processStorableConditionReferenceAsComparison($name, EqualityComparison $comparison)
     {
-        if ($modifier->isDirty())
-        {
-            throw new \Exception("Comparison conditions cannot be applied to changes to collections");
-        }
+        $this->writeBracketOrAnd();
+
+        $field = '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($name) . '`';
+        $fragmentWriter = new ReferenceFragmentWriter($field);
+
+        $this->condition .= $fragmentWriter->writeFragment($comparison);
+    }
+
+    public function processStorableConditionText($name, Comparison $comparison)
+    {
+        $this->writeBracketOrAnd();
+
+        $field = '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($name) . '`';
+        $fragmentWriter = new TextFragmentWriter($this->storage, $field);
+
+        $this->condition .= $fragmentWriter->writeFragment($comparison);
+    }
+
+    public function processStorableConditionInt($name, Comparison $comparison)
+    {
+        $this->writeBracketOrAnd();
+
+        $field = '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($name) . '`';
+        $fragmentWriter = new IntFragmentWriter($this->storage, $field);
+
+        $this->condition .= $fragmentWriter->writeFragment($comparison);
+    }
+
+    public function processStorableConditionFloat($name, Comparison $comparison)
+    {
+        $this->writeBracketOrAnd();
+
+        $field = '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($name) . '`';
+        $fragmentWriter = new FloatFragmentWriter($this->storage, $field);
+
+        $this->condition .= $fragmentWriter->writeFragment($comparison);
+    }
+
+    public function processStorableConditionDateTime($name, Comparison $comparison)
+    {
+        $this->writeBracketOrAnd();
+
+        $field = '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($name) . '`';
+        $fragmentWriter = new DateTimeFragmentWriter($this->storage, $field);
+
+        $this->condition .= $fragmentWriter->writeFragment($comparison);
     }
 
     private function writeBracketOrAnd()

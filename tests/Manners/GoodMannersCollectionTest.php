@@ -35,6 +35,7 @@ class GoodMannersCollectionTest extends \PHPUnit\Framework\TestCase
 
         require dirname(__FILE__) . '/../generated/CollectionType.datatype.php';
         require dirname(__FILE__) . '/../generated/CollectionTypeResolver.php';
+        require dirname(__FILE__) . '/../generated/CollectionTypeCondition.php';
     }
 
     public static function _tearDownAfterClass()
@@ -44,6 +45,7 @@ class GoodMannersCollectionTest extends \PHPUnit\Framework\TestCase
         unlink(dirname(__FILE__) . '/../testInputFiles/CollectionType.datatype');
         unlink(dirname(__FILE__) . '/../generated/CollectionType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/CollectionTypeResolver.php');
+        unlink(dirname(__FILE__) . '/../generated/CollectionTypeCondition.php');
         unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');
 
         if (ini_get('zend.enable_gc'))

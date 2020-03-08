@@ -1,7 +1,7 @@
 <?php
 
-use Good\Manners\Condition\EqualTo;
-use Good\Manners\Condition\GreaterThan;
+use Good\Manners\Comparison\EqualTo;
+use Good\Manners\Comparison\GreaterThan;
 
 /**
  * @runTestsInSeparateProcesses
@@ -49,6 +49,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         require dirname(__FILE__) . '/../generated/CollectionType.datatype.php';
         require dirname(__FILE__) . '/../generated/CollectionTypeResolver.php';
+        require dirname(__FILE__) . '/../generated/CollectionTypeCondition.php';
     }
 
     public static function _tearDownAfterClass()
@@ -56,6 +57,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         unlink(dirname(__FILE__) . '/../testInputFiles/CollectionType.datatype');
         unlink(dirname(__FILE__) . '/../generated/CollectionType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/CollectionTypeResolver.php');
+        unlink(dirname(__FILE__) . '/../generated/CollectionTypeCondition.php');
         unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');
 
         if (ini_get('zend.enable_gc'))
@@ -173,9 +175,8 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->populateDatabase();
 
         $resolver = CollectionType::resolver()->resolveMyInts();
-        $conditionObject = new CollectionType();
-        $conditionObject->someInt = 4;
-        $condition = new EqualTo($conditionObject);
+        $condition = CollectionType::condition();
+        $condition->someInt = 4;
 
         $results = $this->storage->fetchAll($condition, $resolver);
 
@@ -199,9 +200,8 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->populateDatabase();
 
         $resolver = CollectionType::resolver()->resolveMyFloats();
-        $conditionObject = new CollectionType();
-        $conditionObject->someInt = 4;
-        $condition = new EqualTo($conditionObject);
+        $condition = CollectionType::condition();
+        $condition->someInt = 4;
 
         $results = $this->storage->fetchAll($condition, $resolver);
 
@@ -225,9 +225,8 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->populateDatabase();
 
         $resolver = CollectionType::resolver()->resolveMyDatetimes();
-        $conditionObject = new CollectionType();
-        $conditionObject->someInt = 4;
-        $condition = new EqualTo($conditionObject);
+        $condition = CollectionType::condition();
+        $condition->someInt = 4;
 
         $results = $this->storage->fetchAll($condition, $resolver);
 
@@ -251,9 +250,8 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->populateDatabase();
 
         $resolver = CollectionType::resolver()->resolveMyTexts();
-        $conditionObject = new CollectionType();
-        $conditionObject->someInt = 4;
-        $condition = new EqualTo($conditionObject);
+        $condition = CollectionType::condition();
+        $condition->someInt = 4;
 
         $results = $this->storage->fetchAll($condition, $resolver);
 
@@ -279,9 +277,8 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $resolver = CollectionType::resolver();
         $resolver->resolveMyInts();
         $resolver->resolveMyFloats();
-        $conditionObject = new CollectionType();
-        $conditionObject->someInt = 4;
-        $condition = new EqualTo($conditionObject);
+        $condition = CollectionType::condition();
+        $condition->someInt = 4;
 
         $results = $this->storage->fetchAll($condition, $resolver);
 
@@ -316,9 +313,8 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->populateDatabase();
 
         $resolver = CollectionType::resolver()->resolveMyReferences();
-        $conditionObject = new CollectionType();
-        $conditionObject->someInt = 4;
-        $condition = new EqualTo($conditionObject);
+        $condition = CollectionType::condition();
+        $condition->someInt = 4;
 
         $results = $this->storage->fetchAll($condition, $resolver);
 
@@ -342,9 +338,8 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $resolver = CollectionType::resolver()->resolveMyInts();
         $resolver->orderByMyIntsAsc();
 
-        $conditionObject = new CollectionType();
-        $conditionObject->someInt = 2;
-        $condition = new GreaterThan($conditionObject);
+        $condition = CollectionType::condition();
+        $condition->someInt = new GreaterThan(2);
 
         $results = $this->storage->fetchAll($condition, $resolver);
 
@@ -371,9 +366,8 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $resolver->orderByMyIntsDesc();
         $resolver->orderBySomeIntAsc();
 
-        $conditionObject = new CollectionType();
-        $conditionObject->someInt = 2;
-        $condition = new GreaterThan($conditionObject);
+        $condition = CollectionType::condition();
+        $condition->someInt = new GreaterThan(2);
 
         $results = $this->storage->fetchAll($condition, $resolver);
 
@@ -405,9 +399,8 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->populateDatabase();
 
         $resolver = CollectionType::resolver()->resolveMyInts();
-        $conditionObject = new CollectionType();
-        $conditionObject->someInt = 4;
-        $condition = new EqualTo($conditionObject);
+        $condition = CollectionType::condition();
+        $condition->someInt = 4;
 
         $results = $this->storage->fetchAll($condition, $resolver);
 
@@ -433,9 +426,8 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
     public function testAddItemToUnresolvedCollection()
     {
         $this->populateDatabase();
-        $conditionObject = new CollectionType();
-        $conditionObject->someInt = 4;
-        $condition = new EqualTo($conditionObject);
+        $condition = CollectionType::condition();
+        $condition->someInt = 4;
 
         $results = $this->storage->fetchAll($condition);
 
@@ -464,9 +456,8 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->populateDatabase();
 
         $resolver = CollectionType::resolver()->resolveMyInts();
-        $conditionObject = new CollectionType();
-        $conditionObject->someInt = 4;
-        $condition = new EqualTo($conditionObject);
+        $condition = CollectionType::condition();
+        $condition->someInt = 4;
 
         $results = $this->storage->fetchAll($condition, $resolver);
 
@@ -490,9 +481,8 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
     public function testRemoveItemFromUnresolvedCollection()
     {
         $this->populateDatabase();
-        $conditionObject = new CollectionType();
-        $conditionObject->someInt = 4;
-        $condition = new EqualTo($conditionObject);
+        $condition = CollectionType::condition();
+        $condition->someInt = 4;
 
         $results = $this->storage->fetchAll($condition);
 
@@ -503,7 +493,6 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         $this->storage->flush();
 
-        $condition = new EqualTo($conditionObject);
         $resolver = CollectionType::resolver()->resolveMyInts();
         $resolver->orderByMyIntsAsc();
         $results = $this->getNewStorage()->fetchAll($condition, $resolver);
@@ -520,9 +509,8 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->populateDatabase();
 
         $resolver = CollectionType::resolver()->resolveMyInts();
-        $conditionObject = new CollectionType();
-        $conditionObject->someInt = 4;
-        $condition = new EqualTo($conditionObject);
+        $condition = CollectionType::condition();
+        $condition->someInt = 4;
 
         $results = $this->storage->fetchAll($condition, $resolver);
 
@@ -547,9 +535,8 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
     public function testClearUnresolvedCollection()
     {
         $this->populateDatabase();
-        $conditionObject = new CollectionType();
-        $conditionObject->someInt = 4;
-        $condition = new EqualTo($conditionObject);
+        $condition = CollectionType::condition();
+        $condition->someInt = 4;
 
         $results = $this->storage->fetchAll($condition);
 
@@ -584,9 +571,8 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         $resolver = CollectionType::resolver();
         $resolver->resolveMyReferences();
-        $conditionObject = new CollectionType();
-        $conditionObject->someInt = 4;
-        $condition = new EqualTo($conditionObject);
+        $condition = CollectionType::condition();
+        $condition->someInt = 4;
 
         $results = $this->storage->fetchAll($condition, $resolver);
 
@@ -622,9 +608,8 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $six = new CollectionType();
         $six->someInt = 6;
 
-        $conditionObject = new CollectionType();
-        $conditionObject->someInt = 4;
-        $condition = new EqualTo($conditionObject);
+        $condition = CollectionType::condition();
+        $condition->someInt = 4;
 
         $results = $this->storage->fetchAll($condition);
 
@@ -651,9 +636,8 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
     private function getCollectionObjectBySomeInt($value)
     {
-        $compared = new CollectionType();
-        $compared->someInt = $value;
-        $condition = new EqualTo($compared);
+        $condition = CollectionType::condition();
+        $condition->someInt = $value;
 
         $results = $this->storage->fetchAll($condition);
 

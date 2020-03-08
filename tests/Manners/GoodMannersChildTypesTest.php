@@ -141,6 +141,9 @@ abstract class GoodMannersChildTypesTest extends \PHPUnit\Framework\TestCase
         require dirname(__FILE__) . '/../generated/ParentType1Resolver.php';
         require dirname(__FILE__) . '/../generated/ParentType2Resolver.php';
 
+        require dirname(__FILE__) . '/../generated/ParentType1Condition.php';
+        require dirname(__FILE__) . '/../generated/ParentType2Condition.php';
+
         require dirname(__FILE__) . '/GoodMannersChildTypes.php';
     }
 
@@ -152,6 +155,8 @@ abstract class GoodMannersChildTypesTest extends \PHPUnit\Framework\TestCase
         unlink(dirname(__FILE__) . '/../generated/ParentType2.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/ParentType1Resolver.php');
         unlink(dirname(__FILE__) . '/../generated/ParentType2Resolver.php');
+        unlink(dirname(__FILE__) . '/../generated/ParentType1Condition.php');
+        unlink(dirname(__FILE__) . '/../generated/ParentType2Condition.php');
         unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');
 
         if (ini_get('zend.enable_gc'))

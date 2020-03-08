@@ -44,6 +44,7 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
         require dirname(__FILE__) . '/../generated/InsertType.datatype.php';
 
         require dirname(__FILE__) . '/../generated/InsertTypeResolver.php';
+        require dirname(__FILE__) . '/../generated/InsertTypeCondition.php';
     }
 
     public static function _tearDownAfterClass()
@@ -51,6 +52,7 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
         unlink(dirname(__FILE__) . '/../testInputFiles/InsertType.datatype');
         unlink(dirname(__FILE__) . '/../generated/InsertType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/InsertTypeResolver.php');
+        unlink(dirname(__FILE__) . '/../generated/InsertTypeCondition.php');
         unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');
 
         if (ini_get('zend.enable_gc'))
@@ -327,10 +329,9 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
 
         $this->storage1->flush();
 
-        $five = new InsertType();
+        $five = InsertType::condition();
         $five->myInt = 5;
-        $cond = new \Good\Manners\Condition\EqualTo($five);
-        $results = $this->storage2->fetchAll($cond, new InsertTypeResolver());
+        $results = $this->storage2->fetchAll($five, new InsertTypeResolver());
 
         $n = 0;
 
@@ -342,10 +343,9 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(1, $n);
 
-        $seven = new InsertType();
+        $seven = InsertType::condition();
         $seven->myInt = 7;
-        $cond = new \Good\Manners\Condition\EqualTo($seven);
-        $results = $this->storage2->fetchAll($cond, new InsertTypeResolver());
+        $results = $this->storage2->fetchAll($seven, new InsertTypeResolver());
 
         $n = 0;
 

@@ -62,8 +62,7 @@ class SQLStorage extends Storage
             else if ($conditionOrResolver instanceof Resolver)
             {
                 $resolver = $conditionOrResolver->getRoot();
-                $type = $resolver->getType();
-                $condition = new EqualTo(new $type);
+                $condition = $resolver->getType()::condition();
             }
             else
             {

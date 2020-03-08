@@ -73,8 +73,10 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
 
         require dirname(__FILE__) . '/../generated/Select.datatype.php';
         require dirname(__FILE__) . '/../generated/SelectResolver.php';
+        require dirname(__FILE__) . '/../generated/SelectCondition.php';
         require dirname(__FILE__) . '/../generated/Create.datatype.php';
         require dirname(__FILE__) . '/../generated/CreateResolver.php';
+        require dirname(__FILE__) . '/../generated/CreateCondition.php';
     }
 
     public static function _tearDownAfterClass()
@@ -84,7 +86,9 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
         unlink(dirname(__FILE__) . '/../generated/Select.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/Create.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/SelectResolver.php');
+        unlink(dirname(__FILE__) . '/../generated/SelectCondition.php');
         unlink(dirname(__FILE__) . '/../generated/CreateResolver.php');
+        unlink(dirname(__FILE__) . '/../generated/CreateCondition.php');
         unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');
 
         if (ini_get('zend.enable_gc'))
@@ -197,10 +201,8 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
     {
         $this->populateDatabase();
 
-        $select = new Select();
-        $select->from = 1000;
-
-        $condition = new \Good\Manners\Condition\EqualTo($select);
+        $condition = Select::condition();
+        $condition->from = 1000;
 
         foreach ($this->storage->fetchAll($condition) as $select)
         {
@@ -244,12 +246,11 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
     {
         $this->populateDatabase();
 
-        $select = new Select();
-        $select->from = 1000;
-        $select->where = 1.0;
-        $select->order = "One";
-        $select->by = new DateTimeImmutable("2001-01-01");
-        $condition = new \Good\Manners\Condition\EqualTo($select);
+        $condition = Select::condition();
+        $condition->from = 1000;
+        $condition->where = 1.0;
+        $condition->order = "One";
+        $condition->by = new DateTimeImmutable("2001-01-01");
 
         $change = new Select();
         $change->from = 9999;
@@ -272,13 +273,11 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
     {
         $this->populateDatabase();
 
-        $select = new Select();
-        $select->from = 1000;
-        $select->where = 1.0;
-        $select->order = "One";
-        $select->by = new DateTimeImmutable("2001-01-01");
-
-        $condition = new \Good\Manners\Condition\EqualTo($select);
+        $condition = Select::condition();
+        $condition->from = 1000;
+        $condition->where = 1.0;
+        $condition->order = "One";
+        $condition->by = new DateTimeImmutable("2001-01-01");
 
         $results = $this->storage->fetchAll($condition);
 
@@ -292,13 +291,11 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
     {
         $this->populateDatabase();
 
-        $select = new Select();
-        $select->from = 1000;
-        $select->where = 1.0;
-        $select->order = "One";
-        $select->by = new DateTimeImmutable("2001-01-01");
-
-        $condition = new \Good\Manners\Condition\NotEqualTo($select);
+        $condition = Select::condition();
+        $condition->from = new \Good\Manners\Comparison\NotEqualTo(1000);
+        $condition->where = new \Good\Manners\Comparison\NotEqualTo(1.0);
+        $condition->order = new \Good\Manners\Comparison\NotEqualTo("One");
+        $condition->by = new \Good\Manners\Comparison\NotEqualTo(new DateTimeImmutable("2001-01-01"));
 
         $results = $this->storage->fetchAll($condition);
 
@@ -312,13 +309,11 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
     {
         $this->populateDatabase();
 
-        $select = new Select();
-        $select->from = 2000;
-        $select->where = 2.0;
-        $select->order = "Two"; // One < Two in lexical ordering
-        $select->by = new DateTimeImmutable("2002-02-02");
-
-        $condition = new \Good\Manners\Condition\LessThan($select);
+        $condition = Select::condition();
+        $condition->from = new \Good\Manners\Comparison\LessThan(2000);
+        $condition->where = new \Good\Manners\Comparison\LessThan(2.0);
+        $condition->order = new \Good\Manners\Comparison\LessThan("Two"); // One < Two in lexical ordering
+        $condition->by = new \Good\Manners\Comparison\LessThan(new DateTimeImmutable("2002-02-02"));
 
         $results = $this->storage->fetchAll($condition);
 
@@ -332,13 +327,11 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
     {
         $this->populateDatabase();
 
-        $select = new Select();
-        $select->from = 1000;
-        $select->where = 1.0;
-        $select->order = "One";
-        $select->by = new DateTimeImmutable("2001-01-01");
-
-        $condition = new \Good\Manners\Condition\LessOrEqual($select);
+        $condition = Select::condition();
+        $condition->from = new \Good\Manners\Comparison\LessOrEqual(1000);
+        $condition->where = new \Good\Manners\Comparison\LessOrEqual(1.0);
+        $condition->order = new \Good\Manners\Comparison\LessOrEqual("One");
+        $condition->by = new \Good\Manners\Comparison\LessOrEqual(new DateTimeImmutable("2001-01-01"));
 
         $results = $this->storage->fetchAll($condition);
 
@@ -352,13 +345,11 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
     {
         $this->populateDatabase();
 
-        $select = new Select();
-        $select->from = 1000;
-        $select->where = 1.0;
-        $select->order = "One";
-        $select->by = new DateTimeImmutable("2001-01-01");
-
-        $condition = new \Good\Manners\Condition\GreaterThan($select);
+        $condition = Select::condition();
+        $condition->from = new \Good\Manners\Comparison\GreaterThan(1000);
+        $condition->where = new \Good\Manners\Comparison\GreaterThan(1.0);
+        $condition->order = new \Good\Manners\Comparison\GreaterThan("One");
+        $condition->by = new \Good\Manners\Comparison\GreaterThan(new DateTimeImmutable("2001-01-01"));
 
         $results = $this->storage->fetchAll($condition);
 
@@ -372,13 +363,11 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
     {
         $this->populateDatabase();
 
-        $select = new Select();
-        $select->from = 1000;
-        $select->where = 1.0;
-        $select->order = "One";
-        $select->by = new DateTimeImmutable("2001-01-01");
-
-        $condition = new \Good\Manners\Condition\GreaterOrEqual($select);
+        $condition = Select::condition();
+        $condition->from = new \Good\Manners\Comparison\GreaterOrEqual(1000);
+        $condition->where = new \Good\Manners\Comparison\GreaterOrEqual(1.0);
+        $condition->order = new \Good\Manners\Comparison\GreaterOrEqual("One");
+        $condition->by = new \Good\Manners\Comparison\GreaterOrEqual(new DateTimeImmutable("2001-01-01"));
 
         $resolver = Select::resolver();
         $resolver->orderByFromAsc();
@@ -434,10 +423,8 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
     {
         $this->populateDatabase();
 
-        $select = new Select();
-        $select->group = null;
-
-        $condition = new \Good\Manners\Condition\EqualTo($select);
+        $condition = Select::condition();
+        $condition->group = null;
 
         $results = $this->storage->fetchAll($condition);
 
@@ -448,19 +435,16 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
     {
         $this->populateDatabase();
 
-        $select = new Select();
-        $select->group = new Create();
-        $select->group->table = 1000;
-        $select->group->view = 1.0;
-        $select->group->values = "One";
-        $select->group->as = new DateTimeImmutable("2001-01-01");
+        $condition = Select::condition();
+        $condition->group->table = 1000;
+        $condition->group->view = 1.0;
+        $condition->group->values = "One";
+        $condition->group->as = new DateTimeImmutable("2001-01-01");
 
         $resolver = Select::resolver();
         $resolver->resolveGroup();
 
-        $condition = new \Good\Manners\Condition\EqualTo($select, $resolver);
-
-        $results = $this->storage->fetchAll($condition);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $result = $results->getNext();
         $this->assertSelectObject($result, 1000, 1.0, "One", new DateTimeImmutable("2001-01-01"));
@@ -470,14 +454,11 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
     {
         $this->populateDatabase();
 
-        $select = new Select();
-        $select->group = new Create();
-        $select->group->table = 1000;
-        $select->group->view = 1.0;
-        $select->group->values = "One";
-        $select->group->as = new DateTimeImmutable("2001-01-01");
-
-        $condition = new \Good\Manners\Condition\EqualTo($select);
+        $condition = Select::condition();
+        $condition->group->table = 1000;
+        $condition->group->view = 1.0;
+        $condition->group->values = "One";
+        $condition->group->as = new DateTimeImmutable("2001-01-01");
 
         $results = $this->storage->fetchAll($condition);
 
@@ -489,17 +470,14 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
     {
         $this->populateDatabase();
 
-        $select = new Select();
-        $select->group = new Create();
-        $select->group->table = 1000;
-        $select->group->view = 1.0;
-        $select->group->values = "One";
-        $select->group->as = new DateTimeImmutable("2001-01-01");
+        $condition = Select::condition();
+        $condition->group->table = 1000;
+        $condition->group->view = 1.0;
+        $condition->group->values = "One";
+        $condition->group->as = new DateTimeImmutable("2001-01-01");
 
         $change = new Select();
         $change->from = 0;
-
-        $condition = new \Good\Manners\Condition\EqualTo($select);
 
         $this->storage->modifyAny($condition, $change);
 

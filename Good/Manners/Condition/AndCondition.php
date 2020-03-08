@@ -17,7 +17,7 @@ class AndCondition implements Condition
         $this->condition2 = $condition2;
     }
 
-    public function process(ConditionProcessor $processor)
+    public function processCondition(ConditionProcessor $processor)
     {
         $processor->processAndCondition($this->condition1, $this->condition2);
     }

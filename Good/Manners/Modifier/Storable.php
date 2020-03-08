@@ -22,6 +22,11 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
     private $markUnresolved;
     private $isDirty;
 
+    private $condition;
+    private $conditionSetterSwitch;
+    private $conditionGetterSwitch;
+    private $conditionProcess;
+
     private $member;
 
     public function __construct()
@@ -170,6 +175,11 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $res .= '        return new ' . $typeDefinition->getName() . 'Resolver();' . "\n";
         $res .= "    }\n";
         $res .= "    \n";
+        $res .= '    public static function condition()' . "\n";
+        $res .= "    {\n";
+        $res .= '        return new ' . $typeDefinition->getName() . 'Condition();' . "\n";
+        $res .= "    }\n";
+        $res .= "    \n";
         $res .= '    public static function id($storage, $id)' . "\n";
         $res .= "    {\n";
         $res .= '        return new \Good\Manners\Id(new ' . $typeDefinition->getName() . '(), $storage, $id);' . "\n";
@@ -184,6 +194,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->generateIncludableFragments($typeDefinition);
 
         $this->extraFiles[$typeDefinition->getName() . 'Resolver.php'] = $this->resolver;
+        $this->extraFiles[$typeDefinition->getName() . 'Condition.php'] = $this->condition;
 
         $res .= $this->isDirty;
         $res .= $this->clean;
@@ -228,6 +239,46 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->resolver .= '        return "' . $typeDefinition->getName() . '";' . "\n";
         $this->resolver .= "    }\n";
         $this->resolver .= "    \n";
+
+        $this->condition  = "<?php\n";
+        $this->condition .= "\n";
+        $this->condition .= 'use \Good\Manners\Comparison;' . "\n";
+        $this->condition .= 'use \Good\Manners\Comparison\EqualityComparison;' . "\n";
+        $this->condition .= 'use \Good\Manners\Comparison\EqualTo;' . "\n";
+        $this->condition .= 'use \Good\Manners\Condition;' . "\n";
+        $this->condition .= 'use \Good\Manners\ConditionProcessor;' . "\n";
+        $this->condition .= "\n";
+        $this->condition .= 'class ' . $typeDefinition->getName() . 'Condition implements Condition' . "\n";
+        $this->condition .= "{\n";
+        $this->condition .= '    public function getTargetType()' . "\n";
+        $this->condition .= "    {\n";
+        $this->condition .= '        return"' . $typeDefinition->getName() . '";' . "\n";
+        $this->condition .= "    }\n";
+        $this->condition .= "\n";
+        $this->condition .= '    private $id = null;' . "\n";
+        $this->condition .= "\n";
+        $this->condition .= '    public function setId(EqualityComparison $comparison)' . "\n";
+        $this->condition .= "    {\n";
+        $this->condition .= '        $this->id = $comparison;' . "\n";
+        $this->condition .= "    }\n";
+        $this->condition .= "\n";
+
+        $this->conditionSetterSwitch  = '        switch($property)' . "\n";
+        $this->conditionSetterSwitch .= "        {\n";
+        $this->conditionSetterSwitch .= '            case "id":' . "\n";
+        $this->conditionSetterSwitch .= '                $this->setId($value instanceof Comparison ? $value : new EqualTo($value));' . "\n";
+        $this->conditionSetterSwitch .= '                break;' . "\n";
+        $this->conditionSetterSwitch .= "\n";
+
+        $this->conditionGetterSwitch  = '        switch($property)' . "\n";
+        $this->conditionGetterSwitch .= "        {\n";
+
+        $this->conditionProcess  = '    public function processCondition(ConditionProcessor $processor)' . "\n";
+        $this->conditionProcess .= "    {\n";
+        $this->conditionProcess .= '        if ($this->id !== null)' . "\n";
+        $this->conditionProcess .= "        {\n";
+        $this->conditionProcess .= '            $processor->processStorableConditionId($this->id);' . "\n";
+        $this->conditionProcess .= "        }\n";
 
         $this->resolverVisit  = '    public function acceptResolverVisitor' .
                                                 '(\\Good\\Manners\\ResolverVisitor $visitor)' . "\n";
@@ -291,6 +342,31 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->resolver .= "}\n";
         $this->resolver .= "\n";
         $this->resolver .= "?>";
+
+        $this->conditionSetterSwitch .= '            default:' . "\n";
+        $this->conditionSetterSwitch .= '                throw new \Exception("Unknown property.");' . "\n";
+        $this->conditionSetterSwitch .= "        }\n";
+
+        $this->conditionGetterSwitch .= '            default:' . "\n";
+        $this->conditionGetterSwitch .= '                throw new \Exception("Unknown property.");' . "\n";
+        $this->conditionGetterSwitch .= "        }\n";
+
+        $this->conditionProcess .= "    }\n";
+        $this->conditionProcess .= "\n";
+
+        $this->condition .= $this->conditionProcess;
+        $this->condition .= '    public function __set($property, $value)' . "\n";
+        $this->condition .= "    {\n";
+        $this->condition .= $this->conditionSetterSwitch;
+        $this->condition .= "    }\n";
+        $this->condition .= "\n";
+        $this->condition .= '    public function __get($property)' . "\n";
+        $this->condition .= "    {\n";
+        $this->condition .= $this->conditionGetterSwitch;
+        $this->condition .= "    }\n";
+        $this->condition .= "}\n";
+        $this->condition .= "\n";
+        $this->condition .= "?>";
     }
 
     public function visitDateTimeType(Schema\Type\DateTimeType $type)
@@ -310,6 +386,12 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $toArrayFormatter = $toArrayFormatterWriter->writeToArrayFormatter('$this->' . $this->member->getName(), $type);
 
         $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
+
+        $this->conditionProcess .= '        if ($this->' . $this->member->getName() . ' !== null)' . "\n";
+        $this->conditionProcess .= "        {\n";
+        $this->conditionProcess .= '            $processor->processStorableConditionDateTime("' . $this->member->getName();
+        $this->conditionProcess .= '", $this->' . $this->member->getName() . ');' . "\n";
+        $this->conditionProcess .= "        }\n";
 
         $this->visitNonReference(true, true);
     }
@@ -332,6 +414,12 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
 
+        $this->conditionProcess .= '        if ($this->' . $this->member->getName() . ' !== null)' . "\n";
+        $this->conditionProcess .= "        {\n";
+        $this->conditionProcess .= '            $processor->processStorableConditionInt("' . $this->member->getName();
+        $this->conditionProcess .= '", $this->' . $this->member->getName() . ');' . "\n";
+        $this->conditionProcess .= "        }\n";
+
         $this->visitNonReference(true, true);
     }
 
@@ -352,6 +440,12 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $toArrayFormatter = $toArrayFormatterWriter->writeToArrayFormatter('$this->' . $this->member->getName(), $type);
 
         $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
+
+        $this->conditionProcess .= '        if ($this->' . $this->member->getName() . ' !== null)' . "\n";
+        $this->conditionProcess .= "        {\n";
+        $this->conditionProcess .= '            $processor->processStorableConditionFloat("' . $this->member->getName();
+        $this->conditionProcess .= '", $this->' . $this->member->getName() . ');' . "\n";
+        $this->conditionProcess .= "        }\n";
 
         $this->visitNonReference(true, true);
     }
@@ -391,6 +485,51 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->isDirty .= "\n";
         $this->isDirty .= '            || $this->is' . \ucfirst($this->member->getName()) . 'Dirty';
 
+        $this->condition .= '    private $' . $this->member->getName() . 'Condition = null;' . "\n";
+        $this->condition .= '    private $' . $this->member->getName() . ' = null;' . "\n";
+        $this->condition .= "\n";
+        $this->condition .= '    public function get' . \ucfirst($this->member->getName()) . '()' . "\n";
+        $this->condition .= "    {\n";
+        $this->condition .= '        if ($this->' . $this->member->getName() . ' != null)' . "\n";
+        $this->condition .= "        {\n";
+        $this->condition .= '             throw new \Exception("Can only get a reference on a condition if it has not bee set to a comparison");' . "\n";
+        $this->condition .= "        }\n";
+        $this->condition .= "\n";
+        $this->condition .= '        if ($this->' . $this->member->getName() . 'Condition == null)' . "\n";
+        $this->condition .= "        {\n";
+        $this->condition .= '             $this->' . $this->member->getName() . 'Condition = ' . $type->getReferencedType() . '::condition();' . "\n";
+        $this->condition .= "        }\n";
+        $this->condition .= "\n";
+        $this->condition .= '        return $this->' . $this->member->getName() . 'Condition;' . "\n";
+        $this->condition .= "    }\n";
+        $this->condition .= "\n";
+        $this->condition .= '    public function set' . \ucfirst($this->member->getName()) . '(EqualityComparison $comparison)' . "\n";
+        $this->condition .= "    {\n";
+        $this->condition .= '        return $this->' . $this->member->getName() . ' = $comparison;' . "\n";
+        $this->condition .= "    }\n";
+        $this->condition .= "\n";
+
+        $this->conditionGetterSwitch .= '            case "' . $this->member->getName() . '":' . "\n";
+        $this->conditionGetterSwitch .= '                return $this->get' . \ucfirst($this->member->getName()) . '();' . "\n";
+        $this->conditionGetterSwitch .= "\n";
+
+        $this->conditionSetterSwitch .= '            case "' . $this->member->getName() . '":' . "\n";
+        $this->conditionSetterSwitch .= '                $this->set' . \ucfirst($this->member->getName());
+        $this->conditionSetterSwitch .= '($value instanceof Comparison ? $value : new EqualTo($value));' . "\n";
+        $this->conditionSetterSwitch .= '                break;' . "\n";
+        $this->conditionSetterSwitch .= "\n";
+
+        $this->conditionProcess .= '        if ($this->' . $this->member->getName() . ' !== null)' . "\n";
+        $this->conditionProcess .= "        {\n";
+        $this->conditionProcess .= '            $processor->processStorableConditionReferenceAsComparison("' . $this->member->getName();
+        $this->conditionProcess .= '", $this->' . $this->member->getName() . ');' . "\n";
+        $this->conditionProcess .= "        }\n";
+        $this->conditionProcess .= '        else if ($this->' . $this->member->getName() . 'Condition !== null)' . "\n";
+        $this->conditionProcess .= "        {\n";
+        $this->conditionProcess .= '            $processor->processStorableConditionReferenceAsCondition("' . $this->member->getName();
+        $this->conditionProcess .= '", "' . $type->getReferencedType() . '", $this->' . $this->member->getName() . 'Condition);' . "\n";
+        $this->conditionProcess .= "        }\n";
+
         $this->writeResolvableMemberToResolver($this->member->getName(), $type->getReferencedType());
     }
 
@@ -411,6 +550,12 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $toArrayFormatter = $toArrayFormatterWriter->writeToArrayFormatter('$this->' . $this->member->getName(), $type);
 
         $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
+
+        $this->conditionProcess .= '        if ($this->' . $this->member->getName() . ' !== null)' . "\n";
+        $this->conditionProcess .= "        {\n";
+        $this->conditionProcess .= '            $processor->processStorableConditionText("' . $this->member->getName();
+        $this->conditionProcess .= '", $this->' . $this->member->getName() . ');' . "\n";
+        $this->conditionProcess .= "        }\n";
 
         $this->visitNonReference(true, true);
     }
@@ -489,6 +634,20 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         {
             $this->resolverVisit .= '        $visitor->resolverVisitScalarProperty("' .
                                                                             $this->member->getName() . '");' . "\n";
+
+            $this->condition .= '    private $' . $this->member->getName() . ' = null;' . "\n";
+            $this->condition .= "\n";
+            $this->condition .= '    public function set' . \ucfirst($this->member->getName()) . '(Comparison $comparison)' . "\n";
+            $this->condition .= "    {\n";
+            $this->condition .= '        $this->' . $this->member->getName() . ' = $comparison;' . "\n";
+            $this->condition .= "    }\n";
+            $this->condition .= "\n";
+
+            $this->conditionSetterSwitch .= '            case "' . $this->member->getName() . '":' . "\n";
+            $this->conditionSetterSwitch .= '                $this->set' . \ucfirst($this->member->getName());
+            $this->conditionSetterSwitch .= '($value instanceof Comparison ? $value : new EqualTo($value));' . "\n";
+            $this->conditionSetterSwitch .= '                break;' . "\n";
+            $this->conditionSetterSwitch .= "\n";
         }
 
         if ($isOrderable)

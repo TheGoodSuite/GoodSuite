@@ -93,7 +93,10 @@ class Id implements Storable
 
     public function fetch(Resolver $resolver = null)
     {
-        $results = $this->storage->fetchAll(new EqualTo($this), $resolver);
+        $condition = $this->getType()::condition();
+        $condition->id = $this->getId();
+
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $first = $results->getNext();
 

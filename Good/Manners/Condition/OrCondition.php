@@ -17,7 +17,7 @@ class OrCondition implements Condition
         $this->condition2 = $condition2;
     }
 
-    public function process(ConditionProcessor $processor)
+    public function processCondition(ConditionProcessor $processor)
     {
         $processor->processOrCondition($this->condition1, $this->condition2);
     }

@@ -49,7 +49,9 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
         require dirname(__FILE__) . '/../generated/AnotherType.datatype.php';
 
         require dirname(__FILE__) . '/../generated/SimpleUpdateTypeResolver.php';
+        require dirname(__FILE__) . '/../generated/SimpleUpdateTypeCondition.php';
         require dirname(__FILE__) . '/../generated/AnotherTypeResolver.php';
+        require dirname(__FILE__) . '/../generated/AnotherTypeCondition.php';
     }
 
     public static function _tearDownAfterClass()
@@ -59,7 +61,9 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
         unlink(dirname(__FILE__) . '/../generated/SimpleUpdateType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/AnotherType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/SimpleUpdateTypeResolver.php');
+        unlink(dirname(__FILE__) . '/../generated/SimpleUpdateTypeCondition.php');
         unlink(dirname(__FILE__) . '/../generated/AnotherTypeResolver.php');
+        unlink(dirname(__FILE__) . '/../generated/AnotherTypeCondition.php');
         unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');
 
         if (ini_get('zend.enable_gc'))

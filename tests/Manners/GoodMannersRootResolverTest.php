@@ -53,6 +53,9 @@ abstract class GoodMannersRootResolverTest extends \PHPUnit\Framework\TestCase
 
         require dirname(__FILE__) . '/../generated/MyFetchTypeResolver.php';
         require dirname(__FILE__) . '/../generated/OtherTypeResolver.php';
+
+        require dirname(__FILE__) . '/../generated/MyFetchTypeCondition.php';
+        require dirname(__FILE__) . '/../generated/OtherTypeCondition.php';
     }
 
     public static function _tearDownAfterClass()
@@ -63,6 +66,8 @@ abstract class GoodMannersRootResolverTest extends \PHPUnit\Framework\TestCase
         unlink(dirname(__FILE__) . '/../generated/OtherType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/MyFetchTypeResolver.php');
         unlink(dirname(__FILE__) . '/../generated/OtherTypeResolver.php');
+        unlink(dirname(__FILE__) . '/../generated/MyFetchTypeCondition.php');
+        unlink(dirname(__FILE__) . '/../generated/OtherTypeCondition.php');
         unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');
 
         if (ini_get('zend.enable_gc'))

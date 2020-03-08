@@ -43,6 +43,7 @@ abstract class GoodMannersDeleteTest extends \PHPUnit\Framework\TestCase
         require dirname(__FILE__) . '/../generated/DeleteType.datatype.php';
 
         require dirname(__FILE__) . '/../generated/DeleteTypeResolver.php';
+        require dirname(__FILE__) . '/../generated/DeleteTypeCondition.php';
     }
 
     public static function _tearDownAfterClass()
@@ -50,6 +51,7 @@ abstract class GoodMannersDeleteTest extends \PHPUnit\Framework\TestCase
         unlink(dirname(__FILE__) . '/../testInputFiles/DeleteType.datatype');
         unlink(dirname(__FILE__) . '/../generated/DeleteType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/DeleteTypeResolver.php');
+        unlink(dirname(__FILE__) . '/../generated/DeleteTypeCondition.php');
         unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');
 
         if (ini_get('zend.enable_gc'))

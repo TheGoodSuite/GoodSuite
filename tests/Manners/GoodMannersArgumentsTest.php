@@ -43,6 +43,7 @@ abstract class GoodMannersArgumentsTest extends \PHPUnit\Framework\TestCase
         require dirname(__FILE__) . '/../generated/PersistenceType.datatype.php';
 
         require dirname(__FILE__) . '/../generated/PersistenceTypeResolver.php';
+        require dirname(__FILE__) . '/../generated/PersistenceTypeCondition.php';
     }
 
     public static function _tearDownAfterClass()
@@ -50,6 +51,7 @@ abstract class GoodMannersArgumentsTest extends \PHPUnit\Framework\TestCase
         unlink(dirname(__FILE__) . '/../testInputFiles/PersistenceType.datatype');
         unlink(dirname(__FILE__) . '/../generated/PersistenceType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/PersistenceTypeResolver.php');
+        unlink(dirname(__FILE__) . '/../generated/PersistenceTypeCondition.php');
         unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');
 
         if (ini_get('zend.enable_gc'))
@@ -114,9 +116,8 @@ abstract class GoodMannersArgumentsTest extends \PHPUnit\Framework\TestCase
     {
         $this->populateDatabase();
 
-        $compare = new PersistenceType();
-        $compare->myInt = 4;
-        $condition = new \Good\Manners\Condition\GreaterThan($compare);
+        $condition = PersistenceType::condition();
+        $condition->myInt = new \Good\Manners\Comparison\GreaterThan(4);
 
         $resolver = PersistenceType::resolver();
         $resolver->orderByMyIntDesc();
@@ -136,9 +137,8 @@ abstract class GoodMannersArgumentsTest extends \PHPUnit\Framework\TestCase
     {
         $this->populateDatabase();
 
-        $compare = new PersistenceType();
-        $compare->myInt = 4;
-        $condition = new \Good\Manners\Condition\GreaterThan($compare);
+        $condition = PersistenceType::condition();
+        $condition->myInt = new \Good\Manners\Comparison\GreaterThan(4);
 
         $results = $this->storage->fetchAll($condition);
 

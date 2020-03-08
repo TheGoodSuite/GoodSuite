@@ -50,6 +50,9 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
 
         require dirname(__FILE__) . '/../generated/MyFetchTypeResolver.php';
         require dirname(__FILE__) . '/../generated/OtherTypeResolver.php';
+
+        require dirname(__FILE__) . '/../generated/MyFetchTypeCondition.php';
+        require dirname(__FILE__) . '/../generated/OtherTypeCondition.php';
     }
 
     public static function _tearDownAfterClass()
@@ -60,6 +63,8 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         unlink(dirname(__FILE__) . '/../generated/OtherType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/MyFetchTypeResolver.php');
         unlink(dirname(__FILE__) . '/../generated/OtherTypeResolver.php');
+        unlink(dirname(__FILE__) . '/../generated/MyFetchTypeCondition.php');
+        unlink(dirname(__FILE__) . '/../generated/OtherTypeCondition.php');
         unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');
 
         if (ini_get('zend.enable_gc'))
@@ -280,13 +285,12 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
 
     public function testFetchLessThan()
     {
-        $type = new MyFetchType();
-        $type->myInt = 5;
-        $any = new \Good\Manners\Condition\LessThan($type);
+        $condition = MyFetchType::condition();
+        $condition->myInt = new \Good\Manners\Comparison\LessThan(5);
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $results = $this->storage->fetchAll($any, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $expectedResults = array();
 
@@ -313,13 +317,12 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
 
     public function testFetchLessOrEqual()
     {
-        $type = new MyFetchType();
-        $type->myInt = 5;
-        $any = new \Good\Manners\Condition\LessOrEqual($type);
+        $condition = MyFetchType::condition();
+        $condition->myInt = new \Good\Manners\Comparison\LessOrEqual(5);
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $results = $this->storage->fetchAll($any, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $expectedResults = array();
 
@@ -357,13 +360,12 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
 
     public function testFetchGreaterThan()
     {
-        $type = new MyFetchType();
-        $type->myInt = 5;
-        $any = new \Good\Manners\Condition\GreaterThan($type);
+        $condition = MyFetchType::condition();
+        $condition->myInt = new \Good\Manners\Comparison\GreaterThan(5);
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $results = $this->storage->fetchAll($any, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $expectedResults = array();
 
@@ -399,13 +401,12 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
 
     public function testFetchGreaterOrEqual()
     {
-        $type = new MyFetchType();
-        $type->myInt = 5;
-        $any = new \Good\Manners\Condition\GreaterOrEqual($type);
+        $condition = MyFetchType::condition();
+        $condition->myInt = new \Good\Manners\Comparison\GreaterOrEqual(5);
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $results = $this->storage->fetchAll($any, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $expectedResults = array();
 
@@ -452,13 +453,12 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
 
     public function testFetchEqualTo()
     {
-        $type = new MyFetchType();
-        $type->myInt = 5;
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $condition = MyFetchType::condition();
+        $condition->myInt = 5;
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $results = $this->storage->fetchAll($any, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $expectedResults = array();
 
@@ -485,13 +485,12 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
 
     public function testFetchNotEqualTo()
     {
-        $type = new MyFetchType();
-        $type->myInt = 5;
-        $any = new \Good\Manners\Condition\NotEqualTo($type);
+        $condition = MyFetchType::condition();
+        $condition->myInt = new \Good\Manners\Comparison\NotEqualTo(5);
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $results = $this->storage->fetchAll($any, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $expectedResults = array();
 
@@ -545,23 +544,20 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         // (we have to do this to get the id of the object,
         //  which is used when we compare to the specific reference,
         //  which is exactly what the whole point of this test is)
-        $otherType = new OtherType();
-        $otherType->yourInt = 80;
+        $condition = OtherType::condition();
+        $condition->yourInt = 80;
 
-        $any = new \Good\Manners\Condition\EqualTo($otherType);
-
-        $results = $this->storage->fetchAll($any);
+        $results = $this->storage->fetchAll($condition);
 
         $referenced = $results->getNext();
 
         // Then, we get the result with that reference
-        $type = new MyFetchType();
-        $type->myOtherType = $referenced;
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $condition = MyFetchType::condition();
+        $condition->myOtherType = $referenced;
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $results = $this->storage->fetchAll($any, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $expectedResults = array();
 
@@ -590,15 +586,13 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
      * @depends testFetchLessThan
      * @depends testFetchGreaterThan
      */
-    public function testFetchAnd()
+    public function testFetchAndCondition()
     {
-        $type = new MyFetchType();
-        $type->myInt = 4;
-        $greater = new \Good\Manners\Condition\GreaterThan($type);
+        $greater = MyFetchType::condition();
+        $greater->myInt = new \Good\Manners\Comparison\GreaterThan(4);
 
-        $type = new MyFetchType();
-        $type->myInt = 10;
-        $less = new \Good\Manners\Condition\LessThan($type);
+        $less = MyFetchType::condition();
+        $less->myInt = new \Good\Manners\Comparison\LessThan(10);
 
         $and = new \Good\Manners\Condition\AndCondition($less, $greater);
 
@@ -640,27 +634,70 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(array(), $expectedResults);
     }
 
+    public function testFetchAndComparison()
+    {
+       $greater = new \Good\Manners\Comparison\GreaterThan(4);
+       $less = new \Good\Manners\Comparison\LessThan(10);
+       $and = new \Good\Manners\Comparison\AndComparison($less, $greater);
+
+       $condition = MyFetchType::condition();
+       $condition->myInt = $and;
+
+       $resolver = new MyFetchTypeResolver();
+       $resolver->resolveMyOtherType();
+       $results = $this->storage->fetchAll($condition, $resolver);
+
+       $expectedResults = array();
+
+       $ins = new MyFetchType();
+       $ins->myInt = 5;
+       $ins->myFloat = null;
+       $ins->myText = "Five";
+       $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
+       $ref = new OtherType();
+       $ref->yourInt = 80;
+       $ins->myOtherType = $ref;
+       $ins->myCircular = null;
+       $expectedResults[] = $ins;
+
+       $ins = new MyFetchType();
+       $ins->myInt = 8;
+       $ins->myFloat = 10.10;
+       $ins->myText = null;
+       $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
+       $ref = new OtherType();
+       $ref->yourInt = 40;
+       $ins->myOtherType = $ref;
+       $ins->myCircular = null;
+       $expectedResults[] = $ins;
+
+       foreach ($results as $type)
+       {
+           $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
+
+           array_splice($expectedResults, $pos, 1);
+       }
+
+       $this->assertSame(array(), $expectedResults);
+   }
+
     /**
      * @depends testFetchLessThan
      * @depends testFetchGreaterThan
      */
-    public function testFetchOr()
+    public function testFetchOrCondition()
     {
-        $type = new MyFetchType();
-        $type->myInt = 5;
-        $greater = new \Good\Manners\Condition\GreaterThan($type);
+        $less = MyFetchType::condition();
+        $less->myInt = new \Good\Manners\Comparison\LessThan(5);
 
-        $less = new \Good\Manners\Condition\LessThan($type);
+        $greater = MyFetchType::condition();
+        $greater->myInt = new \Good\Manners\Comparison\GreaterThan(8);
 
-        $type = new MyFetchType();
-        $type->myInt = 8;
-        $greater = new \Good\Manners\Condition\GreaterThan($type);
-
-        $and = new \Good\Manners\Condition\OrCondition($less, $greater);
+        $or = new \Good\Manners\Condition\OrCondition($less, $greater);
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $results = $this->storage->fetchAll($and, $resolver);
+        $results = $this->storage->fetchAll($or, $resolver);
 
         $expectedResults = array();
 
@@ -694,15 +731,59 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(array(), $expectedResults);
     }
 
+    public function testFetchOrComparison()
+    {
+       $less = new \Good\Manners\Comparison\LessThan(5);
+       $greater = new \Good\Manners\Comparison\GreaterThan(8);
+       $or = new \Good\Manners\Comparison\OrComparison($less, $greater);
+
+       $condition = MyFetchType::condition();
+       $condition->myInt = $or;
+
+       $resolver = new MyFetchTypeResolver();
+       $resolver->resolveMyOtherType();
+       $results = $this->storage->fetchAll($condition, $resolver);
+
+       $expectedResults = array();
+
+       $ins = new MyFetchType();
+       $ins->myInt = 4;
+       $ins->myFloat = 4.4;
+       $ins->myText = "Four";
+       $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
+       $ref = new OtherType();
+       $ref->yourInt = 90;
+       $ins->myOtherType = $ref;
+       $ins->myCircular = null;
+       $expectedResults[] = $ins;
+
+       $ins = new MyFetchType();
+       $ins->myInt = 10;
+       $ins->myFloat = 10.10;
+       $ins->myText = "Ten";
+       $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
+       $ins->myOtherType = null;
+       $ins->myCircular = null;
+       $expectedResults[] = $ins;
+
+       foreach ($results as $type)
+       {
+           $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
+
+           array_splice($expectedResults, $pos, 1);
+       }
+
+       $this->assertSame(array(), $expectedResults);
+   }
+
     public function testFetchReferenceIsNull()
     {
-        $type = new MyFetchType();
-        $type->myOtherType = null;
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $condition = MyFetchType::condition();
+        $condition->myOtherType = null;
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $results = $this->storage->fetchAll($any, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $expectedResults = array();
 
@@ -727,13 +808,12 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
 
     public function testFetchReferenceIsNotNull()
     {
-        $type = new MyFetchType();
-        $type->myOtherType = null;
-        $any = new \Good\Manners\Condition\NotEqualTo($type);
+        $condition = MyFetchType::condition();
+        $condition->myOtherType = new \Good\Manners\Comparison\NotEqualTo(null);
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $results = $this->storage->fetchAll($any, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $expectedResults = array();
 
@@ -796,14 +876,12 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
      */
     public function testFetchByPropertyOfReference()
     {
-        $type = new MyFetchType();
-        $type->myOtherType = new OtherType();
-        $type->myOtherType->yourInt = 85;
-        $any = new \Good\Manners\Condition\LessThan($type);
+        $condition = MyFetchType::condition();
+        $condition->myOtherType->yourInt = new \Good\Manners\Comparison\LessThan(85);
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $results = $this->storage->fetchAll($any, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $expectedResults = array();
 
@@ -856,17 +934,13 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
      */
     public function testFetchByTwoValuesInOneCondition()
     {
-        // At the moment we don't have a proper api to get any,
-        // but this trick does do the same
-        $type = new MyFetchType();
-        $type->myInt = 4;
-        $type->myOtherType = new OtherType();
-        $type->myOtherType->yourInt = 45;
-        $any = new \Good\Manners\Condition\GreaterThan($type);
+        $condition = MyFetchType::condition();
+        $condition->myInt = new \Good\Manners\Comparison\GreaterThan(4);
+        $condition->myOtherType->yourInt = new \Good\Manners\Comparison\GreaterThan(45);
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $results = $this->storage->fetchAll($any, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $expectedResults = array();
 
@@ -896,14 +970,12 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
      */
     public function testFetchByFloat()
     {
-        // Ints are already tested as we use them above everywhere
-        $type = new MyFetchType();
-        $type->myFloat = 6.0;
-        $any = new \Good\Manners\Condition\GreaterThan($type);
+        $condition = MyFetchType::condition();
+        $condition->myFloat = new \Good\Manners\Comparison\GreaterThan(6.0);
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $results = $this->storage->fetchAll($any, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $expectedResults = array();
 
@@ -953,13 +1025,12 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
      */
     public function testFetchByText()
     {
-        $type = new MyFetchType();
-        $type->myText = "Twenty";
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $condition = MyFetchType::condition();
+        $condition->myText = "Twenty";
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $results = $this->storage->fetchAll($any, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $expectedResults = array();
 
@@ -989,13 +1060,12 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
      */
     public function testFetchByDatetime()
     {
-        $type = new MyFetchType();
-        $type->myDatetime = new DateTimeImmutable('2006-06-06');
-        $any = new \Good\Manners\Condition\GreaterThan($type);
+        $condition = MyFetchType::condition();
+        $condition->myDatetime = new \Good\Manners\Comparison\GreaterThan(new DateTimeImmutable('2006-06-06'));
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $results = $this->storage->fetchAll($any, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $expectedResults = array();
 
@@ -1034,13 +1104,12 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
      */
     public function testFetchByIntIsNull()
     {
-        $type = new MyFetchType();
-        $type->myInt = null;
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $condition = MyFetchType::condition();
+        $condition->myInt = null;
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $results = $this->storage->fetchAll($any, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $expectedResults = array();
 
@@ -1070,13 +1139,12 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
      */
     public function testFetchByFloatIsNull()
     {
-        $type = new MyFetchType();
-        $type->myFloat = null;
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $condition = MyFetchType::condition();
+        $condition->myFloat = null;
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $results = $this->storage->fetchAll($any, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $expectedResults = array();
 
@@ -1106,13 +1174,12 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
      */
     public function testFetchByTextIsNull()
     {
-        $type = new MyFetchType();
-        $type->myText = null;
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $condition = MyFetchType::condition();
+        $condition->myText = null;
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $results = $this->storage->fetchAll($any, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $expectedResults = array();
 
@@ -1142,13 +1209,12 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
      */
     public function testFetchByDatetimeIsNull()
     {
-        $type = new MyFetchType();
-        $type->myDatetime = null;
-        $any = new \Good\Manners\Condition\EqualTo($type);
+        $condition = MyFetchType::condition();
+        $condition->myDatetime = null;
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $results = $this->storage->fetchAll($any, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $expectedResults = array();
 
@@ -1178,15 +1244,12 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
      */
     public function testFetchByIntIsNotNull()
     {
-        // At the moment we don't have a proper api to get any,
-        // but this trick does do the same
-        $type = new MyFetchType();
-        $type->myInt = null;
-        $any = new \Good\Manners\Condition\NotEqualTo($type);
+        $condition = MyFetchType::condition();
+        $condition->myInt = new \Good\Manners\Comparison\NotEqualTo(null);
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $results = $this->storage->fetchAll($any, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $expectedResults = array();
 
@@ -1247,13 +1310,12 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
      */
     public function testFetchByFloatIsNotNull()
     {
-        $type = new MyFetchType();
-        $type->myFloat = null;
-        $any = new \Good\Manners\Condition\NotEqualTo($type);
+        $condition = MyFetchType::condition();
+        $condition->myFloat = new \Good\Manners\Comparison\NotEqualTo(null);
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $results = $this->storage->fetchAll($any, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $expectedResults = array();
 
@@ -1314,13 +1376,12 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
      */
     public function testFetchByTextIsNotNull()
     {
-        $type = new MyFetchType();
-        $type->myText = null;
-        $any = new \Good\Manners\Condition\NotEqualTo($type);
+        $condition = MyFetchType::condition();
+        $condition->myText = new \Good\Manners\Comparison\NotEqualTo(null);
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $results = $this->storage->fetchAll($any, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $expectedResults = array();
 
@@ -1380,13 +1441,12 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
      */
     public function testFetchByDatetimeIsNotNull()
     {
-        $type = new MyFetchType();
-        $type->myDatetime = null;
-        $any = new \Good\Manners\Condition\NotEqualTo($type);
+        $condition = MyFetchType::condition();
+        $condition->myDatetime = new \Good\Manners\Comparison\NotEqualTo(null);
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
-        $results = $this->storage->fetchAll($any, $resolver);
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $expectedResults = array();
 

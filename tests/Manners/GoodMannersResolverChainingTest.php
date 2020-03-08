@@ -35,6 +35,7 @@ class GoodMannersResolverChainingTest extends \PHPUnit\Framework\TestCase
         require dirname(__FILE__) . '/../generated/PersistenceType.datatype.php';
 
         require dirname(__FILE__) . '/../generated/PersistenceTypeResolver.php';
+        require dirname(__FILE__) . '/../generated/PersistenceTypeCondition.php';
     }
 
     public static function _tearDownAfterClass()
@@ -42,6 +43,7 @@ class GoodMannersResolverChainingTest extends \PHPUnit\Framework\TestCase
         unlink(dirname(__FILE__) . '/../testInputFiles/PersistenceType.datatype');
         unlink(dirname(__FILE__) . '/../generated/PersistenceType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/PersistenceTypeResolver.php');
+        unlink(dirname(__FILE__) . '/../generated/PersistenceTypeCondition.php');
         unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');
 
         if (ini_get('zend.enable_gc'))
