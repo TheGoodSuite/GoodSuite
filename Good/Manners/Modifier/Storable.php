@@ -43,7 +43,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
     {
         $res  = "    // Storable\n";
         $res .= '    private $isNew = true;' . "\n";
-        $res .= '    private $id = null;' . "\n";
+        $res .= '    protected $id = null;' . "\n";
         $res .= "    \n";
         $res .= '    public function isNew()'. "\n";
         $res .= "    {\n";
