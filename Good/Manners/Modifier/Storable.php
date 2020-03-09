@@ -242,6 +242,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->condition  = "<?php\n";
         $this->condition .= "\n";
+        $this->condition .= 'use \Good\Manners\CollectionComparisonsHolder;' . "\n";
         $this->condition .= 'use \Good\Manners\Comparison;' . "\n";
         $this->condition .= 'use \Good\Manners\Comparison\EqualityComparison;' . "\n";
         $this->condition .= 'use \Good\Manners\Comparison\EqualTo;' . "\n";
@@ -492,7 +493,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->condition .= "    {\n";
         $this->condition .= '        if ($this->' . $this->member->getName() . ' != null)' . "\n";
         $this->condition .= "        {\n";
-        $this->condition .= '             throw new \Exception("Can only get a reference on a condition if it has not bee set to a comparison");' . "\n";
+        $this->condition .= '             throw new \Exception("Can only get a reference on a condition if it has not been set to a comparison");' . "\n";
         $this->condition .= "        }\n";
         $this->condition .= "\n";
         $this->condition .= '        if ($this->' . $this->member->getName() . 'Condition == null)' . "\n";
@@ -622,6 +623,33 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->isDirty .= "\n";
         $this->isDirty .= '            || $this->' . $this->member->getName() . 'Modifier->isDirty()';
+
+        $this->condition .= '    private $' . $this->member->getName() . ' = null;' . "\n";
+        $this->condition .= "\n";
+        $this->condition .= '    public function get' . \ucfirst($this->member->getName()) . '()' . "\n";
+        $this->condition .= "    {\n";
+        $this->condition .= '        if ($this->' . $this->member->getName() . ' == null)' . "\n";
+        $this->condition .= "        {\n";
+        $this->condition .= '             $this->' . $this->member->getName() . ' = new CollectionComparisonsHolder(';
+        $this->condition .= ($type->getCollectedType()->getReferencedTypeIfAny() == null ? "null" : ('"' . $type->getCollectedType()->getReferencedTypeIfAny() . '"')) . ');' . "\n";
+        $this->condition .= "        }\n";
+        $this->condition .= "\n";
+        $this->condition .= '        return $this->' . $this->member->getName() . ';' . "\n";
+        $this->condition .= "    }\n";
+        $this->condition .= "\n";
+
+        $this->conditionGetterSwitch .= '            case "' . $this->member->getName() . '":' . "\n";
+        $this->conditionGetterSwitch .= '                return $this->get' . \ucfirst($this->member->getName()) . '();' . "\n";
+        $this->conditionGetterSwitch .= "\n";
+
+        $this->conditionProcess .= '        if ($this->' . $this->member->getName() . ' !== null)' . "\n";
+        $this->conditionProcess .= "        {\n";
+        $this->conditionProcess .= '            foreach ($this->' . $this->member->getName() . '->getComparisons() as $comparison)' . "\n";
+        $this->conditionProcess .= "            {\n";
+        $this->conditionProcess .= '                $processor->processStorableConditionCollection("' . $this->member->getName();
+        $this->conditionProcess .= '", $comparison);' . "\n";
+        $this->conditionProcess .= "            }\n";
+        $this->conditionProcess .= "        }\n";
 
         // A bit of a misuse of getReferencedTypeIfAny: if I ever want to remove it, I shouldn't let this get in the way!
         $this->visitNonReference(false, $type->getCollectedType()->getReferencedTypeIfAny() == null, $orderableCheck);

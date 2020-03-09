@@ -56,7 +56,7 @@ class Selecter implements ResolverVisitor
     {
         $sql  = " FROM `" . $this->storage->tableNamify($datatypeName) . "` AS t0";
 
-        $conditionWriter = new ConditionWriter($this->storage, 0);
+        $conditionWriter = new ConditionWriter($this->storage, 0, $datatypeName);
         $conditionWriter->writeCondition($condition);
 
         foreach ($this->storage->getJoins() as $somejoins)

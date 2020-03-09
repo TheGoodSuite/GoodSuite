@@ -3,6 +3,7 @@
 namespace Good\Manners;
 
 use Good\Manners\Comparison;
+use Good\Manners\Comparison\Collection\CollectionComparison;
 use Good\Manners\Comparison\EqualityComparison;
 
 interface ConditionProcessor
@@ -18,6 +19,8 @@ interface ConditionProcessor
 
     public function processStorableConditionReferenceAsCondition($propertyName, $datatypeName, Condition $condition);
     public function processStorableConditionReferenceAsComparison($propertyName, EqualityComparison $comparison);
+
+    public function processStorableConditionCollection($propertyName, CollectionComparison $comparison);
 }
 
 ?>
