@@ -135,6 +135,8 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $myCollectionType->myInts->add(3);
         $myCollectionType->myInts->add(5);
 
+        $myCollectionType->myReferences->add($reference);
+
         $storage->insert($myCollectionType);
 
         $storage->flush();
@@ -644,7 +646,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         return $results->getNext();
     }
 
-    public function testHasACollectionComparison()
+    public function testHasAPrimimitiveCollectionComparison()
     {
         $this->populateDatabase();
 
@@ -663,7 +665,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->assertSame(2, count($result->myInts->toArray()));
     }
 
-    public function testHasOnlyCollectionComparison()
+    public function testHasOnlyPrimitiveCollectionComparison()
     {
         $this->populateDatabase();
 
@@ -680,6 +682,47 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->assertSame(null, $results->getNext());
         $this->assertSame(4, $result->someInt);
         $this->assertSame(2, count($result->myInts->toArray()));
+    }
+
+    public function testHasAReferenceCollectionComparison()
+    {
+        $this->populateDatabase();
+
+        $condition = CollectionType::condition();
+        $condition->myReferences->hasA()->someInt = 4;
+
+        $resolver = CollectionType::resolver();
+        $resolver->resolveMyReferences();
+
+        $results = $this->storage->fetchAll($condition, $resolver);
+
+        $result = $results->getNext();
+
+        $this->assertSame(null, $results->getNext());
+        $this->assertSame(4, $result->someInt);
+        $this->assertSame(2, count($result->myReferences->toArray()));
+    }
+
+    public function testHasOnlyReferenceCollectionComparison()
+    {
+        $this->populateDatabase();
+
+        $condition = CollectionType::condition();
+        $condition->myReferences->hasOnly()->someInt = 1;
+
+        $resolver = CollectionType::resolver();
+        $resolver->resolveMyReferences();
+
+        $results = $this->storage->fetchAll($condition, $resolver);
+
+        $result1 = $results->getNext();
+        $result2 = $results->getNext();
+
+        $this->assertSame(null, $result2);//s->getNext());
+        $this->assertSame(5, $result1->someInt);
+        $this->assertSame(1, count($result1->myReferences->toArray()));
+        //$this->assertSame(1, $result2->someInt);
+        //$this->assertSame(0, count($result2->myReferences->toArray()));
     }
 }
 

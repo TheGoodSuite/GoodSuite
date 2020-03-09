@@ -29,7 +29,7 @@ class CollectionEntryConditionCondition implements Condition, TypeVisitor
 
     public function processCondition(ConditionProcessor $processor)
     {
-        $this->processor = $processor;
+        $this->conditionProcessor = $processor;
 
         $this->collectedType->acceptTypeVisitor($this);
     }
