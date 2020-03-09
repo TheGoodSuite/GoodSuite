@@ -10,13 +10,23 @@ use Good\Memory\SQL\ConditionWriter\ReferenceFragmentWriter;
 use Good\Memory\SQL\ConditionWriter\TextFragmentWriter;
 use Good\Manners\Storable;
 use Good\Manners\StorableVisitor;
+use Good\Manners\Comparison;
+use Good\Manners\Comparison\Collection\CollectionComparison;
 use Good\Manners\Comparison\EqualityComparison;
 use Good\Manners\Condition;
 use Good\Manners\ConditionProcessor;
+use Good\Rolemodel\TypeVisitor;
+use Good\Rolemodel\Schema\Type\ReferenceType;
+use Good\Rolemodel\Schema\Type\TextType;
+use Good\Rolemodel\Schema\Type\IntType;
+use Good\Rolemodel\Schema\Type\FloatType;
+use Good\Rolemodel\Schema\Type\DateTimeType;
+use Good\Rolemodel\Schema\Type\CollectionType;
+use Good\Service\Type;
 
 $started = false;
 
-class UpdateConditionWriter implements ConditionProcessor
+class UpdateConditionWriter implements ConditionProcessor, TypeVisitor
 {
     private $storage;
     private $condition;
@@ -33,6 +43,9 @@ class UpdateConditionWriter implements ConditionProcessor
     private $joinedTables;
     private $phase2;
     private $rootTableName;
+
+    private $fieldName;
+    private $comparison;
 
     public function __construct(SQLStorage $storage, $currentTable)
     {
@@ -177,7 +190,7 @@ class UpdateConditionWriter implements ConditionProcessor
         $this->condition = '(' . $sqlCondition1 . ' OR ' . $sqlCondition2 . ')';
     }
 
-    public function processStorableConditionReferenceAsCondition($name, $datatypeName, Condition $condition)
+    public function processStorableConditionReferenceAsCondition(ReferenceType $type, $name, Condition $condition)
     {
         $join = $this->storage->getJoin($this->currentTable, $name);
 
@@ -189,7 +202,7 @@ class UpdateConditionWriter implements ConditionProcessor
         {
             if ($join == -1)
             {
-                $join = $this->storage->createJoin($this->currentTable, $name, $datatypeName, 'id');
+                $join = $this->storage->createJoin($this->currentTable, $name, $type->getReferencedType(), 'id');
             }
 
             $subWriter = new UpdateConditionWriter($this->storage, $join);
@@ -197,7 +210,7 @@ class UpdateConditionWriter implements ConditionProcessor
 
             if (!$this->phase2)
             {
-                $this->joining .= ' JOIN `' . $this->storage->tableNamify($datatypeName) .
+                $this->joining .= ' JOIN `' . $this->storage->tableNamify($type->getReferencedType()) .
                                                                     '` AS `t' . $join . '`';
                 $this->joining .= ' ON `t' . $this->currentTable . '`.`' .
                                                     $this->storage->fieldNamify($name) . '`';
@@ -213,7 +226,7 @@ class UpdateConditionWriter implements ConditionProcessor
                 $this->condition .= ' `' . $this->tableName . '`.`' .
                                             $this->storage->fieldNamify($name) . '`';
                 $this->condition .= ' IN (SELECT `t' . $join . '`.`id`';
-                $this->condition .= ' FROM `' . $this->storage->tableNamify($datatypeName) .
+                $this->condition .= ' FROM `' . $this->storage->tableNamify($type->getReferencedType()) .
                                                             '` AS `t' . $join . '`';
 
                 $this->condition .= $subWriter->getJoining();
@@ -223,15 +236,15 @@ class UpdateConditionWriter implements ConditionProcessor
         }
     }
 
-    public function processStorableConditionReferenceAsComparison($name, $comparison)
+    public function processStorableConditionReferenceAsComparison(Type $type, $name, $comparison)
     {
         $this->writeBracketOrAnd();
 
         $field = $this->getTableName();
         $field .=  '.`' . $this->storage->fieldNamify($name) . '` ';
-        $fragmentWriter = new ReferenceFragmentWriter($field);
+        $fragmentWriter = new ReferenceFragmentWriter();
 
-        $this->condition .= $fragmentWriter->writeFragment($comparison);
+        $this->condition .= $fragmentWriter->writeFragment($comparison, $field);
     }
 
     public function processStorableConditionId(EqualityComparison $comparison)
@@ -239,53 +252,70 @@ class UpdateConditionWriter implements ConditionProcessor
         $this->writeBracketOrAnd();
 
         $field = '`t' . $this->currentTable . '`.`id`';
-        $fragmentWriter = new IntFragmentWriter($this->storage, $field);
+        $fragmentWriter = new IntFragmentWriter($this->storage);
 
-        $this->condition .= $fragmentWriter->writeFragment($comparison);
+        $this->condition .= $fragmentWriter->writeFragment($comparison, $field);
     }
 
-    public function processStorableConditionText($name, $value)
+    public function processStorableConditionMember(Type $type, $name, Comparison $comparison)
+    {
+        $this->fieldName = $name;
+        $this->comparison = $comparison;
+
+        $type->acceptTypeVisitor($this);
+    }
+
+    public function visitReferenceType(ReferenceType $type)
+    {
+        throw new \Exception("Not supported");
+    }
+
+    public function visitTextType(TextType $type)
+    {
+        $fragmentWriter = new TextFragmentWriter($this->storage);
+
+        $this->writeFragment($fragmentWriter);
+    }
+
+    public function visitIntType(IntType $type)
+    {
+        $fragmentWriter = new IntFragmentWriter($this->storage);
+
+        $this->writeFragment($fragmentWriter);
+    }
+
+    public function visitFloatType(FloatType $type)
+    {
+        $fragmentWriter = new FloatFragmentWriter($this->storage);
+
+        $this->writeFragment($fragmentWriter);
+    }
+
+    public function visitDateTimeType(DateTimeType $type)
+    {
+        $fragmentWriter = new DateTimeFragmentWriter($this->storage);
+
+        $this->writeFragment($fragmentWriter);
+    }
+
+    public function visitCollectionType(CollectionType $type)
+    {
+        throw new \Exception("Not supported");
+    }
+
+    private function writeFragment($fragmentWriter)
     {
         $this->writeBracketOrAnd();
 
         $field = $this->getTableName();
-        $field .=  '.`' . $this->storage->fieldNamify($name) . '` ';
-        $fragmentWriter = new TextFragmentWriter($this->storage, $field);
+        $field .=  '.`' . $this->storage->fieldNamify($this->fieldName) . '` ';
 
-        $this->condition .= $fragmentWriter->writeFragment($value);
+        $this->condition .= $fragmentWriter->writeFragment($this->comparison, $field);
     }
 
-    public function processStorableConditionInt($name, $value)
+    public function processStorableConditionCollection(CollectionType $type, $propertyName, CollectionComparison $comparison)
     {
-        $this->writeBracketOrAnd();
-
-        $field = $this->getTableName();
-        $field .=  '.`' . $this->storage->fieldNamify($name) . '` ';
-        $fragmentWriter = new IntFragmentWriter($this->storage, $field);
-
-        $this->condition .= $fragmentWriter->writeFragment($value);
-    }
-
-    public function processStorableConditionFloat($name, $value)
-    {
-        $this->writeBracketOrAnd();
-
-        $field = $this->getTableName();
-        $field .=  '.`' . $this->storage->fieldNamify($name) . '` ';
-        $fragmentWriter = new FloatFragmentWriter($this->storage, $field);
-
-        $this->condition .= $fragmentWriter->writeFragment($value);
-    }
-
-    public function processStorableConditionDateTime($name, $value)
-    {
-        $this->writeBracketOrAnd();
-
-        $field = $this->getTableName();
-        $field .=  '.`' . $this->storage->fieldNamify($name) . '` ';
-        $fragmentWriter = new DateTimeFragmentWriter($this->storage, $field);
-
-        $this->condition .= $fragmentWriter->writeFragment($value);
+        throw new \Exception("Not yet supported");
     }
 
     private function writeBracketOrAnd()
