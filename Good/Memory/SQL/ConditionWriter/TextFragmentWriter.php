@@ -8,10 +8,8 @@ class TextFragmentWriter extends ScalarFragmentWriter
 {
     private $storage;
 
-    public function __construct(SQLStorage $storage, $field)
+    public function __construct(SQLStorage $storage)
     {
-        parent::__construct($field);
-
         $this->storage = $storage;
     }
 

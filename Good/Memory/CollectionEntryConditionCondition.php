@@ -56,7 +56,7 @@ class CollectionEntryConditionCondition implements Condition, TypeVisitor
 
     public function visitReferenceType(ReferenceType $type)
     {
-        $this->conditionProcessor->processStorableConditionReferenceAsCondition("value", $type->getReferencedType(), $this->condition);
+        $this->conditionProcessor->processStorableConditionReferenceAsCondition($type, "value", $this->condition);
     }
 
     public function visitTextType(TextType $type)

@@ -11,13 +11,10 @@ class ReferenceFragmentWriter implements EqualityComparisonProcessor
 
     private $fragment;
 
-    public function __construct($field)
+    public function writeFragment($comparison, $field)
     {
         $this->field = $field;
-    }
 
-    public function writeFragment($comparison)
-    {
         $comparison->processComparison($this);
 
         return $this->fragment;

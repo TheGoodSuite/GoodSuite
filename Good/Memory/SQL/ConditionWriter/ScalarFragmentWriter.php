@@ -13,13 +13,10 @@ abstract class ScalarFragmentWriter implements ComparisonProcessor
 
     protected abstract function parseScalar($value);
 
-    public function __construct($field)
+    public function writeFragment($comparison, $field)
     {
         $this->field = $field;
-    }
 
-    public function writeFragment($comparison)
-    {
         $comparison->processComparison($this);
 
         return $this->fragment;
@@ -71,18 +68,18 @@ abstract class ScalarFragmentWriter implements ComparisonProcessor
 
     public function processAndComparison(Comparison $comparison1, Comparison $comparison2)
     {
-        $fragment = '(' . $this->writeFragment($comparison1);
+        $fragment = '(' . $this->writeFragment($comparison1, $this->field);
         $fragment .= ' AND ';
-        $fragment .= $this->writeFragment($comparison2) . ')';
+        $fragment .= $this->writeFragment($comparison2, $this->field) . ')';
 
         $this->fragment = $fragment;
     }
 
     public function processOrComparison(Comparison $comparison1, Comparison $comparison2)
     {
-        $fragment = '(' . $this->writeFragment($comparison1);
+        $fragment = '(' . $this->writeFragment($comparison1, $this->field);
         $fragment .= ' OR ';
-        $fragment .= $this->writeFragment($comparison2) . ')';
+        $fragment .= $this->writeFragment($comparison2, $this->field) . ')';
 
         $this->fragment = $fragment;
     }

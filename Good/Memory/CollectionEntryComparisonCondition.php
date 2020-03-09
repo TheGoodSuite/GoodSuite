@@ -41,27 +41,27 @@ class CollectionEntryComparisonCondition implements Condition, TypeVisitor
 
     public function  visitDateTimeType(DateTimeType $type)
     {
-        $this->conditionProcessor->processStorableConditionDateTime("value", $this->comparison);
+        $this->conditionProcessor->processStorableConditionMember($type, "value", $this->comparison);
     }
 
     public function visitFloatType(FloatType $type)
     {
-        $this->conditionProcessor->processStorableConditionFloat("value", $this->comparison);
+        $this->conditionProcessor->processStorableConditionMember($type, "value", $this->comparison);
     }
 
     public function visitIntType(IntType $type)
     {
-        $this->conditionProcessor->processStorableConditionInt("value", $this->comparison);
+        $this->conditionProcessor->processStorableConditionMember($type, "value", $this->comparison);
     }
 
     public function visitReferenceType(ReferenceType $type)
     {
-        $this->conditionProcessor->processStorableConditionReferenceAsComparison("value", $this->comparison);
+        $this->conditionProcessor->processStorableConditionReferenceAsComparison($type, "value", $this->comparison);
     }
 
     public function visitTextType(TextType $type)
     {
-        $this->conditionProcessor->processStorableConditionText("value", $this->comparison);
+        $this->conditionProcessor->processStorableConditionMember($type, "value", $this->comparison);
     }
 
     public function getTargetType()

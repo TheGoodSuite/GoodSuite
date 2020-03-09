@@ -391,12 +391,6 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
 
-        $this->conditionProcess .= '        if ($this->' . $this->member->getName() . ' !== null)' . "\n";
-        $this->conditionProcess .= "        {\n";
-        $this->conditionProcess .= '            $processor->processStorableConditionDateTime("' . $this->member->getName();
-        $this->conditionProcess .= '", $this->' . $this->member->getName() . ');' . "\n";
-        $this->conditionProcess .= "        }\n";
-
         $this->visitNonReference(true, true);
     }
 
@@ -418,12 +412,6 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
 
-        $this->conditionProcess .= '        if ($this->' . $this->member->getName() . ' !== null)' . "\n";
-        $this->conditionProcess .= "        {\n";
-        $this->conditionProcess .= '            $processor->processStorableConditionInt("' . $this->member->getName();
-        $this->conditionProcess .= '", $this->' . $this->member->getName() . ');' . "\n";
-        $this->conditionProcess .= "        }\n";
-
         $this->visitNonReference(true, true);
     }
 
@@ -444,12 +432,6 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $toArrayFormatter = $toArrayFormatterWriter->writeToArrayFormatter('$this->' . $this->member->getName(), $type);
 
         $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
-
-        $this->conditionProcess .= '        if ($this->' . $this->member->getName() . ' !== null)' . "\n";
-        $this->conditionProcess .= "        {\n";
-        $this->conditionProcess .= '            $processor->processStorableConditionFloat("' . $this->member->getName();
-        $this->conditionProcess .= '", $this->' . $this->member->getName() . ');' . "\n";
-        $this->conditionProcess .= "        }\n";
 
         $this->visitNonReference(true, true);
     }
@@ -525,13 +507,15 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->conditionProcess .= '        if ($this->' . $this->member->getName() . ' !== null)' . "\n";
         $this->conditionProcess .= "        {\n";
-        $this->conditionProcess .= '            $processor->processStorableConditionReferenceAsComparison("' . $this->member->getName();
+        $this->conditionProcess .= '            $processor->processStorableConditionReferenceAsComparison(' . $this->typeDefinition->getName();
+        $this->conditionProcess .= '::$' . $this->member->getName() . 'Type, "' . $this->member->getName();
         $this->conditionProcess .= '", $this->' . $this->member->getName() . ');' . "\n";
         $this->conditionProcess .= "        }\n";
         $this->conditionProcess .= '        else if ($this->' . $this->member->getName() . 'Condition !== null)' . "\n";
         $this->conditionProcess .= "        {\n";
-        $this->conditionProcess .= '            $processor->processStorableConditionReferenceAsCondition("' . $this->member->getName();
-        $this->conditionProcess .= '", "' . $type->getReferencedType() . '", $this->' . $this->member->getName() . 'Condition);' . "\n";
+        $this->conditionProcess .= '            $processor->processStorableConditionReferenceAsCondition(' . $this->typeDefinition->getName();
+        $this->conditionProcess .= '::$' . $this->member->getName() . 'Type, "' . $this->member->getName();
+        $this->conditionProcess .= '", $this->' . $this->member->getName() . 'Condition);' . "\n";
         $this->conditionProcess .= "        }\n";
 
         $this->writeResolvableMemberToResolver($this->member->getName(), $type->getReferencedType());
@@ -554,12 +538,6 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $toArrayFormatter = $toArrayFormatterWriter->writeToArrayFormatter('$this->' . $this->member->getName(), $type);
 
         $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
-
-        $this->conditionProcess .= '        if ($this->' . $this->member->getName() . ' !== null)' . "\n";
-        $this->conditionProcess .= "        {\n";
-        $this->conditionProcess .= '            $processor->processStorableConditionText("' . $this->member->getName();
-        $this->conditionProcess .= '", $this->' . $this->member->getName() . ');' . "\n";
-        $this->conditionProcess .= "        }\n";
 
         $this->visitNonReference(true, true);
     }
@@ -679,6 +657,12 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
             $this->conditionSetterSwitch .= '($value instanceof Comparison ? $value : new EqualTo($value));' . "\n";
             $this->conditionSetterSwitch .= '                break;' . "\n";
             $this->conditionSetterSwitch .= "\n";
+
+            $this->conditionProcess .= '        if ($this->' . $this->member->getName() . ' !== null)' . "\n";
+            $this->conditionProcess .= "        {\n";
+            $this->conditionProcess .= '            $processor->processStorableConditionMember(' . $this->typeDefinition->getName();
+            $this->conditionProcess .= '::$' . $this->member->getName() . 'Type, "' . $this->member->getName() . '", $this->' . $this->member->getName() . ');' . "\n";
+            $this->conditionProcess .= "        }\n";
         }
 
         if ($isOrderable)
