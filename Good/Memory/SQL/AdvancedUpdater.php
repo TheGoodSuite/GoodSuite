@@ -55,9 +55,9 @@ class AdvancedUpdater implements StorableVisitor
         //  table is only used in the ON clause)
         if (!$this->first)
         {
-            $conditionWriter = new UpdateConditionWriter($this->storage, 0);
+            $conditionWriter = new UpdateConditionWriter($this->storage, $this->db, 0);
 
-            $conditionWriter->writeCondition($condition, $rootTableName, $this->currentTable, $datatypeName);
+            $conditionWriter->writeCondition($condition, $rootTableName, $this->currentTable);
 
             $this->sql .= ' WHERE ' . $conditionWriter->getCondition();
 

@@ -51,6 +51,14 @@ class Selecter implements ResolverVisitor
 
         $sql .= $this->writeQueryWithoutSelect($datatypeName, $condition);
 
+        $order = $this->gatherOrderClauses($this->orderRootLayer);
+
+        if (\count($order) > 0)
+        {
+            $sql .= ' ORDER BY ';
+            $sql .= \implode(', ', $order);
+        }
+
         $this->db->query($sql);
 
         return $this->db->getResult();
@@ -94,14 +102,6 @@ class Selecter implements ResolverVisitor
             $sql .= ' GROUP BY ' . \implode(', ', $groupBySQL);
 
             $sql .= ' HAVING ' . \implode(' AND ', $conditionWriter->getHaving());
-        }
-
-        $order = $this->gatherOrderClauses($this->orderRootLayer);
-
-        if (\count($order) > 0)
-        {
-            $sql .= ' ORDER BY ';
-            $sql .= \implode(', ', $order);
         }
 
         return $sql;
