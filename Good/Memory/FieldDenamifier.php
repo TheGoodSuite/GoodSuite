@@ -36,7 +36,14 @@ class FieldDenamifier implements StorableVisitor
 
             if ($makeArray)
             {
-                $value = [$value];
+                if ($value === null)
+                {
+                    $value = [];
+                }
+                else
+                {
+                    $value = [$value];
+                }
             }
 
             $this->out[$name] = $value;
