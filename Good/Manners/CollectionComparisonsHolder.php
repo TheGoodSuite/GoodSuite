@@ -26,9 +26,14 @@ class CollectionComparisonsHolder
     {
         if ($comparison == null)
         {
-            $condition = $collectedType::condition();
+            if ($this->collectedType == null)
+            {
+                throw new \Exception("Unable to use hasA without an argument for a collection of scalar values");
+            }
 
-            $this->conditions[] = new HasA($condition);
+            $condition = $this->collectedType::condition();
+
+            $this->comparisons[] = new HasA($condition);
 
             return $condition;
         }
@@ -45,9 +50,14 @@ class CollectionComparisonsHolder
     {
         if ($comparison == null)
         {
-            $condition = $collectedType::condition();
+            if ($this->collectedType == null)
+            {
+                throw new \Exception("Unable to use hasA without an argument for a collection of scalar values");
+            }
 
-            $this->conditions[] = new HasOnly($condition);
+            $condition = $this->collectedType::condition();
+
+            $this->comparisons[] = new HasOnly($condition);
 
             return $condition;
         }
