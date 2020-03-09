@@ -220,7 +220,7 @@ class ConditionWriter implements ConditionProcessor, CollectionComparisonProcess
 
         $this->having[] = "COUNT(DISTINCT `t" . $join . "`.`value`) = COUNT(DISTINCT `t" . $secondJoin . "`.`value`)";
 
-        $this->condition .= $subWriter->getCondition();
+        $this->condition .= '(' . $subWriter->getCondition() . ' OR `t' . $join . '`.`owner` IS NULL)';
         array_push($this->having, ...$subWriter->getHaving());
     }
 

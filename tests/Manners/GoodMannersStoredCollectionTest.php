@@ -677,11 +677,14 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         $results = $this->storage->fetchAll($condition, $resolver);
 
-        $result = $results->getNext();
+        $result1 = $results->getNext();
+        $result2 = $results->getNext();
 
         $this->assertSame(null, $results->getNext());
-        $this->assertSame(4, $result->someInt);
-        $this->assertSame(2, count($result->myInts->toArray()));
+        $this->assertSame(4, $result1->someInt);
+        $this->assertSame(2, count($result1->myInts->toArray()));
+        $this->assertSame(1, $result2->someInt);
+        $this->assertSame(0, count($result2->myInts->toArray()));
     }
 
     public function testHasAReferenceCollectionComparison()
@@ -718,11 +721,11 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $result1 = $results->getNext();
         $result2 = $results->getNext();
 
-        $this->assertSame(null, $result2);//s->getNext());
+        $this->assertSame(null, $results->getNext());
         $this->assertSame(5, $result1->someInt);
         $this->assertSame(1, count($result1->myReferences->toArray()));
-        //$this->assertSame(1, $result2->someInt);
-        //$this->assertSame(0, count($result2->myReferences->toArray()));
+        $this->assertSame(1, $result2->someInt);
+        $this->assertSame(0, count($result2->myReferences->toArray()));
     }
 }
 
