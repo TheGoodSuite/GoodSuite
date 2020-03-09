@@ -651,12 +651,35 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $condition = CollectionType::condition();
         $condition->myInts->hasA(2);
 
-        $results = $this->storage->fetchAll($condition);
+        $resolver = CollectionType::resolver();
+        $resolver->resolveMyInts();
+
+        $results = $this->storage->fetchAll($condition, $resolver);
 
         $result = $results->getNext();
 
         $this->assertSame(null, $results->getNext());
         $this->assertSame(4, $result->someInt);
+        $this->assertSame(2, count($result->myInts->toArray()));
+    }
+
+    public function testHasOnlyCollectionComparison()
+    {
+        $this->populateDatabase();
+
+        $condition = CollectionType::condition();
+        $condition->myInts->hasOnly(new \Good\Manners\Comparison\LessThan(5));
+
+        $resolver = CollectionType::resolver();
+        $resolver->resolveMyInts();
+
+        $results = $this->storage->fetchAll($condition, $resolver);
+
+        $result = $results->getNext();
+
+        $this->assertSame(null, $results->getNext());
+        $this->assertSame(4, $result->someInt);
+        $this->assertSame(2, count($result->myInts->toArray()));
     }
 }
 

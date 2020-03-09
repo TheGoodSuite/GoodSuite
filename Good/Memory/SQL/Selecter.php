@@ -16,7 +16,6 @@ class Selecter implements ResolverVisitor
 
     private $subquery;
 
-    private $sql;
     private $currentTable;
     private $currentTableName;
 
@@ -40,15 +39,30 @@ class Selecter implements ResolverVisitor
 
         $this->currentTableName = $this->storage->tableNamify($datatypeName);
 
-        $this->sql = "SELECT `t0`.`id` AS `t0_id`";
+        $sql = "SELECT DISTINCT ";
+
+        $this->columns = [];
+        $this->columns[] = new SelectColumn("t0", "id", "t0_id");
 
         $resolver->acceptResolverVisitor($this);
 
-        $this->sql .= $this->writeQueryWithoutSelect($datatypeName, $condition);
+        $columnsSQL = array_map([$this, 'columnToSelectClause'], $this->columns);
+        $sql .= \implode(', ', $columnsSQL);
 
-        $this->db->query($this->sql);
+        $sql .= $this->writeQueryWithoutSelect($datatypeName, $condition);
+
+        $this->db->query($sql);
 
         return $this->db->getResult();
+    }
+
+    private function columnToSelectClause($column)
+    {
+        $clause  = '`' . $column->table . '`';
+        $clause .= '.`' . $column->column . '`';
+        $clause .= ' AS `' . $column->as . '`';
+
+        return $clause;
     }
 
     public function writeQueryWithoutSelect($datatypeName,
@@ -73,6 +87,15 @@ class Selecter implements ResolverVisitor
 
         $sql .= ' WHERE ' . $conditionWriter->getCondition();
 
+        if (count($conditionWriter->getHaving()) > 0)
+        {
+            $groupBySQL = array_map([$this, 'getEscapedAs'], $this->columns);
+
+            $sql .= ' GROUP BY ' . \implode(', ', $groupBySQL);
+
+            $sql .= ' HAVING ' . \implode(' AND ', $conditionWriter->getHaving());
+        }
+
         $order = $this->gatherOrderClauses($this->orderRootLayer);
 
         if (\count($order) > 0)
@@ -82,6 +105,11 @@ class Selecter implements ResolverVisitor
         }
 
         return $sql;
+    }
+
+    private function getEscapedAs($column)
+    {
+        return '`' . $column->as . '`';
     }
 
     private function gatherOrderClauses($orderLayer)
@@ -131,9 +159,11 @@ class Selecter implements ResolverVisitor
     {
         if ($selectJoinField)
         {
-            $this->sql .= ', ';
-            $this->sql .= '`t' . $leftTableNumber . '`.`' . $this->storage->fieldNamify($currentTableJoinField) . '`';
-            $this->sql .= ' AS `t' . $leftTableNumber . '_' . $this->storage->fieldNamify($currentTableJoinField) . '`';
+            $table = 't' . $leftTableNumber;
+            $column = $this->storage->fieldNamify($currentTableJoinField);
+            $as = $table . '_' . $column;
+
+            $this->columns[] = new SelectColumn($table, $column, $as);
         }
 
         $join = $this->storage->createJoin($leftTableNumber,
@@ -144,14 +174,15 @@ class Selecter implements ResolverVisitor
 
         if ($collectionField === null)
         {
-            $this->sql .= ', ';
-            $this->sql .= '`t' . $join . '`.`id` AS `t' . $join . '_id`';
+            $this->columns[] = new SelectColumn('t' . $join, 'id', 't' . $join . '_id');
         }
         else
         {
-            $this->sql .= ', ';
-            $this->sql .= '`t' . $join . '`.`value`';
-            $this->sql .= ' AS `t' . $leftTableNumber . '_' . $this->storage->fieldNamify($collectionField) . '`';
+            $table = 't' . $join;
+            $column = 'value';
+            $as = 't' . $leftTableNumber . '_' . $this->storage->fieldNamify($collectionField);
+
+            $this->columns[] = new SelectColumn($table, $column, $as);
         }
 
         if ($resolver != null)
@@ -196,10 +227,11 @@ class Selecter implements ResolverVisitor
     {
         $this->currentPropertyIsCollection = false;
 
-        $this->sql .= ', ';
+        $table = 't' . $this->currentTable;
+        $column = $this->storage->fieldNamify($name);
+        $as = $table . '_' . $column;
 
-        $this->sql .= '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($name) . '`';
-        $this->sql .= ' AS `t' . $this->currentTable . '_' . $this->storage->fieldNamify($name) . '`';
+        $this->columns[] = new SelectColumn($table, $column, $as);
     }
 
     public function resolverVisitOrderAsc($number, $name)

@@ -3,7 +3,6 @@
 namespace Good\Manners\Comparison\Collection;
 
 use Good\Manners\CollectionComparisonProcessor;
-use Good\Service\Type;
 
 class HasA implements CollectionComparison
 {

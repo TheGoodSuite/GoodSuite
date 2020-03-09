@@ -27,6 +27,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
     private $conditionGetterSwitch;
     private $conditionProcess;
 
+    private $typeDefinition;
     private $member;
 
     public function __construct()
@@ -303,6 +304,8 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         {
             $this->member = $member;
             $this->clean .= '        $this->is' . ucfirst($member->getName()) . 'Dirty = false;' . "\n";
+
+            $this->typeDefinition = $typeDefinition;
 
             $member->getType()->acceptTypeVisitor($this);
         }
@@ -646,8 +649,8 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->conditionProcess .= "        {\n";
         $this->conditionProcess .= '            foreach ($this->' . $this->member->getName() . '->getComparisons() as $comparison)' . "\n";
         $this->conditionProcess .= "            {\n";
-        $this->conditionProcess .= '                $processor->processStorableConditionCollection("' . $this->member->getName();
-        $this->conditionProcess .= '", $comparison);' . "\n";
+        $this->conditionProcess .= '                $processor->processStorableConditionCollection(' . $this->typeDefinition->getName();
+        $this->conditionProcess .= '::$' . $this->member->getName() . 'Type, "' . $this->member->getName() . '", $comparison);' . "\n";
         $this->conditionProcess .= "            }\n";
         $this->conditionProcess .= "        }\n";
 

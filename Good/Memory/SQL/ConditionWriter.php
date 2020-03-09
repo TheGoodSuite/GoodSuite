@@ -17,11 +17,14 @@ use Good\Manners\CollectionComparisonProcessor;
 use Good\Manners\Comparison\Collection\CollectionComparison;
 use Good\Manners\Comparison;
 use Good\Manners\Comparison\EqualityComparison;
+use Good\Service\Type;
+use Good\Service\Type\CollectionType;
 
 class ConditionWriter implements ConditionProcessor, CollectionComparisonProcessor
 {
     private $storage;
     private $condition;
+    private $having;
     private $first;
 
     private $currentTable;
@@ -39,10 +42,16 @@ class ConditionWriter implements ConditionProcessor, CollectionComparisonProcess
         return $this->condition;
     }
 
+    public function getHaving()
+    {
+        return $this->having;
+    }
+
     public function writeCondition(Condition $condition)
     {
         $this->first = true;
         $this->condition = '';
+        $this->having = [];
 
         $condition->processCondition($this);
 
@@ -99,6 +108,7 @@ class ConditionWriter implements ConditionProcessor, CollectionComparisonProcess
         $subWriter->writeCondition($condition);
 
         $this->condition .= $subWriter->getCondition();
+        array_push($this->having, ...$subWriter->getHaving());
     }
 
     public function processStorableConditionReferenceAsComparison($name, EqualityComparison $comparison)
@@ -152,62 +162,66 @@ class ConditionWriter implements ConditionProcessor, CollectionComparisonProcess
     }
 
     private $collectionName;
+    private $type;
 
-    public function processStorableConditionCollection($name, CollectionComparison $comparison)
+    public function processStorableConditionCollection(CollectionType $type, $name, CollectionComparison $comparison)
     {
         $this->collectionName = $name;
+        $this->type = $type;
 
         $comparison->processCollectionComparison($this);
     }
 
     public function processHasAConditionComparison(Condition $condition)
     {
-        $this->processHasAComparison(new CollectionEntryConditionCondition($condition));
+        $this->processHasAComparison(new CollectionEntryConditionCondition($this->type->getCollectedType(), $condition));
     }
 
     public function processHasAComparisonComparison(Comparison $comparison)
     {
-        $this->processHasAComparison(new CollectionEntryComparisonCondition($comparison));
+        $this->processHasAComparison(new CollectionEntryComparisonCondition($this->type->getCollectedType(), $comparison));
     }
 
     public function processHasOnlyConditionComparison(Condition $condition)
     {
-        $this->processHasOnlyComparison(new CollectionEntryConditionCondition($condition));
+        $this->processHasOnlyComparison(new CollectionEntryConditionCondition($this->type->getCollectedType(), $condition));
     }
 
     public function processHasOnlyComparisonComparison(Comparison $comparison)
     {
-        $this->processHasOnlyComparison(new CollectionEntryComparisonCondition($comparison));
+        $this->processHasOnlyComparison(new CollectionEntryComparisonCondition($this->type->getCollectedType(), $comparison));
     }
 
     private function processHasAComparison($collectionEntryCondition)
     {
         $this->writeBracketOrAnd();
 
-        $table = $this->currentTableName . '_' . $name;
-        $join = $this->storage->createJoin($this->currentTable, $name, $table, 'owner', null, false);
+        $table = $this->currentTableName . '_' . $this->collectionName;
+        $join = $this->storage->createJoin($this->currentTable, 'id', $table, 'owner', null, false);
 
-        $subWriter = new ConditionWriter($this->storage, $join, $currentTableName);
+        $subWriter = new ConditionWriter($this->storage, $join, $this->currentTableName);
         $subWriter->writeCondition($collectionEntryCondition);
 
         $this->condition .= $subWriter->getCondition();
-        $this->condition .= " AND COUNT(`t" . $join . "`.`value`) > 0";
+        array_push($this->having, ...$subWriter->getHaving());
     }
 
     private function processHasOnlyComparison($collectionEntryCondition)
     {
         $this->writeBracketOrAnd();
 
-        $table = $this->currentTableName . '_' . $name;
-        $join = $this->storage->createJoin($this->currentTable, $name, $table, 'owner', null, false);
+        $table = $this->currentTableName . '_' . $this->collectionName;
+        $join = $this->storage->createJoin($this->currentTable, 'id', $table, 'owner', null, false);
 
-        $subWriter = new ConditionWriter($this->storage, $join, $currentTableName);
+        $subWriter = new ConditionWriter($this->storage, $join, $this->currentTableName);
         $subWriter->writeCondition($collectionEntryCondition);
 
-        $secondJoin = $this->storage->createJoin($this->currentTable, $name, $table, 'owner', null, false);
+        $secondJoin = $this->storage->createJoin($this->currentTable, 'id', $table, 'owner', null, false);
+
+        $this->having[] = "COUNT(DISTINCT `t" . $join . "`.`value`) = COUNT(DISTINCT `t" . $secondJoin . "`.`value`)";
 
         $this->condition .= $subWriter->getCondition();
-        $this->condition .= " AND COUNT(`t" . $join . "`.`value`) = COUNT(`t" . $secondJoin . "`.`value`)";
+        array_push($this->having, ...$subWriter->getHaving());
     }
 
     private function writeBracketOrAnd()

@@ -5,6 +5,8 @@ namespace Good\Manners;
 use Good\Manners\Comparison;
 use Good\Manners\Comparison\Collection\CollectionComparison;
 use Good\Manners\Comparison\EqualityComparison;
+use Good\Service\Type;
+use Good\Service\Type\CollectionType;
 
 interface ConditionProcessor
 {
@@ -20,7 +22,7 @@ interface ConditionProcessor
     public function processStorableConditionReferenceAsCondition($propertyName, $datatypeName, Condition $condition);
     public function processStorableConditionReferenceAsComparison($propertyName, EqualityComparison $comparison);
 
-    public function processStorableConditionCollection($propertyName, CollectionComparison $comparison);
+    public function processStorableConditionCollection(CollectionType $type, $propertyName, CollectionComparison $comparison);
 }
 
 ?>

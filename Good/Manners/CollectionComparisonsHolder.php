@@ -12,7 +12,7 @@ class CollectionComparisonsHolder
 
     private $collectedType;
 
-    public function __construct(Type $collectedType)
+    public function __construct($collectedType)
     {
         $this->collectedType = $collectedType;
     }
@@ -26,9 +26,9 @@ class CollectionComparisonsHolder
     {
         if ($comparison == null)
         {
-            $condition = ${$this->collectedType->getReferencedTypeIfAny()}::condition();
+            $condition = $collectedType::condition();
 
-            $this->conditions[] = new HasA($this->collectedType, $condition);
+            $this->conditions[] = new HasA($condition);
 
             return $condition;
         }
@@ -45,9 +45,9 @@ class CollectionComparisonsHolder
     {
         if ($comparison == null)
         {
-            $condition = ${$this->collectedType->getReferencedTypeIfAny()}::condition();
+            $condition = $collectedType::condition();
 
-            $this->conditions[] = new HasOnly($this->collectedType, $condition);
+            $this->conditions[] = new HasOnly($condition);
 
             return $condition;
         }

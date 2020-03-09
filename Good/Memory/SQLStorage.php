@@ -295,7 +295,7 @@ class SQLStorage extends Storage
         return $this->joins;
     }
 
-    public function createJoin($tableNumberOrigin, $fieldNameOrigin, $tableNameDestination, $fieldNameDestination, $selectedFieldName = null, $resuable = true)
+    public function createJoin($tableNumberOrigin, $fieldNameOrigin, $tableNameDestination, $fieldNameDestination, $selectedFieldName = null, $reusable = true)
     {
         if ($selectedFieldName == null)
         {
@@ -318,10 +318,14 @@ class SQLStorage extends Storage
             // (you can just call fieldnamify on it) as well as when you do have the
             // fieldnamified type.
             $this->joins[$tableNumberOrigin][$this->fieldNamify($selectedFieldName)] = $join;
-
-            $this->joins[$this->numberOfJoins] = array();
-            $this->joinsReverse[$this->numberOfJoins] = $join;
         }
+        else
+        {
+            $this->joins[-1][] = $join;
+        }
+
+        $this->joins[$this->numberOfJoins] = array();
+        $this->joinsReverse[$this->numberOfJoins] = $join;
 
         return $this->numberOfJoins;
     }

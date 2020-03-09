@@ -212,7 +212,7 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
             $access = 'public';
         }
 
-        $this->output .= '    static private $' . $this->member->getName() . "Type;\n";
+        $this->output .= '    public static $' . $this->member->getName() . "Type;\n";
         $this->output .= "\n";
 
         $typeGeneratorWriter = new TypeGeneratorWriter();

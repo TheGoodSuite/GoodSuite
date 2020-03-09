@@ -29,7 +29,7 @@ class CollectionEntryComparisonCondition implements Condition, TypeVisitor
 
     public function processCondition(ConditionProcessor $processor)
     {
-        $this->processor = $processor;
+        $this->conditionProcessor = $processor;
 
         $this->collectedType->acceptTypeVisitor($this);
     }
@@ -46,22 +46,22 @@ class CollectionEntryComparisonCondition implements Condition, TypeVisitor
 
     public function visitFloatType(FloatType $type)
     {
-        $this->storableVisitor->processStorableConditionFloat("value", $this->comparison);
+        $this->conditionProcessor->processStorableConditionFloat("value", $this->comparison);
     }
 
     public function visitIntType(IntType $type)
     {
-        $this->storableVisitor->processStorableConditionInt("value", $this->comparison);
+        $this->conditionProcessor->processStorableConditionInt("value", $this->comparison);
     }
 
     public function visitReferenceType(ReferenceType $type)
     {
-        $this->storableVisitor->processStorableConditionReferenceAsComparison("value", $this->comparison);
+        $this->conditionProcessor->processStorableConditionReferenceAsComparison("value", $this->comparison);
     }
 
     public function visitTextType(TextType $type)
     {
-        $this->storableVisitor->processStorableConditionText("value", $this->comparison);
+        $this->conditionProcessor->processStorableConditionText("value", $this->comparison);
     }
 
     public function getTargetType()
