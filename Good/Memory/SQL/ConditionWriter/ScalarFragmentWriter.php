@@ -24,7 +24,7 @@ abstract class ScalarFragmentWriter implements ComparisonProcessor
 
     public function processEqualToComparison($value)
     {
-        if ($value == null)
+        if ($value === null)
         {
             $this->fragment = $this->field . ' IS NULL';
         }
@@ -36,7 +36,7 @@ abstract class ScalarFragmentWriter implements ComparisonProcessor
 
     public function processNotEqualToComparison($value)
     {
-        if ($value == null)
+        if ($value === null)
         {
             $this->fragment = $this->field . ' IS NOT NULL';
         }
