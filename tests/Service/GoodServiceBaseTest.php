@@ -70,6 +70,13 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
             {
                 $this->files[] = $file;
             }
+
+            $file = $this->outputDir . $type . 'Condition.php';
+
+            if (file_exists($file))
+            {
+                $this->files[] = $file;
+            }
         }
     }
 
