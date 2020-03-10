@@ -19,7 +19,6 @@ class Selecter implements ResolverVisitor
     private $currentTable;
     private $currentTableName;
 
-    private $orderRootLayer;
     private $orderLayer;
 
     private $currentPropertyIsCollection;
@@ -33,31 +32,20 @@ class Selecter implements ResolverVisitor
 
     public function select($datatypeName, Condition $condition, Resolver $resolver)
     {
-        $this->orderRootLayer = new OrderLayer(0);
-        $this->orderLayer = $this->orderRootLayer;
+        $orderRootLayer = new OrderLayer(0);
+        $this->orderLayer = $orderRootLayer;
         $this->currentPropertyIsCollection = false;
 
-        $this->currentTableName = $this->storage->tableNamify($datatypeName);
-
-        $sql = "SELECT DISTINCT ";
 
         $this->columns = [];
         $this->columns[] = new SelectColumn("t0", "id", "t0_id");
 
+        $this->currentTableName = $this->storage->tableNamify($datatypeName);
+
         $resolver->acceptResolverVisitor($this);
+        $order = $this->gatherOrderClauses($orderRootLayer);
 
-        $columnsSQL = array_map([$this, 'columnToSelectClause'], $this->columns);
-        $sql .= \implode(', ', $columnsSQL);
-
-        $sql .= $this->writeQueryWithoutSelect($datatypeName, $condition);
-
-        $order = $this->gatherOrderClauses($this->orderRootLayer);
-
-        if (\count($order) > 0)
-        {
-            $sql .= ' ORDER BY ';
-            $sql .= \implode(', ', $order);
-        }
+        $sql = $this->writeQueryForColumns($datatypeName, $condition, $this->columns, $order);
 
         $this->db->query($sql);
 
@@ -73,10 +61,14 @@ class Selecter implements ResolverVisitor
         return $clause;
     }
 
-    public function writeQueryWithoutSelect($datatypeName,
-                                            Condition $condition)
+    public function writeQueryForColumns($datatypeName, Condition $condition, $columns, $order)
     {
-        $sql  = " FROM `" . $this->storage->tableNamify($datatypeName) . "` AS t0";
+        $sql = "SELECT DISTINCT ";
+
+        $columnsSQL = array_map([$this, 'columnToSelectClause'], $columns);
+        $sql .= \implode(', ', $columnsSQL);
+
+        $sql .= " FROM `" . $this->storage->tableNamify($datatypeName) . "` AS t0";
 
         $conditionWriter = new ConditionWriter($this->storage, 0, $datatypeName);
         $conditionWriter->writeCondition($condition);
@@ -97,11 +89,17 @@ class Selecter implements ResolverVisitor
 
         if (count($conditionWriter->getHaving()) > 0)
         {
-            $groupBySQL = array_map([$this, 'getEscapedAs'], $this->columns);
+            $groupBySQL = array_map([$this, 'getEscapedAs'], $columns);
 
             $sql .= ' GROUP BY ' . \implode(', ', $groupBySQL);
 
             $sql .= ' HAVING ' . \implode(' AND ', $conditionWriter->getHaving());
+        }
+
+        if (\count($order) > 0)
+        {
+            $sql .= ' ORDER BY ';
+            $sql .= \implode(', ', $order);
         }
 
         return $sql;

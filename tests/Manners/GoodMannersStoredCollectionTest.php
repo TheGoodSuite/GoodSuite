@@ -763,7 +763,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->assertSame(5, $result2->someInt);
     }
 
-    public function testHasOnlyACollectionModifyAny()
+    public function testHasACollectionModifyAny()
     {
         $this->populateDatabase();
 
@@ -784,6 +784,29 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         $this->assertSame(null, $results->getNext());
         $this->assertSame(1, $result->someInt);
+    }
+
+    public function testHasOnlyCollectionModifyAny()
+    {
+        $this->populateDatabase();
+
+        $condition = CollectionType::condition();
+        $condition->myInts->hasOnly(new \Good\Manners\Comparison\GreaterThan(2));
+
+        $changes = new CollectionType();
+        $changes->someInt = 0;
+
+        $this->storage->modifyAny($condition, $changes);
+
+        $condition = CollectionType::condition();
+        $condition->someInt = new \Good\Manners\Comparison\NotEqualTo(0);
+
+        $results = $this->storage->fetchAll($condition);
+
+        $result = $results->getNext();
+
+        $this->assertSame(null, $results->getNext());
+        $this->assertSame(4, $result->someInt);
     }
 }
 

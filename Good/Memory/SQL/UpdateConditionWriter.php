@@ -30,8 +30,10 @@ class UpdateConditionWriter
     {
         $selecter = new Selecter($this->storage, $this->db, 0);
 
-        $select  = 'SELECT `t' . $updatingTableNumber .'`.`id`';
-        $select .= ' ' . $selecter->writeQueryWithoutSelect($rootTableName, $condition);
+        $columns = [new SelectColumn('t' . $updatingTableNumber, 'id', 'id')];
+        $order = [];
+
+        $select = ' ' . $selecter->writeQueryForColumns($rootTableName, $condition, $columns, $order);
 
         $this->condition = '`id` IN (' . $select . ')';
     }
