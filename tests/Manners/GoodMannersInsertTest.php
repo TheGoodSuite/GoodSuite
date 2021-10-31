@@ -2,6 +2,7 @@
 
 /**
  * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
  */
 abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
 {

@@ -4,23 +4,6 @@ class GoodLookingBaseFunctionHandlersTest extends \PHPUnit\Framework\TestCase
 {
     private $template = '';
 
-    public static function setUpBeforeClass(): void
-    {
-        // PHPUnit is breaking my tests (but not when run in isolation, only when multiple classes are run)
-        // through some of the magic it provides when "trying" to be helpful
-        // Let's beark into its blacklist to prevent it from doing this!
-        $blacklist = new \PHPUnit\Util\Blacklist();
-        $refl = new \ReflectionObject($blacklist);
-        $method = $refl->getMethod('initialize');
-        $method->setAccessible(true);
-        $method->invoke($blacklist);
-        $prop = $refl->getProperty('directories');
-        $prop->setAccessible(true);
-        $arr = $prop->getValue();
-        $arr[] = realpath(dirname(__FILE__) . '/../testInputFiles/');
-        $prop->setValue($arr);
-    }
-
     public function setUp(): void
     {
         $this->template = dirname(__FILE__) . '/../testInputFiles/template';

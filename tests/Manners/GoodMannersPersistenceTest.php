@@ -2,6 +2,7 @@
 
 /**
  * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
  */
 abstract class GoodMannersPersistenceTest extends \PHPUnit\Framework\TestCase
 {

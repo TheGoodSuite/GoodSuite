@@ -2,6 +2,7 @@
 
 /**
  * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
  *
  * Tests the different sets of arguments you should and shouldn't be able
  * to pass to the `fetchAll()` method.

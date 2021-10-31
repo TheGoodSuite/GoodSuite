@@ -2,6 +2,7 @@
 
 /**
  * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
  */
 abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
 {

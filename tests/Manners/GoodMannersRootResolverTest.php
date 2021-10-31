@@ -2,6 +2,7 @@
 
 /**
  * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
  *
  * Tests that when you provide a non-root resolver, the root of that
  * resolver will be used.

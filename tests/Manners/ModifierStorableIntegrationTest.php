@@ -9,6 +9,7 @@ require_once dirname(__FILE__) . '/ModifierStorableBaseTest.php';
 
 /**
  * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
  */
 class GoodMannersModifierStorableIntegrationTest extends GoodMannersModifierStorableBaseTest
 {

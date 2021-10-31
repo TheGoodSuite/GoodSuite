@@ -5,6 +5,7 @@ use Good\Manners\Comparison\GreaterThan;
 
 /**
  * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
  */
 abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCase
 {

@@ -2,6 +2,7 @@
 
 /**
  * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
  */
 class GoodMannersResolverChainingTest extends \PHPUnit\Framework\TestCase
 {

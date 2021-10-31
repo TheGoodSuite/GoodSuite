@@ -2,26 +2,10 @@
 
 /**
  * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
  */
 class GoodLookingFunctionHandlerCachingTest extends \PHPUnit\Framework\TestCase
 {
-    public static function _setUpBeforeClass()
-    {
-        // PHPUnit is breaking my tests (but not when run in isolation, only when multiple classes are run)
-        // through some of the magic it provides when "trying" to be helpful
-        // Let's beark into its blacklist to prevent it from doing this!
-        $blacklist = new \PHPUnit\Util\Blacklist();
-        $refl = new \ReflectionObject($blacklist);
-        $method = $refl->getMethod('initialize');
-        $method->setAccessible(true);
-        $method->invoke($blacklist);
-        $prop = $refl->getProperty('directories');
-        $prop->setAccessible(true);
-        $arr = $prop->getValue();
-        $arr[] = realpath(dirname(__FILE__) . '/../testInputFiles/');
-        $prop->setValue($arr);
-    }
-
     public static function _tearDownAfterClass()
     {
         unlink(dirname(__FILE__) . '/../testInputFiles/template');
@@ -30,9 +14,6 @@ class GoodLookingFunctionHandlerCachingTest extends \PHPUnit\Framework\TestCase
 
     public function testCompileTemplate()
     {
-        // For some reason, the normal setUpBeforeClass runs more than once when using @runTestsInSeparateProcesses
-        self::_setUpBeforeClass();
-
         // not really a test, but set up
         // however, it needed to run in a separate process and making it a test
         // was the easiest way to make that happen.

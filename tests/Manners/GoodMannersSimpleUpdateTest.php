@@ -2,6 +2,7 @@
 
 /**
  * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
  */
 abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
 {

@@ -2,6 +2,7 @@
 
 /**
  * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
  */
 class GoodMannersCollectionTest extends \PHPUnit\Framework\TestCase
 {

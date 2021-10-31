@@ -10,6 +10,7 @@ require_once dirname(__FILE__) . '/../Service/GoodServiceBaseTest.php';
 
 /**
  * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
  */
 abstract class GoodMannersModifierStorableBaseTest extends GoodServiceBaseTest
 {

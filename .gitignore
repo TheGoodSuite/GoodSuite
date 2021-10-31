@@ -1,2 +1,7 @@
 public_html
 *.compiledTemplate
+vendor
+
+# I'm using composer to install phpunit at the moment, but it's not yet truly supported yet. Soon...
+composer.json
+composer.lock

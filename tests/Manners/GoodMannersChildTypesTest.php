@@ -92,6 +92,7 @@ class IndependentFactoryBoth implements \Good\Manners\StorableFactory
 
 /**
  * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
  */
 abstract class GoodMannersChildTypesTest extends \PHPUnit\Framework\TestCase
 {
