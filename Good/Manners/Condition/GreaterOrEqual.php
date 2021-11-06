@@ -17,11 +17,7 @@ class GreaterOrEqual implements Condition
 
     public function processCondition(ConditionProcessor $processor)
     {
-    }
-
-    public function processComparison(ComparisonProcessor $processor)
-    {
-        $processor->processGreaterOrEqualComparison($this->value);
+        $processor->processGreaterOrEqualCondition($this->value);
     }
 
     public function getTargetType()

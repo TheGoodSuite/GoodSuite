@@ -3,9 +3,10 @@
 namespace Good\Memory\SQL\ConditionWriter;
 
 use Good\Manners\Condition;
-use Good\Manners\ComparisonProcessor;
+use Good\Manners\Condition\ComplexCondition;
+use Good\Manners\ConditionProcessor;
 
-abstract class ScalarFragmentWriter implements ComparisonProcessor
+abstract class ScalarFragmentWriter implements ConditionProcessor
 {
     private $field;
 
@@ -17,12 +18,12 @@ abstract class ScalarFragmentWriter implements ComparisonProcessor
     {
         $this->field = $field;
 
-        $comparison->processComparison($this);
+        $comparison->processCondition($this);
 
         return $this->fragment;
     }
 
-    public function processEqualToComparison($value)
+    public function processEqualToCondition($value)
     {
         if ($value === null)
         {
@@ -34,7 +35,7 @@ abstract class ScalarFragmentWriter implements ComparisonProcessor
         }
     }
 
-    public function processNotEqualToComparison($value)
+    public function processNotEqualToCondition($value)
     {
         if ($value === null)
         {
@@ -46,27 +47,27 @@ abstract class ScalarFragmentWriter implements ComparisonProcessor
         }
     }
 
-    public function processGreaterThanComparison($value)
+    public function processGreaterThanCondition($value)
     {
         $this->fragment = $this->field . ' > ' . $this->parseScalar($value);
     }
 
-    public function processGreaterOrEqualComparison($value)
+    public function processGreaterOrEqualCondition($value)
     {
         $this->fragment = $this->field . ' >= ' . $this->parseScalar($value);
     }
 
-    public function processLessThanComparison($value)
+    public function processLessThanCondition($value)
     {
         $this->fragment = $this->field . ' < ' . $this->parseScalar($value);
     }
 
-    public function processLessOrEqualComparison($value)
+    public function processLessOrEqualCondition($value)
     {
         $this->fragment = $this->field . ' <= ' . $this->parseScalar($value);
     }
 
-    public function processAndComparison(Condition $comparison1, Condition $comparison2)
+    public function processAndCondition(Condition $comparison1, Condition $comparison2)
     {
         $fragment = '(' . $this->writeFragment($comparison1, $this->field);
         $fragment .= ' AND ';
@@ -75,13 +76,18 @@ abstract class ScalarFragmentWriter implements ComparisonProcessor
         $this->fragment = $fragment;
     }
 
-    public function processOrComparison(Condition $comparison1, Condition $comparison2)
+    public function processOrCondition(Condition $comparison1, Condition $comparison2)
     {
         $fragment = '(' . $this->writeFragment($comparison1, $this->field);
         $fragment .= ' OR ';
         $fragment .= $this->writeFragment($comparison2, $this->field) . ')';
 
         $this->fragment = $fragment;
+    }
+
+    public function processComplexCondition(ComplexCondition $condition)
+    {
+        throw new \Exception("Complex condition cannot be applied to non-object fields");
     }
 }
 

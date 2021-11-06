@@ -4,7 +4,6 @@ namespace Good\Manners\Condition;
 
 use Good\Manners\Condition;
 use Good\Manners\ConditionProcessor;
-use Good\Manners\ComparisonProcessor;
 
 class GreaterThan implements Condition
 {
@@ -17,11 +16,7 @@ class GreaterThan implements Condition
 
     public function processCondition(ConditionProcessor $processor)
     {
-    }
-
-    public function processComparison(ComparisonProcessor $processor)
-    {
-        $processor->processGreaterThanComparison($this->value);
+        $processor->processGreaterThanCondition($this->value);
     }
 
     public function getTargetType()

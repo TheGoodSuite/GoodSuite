@@ -248,7 +248,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->condition .= 'use \Good\Manners\Condition\ComplexCondition;' . "\n";
         $this->condition .= 'use \Good\Manners\Condition\EqualTo;' . "\n";
         $this->condition .= 'use \Good\Manners\ConditionProcessor;' . "\n";
-        $this->condition .= 'use \Good\Manners\ComparisonProcessor;' . "\n";
+        $this->condition .= 'use \Good\Manners\ComplexConditionProcessor;' . "\n";
         $this->condition .= "\n";
         $this->condition .= 'class ' . $typeDefinition->getName() . 'Condition implements ComplexCondition' . "\n";
         $this->condition .= "{\n";
@@ -264,8 +264,9 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->condition .= '        $this->id = $condition;' . "\n";
         $this->condition .= "    }\n";
         $this->condition .= "\n";
-        $this->condition .= '    public function processComparison(ComparisonProcessor $processor)' . "\n";
+        $this->condition .= '    public function processCondition(ConditionProcessor $processor)' . "\n";
         $this->condition .= "    {\n";
+        $this->condition .= '        $processor->processComplexCondition($this);' . "\n";
         $this->condition .= "    }\n";
         $this->condition .= "\n";
 
@@ -279,12 +280,12 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->conditionGetterSwitch  = '        switch($property)' . "\n";
         $this->conditionGetterSwitch .= "        {\n";
 
-        $this->conditionProcess  = '    public function processCondition(ConditionProcessor $processor)' . "\n";
-        $this->conditionProcess .= "    {\n";
-        $this->conditionProcess .= '        if ($this->id !== null)' . "\n";
-        $this->conditionProcess .= "        {\n";
-        $this->conditionProcess .= '            $processor->processStorableConditionId($this->id);' . "\n";
-        $this->conditionProcess .= "        }\n";
+        $this->conditionComplexProcess  = '    public function processComplexCondition(ComplexConditionProcessor $processor)' . "\n";
+        $this->conditionComplexProcess .= "    {\n";
+        $this->conditionComplexProcess .= '        if ($this->id !== null)' . "\n";
+        $this->conditionComplexProcess .= "        {\n";
+        $this->conditionComplexProcess .= '            $processor->processId($this->id);' . "\n";
+        $this->conditionComplexProcess .= "        }\n";
 
         $this->resolverVisit  = '    public function acceptResolverVisitor' .
                                                 '(\\Good\\Manners\\ResolverVisitor $visitor)' . "\n";
@@ -359,10 +360,10 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->conditionGetterSwitch .= '                throw new \Exception("Unknown property.");' . "\n";
         $this->conditionGetterSwitch .= "        }\n";
 
-        $this->conditionProcess .= "    }\n";
-        $this->conditionProcess .= "\n";
+        $this->conditionComplexProcess .= "    }\n";
+        $this->conditionComplexProcess .= "\n";
 
-        $this->condition .= $this->conditionProcess;
+        $this->condition .= $this->conditionComplexProcess;
         $this->condition .= '    public function __set($property, $value)' . "\n";
         $this->condition .= "    {\n";
         $this->condition .= $this->conditionSetterSwitch;
@@ -509,18 +510,18 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->conditionSetterSwitch .= '                break;' . "\n";
         $this->conditionSetterSwitch .= "\n";
 
-        $this->conditionProcess .= '        if ($this->' . $this->member->getName() . ' !== null)' . "\n";
-        $this->conditionProcess .= "        {\n";
-        $this->conditionProcess .= '            $processor->processStorableConditionReferenceAsComparison(' . $this->typeDefinition->getName();
-        $this->conditionProcess .= '::$' . $this->member->getName() . 'Type, "' . $this->member->getName();
-        $this->conditionProcess .= '", $this->' . $this->member->getName() . ');' . "\n";
-        $this->conditionProcess .= "        }\n";
-        $this->conditionProcess .= '        else if ($this->' . $this->member->getName() . 'Condition !== null)' . "\n";
-        $this->conditionProcess .= "        {\n";
-        $this->conditionProcess .= '            $processor->processStorableConditionReferenceAsCondition(' . $this->typeDefinition->getName();
-        $this->conditionProcess .= '::$' . $this->member->getName() . 'Type, "' . $this->member->getName();
-        $this->conditionProcess .= '", $this->' . $this->member->getName() . 'Condition);' . "\n";
-        $this->conditionProcess .= "        }\n";
+        $this->conditionComplexProcess .= '        if ($this->' . $this->member->getName() . ' !== null)' . "\n";
+        $this->conditionComplexProcess .= "        {\n";
+        $this->conditionComplexProcess .= '            $processor->processReferenceMemberAsComparison(' . $this->typeDefinition->getName();
+        $this->conditionComplexProcess .= '::$' . $this->member->getName() . 'Type, "' . $this->member->getName();
+        $this->conditionComplexProcess .= '", $this->' . $this->member->getName() . ');' . "\n";
+        $this->conditionComplexProcess .= "        }\n";
+        $this->conditionComplexProcess .= '        else if ($this->' . $this->member->getName() . 'Condition !== null)' . "\n";
+        $this->conditionComplexProcess .= "        {\n";
+        $this->conditionComplexProcess .= '            $processor->processReferenceMemberAsCondition(' . $this->typeDefinition->getName();
+        $this->conditionComplexProcess .= '::$' . $this->member->getName() . 'Type, "' . $this->member->getName();
+        $this->conditionComplexProcess .= '", $this->' . $this->member->getName() . 'Condition);' . "\n";
+        $this->conditionComplexProcess .= "        }\n";
 
         $this->writeResolvableMemberToResolver($this->member->getName(), $type->getReferencedType());
     }
@@ -627,14 +628,14 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->conditionGetterSwitch .= '                return $this->get' . \ucfirst($this->member->getName()) . '();' . "\n";
         $this->conditionGetterSwitch .= "\n";
 
-        $this->conditionProcess .= '        if ($this->' . $this->member->getName() . ' !== null)' . "\n";
-        $this->conditionProcess .= "        {\n";
-        $this->conditionProcess .= '            foreach ($this->' . $this->member->getName() . '->getComparisons() as $comparison)' . "\n";
-        $this->conditionProcess .= "            {\n";
-        $this->conditionProcess .= '                $processor->processStorableConditionCollection(' . $this->typeDefinition->getName();
-        $this->conditionProcess .= '::$' . $this->member->getName() . 'Type, "' . $this->member->getName() . '", $comparison);' . "\n";
-        $this->conditionProcess .= "            }\n";
-        $this->conditionProcess .= "        }\n";
+        $this->conditionComplexProcess .= '        if ($this->' . $this->member->getName() . ' !== null)' . "\n";
+        $this->conditionComplexProcess .= "        {\n";
+        $this->conditionComplexProcess .= '            foreach ($this->' . $this->member->getName() . '->getComparisons() as $comparison)' . "\n";
+        $this->conditionComplexProcess .= "            {\n";
+        $this->conditionComplexProcess .= '                $processor->processCollectionMember(' . $this->typeDefinition->getName();
+        $this->conditionComplexProcess .= '::$' . $this->member->getName() . 'Type, "' . $this->member->getName() . '", $comparison);' . "\n";
+        $this->conditionComplexProcess .= "            }\n";
+        $this->conditionComplexProcess .= "        }\n";
 
         // A bit of a misuse of getReferencedTypeIfAny: if I ever want to remove it, I shouldn't let this get in the way!
         $this->visitNonReference(false, $type->getCollectedType()->getReferencedTypeIfAny() == null, $orderableCheck);
@@ -662,11 +663,11 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
             $this->conditionSetterSwitch .= '                break;' . "\n";
             $this->conditionSetterSwitch .= "\n";
 
-            $this->conditionProcess .= '        if ($this->' . $this->member->getName() . ' !== null)' . "\n";
-            $this->conditionProcess .= "        {\n";
-            $this->conditionProcess .= '            $processor->processStorableConditionMember(' . $this->typeDefinition->getName();
-            $this->conditionProcess .= '::$' . $this->member->getName() . 'Type, "' . $this->member->getName() . '", $this->' . $this->member->getName() . ');' . "\n";
-            $this->conditionProcess .= "        }\n";
+            $this->conditionComplexProcess .= '        if ($this->' . $this->member->getName() . ' !== null)' . "\n";
+            $this->conditionComplexProcess .= "        {\n";
+            $this->conditionComplexProcess .= '            $processor->processPrimitiveMember(' . $this->typeDefinition->getName();
+            $this->conditionComplexProcess .= '::$' . $this->member->getName() . 'Type, "' . $this->member->getName() . '", $this->' . $this->member->getName() . ');' . "\n";
+            $this->conditionComplexProcess .= "        }\n";
         }
 
         if ($isOrderable)

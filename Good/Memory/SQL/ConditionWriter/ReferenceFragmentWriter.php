@@ -3,9 +3,10 @@
 namespace Good\Memory\SQL\ConditionWriter;
 
 use Good\Manners\Condition;
-use Good\Manners\ComparisonProcessor;
+use Good\Manners\Condition\ComplexCondition;
+use Good\Manners\ConditionProcessor;
 
-class ReferenceFragmentWriter implements ComparisonProcessor
+class ReferenceFragmentWriter implements ConditionProcessor
 {
     private $field;
 
@@ -15,12 +16,12 @@ class ReferenceFragmentWriter implements ComparisonProcessor
     {
         $this->field = $field;
 
-        $comparison->processComparison($this);
+        $comparison->processCondition($this);
 
         return $this->fragment;
     }
 
-    public function processEqualToComparison($value)
+    public function processEqualToCondition($value)
     {
         if ($value == null)
         {
@@ -32,7 +33,7 @@ class ReferenceFragmentWriter implements ComparisonProcessor
         }
     }
 
-    public function processNotEqualToComparison($value)
+    public function processNotEqualToCondition($value)
     {
         if ($value == null)
         {
@@ -44,27 +45,32 @@ class ReferenceFragmentWriter implements ComparisonProcessor
         }
     }
 
-    public function processGreaterThanComparison($value)
+    public function processGreaterThanCondition($value)
     {
         throw new \Exception("Greater than is not a valid comparison for objects");
     }
 
-    public function processGreaterOrEqualComparison($value)
+    public function processGreaterOrEqualCondition($value)
     {
         throw new \Exception("Greater than or equals is not a valid comparison for objects");
     }
 
-    public function processLessThanComparison($value)
+    public function processLessThanCondition($value)
     {
         throw new \Exception("Less than is not a valid comparison for objects");
     }
 
-    public function processLessOrEqualComparison($value)
+    public function processLessOrEqualCondition($value)
     {
         throw new \Exception("Less than or equals is not a valid comparison for objects");
     }
 
-    public function processAndComparison(Condition $comparison1, Condition $comparison2)
+    public function processComplexCondition(ComplexCondition $condition)
+    {
+        throw new \Exception("Using complex conditions for a reference comparison should follow a different code path than this...");
+    }
+
+    public function processAndCondition(Condition $comparison1, Condition $comparison2)
     {
         $fragment = '(' . $this->writeFragment($comparison1);
         $fragment .= ' AND ';
@@ -73,7 +79,7 @@ class ReferenceFragmentWriter implements ComparisonProcessor
         $this->fragment = $fragment;
     }
 
-    public function processOrComparison(Condition $comparison1, Condition $comparison2)
+    public function processOrCondition(Condition $comparison1, Condition $comparison2)
     {
         $fragment = '(' . $this->writeFragment($comparison1);
         $fragment .= ' OR ';

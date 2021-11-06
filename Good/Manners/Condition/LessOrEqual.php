@@ -4,7 +4,6 @@ namespace Good\Manners\Condition;
 
 use Good\Manners\Condition;
 use Good\Manners\ConditionProcessor;
-use Good\Manners\ComparisonProcessor;
 
 class LessOrEqual implements Condition
 {
@@ -17,11 +16,7 @@ class LessOrEqual implements Condition
 
     public function processCondition(ConditionProcessor $processor)
     {
-    }
-
-    public function processComparison(ComparisonProcessor $processor)
-    {
-        $processor->processLessOrEqualComparison($this->value);
+        $processor->processLessOrEqualCondition($this->value);
     }
 
     public function getTargetType()

@@ -12,6 +12,8 @@ use Good\Memory\SQL\ConditionWriter\ReferenceFragmentWriter;
 use Good\Memory\SQL\ConditionWriter\TextFragmentWriter;
 use Good\Manners\Storable;
 use Good\Manners\Condition;
+use Good\Manners\Condition\ComplexCondition;
+use Good\Manners\ComplexConditionProcessor;
 use Good\Manners\ConditionProcessor;
 use Good\Manners\CollectionComparisonProcessor;
 use Good\Manners\Condition\Collection\CollectionCondition;
@@ -24,7 +26,7 @@ use Good\Rolemodel\Schema\Type\DateTimeType;
 use Good\Rolemodel\Schema\Type\CollectionType;
 use Good\Service\Type;
 
-class ConditionWriter implements ConditionProcessor, CollectionComparisonProcessor, TypeVisitor
+class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, CollectionComparisonProcessor, TypeVisitor
 {
     private $storage;
     private $condition;
@@ -90,7 +92,42 @@ class ConditionWriter implements ConditionProcessor, CollectionComparisonProcess
         $this->condition = '(' . $sqlCondition1 . ' OR ' . $sqlCondition2 . ')';
     }
 
-    public function processStorableConditionId(Condition $comparison)
+    public function processEqualToCondition($value)
+    {
+        throw new \Exception("Using equal to as a query condition has not yet been implemented");
+    }
+
+    public function processNotEqualToCondition($value)
+    {
+        throw new \Exception("Using not equal to as a query condition has not yet been implemented");
+    }
+
+    public function processGreaterThanCondition($value)
+    {
+        throw new \Exception("Greater than cannot be used as a query condition");
+    }
+
+    public function processGreaterOrEqualCondition($value)
+    {
+        throw new \Exception("Greater than or equal cannot be used as a query condition");
+    }
+
+    public function processLessThanCondition($value)
+    {
+        throw new \Exception("Less than cannot be used as a query condition");
+    }
+
+    public function processLessOrEqualCondition($value)
+    {
+        throw new \Exception("Less than or equal cannot be used as a query condition");
+    }
+
+    public function processComplexCondition(ComplexCondition $condition)
+    {
+        $condition->processComplexCondition($this);
+    }
+
+    public function processId(Condition $comparison)
     {
         $this->writeBracketOrAnd();
 
@@ -100,7 +137,7 @@ class ConditionWriter implements ConditionProcessor, CollectionComparisonProcess
         $this->condition .= $fragmentWriter->writeFragment($comparison, $field);
     }
 
-    public function processStorableConditionReferenceAsCondition(ReferenceType $type, $name, $condition)
+    public function processReferenceMemberAsCondition(ReferenceType $type, $name, $condition)
     {
         $this->writeBracketOrAnd();
 
@@ -118,7 +155,7 @@ class ConditionWriter implements ConditionProcessor, CollectionComparisonProcess
         array_push($this->having, ...$subWriter->getHaving());
     }
 
-    public function processStorableConditionReferenceAsComparison(ReferenceType $type, $name, Condition $comparison)
+    public function processReferenceMemberAsComparison(ReferenceType $type, $name, Condition $comparison)
     {
         $this->writeBracketOrAnd();
 
@@ -128,7 +165,7 @@ class ConditionWriter implements ConditionProcessor, CollectionComparisonProcess
         $this->condition .= $fragmentWriter->writeFragment($comparison, $field);
     }
 
-    public function processStorableConditionMember(Type $type, $name, Condition $comparison)
+    public function processPrimitiveMember(Type $type, $name, Condition $comparison)
     {
         $this->fieldName = $name;
         $this->comparison = $comparison;
@@ -186,7 +223,7 @@ class ConditionWriter implements ConditionProcessor, CollectionComparisonProcess
     private $collectionName;
     private $type;
 
-    public function processStorableConditionCollection(CollectionType $type, $name, CollectionCondition $comparison)
+    public function processCollectionMember(CollectionType $type, $name, CollectionCondition $comparison)
     {
         $this->collectionName = $name;
         $this->type = $type;

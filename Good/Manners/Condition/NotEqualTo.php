@@ -4,7 +4,6 @@ namespace Good\Manners\Condition;
 
 use Good\Manners\Condition;
 use Good\Manners\ConditionProcessor;
-use Good\Manners\ComparisonProcessor;
 
 class NotEqualTo implements Condition
 {
@@ -17,11 +16,7 @@ class NotEqualTo implements Condition
 
     public function processCondition(ConditionProcessor $processor)
     {
-    }
-
-    public function processComparison(ComparisonProcessor $processor)
-    {
-        $processor->processNotEqualToComparison($this->value);
+        $processor->processNotEqualToCondition($this->value);
     }
 
     public function getTargetType()
