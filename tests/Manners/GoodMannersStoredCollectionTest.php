@@ -1,7 +1,7 @@
 <?php
 
-use Good\Manners\Comparison\EqualTo;
-use Good\Manners\Comparison\GreaterThan;
+use Good\Manners\Condition\EqualTo;
+use Good\Manners\Condition\GreaterThan;
 
 /**
  * @runTestsInSeparateProcesses
@@ -647,7 +647,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         return $results->getNext();
     }
 
-    public function testHasAPrimimitiveCollectionComparison()
+    public function testHasAPrimimitiveCollectionCondition()
     {
         $this->populateDatabase();
 
@@ -666,12 +666,12 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->assertSame(2, count($result->myInts->toArray()));
     }
 
-    public function testHasOnlyPrimitiveCollectionComparison()
+    public function testHasOnlyPrimitiveCollectionCondition()
     {
         $this->populateDatabase();
 
         $condition = CollectionType::condition();
-        $condition->myInts->hasOnly(new \Good\Manners\Comparison\LessThan(5));
+        $condition->myInts->hasOnly(new \Good\Manners\Condition\LessThan(5));
 
         $resolver = CollectionType::resolver();
         $resolver->resolveMyInts();
@@ -688,7 +688,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->assertSame(0, count($result2->myInts->toArray()));
     }
 
-    public function testHasAReferenceCollectionComparison()
+    public function testHasAReferenceCollectionCondition()
     {
         $this->populateDatabase();
 
@@ -707,7 +707,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->assertSame(2, count($result->myReferences->toArray()));
     }
 
-    public function testHasOnlyReferenceCollectionComparison()
+    public function testHasOnlyReferenceCollectionCondition()
     {
         $this->populateDatabase();
 
@@ -729,7 +729,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->assertSame(0, count($result2->myReferences->toArray()));
     }
 
-    public function testHasAHasACollectionComparison()
+    public function testHasAHasACollectionCondition()
     {
         $this->populateDatabase();
 
@@ -744,7 +744,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->assertSame(4, $result->someInt);
     }
 
-    public function testHasOnlyHasOnlyCollectionComparison()
+    public function testHasOnlyHasOnlyCollectionCondition()
     {
         $this->populateDatabase();
 
@@ -769,7 +769,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->populateDatabase();
 
         $condition = CollectionType::condition();
-        $condition->myInts->hasA(new \Good\Manners\Comparison\GreaterThan(2));
+        $condition->myInts->hasA(new \Good\Manners\Condition\GreaterThan(2));
 
         $changes = new CollectionType();
         $changes->someInt = 0;
@@ -777,7 +777,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->storage->modifyAny($condition, $changes);
 
         $condition = CollectionType::condition();
-        $condition->someInt = new \Good\Manners\Comparison\NotEqualTo(0);
+        $condition->someInt = new \Good\Manners\Condition\NotEqualTo(0);
 
         $results = $this->storage->fetchAll($condition);
 
@@ -792,7 +792,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->populateDatabase();
 
         $condition = CollectionType::condition();
-        $condition->myInts->hasOnly(new \Good\Manners\Comparison\GreaterThan(2));
+        $condition->myInts->hasOnly(new \Good\Manners\Condition\GreaterThan(2));
 
         $changes = new CollectionType();
         $changes->someInt = 0;
@@ -800,7 +800,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->storage->modifyAny($condition, $changes);
 
         $condition = CollectionType::condition();
-        $condition->someInt = new \Good\Manners\Comparison\NotEqualTo(0);
+        $condition->someInt = new \Good\Manners\Condition\NotEqualTo(0);
 
         $results = $this->storage->fetchAll($condition);
 

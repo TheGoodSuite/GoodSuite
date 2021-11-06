@@ -2,7 +2,7 @@
 
 namespace Good\Memory\SQL\ConditionWriter;
 
-use Good\Manners\Comparison\EqualityComparison;
+use Good\Manners\Condition;
 use Good\Manners\EqualityComparisonProcessor;
 
 class ReferenceFragmentWriter implements EqualityComparisonProcessor
@@ -44,7 +44,7 @@ class ReferenceFragmentWriter implements EqualityComparisonProcessor
         }
     }
 
-    public function processAndComparison(EqualityComparison $comparison1, EqualityComparison $comparison2)
+    public function processAndComparison(Condition $comparison1, Condition $comparison2)
     {
         $fragment = '(' . $this->writeFragment($comparison1);
         $fragment .= ' AND ';
@@ -53,7 +53,7 @@ class ReferenceFragmentWriter implements EqualityComparisonProcessor
         $this->fragment = $fragment;
     }
 
-    public function processOrComparison(EqualityComparison $comparison1, EqualityComparison $comparison2)
+    public function processOrComparison(Condition $comparison1, Condition $comparison2)
     {
         $fragment = '(' . $this->writeFragment($comparison1);
         $fragment .= ' OR ';

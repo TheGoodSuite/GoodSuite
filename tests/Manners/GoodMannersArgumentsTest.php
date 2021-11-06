@@ -118,7 +118,7 @@ abstract class GoodMannersArgumentsTest extends \PHPUnit\Framework\TestCase
         $this->populateDatabase();
 
         $condition = PersistenceType::condition();
-        $condition->myInt = new \Good\Manners\Comparison\GreaterThan(4);
+        $condition->myInt = new \Good\Manners\Condition\GreaterThan(4);
 
         $resolver = PersistenceType::resolver();
         $resolver->orderByMyIntDesc();
@@ -139,7 +139,7 @@ abstract class GoodMannersArgumentsTest extends \PHPUnit\Framework\TestCase
         $this->populateDatabase();
 
         $condition = PersistenceType::condition();
-        $condition->myInt = new \Good\Manners\Comparison\GreaterThan(4);
+        $condition->myInt = new \Good\Manners\Condition\GreaterThan(4);
 
         $results = $this->storage->fetchAll($condition);
 

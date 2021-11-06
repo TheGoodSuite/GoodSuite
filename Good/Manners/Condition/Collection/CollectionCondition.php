@@ -1,10 +1,10 @@
 <?php
 
-namespace Good\Manners\Comparison\Collection;
+namespace Good\Manners\Condition\Collection;
 
 use Good\Manners\CollectionComparisonProcessor;
 
-interface CollectionComparison
+interface CollectionCondition
 {
     public function processCollectionComparison(CollectionComparisonProcessor $processor);
 }

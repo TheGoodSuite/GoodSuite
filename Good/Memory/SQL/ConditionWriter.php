@@ -14,9 +14,7 @@ use Good\Manners\Storable;
 use Good\Manners\Condition;
 use Good\Manners\ConditionProcessor;
 use Good\Manners\CollectionComparisonProcessor;
-use Good\Manners\Comparison\Collection\CollectionComparison;
-use Good\Manners\Comparison;
-use Good\Manners\Comparison\EqualityComparison;
+use Good\Manners\Condition\Collection\CollectionCondition;
 use Good\Rolemodel\TypeVisitor;
 use Good\Rolemodel\Schema\Type\ReferenceType;
 use Good\Rolemodel\Schema\Type\TextType;
@@ -92,7 +90,7 @@ class ConditionWriter implements ConditionProcessor, CollectionComparisonProcess
         $this->condition = '(' . $sqlCondition1 . ' OR ' . $sqlCondition2 . ')';
     }
 
-    public function processStorableConditionId(EqualityComparison $comparison)
+    public function processStorableConditionId(Condition $comparison)
     {
         $this->writeBracketOrAnd();
 
@@ -120,7 +118,7 @@ class ConditionWriter implements ConditionProcessor, CollectionComparisonProcess
         array_push($this->having, ...$subWriter->getHaving());
     }
 
-    public function processStorableConditionReferenceAsComparison(ReferenceType $type, $name, EqualityComparison $comparison)
+    public function processStorableConditionReferenceAsComparison(ReferenceType $type, $name, Condition $comparison)
     {
         $this->writeBracketOrAnd();
 
@@ -130,7 +128,7 @@ class ConditionWriter implements ConditionProcessor, CollectionComparisonProcess
         $this->condition .= $fragmentWriter->writeFragment($comparison, $field);
     }
 
-    public function processStorableConditionMember(Type $type, $name, Comparison $comparison)
+    public function processStorableConditionMember(Type $type, $name, Condition $comparison)
     {
         $this->fieldName = $name;
         $this->comparison = $comparison;
@@ -188,7 +186,7 @@ class ConditionWriter implements ConditionProcessor, CollectionComparisonProcess
     private $collectionName;
     private $type;
 
-    public function processStorableConditionCollection(CollectionType $type, $name, CollectionComparison $comparison)
+    public function processStorableConditionCollection(CollectionType $type, $name, CollectionCondition $comparison)
     {
         $this->collectionName = $name;
         $this->type = $type;
@@ -201,7 +199,7 @@ class ConditionWriter implements ConditionProcessor, CollectionComparisonProcess
         $this->processHasAComparison(new CollectionEntryConditionCondition($this->type->getCollectedType(), $condition));
     }
 
-    public function processHasAComparisonComparison(Comparison $comparison)
+    public function processHasAComparisonComparison(Condition $comparison)
     {
         $this->processHasAComparison(new CollectionEntryComparisonCondition($this->type->getCollectedType(), $comparison));
     }
@@ -211,7 +209,7 @@ class ConditionWriter implements ConditionProcessor, CollectionComparisonProcess
         $this->processHasOnlyComparison(new CollectionEntryConditionCondition($this->type->getCollectedType(), $condition));
     }
 
-    public function processHasOnlyComparisonComparison(Comparison $comparison)
+    public function processHasOnlyComparisonComparison(Condition $comparison)
     {
         $this->processHasOnlyComparison(new CollectionEntryComparisonCondition($this->type->getCollectedType(), $comparison));
     }

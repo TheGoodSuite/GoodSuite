@@ -1,11 +1,11 @@
 <?php
 
-namespace Good\Manners\Comparison\Collection;
+namespace Good\Manners\Condition\Collection;
 
 use Good\Manners\CollectionComparisonProcessor;
-use Good\Manners\Condition;
+use Good\Manners\Condition\ComplexCondition;
 
-class HasOnly implements CollectionComparison
+class HasOnly implements CollectionCondition
 {
     private $comparisonOrCondition;
 
@@ -16,7 +16,7 @@ class HasOnly implements CollectionComparison
 
     public function processCollectionComparison(CollectionComparisonProcessor $processor)
     {
-        if ($this->comparisonOrCondition instanceof Condition)
+        if ($this->comparisonOrCondition instanceof ComplexCondition)
         {
             $processor->processHasOnlyConditionComparison($this->comparisonOrCondition);
         }

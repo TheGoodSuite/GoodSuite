@@ -293,10 +293,10 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
         $this->populateDatabase();
 
         $condition = Select::condition();
-        $condition->from = new \Good\Manners\Comparison\NotEqualTo(1000);
-        $condition->where = new \Good\Manners\Comparison\NotEqualTo(1.0);
-        $condition->order = new \Good\Manners\Comparison\NotEqualTo("One");
-        $condition->by = new \Good\Manners\Comparison\NotEqualTo(new DateTimeImmutable("2001-01-01"));
+        $condition->from = new \Good\Manners\Condition\NotEqualTo(1000);
+        $condition->where = new \Good\Manners\Condition\NotEqualTo(1.0);
+        $condition->order = new \Good\Manners\Condition\NotEqualTo("One");
+        $condition->by = new \Good\Manners\Condition\NotEqualTo(new DateTimeImmutable("2001-01-01"));
 
         $results = $this->storage->fetchAll($condition);
 
@@ -311,10 +311,10 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
         $this->populateDatabase();
 
         $condition = Select::condition();
-        $condition->from = new \Good\Manners\Comparison\LessThan(2000);
-        $condition->where = new \Good\Manners\Comparison\LessThan(2.0);
-        $condition->order = new \Good\Manners\Comparison\LessThan("Two"); // One < Two in lexical ordering
-        $condition->by = new \Good\Manners\Comparison\LessThan(new DateTimeImmutable("2002-02-02"));
+        $condition->from = new \Good\Manners\Condition\LessThan(2000);
+        $condition->where = new \Good\Manners\Condition\LessThan(2.0);
+        $condition->order = new \Good\Manners\Condition\LessThan("Two"); // One < Two in lexical ordering
+        $condition->by = new \Good\Manners\Condition\LessThan(new DateTimeImmutable("2002-02-02"));
 
         $results = $this->storage->fetchAll($condition);
 
@@ -329,10 +329,10 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
         $this->populateDatabase();
 
         $condition = Select::condition();
-        $condition->from = new \Good\Manners\Comparison\LessOrEqual(1000);
-        $condition->where = new \Good\Manners\Comparison\LessOrEqual(1.0);
-        $condition->order = new \Good\Manners\Comparison\LessOrEqual("One");
-        $condition->by = new \Good\Manners\Comparison\LessOrEqual(new DateTimeImmutable("2001-01-01"));
+        $condition->from = new \Good\Manners\Condition\LessOrEqual(1000);
+        $condition->where = new \Good\Manners\Condition\LessOrEqual(1.0);
+        $condition->order = new \Good\Manners\Condition\LessOrEqual("One");
+        $condition->by = new \Good\Manners\Condition\LessOrEqual(new DateTimeImmutable("2001-01-01"));
 
         $results = $this->storage->fetchAll($condition);
 
@@ -347,10 +347,10 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
         $this->populateDatabase();
 
         $condition = Select::condition();
-        $condition->from = new \Good\Manners\Comparison\GreaterThan(1000);
-        $condition->where = new \Good\Manners\Comparison\GreaterThan(1.0);
-        $condition->order = new \Good\Manners\Comparison\GreaterThan("One");
-        $condition->by = new \Good\Manners\Comparison\GreaterThan(new DateTimeImmutable("2001-01-01"));
+        $condition->from = new \Good\Manners\Condition\GreaterThan(1000);
+        $condition->where = new \Good\Manners\Condition\GreaterThan(1.0);
+        $condition->order = new \Good\Manners\Condition\GreaterThan("One");
+        $condition->by = new \Good\Manners\Condition\GreaterThan(new DateTimeImmutable("2001-01-01"));
 
         $results = $this->storage->fetchAll($condition);
 
@@ -365,10 +365,10 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
         $this->populateDatabase();
 
         $condition = Select::condition();
-        $condition->from = new \Good\Manners\Comparison\GreaterOrEqual(1000);
-        $condition->where = new \Good\Manners\Comparison\GreaterOrEqual(1.0);
-        $condition->order = new \Good\Manners\Comparison\GreaterOrEqual("One");
-        $condition->by = new \Good\Manners\Comparison\GreaterOrEqual(new DateTimeImmutable("2001-01-01"));
+        $condition->from = new \Good\Manners\Condition\GreaterOrEqual(1000);
+        $condition->where = new \Good\Manners\Condition\GreaterOrEqual(1.0);
+        $condition->order = new \Good\Manners\Condition\GreaterOrEqual("One");
+        $condition->by = new \Good\Manners\Condition\GreaterOrEqual(new DateTimeImmutable("2001-01-01"));
 
         $resolver = Select::resolver();
         $resolver->orderByFromAsc();

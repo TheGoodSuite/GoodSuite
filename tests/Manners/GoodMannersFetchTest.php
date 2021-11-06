@@ -287,7 +287,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
     public function testFetchLessThan()
     {
         $condition = MyFetchType::condition();
-        $condition->myInt = new \Good\Manners\Comparison\LessThan(5);
+        $condition->myInt = new \Good\Manners\Condition\LessThan(5);
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
@@ -319,7 +319,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
     public function testFetchLessOrEqual()
     {
         $condition = MyFetchType::condition();
-        $condition->myInt = new \Good\Manners\Comparison\LessOrEqual(5);
+        $condition->myInt = new \Good\Manners\Condition\LessOrEqual(5);
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
@@ -362,7 +362,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
     public function testFetchGreaterThan()
     {
         $condition = MyFetchType::condition();
-        $condition->myInt = new \Good\Manners\Comparison\GreaterThan(5);
+        $condition->myInt = new \Good\Manners\Condition\GreaterThan(5);
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
@@ -403,7 +403,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
     public function testFetchGreaterOrEqual()
     {
         $condition = MyFetchType::condition();
-        $condition->myInt = new \Good\Manners\Comparison\GreaterOrEqual(5);
+        $condition->myInt = new \Good\Manners\Condition\GreaterOrEqual(5);
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
@@ -487,7 +487,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
     public function testFetchNotEqualTo()
     {
         $condition = MyFetchType::condition();
-        $condition->myInt = new \Good\Manners\Comparison\NotEqualTo(5);
+        $condition->myInt = new \Good\Manners\Condition\NotEqualTo(5);
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
@@ -587,13 +587,13 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
      * @depends testFetchLessThan
      * @depends testFetchGreaterThan
      */
-    public function testFetchAndCondition()
+    public function testFetchAndOnStorableCondition()
     {
         $greater = MyFetchType::condition();
-        $greater->myInt = new \Good\Manners\Comparison\GreaterThan(4);
+        $greater->myInt = new \Good\Manners\Condition\GreaterThan(4);
 
         $less = MyFetchType::condition();
-        $less->myInt = new \Good\Manners\Comparison\LessThan(10);
+        $less->myInt = new \Good\Manners\Condition\LessThan(10);
 
         $and = new \Good\Manners\Condition\AndCondition($less, $greater);
 
@@ -635,11 +635,11 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(array(), $expectedResults);
     }
 
-    public function testFetchAndComparison()
+    public function testFetchAndOnPrimitiveCondition()
     {
-       $greater = new \Good\Manners\Comparison\GreaterThan(4);
-       $less = new \Good\Manners\Comparison\LessThan(10);
-       $and = new \Good\Manners\Comparison\AndComparison($less, $greater);
+       $greater = new \Good\Manners\Condition\GreaterThan(4);
+       $less = new \Good\Manners\Condition\LessThan(10);
+       $and = new \Good\Manners\Condition\AndCondition($less, $greater);
 
        $condition = MyFetchType::condition();
        $condition->myInt = $and;
@@ -686,13 +686,13 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
      * @depends testFetchLessThan
      * @depends testFetchGreaterThan
      */
-    public function testFetchOrCondition()
+    public function testFetchOrOnStorableCondition()
     {
         $less = MyFetchType::condition();
-        $less->myInt = new \Good\Manners\Comparison\LessThan(5);
+        $less->myInt = new \Good\Manners\Condition\LessThan(5);
 
         $greater = MyFetchType::condition();
-        $greater->myInt = new \Good\Manners\Comparison\GreaterThan(8);
+        $greater->myInt = new \Good\Manners\Condition\GreaterThan(8);
 
         $or = new \Good\Manners\Condition\OrCondition($less, $greater);
 
@@ -732,11 +732,11 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(array(), $expectedResults);
     }
 
-    public function testFetchOrComparison()
+    public function testFetchOrOnPrimitiveCondition()
     {
-       $less = new \Good\Manners\Comparison\LessThan(5);
-       $greater = new \Good\Manners\Comparison\GreaterThan(8);
-       $or = new \Good\Manners\Comparison\OrComparison($less, $greater);
+       $less = new \Good\Manners\Condition\LessThan(5);
+       $greater = new \Good\Manners\Condition\GreaterThan(8);
+       $or = new \Good\Manners\Condition\OrCondition($less, $greater);
 
        $condition = MyFetchType::condition();
        $condition->myInt = $or;
@@ -810,7 +810,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
     public function testFetchReferenceIsNotNull()
     {
         $condition = MyFetchType::condition();
-        $condition->myOtherType = new \Good\Manners\Comparison\NotEqualTo(null);
+        $condition->myOtherType = new \Good\Manners\Condition\NotEqualTo(null);
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
@@ -878,7 +878,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
     public function testFetchByPropertyOfReference()
     {
         $condition = MyFetchType::condition();
-        $condition->myOtherType->yourInt = new \Good\Manners\Comparison\LessThan(85);
+        $condition->myOtherType->yourInt = new \Good\Manners\Condition\LessThan(85);
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
@@ -936,8 +936,8 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
     public function testFetchByTwoValuesInOneCondition()
     {
         $condition = MyFetchType::condition();
-        $condition->myInt = new \Good\Manners\Comparison\GreaterThan(4);
-        $condition->myOtherType->yourInt = new \Good\Manners\Comparison\GreaterThan(45);
+        $condition->myInt = new \Good\Manners\Condition\GreaterThan(4);
+        $condition->myOtherType->yourInt = new \Good\Manners\Condition\GreaterThan(45);
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
@@ -972,7 +972,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
     public function testFetchByFloat()
     {
         $condition = MyFetchType::condition();
-        $condition->myFloat = new \Good\Manners\Comparison\GreaterThan(6.0);
+        $condition->myFloat = new \Good\Manners\Condition\GreaterThan(6.0);
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
@@ -1062,7 +1062,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
     public function testFetchByDatetime()
     {
         $condition = MyFetchType::condition();
-        $condition->myDatetime = new \Good\Manners\Comparison\GreaterThan(new DateTimeImmutable('2006-06-06'));
+        $condition->myDatetime = new \Good\Manners\Condition\GreaterThan(new DateTimeImmutable('2006-06-06'));
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
@@ -1246,7 +1246,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
     public function testFetchByIntIsNotNull()
     {
         $condition = MyFetchType::condition();
-        $condition->myInt = new \Good\Manners\Comparison\NotEqualTo(null);
+        $condition->myInt = new \Good\Manners\Condition\NotEqualTo(null);
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
@@ -1312,7 +1312,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
     public function testFetchByFloatIsNotNull()
     {
         $condition = MyFetchType::condition();
-        $condition->myFloat = new \Good\Manners\Comparison\NotEqualTo(null);
+        $condition->myFloat = new \Good\Manners\Condition\NotEqualTo(null);
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
@@ -1378,7 +1378,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
     public function testFetchByTextIsNotNull()
     {
         $condition = MyFetchType::condition();
-        $condition->myText = new \Good\Manners\Comparison\NotEqualTo(null);
+        $condition->myText = new \Good\Manners\Condition\NotEqualTo(null);
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();
@@ -1443,7 +1443,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
     public function testFetchByDatetimeIsNotNull()
     {
         $condition = MyFetchType::condition();
-        $condition->myDatetime = new \Good\Manners\Comparison\NotEqualTo(null);
+        $condition->myDatetime = new \Good\Manners\Condition\NotEqualTo(null);
 
         $resolver = new MyFetchTypeResolver();
         $resolver->resolveMyOtherType();

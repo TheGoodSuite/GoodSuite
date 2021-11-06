@@ -1,11 +1,12 @@
 <?php
 
-namespace Good\Manners\Comparison;
+namespace Good\Manners\Condition;
 
-use Good\Manners\Comparison;
+use Good\Manners\Condition;
+use Good\Manners\ConditionProcessor;
 use Good\Manners\ComparisonProcessor;
 
-class LessOrEqual implements Comparison
+class LessOrEqual implements Condition
 {
     private $value;
 
@@ -14,9 +15,18 @@ class LessOrEqual implements Comparison
         $this->value = $value;
     }
 
+    public function processCondition(ConditionProcessor $processor)
+    {
+    }
+
     public function processComparison(ComparisonProcessor $processor)
     {
         $processor->processLessOrEqualComparison($this->value);
+    }
+
+    public function getTargetType()
+    {
+        return null;
     }
 }
 

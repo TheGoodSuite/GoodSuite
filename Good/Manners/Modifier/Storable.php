@@ -244,13 +244,13 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->condition  = "<?php\n";
         $this->condition .= "\n";
         $this->condition .= 'use \Good\Manners\CollectionComparisonsHolder;' . "\n";
-        $this->condition .= 'use \Good\Manners\Comparison;' . "\n";
-        $this->condition .= 'use \Good\Manners\Comparison\EqualityComparison;' . "\n";
-        $this->condition .= 'use \Good\Manners\Comparison\EqualTo;' . "\n";
         $this->condition .= 'use \Good\Manners\Condition;' . "\n";
+        $this->condition .= 'use \Good\Manners\Condition\ComplexCondition;' . "\n";
+        $this->condition .= 'use \Good\Manners\Condition\EqualTo;' . "\n";
         $this->condition .= 'use \Good\Manners\ConditionProcessor;' . "\n";
+        $this->condition .= 'use \Good\Manners\ComparisonProcessor;' . "\n";
         $this->condition .= "\n";
-        $this->condition .= 'class ' . $typeDefinition->getName() . 'Condition implements Condition' . "\n";
+        $this->condition .= 'class ' . $typeDefinition->getName() . 'Condition implements ComplexCondition' . "\n";
         $this->condition .= "{\n";
         $this->condition .= '    public function getTargetType()' . "\n";
         $this->condition .= "    {\n";
@@ -259,16 +259,20 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->condition .= "\n";
         $this->condition .= '    private $id = null;' . "\n";
         $this->condition .= "\n";
-        $this->condition .= '    public function setId(EqualityComparison $comparison)' . "\n";
+        $this->condition .= '    public function setId(Condition $condition)' . "\n";
         $this->condition .= "    {\n";
-        $this->condition .= '        $this->id = $comparison;' . "\n";
+        $this->condition .= '        $this->id = $condition;' . "\n";
+        $this->condition .= "    }\n";
+        $this->condition .= "\n";
+        $this->condition .= '    public function processComparison(ComparisonProcessor $processor)' . "\n";
+        $this->condition .= "    {\n";
         $this->condition .= "    }\n";
         $this->condition .= "\n";
 
         $this->conditionSetterSwitch  = '        switch($property)' . "\n";
         $this->conditionSetterSwitch .= "        {\n";
         $this->conditionSetterSwitch .= '            case "id":' . "\n";
-        $this->conditionSetterSwitch .= '                $this->setId($value instanceof Comparison ? $value : new EqualTo($value));' . "\n";
+        $this->conditionSetterSwitch .= '                $this->setId($value instanceof Condition ? $value : new EqualTo($value));' . "\n";
         $this->conditionSetterSwitch .= '                break;' . "\n";
         $this->conditionSetterSwitch .= "\n";
 
@@ -489,9 +493,9 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->condition .= '        return $this->' . $this->member->getName() . 'Condition;' . "\n";
         $this->condition .= "    }\n";
         $this->condition .= "\n";
-        $this->condition .= '    public function set' . \ucfirst($this->member->getName()) . '(EqualityComparison $comparison)' . "\n";
+        $this->condition .= '    public function set' . \ucfirst($this->member->getName()) . '(Condition $condition)' . "\n";
         $this->condition .= "    {\n";
-        $this->condition .= '        return $this->' . $this->member->getName() . ' = $comparison;' . "\n";
+        $this->condition .= '        return $this->' . $this->member->getName() . ' = $condition;' . "\n";
         $this->condition .= "    }\n";
         $this->condition .= "\n";
 
@@ -501,7 +505,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->conditionSetterSwitch .= '            case "' . $this->member->getName() . '":' . "\n";
         $this->conditionSetterSwitch .= '                $this->set' . \ucfirst($this->member->getName());
-        $this->conditionSetterSwitch .= '($value instanceof Comparison ? $value : new EqualTo($value));' . "\n";
+        $this->conditionSetterSwitch .= '($value instanceof Condition ? $value : new EqualTo($value));' . "\n";
         $this->conditionSetterSwitch .= '                break;' . "\n";
         $this->conditionSetterSwitch .= "\n";
 
@@ -646,15 +650,15 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
             $this->condition .= '    private $' . $this->member->getName() . ' = null;' . "\n";
             $this->condition .= "\n";
-            $this->condition .= '    public function set' . \ucfirst($this->member->getName()) . '(Comparison $comparison)' . "\n";
+            $this->condition .= '    public function set' . \ucfirst($this->member->getName()) . '(Condition $condition)' . "\n";
             $this->condition .= "    {\n";
-            $this->condition .= '        $this->' . $this->member->getName() . ' = $comparison;' . "\n";
+            $this->condition .= '        $this->' . $this->member->getName() . ' = $condition;' . "\n";
             $this->condition .= "    }\n";
             $this->condition .= "\n";
 
             $this->conditionSetterSwitch .= '            case "' . $this->member->getName() . '":' . "\n";
             $this->conditionSetterSwitch .= '                $this->set' . \ucfirst($this->member->getName());
-            $this->conditionSetterSwitch .= '($value instanceof Comparison ? $value : new EqualTo($value));' . "\n";
+            $this->conditionSetterSwitch .= '($value instanceof Condition ? $value : new EqualTo($value));' . "\n";
             $this->conditionSetterSwitch .= '                break;' . "\n";
             $this->conditionSetterSwitch .= "\n";
 

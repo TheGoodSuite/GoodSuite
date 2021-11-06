@@ -5,6 +5,7 @@ namespace Good\Memory;
 use Good\Manners\Comparison;
 use Good\Manners\Condition;
 use Good\Manners\ConditionProcessor;
+use Good\Manners\ComparisonProcessor;
 use Good\Rolemodel\Schema\Type;
 use Good\Rolemodel\Schema\Type\CollectionType;
 use Good\Rolemodel\Schema\Type\DateTimeType;
@@ -21,7 +22,7 @@ class CollectionEntryComparisonCondition implements Condition, TypeVisitor
 
     private $conditionProcessor;
 
-    public function __construct(Type $collectedType, Comparison $comparison)
+    public function __construct(Type $collectedType, Condition $comparison)
     {
         $this->collectedType = $collectedType;
         $this->comparison = $comparison;
@@ -32,6 +33,10 @@ class CollectionEntryComparisonCondition implements Condition, TypeVisitor
         $this->conditionProcessor = $processor;
 
         $this->collectedType->acceptTypeVisitor($this);
+    }
+
+    public function processComparison(ComparisonProcessor $processor)
+    {
     }
 
     public function visitCollectionType(CollectionType $type)

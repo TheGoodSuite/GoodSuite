@@ -2,7 +2,7 @@
 
 namespace Good\Memory\SQL\ConditionWriter;
 
-use Good\Manners\Comparison;
+use Good\Manners\Condition;
 use Good\Manners\ComparisonProcessor;
 
 abstract class ScalarFragmentWriter implements ComparisonProcessor
@@ -66,7 +66,7 @@ abstract class ScalarFragmentWriter implements ComparisonProcessor
         $this->fragment = $this->field . ' <= ' . $this->parseScalar($value);
     }
 
-    public function processAndComparison(Comparison $comparison1, Comparison $comparison2)
+    public function processAndComparison(Condition $comparison1, Condition $comparison2)
     {
         $fragment = '(' . $this->writeFragment($comparison1, $this->field);
         $fragment .= ' AND ';
@@ -75,7 +75,7 @@ abstract class ScalarFragmentWriter implements ComparisonProcessor
         $this->fragment = $fragment;
     }
 
-    public function processOrComparison(Comparison $comparison1, Comparison $comparison2)
+    public function processOrComparison(Condition $comparison1, Condition $comparison2)
     {
         $fragment = '(' . $this->writeFragment($comparison1, $this->field);
         $fragment .= ' OR ';

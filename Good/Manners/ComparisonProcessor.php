@@ -9,8 +9,8 @@ interface ComparisonProcessor extends EqualityComparisonProcessor
     public function processLessThanComparison($value);
     public function processLessOrEqualComparison($value);
 
-    public function processAndComparison(Comparison $comparison1, Comparison $comparison2);
-    public function processOrComparison(Comparison $comparison1, Comparison $comparison2);
+    public function processAndComparison(Condition $comparison1, Condition $comparison2);
+    public function processOrComparison(Condition $comparison1, Condition $comparison2);
 }
 
 ?>

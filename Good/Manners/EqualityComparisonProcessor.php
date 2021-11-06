@@ -2,15 +2,15 @@
 
 namespace Good\Manners;
 
-use Good\Manners\Comparison\EqualityComparison;
+use Good\Manners\Condition;
 
 interface EqualityComparisonProcessor
 {
     public function processEqualToComparison($value);
     public function processNotEqualToComparison($value);
 
-    public function processAndComparison(EqualityComparison $comparison1, EqualityComparison $comparison2);
-    public function processOrComparison(EqualityComparison $comparison1, EqualityComparison $comparison2);
+    public function processAndComparison(Condition $comparison1, Condition $comparison2);
+    public function processOrComparison(Condition $comparison1, Condition $comparison2);
 }
 
 ?>

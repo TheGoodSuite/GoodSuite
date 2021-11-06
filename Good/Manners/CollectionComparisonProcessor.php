@@ -4,9 +4,9 @@ namespace Good\Manners;
 
 interface CollectionComparisonProcessor
 {
-    public function processHasAComparisonComparison(Comparison $comparison);
+    public function processHasAComparisonComparison(Condition $comparison);
     public function processHasAConditionComparison(Condition $condition);
-    public function processHasOnlyComparisonComparison(Comparison $comparison);
+    public function processHasOnlyComparisonComparison(Condition $comparison);
     public function processHasOnlyConditionComparison(Condition $condition);
 }
 

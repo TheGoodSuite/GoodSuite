@@ -2,9 +2,9 @@
 
 namespace Good\Manners;
 
-use Good\Manners\Comparison\Collection\HasA;
-use Good\Manners\Comparison\Collection\HasOnly;
-use Good\Manners\Comparison\EqualTo;
+use Good\Manners\Condition\Collection\HasA;
+use Good\Manners\Condition\Collection\HasOnly;
+use Good\Manners\Condition\EqualTo;
 
 class CollectionComparisonsHolder
 {
@@ -38,7 +38,7 @@ class CollectionComparisonsHolder
             return $condition;
         }
 
-        if (!($comparison instanceof Comparison))
+        if (!($comparison instanceof Condition))
         {
             $comparison = new EqualTo($comparison);
         }
@@ -62,7 +62,7 @@ class CollectionComparisonsHolder
             return $condition;
         }
 
-        if (!($comparison instanceof Comparison))
+        if (!($comparison instanceof Condition))
         {
             $comparison = new EqualTo($comparison);
         }

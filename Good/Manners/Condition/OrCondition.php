@@ -4,6 +4,7 @@ namespace Good\Manners\Condition;
 
 use Good\Manners\Condition;
 use Good\Manners\ConditionProcessor;
+use Good\Manners\ComparisonProcessor;
 
 class OrCondition implements Condition
 {
@@ -20,6 +21,11 @@ class OrCondition implements Condition
     public function processCondition(ConditionProcessor $processor)
     {
         $processor->processOrCondition($this->condition1, $this->condition2);
+    }
+
+    public function processComparison(ComparisonProcessor $processor)
+    {
+        $processor->processOrComparison($this->condition1, $this->condition2);
     }
 
     public function getTargetType()
