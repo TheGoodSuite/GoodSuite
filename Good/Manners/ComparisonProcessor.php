@@ -2,8 +2,11 @@
 
 namespace Good\Manners;
 
-interface ComparisonProcessor extends EqualityComparisonProcessor
+interface ComparisonProcessor
 {
+    public function processEqualToComparison($value);
+    public function processNotEqualToComparison($value);
+
     public function processGreaterThanComparison($value);
     public function processGreaterOrEqualComparison($value);
     public function processLessThanComparison($value);

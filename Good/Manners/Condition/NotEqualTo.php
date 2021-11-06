@@ -5,7 +5,6 @@ namespace Good\Manners\Condition;
 use Good\Manners\Condition;
 use Good\Manners\ConditionProcessor;
 use Good\Manners\ComparisonProcessor;
-use Good\Manners\EqualityComparisonProcessor;
 
 class NotEqualTo implements Condition
 {
@@ -20,7 +19,7 @@ class NotEqualTo implements Condition
     {
     }
 
-    public function processComparison(EqualityComparisonProcessor $processor)
+    public function processComparison(ComparisonProcessor $processor)
     {
         $processor->processNotEqualToComparison($this->value);
     }

@@ -3,9 +3,9 @@
 namespace Good\Memory\SQL\ConditionWriter;
 
 use Good\Manners\Condition;
-use Good\Manners\EqualityComparisonProcessor;
+use Good\Manners\ComparisonProcessor;
 
-class ReferenceFragmentWriter implements EqualityComparisonProcessor
+class ReferenceFragmentWriter implements ComparisonProcessor
 {
     private $field;
 
@@ -42,6 +42,26 @@ class ReferenceFragmentWriter implements EqualityComparisonProcessor
         {
             $this->fragment = $this->field . ' <> ' . \intval($value->getId());
         }
+    }
+
+    public function processGreaterThanComparison($value)
+    {
+        throw new \Exception("Greater than is not a valid comparison for objects");
+    }
+
+    public function processGreaterOrEqualComparison($value)
+    {
+        throw new \Exception("Greater than or equals is not a valid comparison for objects");
+    }
+
+    public function processLessThanComparison($value)
+    {
+        throw new \Exception("Less than is not a valid comparison for objects");
+    }
+
+    public function processLessOrEqualComparison($value)
+    {
+        throw new \Exception("Less than or equals is not a valid comparison for objects");
     }
 
     public function processAndComparison(Condition $comparison1, Condition $comparison2)
