@@ -970,6 +970,30 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->assertSame($count, 1);
     }
 
+    public function testHasOnlyAndHasA()
+    {
+        $this->populateDatabase();
+
+        $aboveOne = CollectionType::condition();
+        $aboveOne->myInts->hasA(new \Good\Manners\Condition\GreaterThan(1));
+
+        $aboveThreePointO = CollectionType::condition();
+        $aboveThreePointO->myFloats->hasOnly(new \Good\Manners\Condition\GreaterThan(3.0));
+
+        $condition = new \Good\Manners\Condition\AndCondition($aboveThreePointO, $aboveOne);
+
+        $results = $this->storage->fetchAll($condition);
+
+        $count = 0;
+
+        foreach ($results as $result)
+        {
+            $count++;
+        }
+
+        $this->assertSame($count, 1);
+    }
+
     public function testHasAOrHasOnly()
     {
         $this->populateDatabase();
@@ -994,6 +1018,30 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->assertSame($count, 3);
     }
 
+    public function testHasOnlyOrHasA()
+    {
+        $this->populateDatabase();
+
+        $aboveOne = CollectionType::condition();
+        $aboveOne->myInts->hasA(new \Good\Manners\Condition\GreaterThan(1));
+
+        $aboveThreePointO = CollectionType::condition();
+        $aboveThreePointO->myFloats->hasOnly(new \Good\Manners\Condition\GreaterThan(3.0));
+
+        $condition = new \Good\Manners\Condition\OrCondition($aboveThreePointO, $aboveOne);
+
+        $results = $this->storage->fetchAll($condition);
+
+        $count = 0;
+
+        foreach ($results as $result)
+        {
+            $count++;
+        }
+
+        $this->assertSame($count, 3);
+    }
+
     public function testHasAImplicitAndHasOnly()
     {
         $this->populateDatabase();
@@ -1001,6 +1049,26 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $condition = CollectionType::condition();
         $condition->myInts->hasA(new \Good\Manners\Condition\GreaterThan(1));
         $condition->myFloats->hasOnly(new \Good\Manners\Condition\GreaterThan(3.0));
+
+        $results = $this->storage->fetchAll($condition);
+
+        $count = 0;
+
+        foreach ($results as $result)
+        {
+            $count++;
+        }
+
+        $this->assertSame($count, 1);
+    }
+
+    public function testHasOnlyImplicitAndHasA()
+    {
+        $this->populateDatabase();
+
+        $condition = CollectionType::condition();
+        $condition->myFloats->hasOnly(new \Good\Manners\Condition\GreaterThan(3.0));
+        $condition->myInts->hasA(new \Good\Manners\Condition\GreaterThan(1));
 
         $results = $this->storage->fetchAll($condition);
 
@@ -1174,6 +1242,30 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->assertSame($count, 1);
     }
 
+    public function testSinglePropertyHasOnlyAndHasA()
+    {
+        $this->populateDatabase();
+
+        $aboveOne = CollectionType::condition();
+        $aboveOne->myInts->hasA(new \Good\Manners\Condition\GreaterThan(1));
+
+        $belowThree = CollectionType::condition();
+        $belowThree->myInts->hasOnly(new \Good\Manners\Condition\GreaterThan(2));
+
+        $condition = new \Good\Manners\Condition\AndCondition($belowThree, $aboveOne);
+
+        $results = $this->storage->fetchAll($condition);
+
+        $count = 0;
+
+        foreach ($results as $result)
+        {
+            $count++;
+        }
+
+        $this->assertSame($count, 1);
+    }
+
     public function testSinglePropertyHasAOrHasOnly()
     {
         $this->populateDatabase();
@@ -1198,6 +1290,30 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->assertSame($count, 3);
     }
 
+    public function testSinglePropertyHasOnlyOrHasA()
+    {
+        $this->populateDatabase();
+
+        $aboveOne = CollectionType::condition();
+        $aboveOne->myInts->hasA(new \Good\Manners\Condition\GreaterThan(1));
+
+        $belowThree = CollectionType::condition();
+        $belowThree->myInts->hasOnly(new \Good\Manners\Condition\GreaterThan(2));
+
+        $condition = new \Good\Manners\Condition\OrCondition($belowThree, $aboveOne);
+
+        $results = $this->storage->fetchAll($condition);
+
+        $count = 0;
+
+        foreach ($results as $result)
+        {
+            $count++;
+        }
+
+        $this->assertSame($count, 3);
+    }
+
     public function testSinglePropertyHasAImplicitAndHasOnly()
     {
         $this->populateDatabase();
@@ -1205,6 +1321,26 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $condition = CollectionType::condition();
         $condition->myInts->hasA(new \Good\Manners\Condition\GreaterThan(1));
         $condition->myInts->hasOnly(new \Good\Manners\Condition\GreaterThan(2));
+
+        $results = $this->storage->fetchAll($condition);
+
+        $count = 0;
+
+        foreach ($results as $result)
+        {
+            $count++;
+        }
+
+        $this->assertSame($count, 1);
+    }
+
+    public function testSinglePropertyHasOnlyImplicitAndHasA()
+    {
+        $this->populateDatabase();
+
+        $condition = CollectionType::condition();
+        $condition->myInts->hasOnly(new \Good\Manners\Condition\GreaterThan(2));
+        $condition->myInts->hasA(new \Good\Manners\Condition\GreaterThan(1));
 
         $results = $this->storage->fetchAll($condition);
 

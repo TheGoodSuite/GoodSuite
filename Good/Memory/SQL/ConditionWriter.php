@@ -74,22 +74,27 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
     {
         $this->writeCondition($condition1);
         $sqlCondition1 = $this->getCondition();
+        $having1 = $this->getHaving();
 
         $this->writeCondition($condition2);
         $sqlCondition2 = $this->getCondition();
 
         $this->condition = '(' . $sqlCondition1 . ' AND ' . $sqlCondition2 . ')';
+        $this->appendHaving($having1);
+
     }
 
     public function processOrCondition(Condition $condition1, Condition $condition2)
     {
         $this->writeCondition($condition1);
         $sqlCondition1 = $this->getCondition();
+        $having1 = $this->getHaving();
 
         $this->writeCondition($condition2);
         $sqlCondition2 = $this->getCondition();
 
         $this->condition = '(' . $sqlCondition1 . ' OR ' . $sqlCondition2 . ')';
+        $this->appendHaving($having1);
     }
 
     public function processEqualToCondition($value)
