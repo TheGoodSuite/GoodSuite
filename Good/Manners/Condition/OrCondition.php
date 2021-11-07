@@ -4,8 +4,10 @@ namespace Good\Manners\Condition;
 
 use Good\Manners\Condition;
 use Good\Manners\ConditionProcessor;
+use Good\Manners\CollectionCondition;
+use Good\Manners\CollectionConditionProcessor;
 
-class OrCondition implements Condition
+class OrCondition implements Condition, CollectionCondition
 {
     private $condition1;
     private $condition2;
@@ -20,6 +22,11 @@ class OrCondition implements Condition
     public function processCondition(ConditionProcessor $processor)
     {
         $processor->processOrCondition($this->condition1, $this->condition2);
+    }
+
+    public function processCollectionCondition(CollectionConditionProcessor $processor)
+    {
+        $processor->processOrCollectionCondition($this->condition1, $this->condition2);
     }
 
     public function getTargetType()

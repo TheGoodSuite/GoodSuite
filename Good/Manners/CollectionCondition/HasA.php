@@ -1,8 +1,9 @@
 <?php
 
-namespace Good\Manners\Condition\Collection;
+namespace Good\Manners\CollectionCondition;
 
-use Good\Manners\CollectionComparisonProcessor;
+use Good\Manners\CollectionCondition;
+use Good\Manners\CollectionConditionProcessor;
 use Good\Manners\Condition\ComplexCondition;
 
 class HasA implements CollectionCondition
@@ -14,15 +15,15 @@ class HasA implements CollectionCondition
         $this->comparisonOrCondition = $comparisonOrCondition;
     }
 
-    public function processCollectionComparison(CollectionComparisonProcessor $processor)
+    public function processCollectionCondition(CollectionConditionProcessor $processor)
     {
         if ($this->comparisonOrCondition instanceof ComplexCondition)
         {
-            $processor->processHasAConditionComparison($this->comparisonOrCondition);
+            $processor->processHasAConditionCondition($this->comparisonOrCondition);
         }
         else
         {
-            $processor->processHasAComparisonComparison($this->comparisonOrCondition);
+            $processor->processHasAComparisonCondition($this->comparisonOrCondition);
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Good\Manners;
 
-use Good\Manners\Condition\Collection\CollectionCondition;
+use Good\Manners\CollectionCondition;
 use Good\Service\Type;
 use Good\Service\Type\CollectionType;
 use Good\Service\Type\ReferenceType;

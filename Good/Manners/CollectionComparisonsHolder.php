@@ -2,8 +2,8 @@
 
 namespace Good\Manners;
 
-use Good\Manners\Condition\Collection\HasA;
-use Good\Manners\Condition\Collection\HasOnly;
+use Good\Manners\CollectionCondition\HasA;
+use Good\Manners\CollectionCondition\HasOnly;
 use Good\Manners\Condition\EqualTo;
 
 class CollectionComparisonsHolder

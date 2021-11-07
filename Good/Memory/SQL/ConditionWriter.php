@@ -15,8 +15,8 @@ use Good\Manners\Condition;
 use Good\Manners\Condition\ComplexCondition;
 use Good\Manners\ComplexConditionProcessor;
 use Good\Manners\ConditionProcessor;
-use Good\Manners\CollectionComparisonProcessor;
-use Good\Manners\Condition\Collection\CollectionCondition;
+use Good\Manners\CollectionConditionProcessor;
+use Good\Manners\CollectionCondition;
 use Good\Rolemodel\TypeVisitor;
 use Good\Rolemodel\Schema\Type\ReferenceType;
 use Good\Rolemodel\Schema\Type\TextType;
@@ -26,7 +26,7 @@ use Good\Rolemodel\Schema\Type\DateTimeType;
 use Good\Rolemodel\Schema\Type\CollectionType;
 use Good\Service\Type;
 
-class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, CollectionComparisonProcessor, TypeVisitor
+class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, CollectionConditionProcessor, TypeVisitor
 {
     private $storage;
     private $condition;
@@ -63,6 +63,20 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
         $this->having = null;
 
         $condition->processCondition($this);
+
+        if ($this->first)
+        {
+            $this->condition = '1 = 1';
+        }
+    }
+
+    public function writeCollectionCondition(CollectionCondition $condition)
+    {
+        $this->first = true;
+        $this->condition = '';
+        $this->having = null;
+
+        $condition->processCollectionCondition($this);
 
         if ($this->first)
         {
@@ -233,30 +247,30 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
         $this->collectionName = $name;
         $this->type = $type;
 
-        $comparison->processCollectionComparison($this);
+        $comparison->processCollectionCondition($this);
     }
 
-    public function processHasAConditionComparison(Condition $condition)
+    public function processHasAConditionCondition(Condition $condition)
     {
-        $this->processHasAComparison(new CollectionEntryConditionCondition($this->type->getCollectedType(), $condition));
+        $this->processHasACondition(new CollectionEntryConditionCondition($this->type->getCollectedType(), $condition));
     }
 
-    public function processHasAComparisonComparison(Condition $comparison)
+    public function processHasAComparisonCondition(Condition $comparison)
     {
-        $this->processHasAComparison(new CollectionEntryComparisonCondition($this->type->getCollectedType(), $comparison));
+        $this->processHasACondition(new CollectionEntryComparisonCondition($this->type->getCollectedType(), $comparison));
     }
 
-    public function processHasOnlyConditionComparison(Condition $condition)
+    public function processHasOnlyConditionCondition(Condition $condition)
     {
-        $this->processHasOnlyComparison(new CollectionEntryConditionCondition($this->type->getCollectedType(), $condition));
+        $this->processHasOnlyCondition(new CollectionEntryConditionCondition($this->type->getCollectedType(), $condition));
     }
 
-    public function processHasOnlyComparisonComparison(Condition $comparison)
+    public function processHasOnlyComparisonCondition(Condition $comparison)
     {
-        $this->processHasOnlyComparison(new CollectionEntryComparisonCondition($this->type->getCollectedType(), $comparison));
+        $this->processHasOnlyCondition(new CollectionEntryComparisonCondition($this->type->getCollectedType(), $comparison));
     }
 
-    private function processHasAComparison($collectionEntryCondition)
+    private function processHasACondition($collectionEntryCondition)
     {
         $this->writeBracketOrAnd();
 
@@ -270,7 +284,7 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
         $this->appendHaving($subWriter->getHaving());
     }
 
-    private function processHasOnlyComparison($collectionEntryCondition)
+    private function processHasOnlyCondition($collectionEntryCondition)
     {
         $this->writeBracketOrAnd();
 
@@ -286,6 +300,42 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
 
         $this->condition .= '(' . $subWriter->getCondition() . ' OR `t' . $join . '`.`owner` IS NULL)';
         $this->appendHaving($subWriter->getHaving());
+    }
+
+    public function processAndCollectionCondition(CollectionCondition $condition1, CollectionCondition $condition2)
+    {
+        $subWriter = new ConditionWriter($this->storage, $join, $this->currentTableName);
+
+        $subWriter->writeCollectionCondition($condition1);
+        $sqlCondition1 = $this->getCondition();
+        $sqlHaving1 = $this->getHaving();
+
+        $subWriter->writeCollectionCondition($condition1);
+        $sqlCondition2 = $this->getCondition();
+        $sqlHaving2 = $this->getHaving();
+
+        $this->writeBracketOrAnd();
+        $this->condition = '(' . $sqlCondition1 . ' AND ' . $sqlCondition2 . ')';
+        $this->appendHaving($having1);
+        $this->appendHaving($having2);
+    }
+
+    public function processOrCollectionCondition(CollectionCondition $condition1, CollectionCondition $condition2)
+    {
+        $subWriter = new ConditionWriter($this->storage, $join, $this->currentTableName);
+
+        $subWriter->writeCollectionCondition($condition1);
+        $sqlCondition1 = $this->getCondition();
+        $sqlHaving1 = $this->getHaving();
+
+        $subWriter->writeCollectionCondition($condition1);
+        $sqlCondition2 = $this->getCondition();
+        $sqlHaving2 = $this->getHaving();
+
+        $this->writeBracketOrAnd();
+        $this->condition = '(' . $sqlCondition1 . ' OR ' . $sqlCondition2 . ')';
+        $this->appendHaving($having1);
+        $this->appendHaving($having2);
     }
 
     private function writeBracketOrAnd()
