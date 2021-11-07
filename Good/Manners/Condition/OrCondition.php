@@ -12,8 +12,8 @@ class OrCondition implements Condition, CollectionCondition
     private $condition1;
     private $condition2;
 
-    public function __construct(Condition $condition1,
-                                Condition $condition2)
+    public function __construct($condition1,
+                                $condition2)
     {
         $this->condition1 = $condition1;
         $this->condition2 = $condition2;

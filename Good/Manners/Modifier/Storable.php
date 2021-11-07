@@ -245,6 +245,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->condition .= "\n";
         $this->condition .= 'use \Good\Manners\CollectionComparisonsHolder;' . "\n";
         $this->condition .= 'use \Good\Manners\Condition;' . "\n";
+        $this->condition .= 'use \Good\Manners\CollectionCondition;' . "\n";
         $this->condition .= 'use \Good\Manners\Condition\ComplexCondition;' . "\n";
         $this->condition .= 'use \Good\Manners\Condition\EqualTo;' . "\n";
         $this->condition .= 'use \Good\Manners\ConditionProcessor;' . "\n";
@@ -612,29 +613,21 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->condition .= '    private $' . $this->member->getName() . ' = null;' . "\n";
         $this->condition .= "\n";
-        $this->condition .= '    public function get' . \ucfirst($this->member->getName()) . '()' . "\n";
+        $this->condition .= '    public function set' . \ucfirst($this->member->getName()) . '(CollectionCondition $condition)' . "\n";
         $this->condition .= "    {\n";
-        $this->condition .= '        if ($this->' . $this->member->getName() . ' == null)' . "\n";
-        $this->condition .= "        {\n";
-        $this->condition .= '             $this->' . $this->member->getName() . ' = new CollectionComparisonsHolder(';
-        $this->condition .= ($type->getCollectedType()->getReferencedTypeIfAny() == null ? "null" : ('"' . $type->getCollectedType()->getReferencedTypeIfAny() . '"')) . ');' . "\n";
-        $this->condition .= "        }\n";
-        $this->condition .= "\n";
-        $this->condition .= '        return $this->' . $this->member->getName() . ';' . "\n";
+        $this->condition .= '        $this->' . $this->member->getName() . ' = $condition;' . "\n";
         $this->condition .= "    }\n";
         $this->condition .= "\n";
 
-        $this->conditionGetterSwitch .= '            case "' . $this->member->getName() . '":' . "\n";
-        $this->conditionGetterSwitch .= '                return $this->get' . \ucfirst($this->member->getName()) . '();' . "\n";
-        $this->conditionGetterSwitch .= "\n";
+        $this->conditionSetterSwitch .= '            case "' . $this->member->getName() . '":' . "\n";
+        $this->conditionSetterSwitch .= '                $this->set' . \ucfirst($this->member->getName()) . '($value);' . "\n";
+        $this->conditionSetterSwitch .= '                break;' . "\n";
+        $this->conditionSetterSwitch .= "\n";
 
         $this->conditionComplexProcess .= '        if ($this->' . $this->member->getName() . ' !== null)' . "\n";
         $this->conditionComplexProcess .= "        {\n";
-        $this->conditionComplexProcess .= '            foreach ($this->' . $this->member->getName() . '->getComparisons() as $comparison)' . "\n";
-        $this->conditionComplexProcess .= "            {\n";
-        $this->conditionComplexProcess .= '                $processor->processCollectionMember(' . $this->typeDefinition->getName();
-        $this->conditionComplexProcess .= '::$' . $this->member->getName() . 'Type, "' . $this->member->getName() . '", $comparison);' . "\n";
-        $this->conditionComplexProcess .= "            }\n";
+        $this->conditionComplexProcess .= '            $processor->processCollectionMember(' . $this->typeDefinition->getName();
+        $this->conditionComplexProcess .= '::$' . $this->member->getName() . 'Type, "' . $this->member->getName() . '", $this->' . $this->member->getName() . ');' . "\n";
         $this->conditionComplexProcess .= "        }\n";
 
         // A bit of a misuse of getReferencedTypeIfAny: if I ever want to remove it, I shouldn't let this get in the way!

@@ -2,6 +2,8 @@
 
 namespace Good\Manners\CollectionCondition;
 
+use Good\Manners\Condition;
+use Good\Manners\Condition\EqualTo;
 use Good\Manners\CollectionCondition;
 use Good\Manners\CollectionConditionProcessor;
 use Good\Manners\Condition\ComplexCondition;
@@ -12,6 +14,11 @@ class HasA implements CollectionCondition
 
     public function __construct($comparisonOrCondition)
     {
+        if (!$comparisonOrCondition instanceof Condition)
+        {
+            $comparisonOrCondition = new EqualTo($comparisonOrCondition);
+        }
+
         $this->comparisonOrCondition = $comparisonOrCondition;
     }
 

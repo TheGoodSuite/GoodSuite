@@ -70,11 +70,13 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
         }
     }
 
-    public function writeCollectionCondition(CollectionCondition $condition)
+    public function writeCollectionCondition(CollectionType $type, $collectionName, CollectionCondition $condition)
     {
         $this->first = true;
         $this->condition = '';
         $this->having = null;
+        $this->type = $type;
+        $this->collectionName = $collectionName;
 
         $condition->processCollectionCondition($this);
 
@@ -304,38 +306,38 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
 
     public function processAndCollectionCondition(CollectionCondition $condition1, CollectionCondition $condition2)
     {
-        $subWriter = new ConditionWriter($this->storage, $join, $this->currentTableName);
+        $subWriter = new ConditionWriter($this->storage, $this->currentTable, $this->currentTableName);
 
-        $subWriter->writeCollectionCondition($condition1);
-        $sqlCondition1 = $this->getCondition();
-        $sqlHaving1 = $this->getHaving();
+        $subWriter->writeCollectionCondition($this->type, $this->collectionName, $condition1);
+        $sqlCondition1 = $subWriter->getCondition();
+        $sqlHaving1 = $subWriter->getHaving();
 
-        $subWriter->writeCollectionCondition($condition1);
-        $sqlCondition2 = $this->getCondition();
-        $sqlHaving2 = $this->getHaving();
+        $subWriter->writeCollectionCondition($this->type, $this->collectionName, $condition2);
+        $sqlCondition2 = $subWriter->getCondition();
+        $sqlHaving2 = $subWriter->getHaving();
 
         $this->writeBracketOrAnd();
         $this->condition = '(' . $sqlCondition1 . ' AND ' . $sqlCondition2 . ')';
-        $this->appendHaving($having1);
-        $this->appendHaving($having2);
+        $this->appendHaving($sqlHaving1);
+        $this->appendHaving($sqlHaving2);
     }
 
     public function processOrCollectionCondition(CollectionCondition $condition1, CollectionCondition $condition2)
     {
-        $subWriter = new ConditionWriter($this->storage, $join, $this->currentTableName);
+        $subWriter = new ConditionWriter($this->storage, $this->currentTable, $this->currentTableName);
 
-        $subWriter->writeCollectionCondition($condition1);
-        $sqlCondition1 = $this->getCondition();
-        $sqlHaving1 = $this->getHaving();
+        $subWriter->writeCollectionCondition($this->type, $this->collectionName, $condition1);
+        $sqlCondition1 = $subWriter->getCondition();
+        $sqlHaving1 = $subWriter->getHaving();
 
-        $subWriter->writeCollectionCondition($condition1);
-        $sqlCondition2 = $this->getCondition();
-        $sqlHaving2 = $this->getHaving();
+        $subWriter->writeCollectionCondition($this->type, $this->collectionName, $condition2);
+        $sqlCondition2 = $subWriter->getCondition();
+        $sqlHaving2 = $subWriter->getHaving();
 
         $this->writeBracketOrAnd();
         $this->condition = '(' . $sqlCondition1 . ' OR ' . $sqlCondition2 . ')';
-        $this->appendHaving($having1);
-        $this->appendHaving($having2);
+        $this->appendHaving($sqlHaving1);
+        $this->appendHaving($sqlHaving2);
     }
 
     private function writeBracketOrAnd()
