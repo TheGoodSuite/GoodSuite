@@ -87,13 +87,13 @@ class Selecter implements ResolverVisitor
 
         $sql .= ' WHERE ' . $conditionWriter->getCondition();
 
-        if (count($conditionWriter->getHaving()) > 0)
+        if ($conditionWriter->getHaving() != null)
         {
             $groupBySQL = array_map([$this, 'getEscapedAs'], $columns);
 
             $sql .= ' GROUP BY ' . \implode(', ', $groupBySQL);
 
-            $sql .= ' HAVING ' . \implode(' AND ', $conditionWriter->getHaving());
+            $sql .= ' HAVING ' . $conditionWriter->getHaving();
         }
 
         if (\count($order) > 0)

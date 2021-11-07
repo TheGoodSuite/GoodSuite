@@ -60,7 +60,7 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
     {
         $this->first = true;
         $this->condition = '';
-        $this->having = [];
+        $this->having = null;
 
         $condition->processCondition($this);
 
@@ -152,7 +152,7 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
         $subWriter->writeCondition($condition);
 
         $this->condition .= $subWriter->getCondition();
-        array_push($this->having, ...$subWriter->getHaving());
+        $this->appendHaving($subWriter->getHaving());
     }
 
     public function processReferenceMemberAsComparison(ReferenceType $type, $name, Condition $comparison)
@@ -262,7 +262,7 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
         $subWriter->writeCondition($collectionEntryCondition);
 
         $this->condition .= $subWriter->getCondition();
-        array_push($this->having, ...$subWriter->getHaving());
+        $this->appendHaving($subWriter->getHaving());
     }
 
     private function processHasOnlyComparison($collectionEntryCondition)
@@ -277,10 +277,10 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
 
         $secondJoin = $this->storage->createJoin($this->currentTable, 'id', $table, 'owner', null, false);
 
-        $this->having[] = "COUNT(DISTINCT `t" . $join . "`.`value`) = COUNT(DISTINCT `t" . $secondJoin . "`.`value`)";
+        $this->having = "COUNT(DISTINCT `t" . $join . "`.`value`) = COUNT(DISTINCT `t" . $secondJoin . "`.`value`)";
 
         $this->condition .= '(' . $subWriter->getCondition() . ' OR `t' . $join . '`.`owner` IS NULL)';
-        array_push($this->having, ...$subWriter->getHaving());
+        $this->appendHaving($subWriter->getHaving());
     }
 
     private function writeBracketOrAnd()
@@ -294,6 +294,22 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
         else
         {
             $this->condition .= ' AND ';
+        }
+    }
+
+    private function appendHaving($having)
+    {
+        if ($having != null)
+        {
+            if ($this->having == null)
+            {
+                $this->having = $having;
+            }
+            else
+            {
+                $this->having .= ' AND ';
+                $this->having .= $having;
+            }
         }
     }
 }
