@@ -3,7 +3,7 @@
 namespace Good\Manners\Condition;
 
 use Good\Manners\Condition;
-use Good\Manners\ComplexConditionProcessor;
+use Good\Manners\Processors\ComplexConditionProcessor;
 
 interface ComplexCondition extends Condition
 {

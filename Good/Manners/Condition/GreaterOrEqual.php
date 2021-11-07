@@ -3,8 +3,7 @@
 namespace Good\Manners\Condition;
 
 use Good\Manners\Condition;
-use Good\Manners\ConditionProcessor;
-use Good\Manners\ComparisonProcessor;
+use Good\Manners\Processors\ConditionProcessor;
 
 class GreaterOrEqual implements Condition
 {

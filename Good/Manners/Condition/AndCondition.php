@@ -3,9 +3,9 @@
 namespace Good\Manners\Condition;
 
 use Good\Manners\Condition;
-use Good\Manners\ConditionProcessor;
+use Good\Manners\Processors\ConditionProcessor;
 use Good\Manners\CollectionCondition;
-use Good\Manners\CollectionConditionProcessor;
+use Good\Manners\Processors\CollectionConditionProcessor;
 
 class AndCondition implements Condition, CollectionCondition
 {

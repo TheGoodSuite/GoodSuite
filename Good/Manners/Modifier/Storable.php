@@ -248,8 +248,8 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->condition .= 'use \Good\Manners\CollectionCondition;' . "\n";
         $this->condition .= 'use \Good\Manners\Condition\ComplexCondition;' . "\n";
         $this->condition .= 'use \Good\Manners\Condition\EqualTo;' . "\n";
-        $this->condition .= 'use \Good\Manners\ConditionProcessor;' . "\n";
-        $this->condition .= 'use \Good\Manners\ComplexConditionProcessor;' . "\n";
+        $this->condition .= 'use \Good\Manners\Processors\ConditionProcessor;' . "\n";
+        $this->condition .= 'use \Good\Manners\Processors\ComplexConditionProcessor;' . "\n";
         $this->condition .= "\n";
         $this->condition .= 'class ' . $typeDefinition->getName() . 'Condition implements ComplexCondition' . "\n";
         $this->condition .= "{\n";

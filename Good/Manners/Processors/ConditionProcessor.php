@@ -1,8 +1,9 @@
 <?php
 
-namespace Good\Manners;
+namespace Good\Manners\Processors;
 
 use Good\Manners\Condition\ComplexCondition;
+use Good\Manners\Condition;
 
 interface ConditionProcessor
 {

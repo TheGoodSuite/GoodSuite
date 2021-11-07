@@ -1,6 +1,9 @@
 <?php
 
-namespace Good\Manners;
+namespace Good\Manners\Processors;
+
+use Good\Manners\Condition;
+use Good\Manners\CollectionCondition;
 
 interface CollectionConditionProcessor
 {

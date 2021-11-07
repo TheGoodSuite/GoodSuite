@@ -5,7 +5,7 @@ namespace Good\Manners\CollectionCondition;
 use Good\Manners\Condition;
 use Good\Manners\Condition\EqualTo;
 use Good\Manners\CollectionCondition;
-use Good\Manners\CollectionConditionProcessor;
+use Good\Manners\Processors\CollectionConditionProcessor;
 use Good\Manners\Condition\ComplexCondition;
 
 class HasOnly implements CollectionCondition

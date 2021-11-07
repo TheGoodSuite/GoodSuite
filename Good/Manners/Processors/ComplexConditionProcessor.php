@@ -1,7 +1,8 @@
 <?php
 
-namespace Good\Manners;
+namespace Good\Manners\Processors;
 
+use Good\Manners\Condition;
 use Good\Manners\CollectionCondition;
 use Good\Service\Type;
 use Good\Service\Type\CollectionType;

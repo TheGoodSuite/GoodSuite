@@ -2,7 +2,7 @@
 
 namespace Good\Manners;
 
-use Good\Manners\CollectionComparisonProcessor;
+use Good\Manners\Processors\CollectionConditionProcessor;
 
 interface CollectionCondition
 {

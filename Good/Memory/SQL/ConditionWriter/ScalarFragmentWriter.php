@@ -4,7 +4,7 @@ namespace Good\Memory\SQL\ConditionWriter;
 
 use Good\Manners\Condition;
 use Good\Manners\Condition\ComplexCondition;
-use Good\Manners\ConditionProcessor;
+use Good\Manners\Processors\ConditionProcessor;
 
 abstract class ScalarFragmentWriter implements ConditionProcessor
 {
