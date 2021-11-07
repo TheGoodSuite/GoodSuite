@@ -513,13 +513,13 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->conditionComplexProcess .= '        if ($this->' . $this->member->getName() . ' !== null)' . "\n";
         $this->conditionComplexProcess .= "        {\n";
-        $this->conditionComplexProcess .= '            $processor->processReferenceMemberAsComparison(' . $this->typeDefinition->getName();
+        $this->conditionComplexProcess .= '            $processor->processMember(' . $this->typeDefinition->getName();
         $this->conditionComplexProcess .= '::$' . $this->member->getName() . 'Type, "' . $this->member->getName();
         $this->conditionComplexProcess .= '", $this->' . $this->member->getName() . ');' . "\n";
         $this->conditionComplexProcess .= "        }\n";
         $this->conditionComplexProcess .= '        else if ($this->' . $this->member->getName() . 'Condition !== null)' . "\n";
         $this->conditionComplexProcess .= "        {\n";
-        $this->conditionComplexProcess .= '            $processor->processReferenceMemberAsCondition(' . $this->typeDefinition->getName();
+        $this->conditionComplexProcess .= '            $processor->processMember(' . $this->typeDefinition->getName();
         $this->conditionComplexProcess .= '::$' . $this->member->getName() . 'Type, "' . $this->member->getName();
         $this->conditionComplexProcess .= '", $this->' . $this->member->getName() . 'Condition);' . "\n";
         $this->conditionComplexProcess .= "        }\n";
@@ -658,7 +658,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
             $this->conditionComplexProcess .= '        if ($this->' . $this->member->getName() . ' !== null)' . "\n";
             $this->conditionComplexProcess .= "        {\n";
-            $this->conditionComplexProcess .= '            $processor->processPrimitiveMember(' . $this->typeDefinition->getName();
+            $this->conditionComplexProcess .= '            $processor->processMember(' . $this->typeDefinition->getName();
             $this->conditionComplexProcess .= '::$' . $this->member->getName() . 'Type, "' . $this->member->getName() . '", $this->' . $this->member->getName() . ');' . "\n";
             $this->conditionComplexProcess .= "        }\n";
         }

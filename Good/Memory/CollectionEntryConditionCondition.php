@@ -63,7 +63,7 @@ class CollectionEntryConditionCondition implements ComplexCondition, TypeVisitor
 
     public function visitReferenceType(ReferenceType $type)
     {
-        $this->conditionProcessor->processReferenceMemberAsCondition($type, "value", $this->condition);
+        $this->conditionProcessor->processMember($type, "value", $this->condition);
     }
 
     public function visitTextType(TextType $type)

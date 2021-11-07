@@ -158,35 +158,7 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
         $this->condition .= $fragmentWriter->writeFragment($comparison, $field);
     }
 
-    public function processReferenceMemberAsCondition(ReferenceType $type, $name, $condition)
-    {
-        $this->writeBracketOrAnd();
-
-        $join = $this->storage->getJoin($this->currentTable, $name);
-
-        if ($join == -1)
-        {
-            $join = $this->storage->createJoin($this->currentTable, $name, $type->getReferencedType(), 'id');
-        }
-
-        $subWriter = new ConditionWriter($this->storage, $join, $type->getReferencedType());
-        $subWriter->writeCondition($condition);
-
-        $this->condition .= $subWriter->getCondition();
-        $this->appendHaving($subWriter->getHaving());
-    }
-
-    public function processReferenceMemberAsComparison(ReferenceType $type, $name, Condition $comparison)
-    {
-        $this->writeBracketOrAnd();
-
-        $field = '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($name) . '`';
-        $fragmentWriter = new ReferenceFragmentWriter();
-
-        $this->condition .= $fragmentWriter->writeFragment($comparison, $field);
-    }
-
-    public function processPrimitiveMember(Type $type, $name, Condition $comparison)
+    public function processMember(Type $type, $name, Condition $comparison)
     {
         $this->fieldName = $name;
         $this->comparison = $comparison;
@@ -196,7 +168,35 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
 
     public function visitReferenceType(ReferenceType $type)
     {
-        throw new \Exception("Not supported");
+        $complexConditionDiscoverer = new ComplexConditionDiscoverer();
+        $complexCondition = $complexConditionDiscoverer->discoverComplexCondition($this->comparison);
+
+        if ($complexCondition != null)
+        {
+            $this->writeBracketOrAnd();
+
+            $join = $this->storage->getJoin($this->currentTable, $this->fieldName);
+
+            if ($join == -1)
+            {
+                $join = $this->storage->createJoin($this->currentTable, $this->fieldName, $type->getReferencedType(), 'id');
+            }
+
+            $subWriter = new ConditionWriter($this->storage, $join, $type->getReferencedType());
+            $subWriter->writeCondition($complexCondition);
+
+            $this->condition .= $subWriter->getCondition();
+            $this->appendHaving($subWriter->getHaving());
+        }
+        else
+        {
+            $this->writeBracketOrAnd();
+
+            $field = '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($this->fieldName) . '`';
+            $fragmentWriter = new ReferenceFragmentWriter();
+
+            $this->condition .= $fragmentWriter->writeFragment($this->comparison, $field);
+        }
     }
 
     public function visitTextType(TextType $type)

@@ -67,7 +67,20 @@ class ReferenceFragmentWriter implements ConditionProcessor
 
     public function processComplexCondition(ComplexCondition $condition)
     {
-        throw new \Exception("Using complex conditions for a reference comparison should follow a different code path than this...");
+        $this->writeBracketOrAnd();
+
+        $join = $this->storage->getJoin($this->currentTable, $this->fieldName);
+
+        if ($join == -1)
+        {
+            $join = $this->storage->createJoin($this->currentTable, $this->fieldName, $type->getReferencedType(), 'id');
+        }
+
+        $subWriter = new ConditionWriter($this->storage, $join, $type->getReferencedType());
+        $subWriter->writeCondition($this->comparison);
+
+        $this->condition .= $subWriter->getCondition();
+        $this->appendHaving($subWriter->getHaving());
     }
 
     public function processAndCondition(Condition $comparison1, Condition $comparison2)
