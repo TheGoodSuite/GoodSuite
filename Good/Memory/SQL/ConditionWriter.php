@@ -277,7 +277,7 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
 
         $secondJoin = $this->storage->createJoin($this->currentTable, 'id', $table, 'owner', null, false);
 
-        $this->having = "COUNT(DISTINCT `t" . $join . "`.`value`) = COUNT(DISTINCT `t" . $secondJoin . "`.`value`)";
+        $this->appendHaving("COUNT(DISTINCT `t" . $join . "`.`value`) = COUNT(DISTINCT `t" . $secondJoin . "`.`value`)");
 
         $this->condition .= '(' . $subWriter->getCondition() . ' OR `t' . $join . '`.`owner` IS NULL)';
         $this->appendHaving($subWriter->getHaving());
