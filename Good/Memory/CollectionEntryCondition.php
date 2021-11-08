@@ -16,7 +16,7 @@ use Good\Rolemodel\Schema\Type\ReferenceType;
 use Good\Rolemodel\Schema\Type\TextType;
 use Good\Rolemodel\TypeVisitor;
 
-class CollectionEntryComparisonCondition implements ComplexCondition, TypeVisitor
+class CollectionEntryCondition implements ComplexCondition, TypeVisitor
 {
     private $collectedType;
     private $comparison;

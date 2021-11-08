@@ -3,8 +3,7 @@
 namespace Good\Memory\SQL;
 
 use Good\Memory\SQLStorage;
-use Good\Memory\CollectionEntryComparisonCondition;
-use Good\Memory\CollectionEntryConditionCondition;
+use Good\Memory\CollectionEntryCondition;
 use Good\Memory\SQL\ConditionWriter\DateTimeFragmentWriter;
 use Good\Memory\SQL\ConditionWriter\FloatFragmentWriter;
 use Good\Memory\SQL\ConditionWriter\IntFragmentWriter;
@@ -252,27 +251,7 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
         $comparison->processCollectionCondition($this);
     }
 
-    public function processHasAConditionCondition(Condition $condition)
-    {
-        $this->processHasACondition(new CollectionEntryConditionCondition($this->type->getCollectedType(), $condition));
-    }
-
-    public function processHasAComparisonCondition(Condition $comparison)
-    {
-        $this->processHasACondition(new CollectionEntryComparisonCondition($this->type->getCollectedType(), $comparison));
-    }
-
-    public function processHasOnlyConditionCondition(Condition $condition)
-    {
-        $this->processHasOnlyCondition(new CollectionEntryConditionCondition($this->type->getCollectedType(), $condition));
-    }
-
-    public function processHasOnlyComparisonCondition(Condition $comparison)
-    {
-        $this->processHasOnlyCondition(new CollectionEntryComparisonCondition($this->type->getCollectedType(), $comparison));
-    }
-
-    private function processHasACondition($collectionEntryCondition)
+    public function processHasA(Condition $condition)
     {
         $this->writeBracketOrAnd();
 
@@ -280,13 +259,13 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
         $join = $this->storage->createJoin($this->currentTable, 'id', $table, 'owner', null, false);
 
         $subWriter = new ConditionWriter($this->storage, $join, $this->currentTableName);
-        $subWriter->writeCondition($collectionEntryCondition);
+        $subWriter->writeCondition(new CollectionEntryCondition($this->type->getCollectedType(), $condition));
 
         $this->condition .= $subWriter->getCondition();
         $this->appendHaving($subWriter->getHaving());
     }
 
-    private function processHasOnlyCondition($collectionEntryCondition)
+    public function processHasOnly(Condition $condition)
     {
         $this->writeBracketOrAnd();
 
@@ -294,7 +273,7 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
         $join = $this->storage->createJoin($this->currentTable, 'id', $table, 'owner', null, false);
 
         $subWriter = new ConditionWriter($this->storage, $join, $this->currentTableName);
-        $subWriter->writeCondition($collectionEntryCondition);
+        $subWriter->writeCondition(new CollectionEntryCondition($this->type->getCollectedType(), $condition));
 
         $secondJoin = $this->storage->createJoin($this->currentTable, 'id', $table, 'owner', null, false);
 
@@ -304,7 +283,7 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
         $this->appendHaving($subWriter->getHaving());
     }
 
-    public function processAndCollectionCondition(CollectionCondition $condition1, CollectionCondition $condition2)
+    public function processAndCollection(CollectionCondition $condition1, CollectionCondition $condition2)
     {
         $subWriter = new ConditionWriter($this->storage, $this->currentTable, $this->currentTableName);
 
@@ -322,7 +301,7 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
         $this->appendHaving($sqlHaving2);
     }
 
-    public function processOrCollectionCondition(CollectionCondition $condition1, CollectionCondition $condition2)
+    public function processOrCollection(CollectionCondition $condition1, CollectionCondition $condition2)
     {
         $subWriter = new ConditionWriter($this->storage, $this->currentTable, $this->currentTableName);
 

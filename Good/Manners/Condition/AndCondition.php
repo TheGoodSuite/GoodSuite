@@ -26,7 +26,7 @@ class AndCondition implements Condition, CollectionCondition
 
     public function processCollectionCondition(CollectionConditionProcessor $processor)
     {
-        $processor->processAndCollectionCondition($this->condition1, $this->condition2);
+        $processor->processAndCollection($this->condition1, $this->condition2);
     }
 
     public function getTargetType()

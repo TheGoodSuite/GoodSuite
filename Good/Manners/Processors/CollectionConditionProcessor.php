@@ -7,13 +7,11 @@ use Good\Manners\CollectionCondition;
 
 interface CollectionConditionProcessor
 {
-    public function processHasAComparisonCondition(Condition $comparison);
-    public function processHasAConditionCondition(Condition $condition);
-    public function processHasOnlyComparisonCondition(Condition $comparison);
-    public function processHasOnlyConditionCondition(Condition $condition);
+    public function processHasA(Condition $condition);
+    public function processHasOnly(Condition $condition);
 
-    public function processAndCollectionCondition(CollectionCondition $comparison1, CollectionCondition $comparison2);
-    public function processOrCollectionCondition(CollectionCondition $comparison1, CollectionCondition $comparison2);
+    public function processAndCollection(CollectionCondition $comparison1, CollectionCondition $comparison2);
+    public function processOrCollection(CollectionCondition $comparison1, CollectionCondition $comparison2);
 }
 
 ?>

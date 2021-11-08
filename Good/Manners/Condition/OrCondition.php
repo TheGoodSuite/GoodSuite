@@ -26,7 +26,7 @@ class OrCondition implements Condition, CollectionCondition
 
     public function processCollectionCondition(CollectionConditionProcessor $processor)
     {
-        $processor->processOrCollectionCondition($this->condition1, $this->condition2);
+        $processor->processOrCollection($this->condition1, $this->condition2);
     }
 
     public function getTargetType()

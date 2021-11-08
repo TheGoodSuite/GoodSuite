@@ -24,14 +24,7 @@ class HasA implements CollectionCondition
 
     public function processCollectionCondition(CollectionConditionProcessor $processor)
     {
-        if ($this->comparisonOrCondition instanceof ComplexCondition)
-        {
-            $processor->processHasAConditionCondition($this->comparisonOrCondition);
-        }
-        else
-        {
-            $processor->processHasAComparisonCondition($this->comparisonOrCondition);
-        }
+        $processor->processHasA($this->comparisonOrCondition);
     }
 }
 

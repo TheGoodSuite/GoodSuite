@@ -24,14 +24,7 @@ class HasOnly implements CollectionCondition
 
     public function processCollectionCondition(CollectionConditionProcessor $processor)
     {
-        if ($this->comparisonOrCondition instanceof ComplexCondition)
-        {
-            $processor->processHasOnlyConditionCondition($this->comparisonOrCondition);
-        }
-        else
-        {
-            $processor->processHasOnlyComparisonCondition($this->comparisonOrCondition);
-        }
+        $processor->processHasOnly($this->comparisonOrCondition);
     }
 }
 
