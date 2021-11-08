@@ -2,7 +2,6 @@
 
 namespace Good\Memory;
 
-use Good\Manners\Comparison;
 use Good\Manners\Condition;
 use Good\Manners\Condition\ComplexCondition;
 use Good\Manners\Processors\ConditionProcessor;
@@ -19,14 +18,14 @@ use Good\Rolemodel\TypeVisitor;
 class CollectionEntryCondition implements ComplexCondition, TypeVisitor
 {
     private $collectedType;
-    private $comparison;
+    private $condition;
 
     private $conditionProcessor;
 
-    public function __construct(Type $collectedType, Condition $comparison)
+    public function __construct(Type $collectedType, Condition $condition)
     {
         $this->collectedType = $collectedType;
-        $this->comparison = $comparison;
+        $this->condition = $condition;
     }
 
     public function processCondition(ConditionProcessor $processor)
@@ -48,27 +47,27 @@ class CollectionEntryCondition implements ComplexCondition, TypeVisitor
 
     public function  visitDateTimeType(DateTimeType $type)
     {
-        $this->conditionProcessor->processMember($type, "value", $this->comparison);
+        $this->conditionProcessor->processMember($type, "value", $this->condition);
     }
 
     public function visitFloatType(FloatType $type)
     {
-        $this->conditionProcessor->processMember($type, "value", $this->comparison);
+        $this->conditionProcessor->processMember($type, "value", $this->condition);
     }
 
     public function visitIntType(IntType $type)
     {
-        $this->conditionProcessor->processMember($type, "value", $this->comparison);
+        $this->conditionProcessor->processMember($type, "value", $this->condition);
     }
 
     public function visitTextType(TextType $type)
     {
-        $this->conditionProcessor->processMember($type, "value", $this->comparison);
+        $this->conditionProcessor->processMember($type, "value", $this->condition);
     }
 
     public function visitReferenceType(ReferenceType $type)
     {
-        $this->conditionProcessor->processMember($type, "value", $this->comparison);
+        $this->conditionProcessor->processMember($type, "value", $this->condition);
     }
 
     public function getTargetType()

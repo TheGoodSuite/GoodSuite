@@ -27,8 +27,8 @@ class ComplexConditionDiscoverer implements ConditionProcessor
     public function processLessThanCondition($value) {}
     public function processLessOrEqualCondition($value) {}
 
-    public function processAndCondition(Condition $comparison1, Condition $comparison2) {}
-    public function processOrCondition(Condition $comparison1, Condition $comparison2) {}
+    public function processAndCondition(Condition $condition1, Condition $condition2) {}
+    public function processOrCondition(Condition $condition1, Condition $condition2) {}
 
     public function processComplexCondition(ComplexCondition $condition)
     {

@@ -14,11 +14,11 @@ abstract class ScalarFragmentWriter implements ConditionProcessor
 
     protected abstract function parseScalar($value);
 
-    public function writeFragment($comparison, $field)
+    public function writeFragment($condition, $field)
     {
         $this->field = $field;
 
-        $comparison->processCondition($this);
+        $condition->processCondition($this);
 
         return $this->fragment;
     }
@@ -67,20 +67,20 @@ abstract class ScalarFragmentWriter implements ConditionProcessor
         $this->fragment = $this->field . ' <= ' . $this->parseScalar($value);
     }
 
-    public function processAndCondition(Condition $comparison1, Condition $comparison2)
+    public function processAndCondition(Condition $condition1, Condition $condition2)
     {
-        $fragment = '(' . $this->writeFragment($comparison1, $this->field);
+        $fragment = '(' . $this->writeFragment($condition1, $this->field);
         $fragment .= ' AND ';
-        $fragment .= $this->writeFragment($comparison2, $this->field) . ')';
+        $fragment .= $this->writeFragment($condition2, $this->field) . ')';
 
         $this->fragment = $fragment;
     }
 
-    public function processOrCondition(Condition $comparison1, Condition $comparison2)
+    public function processOrCondition(Condition $condition1, Condition $condition2)
     {
-        $fragment = '(' . $this->writeFragment($comparison1, $this->field);
+        $fragment = '(' . $this->writeFragment($condition1, $this->field);
         $fragment .= ' OR ';
-        $fragment .= $this->writeFragment($comparison2, $this->field) . ')';
+        $fragment .= $this->writeFragment($condition2, $this->field) . ')';
 
         $this->fragment = $fragment;
     }

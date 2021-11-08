@@ -28,7 +28,7 @@ use Good\Service\Type;
 class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, CollectionConditionProcessor, TypeVisitor
 {
     private $storage;
-    private $condition;
+    private $sqlCondition;
     private $having;
     private $first;
 
@@ -36,7 +36,7 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
     private $currentTableName;
 
     private $fieldName;
-    private $comparison;
+    private $condition;
 
     public function __construct(SQLStorage $storage, $currentTable, $currentTableName)
     {
@@ -47,7 +47,7 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
 
     public function getCondition()
     {
-        return $this->condition;
+        return $this->sqlCondition;
     }
 
     public function getHaving()
@@ -58,21 +58,21 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
     public function writeCondition(Condition $condition)
     {
         $this->first = true;
-        $this->condition = '';
+        $this->sqlCondition = '';
         $this->having = null;
 
         $condition->processCondition($this);
 
         if ($this->first)
         {
-            $this->condition = '1 = 1';
+            $this->sqlCondition = '1 = 1';
         }
     }
 
     public function writeCollectionCondition(CollectionType $type, $collectionName, CollectionCondition $condition)
     {
         $this->first = true;
-        $this->condition = '';
+        $this->sqlCondition = '';
         $this->having = null;
         $this->type = $type;
         $this->collectionName = $collectionName;
@@ -81,7 +81,7 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
 
         if ($this->first)
         {
-            $this->condition = '1 = 1';
+            $this->sqlCondition = '1 = 1';
         }
     }
 
@@ -94,7 +94,7 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
         $this->writeCondition($condition2);
         $sqlCondition2 = $this->getCondition();
 
-        $this->condition = '(' . $sqlCondition1 . ' AND ' . $sqlCondition2 . ')';
+        $this->sqlCondition = '(' . $sqlCondition1 . ' AND ' . $sqlCondition2 . ')';
         $this->appendHaving($having1);
 
     }
@@ -108,7 +108,7 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
         $this->writeCondition($condition2);
         $sqlCondition2 = $this->getCondition();
 
-        $this->condition = '(' . $sqlCondition1 . ' OR ' . $sqlCondition2 . ')';
+        $this->sqlCondition = '(' . $sqlCondition1 . ' OR ' . $sqlCondition2 . ')';
         $this->appendHaving($having1);
     }
 
@@ -147,20 +147,20 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
         $condition->processComplexCondition($this);
     }
 
-    public function processId(Condition $comparison)
+    public function processId(Condition $condition)
     {
         $this->writeBracketOrAnd();
 
         $field = '`t' . $this->currentTable . '`.`id`';
         $fragmentWriter = new IntFragmentWriter($this->storage);
 
-        $this->condition .= $fragmentWriter->writeFragment($comparison, $field);
+        $this->sqlCondition .= $fragmentWriter->writeFragment($condition, $field);
     }
 
-    public function processMember(Type $type, $name, Condition $comparison)
+    public function processMember(Type $type, $name, Condition $condition)
     {
         $this->fieldName = $name;
-        $this->comparison = $comparison;
+        $this->condition = $condition;
 
         $type->acceptTypeVisitor($this);
     }
@@ -168,7 +168,7 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
     public function visitReferenceType(ReferenceType $type)
     {
         $complexConditionDiscoverer = new ComplexConditionDiscoverer();
-        $complexCondition = $complexConditionDiscoverer->discoverComplexCondition($this->comparison);
+        $complexCondition = $complexConditionDiscoverer->discoverComplexCondition($this->condition);
 
         if ($complexCondition != null)
         {
@@ -184,7 +184,7 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
             $subWriter = new ConditionWriter($this->storage, $join, $type->getReferencedType());
             $subWriter->writeCondition($complexCondition);
 
-            $this->condition .= $subWriter->getCondition();
+            $this->sqlCondition .= $subWriter->getCondition();
             $this->appendHaving($subWriter->getHaving());
         }
         else
@@ -194,7 +194,7 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
             $field = '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($this->fieldName) . '`';
             $fragmentWriter = new ReferenceFragmentWriter();
 
-            $this->condition .= $fragmentWriter->writeFragment($this->comparison, $field);
+            $this->sqlCondition .= $fragmentWriter->writeFragment($this->condition, $field);
         }
     }
 
@@ -237,18 +237,18 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
 
         $field = '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($this->fieldName) . '`';
 
-        $this->condition .= $fragmentWriter->writeFragment($this->comparison, $field);
+        $this->sqlCondition .= $fragmentWriter->writeFragment($this->condition, $field);
     }
 
     private $collectionName;
     private $type;
 
-    public function processCollectionMember(CollectionType $type, $name, CollectionCondition $comparison)
+    public function processCollectionMember(CollectionType $type, $name, CollectionCondition $condition)
     {
         $this->collectionName = $name;
         $this->type = $type;
 
-        $comparison->processCollectionCondition($this);
+        $condition->processCollectionCondition($this);
     }
 
     public function processHasA(Condition $condition)
@@ -261,7 +261,7 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
         $subWriter = new ConditionWriter($this->storage, $join, $this->currentTableName);
         $subWriter->writeCondition(new CollectionEntryCondition($this->type->getCollectedType(), $condition));
 
-        $this->condition .= $subWriter->getCondition();
+        $this->sqlCondition .= $subWriter->getCondition();
         $this->appendHaving($subWriter->getHaving());
     }
 
@@ -279,7 +279,7 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
 
         $this->appendHaving("COUNT(DISTINCT `t" . $join . "`.`value`) = COUNT(DISTINCT `t" . $secondJoin . "`.`value`)");
 
-        $this->condition .= '(' . $subWriter->getCondition() . ' OR `t' . $join . '`.`owner` IS NULL)';
+        $this->sqlCondition .= '(' . $subWriter->getCondition() . ' OR `t' . $join . '`.`owner` IS NULL)';
         $this->appendHaving($subWriter->getHaving());
     }
 
@@ -296,7 +296,7 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
         $sqlHaving2 = $subWriter->getHaving();
 
         $this->writeBracketOrAnd();
-        $this->condition = '(' . $sqlCondition1 . ' AND ' . $sqlCondition2 . ')';
+        $this->sqlCondition = '(' . $sqlCondition1 . ' AND ' . $sqlCondition2 . ')';
         $this->appendHaving($sqlHaving1);
         $this->appendHaving($sqlHaving2);
     }
@@ -314,7 +314,7 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
         $sqlHaving2 = $subWriter->getHaving();
 
         $this->writeBracketOrAnd();
-        $this->condition = '(' . $sqlCondition1 . ' OR ' . $sqlCondition2 . ')';
+        $this->sqlCondition = '(' . $sqlCondition1 . ' OR ' . $sqlCondition2 . ')';
         $this->appendHaving($sqlHaving1);
         $this->appendHaving($sqlHaving2);
     }
@@ -324,12 +324,12 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
         if ($this->first)
         {
             // removed brackets change name of function?
-            //$this->condition = '(';
+            //$this->sqlCondition = '(';
             $this->first = false;
         }
         else
         {
-            $this->condition .= ' AND ';
+            $this->sqlCondition .= ' AND ';
         }
     }
 

@@ -10,21 +10,21 @@ use Good\Manners\Condition\ComplexCondition;
 
 class HasOnly implements CollectionCondition
 {
-    private $comparisonOrCondition;
+    private $condition;
 
-    public function __construct($comparisonOrCondition)
+    public function __construct($condition)
     {
-        if (!$comparisonOrCondition instanceof Condition)
+        if (!$condition instanceof Condition)
         {
-            $comparisonOrCondition = new EqualTo($comparisonOrCondition);
+            $condition = new EqualTo($condition);
         }
 
-        $this->comparisonOrCondition = $comparisonOrCondition;
+        $this->condition = $condition;
     }
 
     public function processCollectionCondition(CollectionConditionProcessor $processor)
     {
-        $processor->processHasOnly($this->comparisonOrCondition);
+        $processor->processHasOnly($this->condition);
     }
 }
 

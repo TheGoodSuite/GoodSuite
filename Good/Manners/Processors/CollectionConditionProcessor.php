@@ -10,8 +10,8 @@ interface CollectionConditionProcessor
     public function processHasA(Condition $condition);
     public function processHasOnly(Condition $condition);
 
-    public function processAndCollection(CollectionCondition $comparison1, CollectionCondition $comparison2);
-    public function processOrCollection(CollectionCondition $comparison1, CollectionCondition $comparison2);
+    public function processAndCollection(CollectionCondition $condition1, CollectionCondition $condition2);
+    public function processOrCollection(CollectionCondition $condition1, CollectionCondition $condition2);
 }
 
 ?>

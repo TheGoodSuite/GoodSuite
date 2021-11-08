@@ -243,7 +243,6 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->condition  = "<?php\n";
         $this->condition .= "\n";
-        $this->condition .= 'use \Good\Manners\CollectionComparisonsHolder;' . "\n";
         $this->condition .= 'use \Good\Manners\Condition;' . "\n";
         $this->condition .= 'use \Good\Manners\CollectionCondition;' . "\n";
         $this->condition .= 'use \Good\Manners\Condition\ComplexCondition;' . "\n";

@@ -12,11 +12,11 @@ class ReferenceFragmentWriter implements ConditionProcessor
 
     private $fragment;
 
-    public function writeFragment($comparison, $field)
+    public function writeFragment($condition, $field)
     {
         $this->field = $field;
 
-        $comparison->processCondition($this);
+        $condition->processCondition($this);
 
         return $this->fragment;
     }
@@ -47,22 +47,22 @@ class ReferenceFragmentWriter implements ConditionProcessor
 
     public function processGreaterThanCondition($value)
     {
-        throw new \Exception("Greater than is not a valid comparison for objects");
+        throw new \Exception("Greater than is not a valid condition for objects");
     }
 
     public function processGreaterOrEqualCondition($value)
     {
-        throw new \Exception("Greater than or equals is not a valid comparison for objects");
+        throw new \Exception("Greater than or equals is not a valid condition for objects");
     }
 
     public function processLessThanCondition($value)
     {
-        throw new \Exception("Less than is not a valid comparison for objects");
+        throw new \Exception("Less than is not a valid condition for objects");
     }
 
     public function processLessOrEqualCondition($value)
     {
-        throw new \Exception("Less than or equals is not a valid comparison for objects");
+        throw new \Exception("Less than or equals is not a valid condition for objects");
     }
 
     public function processComplexCondition(ComplexCondition $condition)
@@ -77,26 +77,26 @@ class ReferenceFragmentWriter implements ConditionProcessor
         }
 
         $subWriter = new ConditionWriter($this->storage, $join, $type->getReferencedType());
-        $subWriter->writeCondition($this->comparison);
+        $subWriter->writeCondition($this->condition);
 
         $this->condition .= $subWriter->getCondition();
         $this->appendHaving($subWriter->getHaving());
     }
 
-    public function processAndCondition(Condition $comparison1, Condition $comparison2)
+    public function processAndCondition(Condition $condition1, Condition $condition2)
     {
-        $fragment = '(' . $this->writeFragment($comparison1);
+        $fragment = '(' . $this->writeFragment($condition1);
         $fragment .= ' AND ';
-        $fragment .= $this->writeFragment($comparison2) . ')';
+        $fragment .= $this->writeFragment($condition2) . ')';
 
         $this->fragment = $fragment;
     }
 
-    public function processOrCondition(Condition $comparison1, Condition $comparison2)
+    public function processOrCondition(Condition $condition1, Condition $condition2)
     {
-        $fragment = '(' . $this->writeFragment($comparison1);
+        $fragment = '(' . $this->writeFragment($condition1);
         $fragment .= ' OR ';
-        $fragment .= $this->writeFragment($comparison2) . ')';
+        $fragment .= $this->writeFragment($condition2) . ')';
 
         $this->fragment = $fragment;
     }
