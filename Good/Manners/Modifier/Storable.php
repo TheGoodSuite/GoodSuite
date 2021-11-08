@@ -477,22 +477,23 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->isDirty .= "\n";
         $this->isDirty .= '            || $this->is' . \ucfirst($this->member->getName()) . 'Dirty';
 
-        $this->condition .= '    private $' . $this->member->getName() . 'Condition = null;' . "\n";
         $this->condition .= '    private $' . $this->member->getName() . ' = null;' . "\n";
+        $this->condition .= '    private $' . $this->member->getName() . 'IsComplex;' . "\n";
         $this->condition .= "\n";
         $this->condition .= '    public function get' . \ucfirst($this->member->getName()) . '()' . "\n";
         $this->condition .= "    {\n";
-        $this->condition .= '        if ($this->' . $this->member->getName() . ' != null)' . "\n";
+        $this->condition .= '        if ($this->' . $this->member->getName() . ' == null)' . "\n";
         $this->condition .= "        {\n";
-        $this->condition .= '             throw new \Exception("Can only get a reference on a condition if it has not been set to a comparison");' . "\n";
+        $this->condition .= '             $this->' . $this->member->getName() . ' = ' . $type->getReferencedType() . '::condition();' . "\n";
+        $this->condition .= '             $this->' . $this->member->getName() . 'IsComplex = true;' . "\n";
         $this->condition .= "        }\n";
         $this->condition .= "\n";
-        $this->condition .= '        if ($this->' . $this->member->getName() . 'Condition == null)' . "\n";
+        $this->condition .= '        if (!$this->' . $this->member->getName() . 'IsComplex)' . "\n";
         $this->condition .= "        {\n";
-        $this->condition .= '             $this->' . $this->member->getName() . 'Condition = ' . $type->getReferencedType() . '::condition();' . "\n";
+        $this->condition .= '             throw new \Exception("Can only get a reference member if it is a complex condition");' . "\n";
         $this->condition .= "        }\n";
         $this->condition .= "\n";
-        $this->condition .= '        return $this->' . $this->member->getName() . 'Condition;' . "\n";
+        $this->condition .= '        return $this->' . $this->member->getName() . ';' . "\n";
         $this->condition .= "    }\n";
         $this->condition .= "\n";
         $this->condition .= '    public function set' . \ucfirst($this->member->getName()) . '(Condition $condition)' . "\n";
@@ -516,12 +517,6 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->conditionComplexProcess .= '            $processor->processMember(' . $this->typeDefinition->getName();
         $this->conditionComplexProcess .= '::$' . $this->member->getName() . 'Type, "' . $this->member->getName();
         $this->conditionComplexProcess .= '", $this->' . $this->member->getName() . ');' . "\n";
-        $this->conditionComplexProcess .= "        }\n";
-        $this->conditionComplexProcess .= '        else if ($this->' . $this->member->getName() . 'Condition !== null)' . "\n";
-        $this->conditionComplexProcess .= "        {\n";
-        $this->conditionComplexProcess .= '            $processor->processMember(' . $this->typeDefinition->getName();
-        $this->conditionComplexProcess .= '::$' . $this->member->getName() . 'Type, "' . $this->member->getName();
-        $this->conditionComplexProcess .= '", $this->' . $this->member->getName() . 'Condition);' . "\n";
         $this->conditionComplexProcess .= "        }\n";
 
         $this->writeResolvableMemberToResolver($this->member->getName(), $type->getReferencedType());
