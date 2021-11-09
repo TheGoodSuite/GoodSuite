@@ -249,6 +249,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->condition .= 'use \Good\Manners\Condition\EqualTo;' . "\n";
         $this->condition .= 'use \Good\Manners\Processors\ConditionProcessor;' . "\n";
         $this->condition .= 'use \Good\Manners\Processors\ComplexConditionProcessor;' . "\n";
+        $this->condition .= 'use \Good\Service\Type;' . "\n";
         $this->condition .= "\n";
         $this->condition .= 'class ' . $typeDefinition->getName() . 'Condition implements ComplexCondition' . "\n";
         $this->condition .= "{\n";
@@ -267,6 +268,11 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->condition .= '    public function processCondition(ConditionProcessor $processor)' . "\n";
         $this->condition .= "    {\n";
         $this->condition .= '        $processor->processComplexCondition($this);' . "\n";
+        $this->condition .= "    }\n";
+        $this->condition .= "\n";
+        $this->condition .= '    public function appliesToType(Type $type)' . "\n";
+        $this->condition .= "    {\n";
+        $this->condition .= '        $type->checkValue(new ' . $typeDefinition->getName() . '());' . "\n";
         $this->condition .= "    }\n";
         $this->condition .= "\n";
 
@@ -497,6 +503,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->condition .= "\n";
         $this->condition .= '    public function set' . \ucfirst($this->member->getName()) . '(Condition $condition)' . "\n";
         $this->condition .= "    {\n";
+        $this->condition .= '        $condition->appliesToType(' . $this->typeDefinition->getName() . '::$' . $this->member->getName() . 'Type);' . "\n";
         $this->condition .= '        return $this->' . $this->member->getName() . ' = $condition;' . "\n";
         $this->condition .= "    }\n";
         $this->condition .= "\n";
@@ -640,6 +647,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
             $this->condition .= "\n";
             $this->condition .= '    public function set' . \ucfirst($this->member->getName()) . '(Condition $condition)' . "\n";
             $this->condition .= "    {\n";
+            $this->condition .= '        $condition->appliesToType(' . $this->typeDefinition->getName() . '::$' . $this->member->getName() . 'Type);' . "\n";
             $this->condition .= '        $this->' . $this->member->getName() . ' = $condition;' . "\n";
             $this->condition .= "    }\n";
             $this->condition .= "\n";

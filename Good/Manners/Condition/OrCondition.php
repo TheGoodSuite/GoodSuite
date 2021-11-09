@@ -6,6 +6,7 @@ use Good\Manners\Condition;
 use Good\Manners\Processors\ConditionProcessor;
 use Good\Manners\CollectionCondition;
 use Good\Manners\Processors\CollectionConditionProcessor;
+use Good\Service\Type;
 
 class OrCondition implements Condition, CollectionCondition
 {
@@ -17,6 +18,12 @@ class OrCondition implements Condition, CollectionCondition
     {
         $this->condition1 = $condition1;
         $this->condition2 = $condition2;
+    }
+
+    public function appliesToType(Type $type)
+    {
+        $this->condition1->appliesToType($type);
+        $this->condition2->appliesToType($type);
     }
 
     public function processCondition(ConditionProcessor $processor)

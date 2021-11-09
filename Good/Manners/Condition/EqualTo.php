@@ -4,6 +4,7 @@ namespace Good\Manners\Condition;
 
 use Good\Manners\Condition;
 use Good\Manners\Processors\ConditionProcessor;
+use Good\Service\Type;
 
 class EqualTo implements Condition
 {
@@ -16,6 +17,11 @@ class EqualTo implements Condition
         $this->validateForEquality("EqualTo condition", $value);
 
         $this->value = $value;
+    }
+
+    public function appliesToType(Type $type)
+    {
+        $type->checkValue($this->value);
     }
 
     public function processCondition(ConditionProcessor $processor)

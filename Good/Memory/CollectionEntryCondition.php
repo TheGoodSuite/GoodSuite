@@ -14,6 +14,7 @@ use Good\Rolemodel\Schema\Type\IntType;
 use Good\Rolemodel\Schema\Type\ReferenceType;
 use Good\Rolemodel\Schema\Type\TextType;
 use Good\Rolemodel\TypeVisitor;
+use Good\Service\Type as ServiceType;
 
 class CollectionEntryCondition implements ComplexCondition, TypeVisitor
 {
@@ -26,6 +27,11 @@ class CollectionEntryCondition implements ComplexCondition, TypeVisitor
     {
         $this->collectedType = $collectedType;
         $this->condition = $condition;
+    }
+
+    public function appliesToType(ServiceType $type)
+    {
+        $this->collectedType->checkValue($this->value);
     }
 
     public function processCondition(ConditionProcessor $processor)
