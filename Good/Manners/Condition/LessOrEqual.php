@@ -7,10 +7,14 @@ use Good\Manners\Processors\ConditionProcessor;
 
 class LessOrEqual implements Condition
 {
+    use TypeValidator;
+
     private $value;
 
     public function __construct($value)
     {
+        $this->validateForComparisons("LessOrEqual condition", $value);
+
         $this->value = $value;
     }
 

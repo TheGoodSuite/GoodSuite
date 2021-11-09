@@ -7,10 +7,14 @@ use Good\Manners\Processors\ConditionProcessor;
 
 class NotEqualTo implements Condition
 {
+    use TypeValidator;
+
     private $value;
 
     public function __construct($value)
     {
+        $this->validateForEquality("NotEqualTo condition", $value);
+
         $this->value = $value;
     }
 

@@ -7,10 +7,14 @@ use Good\Manners\Processors\ConditionProcessor;
 
 class EqualTo implements Condition
 {
+    use TypeValidator;
+
     private $value;
 
     public function __construct($value)
     {
+        $this->validateForEquality("EqualTo condition", $value);
+
         $this->value = $value;
     }
 
