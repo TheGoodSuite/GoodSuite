@@ -7,6 +7,7 @@ use Good\Manners\Processors\ConditionProcessor;
 use Good\Manners\CollectionCondition;
 use Good\Manners\Processors\CollectionConditionProcessor;
 use Good\Service\Type;
+use Good\Service\Type\CollectionType;
 
 class OrCondition implements Condition, CollectionCondition
 {
@@ -26,6 +27,11 @@ class OrCondition implements Condition, CollectionCondition
 
     public function appliesToType(Type $type)
     {
+        if (!($this->condition1 instanceof Condition))
+        {
+            throw new \Exception("Can Only use appliesToType if using Conditions");
+        }
+
         $problem = $this->condition1->appliesToType($type);
 
         if ($problem != null)
@@ -34,6 +40,23 @@ class OrCondition implements Condition, CollectionCondition
         }
 
         return $this->condition2->appliesToType($type);
+    }
+
+    public function appliesToCollectionType(CollectionType $type)
+    {
+        if (!($this->condition1 instanceof CollectionCondition))
+        {
+            throw new \Exception("Can Only use appliesToCollectionType if using CollectionConditions");
+        }
+
+        $problem = $this->condition1->appliesToCollectionType($type);
+
+        if ($problem != null)
+        {
+            return $problem;
+        }
+
+        return $this->condition2->appliesToCollectionType($type);
     }
 
     public function processCondition(ConditionProcessor $processor)
