@@ -3,7 +3,6 @@
 namespace Good\Service\Type;
 
 use Good\Service\Type;
-use Good\Service\InvalidParameterException;
 
 class DateTimeType extends \Good\Rolemodel\Schema\Type\DateTimeType implements Type
 {
@@ -11,13 +10,15 @@ class DateTimeType extends \Good\Rolemodel\Schema\Type\DateTimeType implements T
     {
         if ($value === null)
         {
-            return;
+            return null;
         }
 
         if (!($value instanceof \DateTimeImmutable))
         {
-            throw new InvalidParameterException("Value specified is not a DateTimeImmutable");
+            return "must be a  DateTimeImmutable";
         }
+
+        return null;
     }
 }
 

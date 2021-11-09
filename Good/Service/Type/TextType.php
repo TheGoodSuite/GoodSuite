@@ -3,7 +3,6 @@
 namespace Good\Service\Type;
 
 use Good\Service\Type;
-use Good\Service\InvalidParameterException;
 
 class TextType extends \Good\Rolemodel\Schema\Type\TextType implements Type
 {
@@ -11,23 +10,25 @@ class TextType extends \Good\Rolemodel\Schema\Type\TextType implements Type
     {
         if ($value === null)
         {
-            return;
+            return null;
         }
 
         if (!is_string($value))
         {
-            throw new InvalidParameterException("Value specified is not a string");
+            return "must a string";
         }
 
         if (strlen($value) < $this->getTypeModifiers()['minLength'])
         {
-            throw new InvalidParameterException("Value specified is shorter than the minimum length for this field");
+            return "shorter than the minimum length for this field";
         }
 
         if (array_key_exists('maxLength', $this->getTypeModifiers()) && strlen($value) > $this->getTypeModifiers()['maxLength'])
         {
-            throw new InvalidParameterException("Value specified is longer the maximum length for this field");
+            return "longer the maximum length for this field";
         }
+
+        return null;
     }
 }
 

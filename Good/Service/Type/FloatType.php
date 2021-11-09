@@ -3,7 +3,6 @@
 namespace Good\Service\Type;
 
 use Good\Service\Type;
-use Good\Service\InvalidParameterException;
 
 class FloatType extends \Good\Rolemodel\Schema\Type\FloatType implements Type
 {
@@ -11,13 +10,15 @@ class FloatType extends \Good\Rolemodel\Schema\Type\FloatType implements Type
     {
         if ($value === null)
         {
-            return;
+            return null;
         }
 
         if (!is_int($value) && !is_float($value))
         {
-            throw new InvalidParameterException("Value specified is not a float");
+            return "must be a float";
         }
+
+        return null;
     }
 }
 

@@ -272,7 +272,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->condition .= "\n";
         $this->condition .= '    public function appliesToType(Type $type)' . "\n";
         $this->condition .= "    {\n";
-        $this->condition .= '        $type->checkValue(new ' . $typeDefinition->getName() . '());' . "\n";
+        $this->condition .= '        return $type->checkValue(new ' . $typeDefinition->getName() . '());' . "\n";
         $this->condition .= "    }\n";
         $this->condition .= "\n";
 
@@ -503,7 +503,13 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->condition .= "\n";
         $this->condition .= '    public function set' . \ucfirst($this->member->getName()) . '(Condition $condition)' . "\n";
         $this->condition .= "    {\n";
-        $this->condition .= '        $condition->appliesToType(' . $this->typeDefinition->getName() . '::$' . $this->member->getName() . 'Type);' . "\n";
+        $this->condition .= '        $problem = $condition->appliesToType(' . $this->typeDefinition->getName() . '::$' . $this->member->getName() . 'Type);' . "\n";
+        $this->condition .= "\n";
+        $this->condition .= '        if ($problem !== null)' . "\n";
+        $this->condition .= "        {\n";
+        $this->condition .= '             throw new \Exception("Condition cannot be applied to this property: " . $problem);' . "\n";
+        $this->condition .= "        }\n";
+        $this->condition .= "\n";
         $this->condition .= '        return $this->' . $this->member->getName() . ' = $condition;' . "\n";
         $this->condition .= "    }\n";
         $this->condition .= "\n";
@@ -647,7 +653,13 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
             $this->condition .= "\n";
             $this->condition .= '    public function set' . \ucfirst($this->member->getName()) . '(Condition $condition)' . "\n";
             $this->condition .= "    {\n";
-            $this->condition .= '        $condition->appliesToType(' . $this->typeDefinition->getName() . '::$' . $this->member->getName() . 'Type);' . "\n";
+            $this->condition .= '        $problem = $condition->appliesToType(' . $this->typeDefinition->getName() . '::$' . $this->member->getName() . 'Type);' . "\n";
+            $this->condition .= "\n";
+            $this->condition .= '        if ($problem !== null)' . "\n";
+            $this->condition .= "        {\n";
+            $this->condition .= '             throw new \Exception("Condition cannot be applied to this property: " . $problem);' . "\n";
+            $this->condition .= "        }\n";
+            $this->condition .= "\n";
             $this->condition .= '        $this->' . $this->member->getName() . ' = $condition;' . "\n";
             $this->condition .= "    }\n";
             $this->condition .= "\n";

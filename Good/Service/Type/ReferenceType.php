@@ -8,6 +8,7 @@ class ReferenceType extends \Good\Rolemodel\Schema\Type\ReferenceType implements
 {
     public function checkValue($value)
     {
+        return null;
     }
 }
 

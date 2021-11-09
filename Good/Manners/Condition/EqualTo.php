@@ -21,7 +21,7 @@ class EqualTo implements Condition
 
     public function appliesToType(Type $type)
     {
-        $type->checkValue($this->value);
+        return $problem = $type->checkValue($this->value);
     }
 
     public function processCondition(ConditionProcessor $processor)

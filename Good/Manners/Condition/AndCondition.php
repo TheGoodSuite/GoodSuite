@@ -22,8 +22,14 @@ class AndCondition implements Condition, CollectionCondition
 
     public function appliesToType(Type $type)
     {
-        $this->condition1->appliesToType($type);
-        $this->condition2->appliesToType($type);
+        $problem = $this->condition1->appliesToType($type);
+
+        if ($problem != null)
+        {
+            return $problem;
+        }
+
+        return $this->condition2->appliesToType($type);
     }
 
     public function processCondition(ConditionProcessor $processor)

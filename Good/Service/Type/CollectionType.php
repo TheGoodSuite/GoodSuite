@@ -8,6 +8,7 @@ class CollectionType extends \Good\Rolemodel\Schema\Type\CollectionType implemen
 {
     public function checkValue($value)
     {
+        return null;
     }
 }
 

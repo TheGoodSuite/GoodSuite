@@ -257,7 +257,12 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
 
             $this->output .= "    {\n";
 
-            $this->output .= '        self::$' . $member->getName() . 'Type->checkValue($value);' . "\n";
+            $this->output .= '        $problem = self::$' . $member->getName() . 'Type->checkValue($value);' . "\n";
+            $this->output .= "\n";
+            $this->output .= '        if ($problem != null)' . "\n";
+            $this->output .= "        {\n";
+            $this->output .= '            throw new \Good\Service\InvalidParameterException;("Unable to set field to value: " . $problem);' . "\n";
+            $this->output .= "        }\n";
             $this->output .= "\n";
 
             foreach ($this->modifiers as $modifier)

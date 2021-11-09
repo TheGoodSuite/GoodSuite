@@ -3,7 +3,6 @@
 namespace Good\Service\Type;
 
 use Good\Service\Type;
-use Good\Service\InvalidParameterException;
 
 class IntType extends \Good\Rolemodel\Schema\Type\IntType implements Type
 {
@@ -16,18 +15,20 @@ class IntType extends \Good\Rolemodel\Schema\Type\IntType implements Type
 
         if (!is_int($value))
         {
-            throw new InvalidParameterException("Value specified is not an int");
+            return "must be an int";
         }
 
         if ($value < $this->getTypeModifiers()['minValue'])
         {
-            throw new InvalidParameterException("Value specified is below the minimum value for this field");
+            return "value is below the minimum value for this field";
         }
 
         if ($value > $this->getTypeModifiers()['maxValue'])
         {
-            throw new InvalidParameterException("Value specified is above the maximum value for this field");
+            return "Value specified is above the maximum value for this field";
         }
+
+        return null;
     }
 }
 

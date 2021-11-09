@@ -31,7 +31,12 @@ class Collection implements \IteratorAggregate
             $modifier->add($value);
         }
 
-        $this->collectedType->checkValue($value);
+        $problem = $this->collectedType->checkValue($value);
+
+        if ($problem != null)
+        {
+            throw new InvalidParameterException;("Unable to add to collection: " . $problem);
+        }
 
         $this->items->add($value);
     }
