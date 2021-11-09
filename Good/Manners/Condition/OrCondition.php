@@ -10,12 +10,16 @@ use Good\Service\Type;
 
 class OrCondition implements Condition, CollectionCondition
 {
+    use TypeValidator;
+
     private $condition1;
     private $condition2;
 
     public function __construct($condition1,
                                 $condition2)
     {
+        $this->validateSubConditions("OrCondition", $condition1, $condition2);
+
         $this->condition1 = $condition1;
         $this->condition2 = $condition2;
     }
