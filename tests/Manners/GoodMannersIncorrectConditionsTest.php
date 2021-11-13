@@ -641,6 +641,30 @@ class GoodMannersIncorrectConditionsTest extends \PHPUnit\Framework\TestCase
         $condition = IncorrectConditionsType::condition();
         $condition->myReference = new HasA(IncorrectConditionsType::condition());
     }
+
+    public function testSetReferenceConditionToWrongCondition()
+    {
+        $this->expectException("Exception");
+
+        $condition = IncorrectConditionsType::condition();
+        $condition->myReference = new EqualTo("a");
+    }
+
+    public function testSetReferenceConditionToWrongStorableComplexCondition()
+    {
+        $this->expectException("Exception");
+
+        $condition = IncorrectConditionsType::condition();
+        $condition->myReference = SecondIncorrectType::condition();
+    }
+
+    public function testSetReferenceConditionToWrongStorableSimpleCondition()
+    {
+        $this->expectException("Exception");
+
+        $condition = IncorrectConditionsType::condition();
+        $condition->myReference = new EqualTo(new SecondIncorrectType());
+    }
 }
 
 ?>
