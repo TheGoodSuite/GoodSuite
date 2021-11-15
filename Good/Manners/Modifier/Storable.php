@@ -75,7 +75,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $res .= "    {\n";
         $res .= '        if (!is_string($value) || strlen($value) == 0)' . "\n";
         $res .= "        {\n";
-        $res .= '            throw new InvalidParameterException("Id must be a non-empty string");' . "\n";
+        $res .= '            throw new \\Good\\Service\\InvalidParameterException("Id must be a non-empty string");' . "\n";
         $res .= "        }\n";
         $res .= "\n";
         $res .= '        $this->id = $value;' . "\n";
@@ -85,7 +85,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $res .= "    {\n";
         $res .= '        return $this->id !== null;' . "\n";
         $res .= "    }\n";
-        $res .= "    \n";
+        $res .= "\n";
 
         return $res;
     }
@@ -101,6 +101,11 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
     public function getterBegin(Schema\Member $member)
     {
+        $res  = '        if ($this->isUnresolved)' . "\n";
+        $res .= "        {\n";
+        $res  = '            throw new \Exception("Cannot set or get properties of an unresolved storable");' . "\n";
+        $res .= "        }\n";
+        $res .= "        \n";
         $res  = '        $this->GMMStorable_checkValidationToken();' . "\n";
         $res .= "        \n";
 
@@ -109,6 +114,11 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
     public function setterBegin(Schema\Member $member)
     {
+        $res  = '        if ($this->isUnresolved)' . "\n";
+        $res .= "        {\n";
+        $res  = '            throw new \Exception("Cannot set or get properties of an unresolved storable");' . "\n";
+        $res .= "        }\n";
+        $res .= "        \n";
         $res  = '        $this->GMMStorable_checkValidationToken();' . "\n";
         $res .= "        \n";
 
@@ -136,6 +146,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
     public function classBody(Schema\TypeDefinition $typeDefinition)
     {
         $res  = '    private $validationToken = null;' . "\n";
+        $res .= '    protected $isUnresolved = false;' . "\n";
         $res .= "    \n";
         $res .= '    private function GMMStorable_checkValidationToken()' . "\n";
         $res .= "    {\n";
@@ -168,6 +179,11 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $res .= "    \n";
         $res .= '    public function delete()'. "\n";
         $res .= "    {\n";
+        $res .= '        if ($this->isUnresolved)' . "\n";
+        $res .= "        {\n";
+        $res .= '            $this->storage->insert($this);' . "\n";
+        $res .= "        }\n";
+        $res .= "\n";
         $res .= '        $this->deleted = true;' . "\n";
         $res .= "    }\n";
 
@@ -183,12 +199,42 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $res .= "    \n";
         $res .= '    public static function id($storage, $id)' . "\n";
         $res .= "    {\n";
-        $res .= '        return new \Good\Manners\Id(new ' . $typeDefinition->getName() . '(), $storage, $id);' . "\n";
+        $res .= '        $result = new ' . $typeDefinition->getName() . '();' . "\n";
+        $res .= "\n";
+        $res .= '        $result->storage = $storage;' . "\n";
+        $res .= '        $result->id = $id;' . "\n";
+        $res .= '        $result->isUnresolved = true;' . "\n";
+        $res .= '        $result->setNew(false);' . "\n";
+        $res .= '        $result->clean();' . "\n";
+        $res .= "\n";
+        $res .= '        return $result;' . "\n";
         $res .= "    }\n";
         $res .= "    \n";
         $res .= '    public function getType()' . "\n";
         $res .= "    {\n";
         $res .= '        return "' . $typeDefinition->getName() . '";' . "\n";
+        $res .= "    }\n";
+        $res .= "    \n";
+        $res .= '    public function fetch(' . $typeDefinition->getName() . 'Resolver $resolver = null)' . "\n";
+        $res .= "    {\n";
+        $res .= '        if (!$this->isUnresolved)' . "\n";
+        $res .= "        {\n";
+        $res .= '            throw new \Exception("Can only fetch unresolved Storables");' . "\n";
+        $res .= "        }\n";
+        $res .= "\n";
+        $res .= '        $condition = $this->getType()::condition();' . "\n";
+        $res .= '        $condition->id = $this->getId();' . "\n";
+        $res .= "\n";
+        $res .= '        $results = $this->storage->fetchAll($condition, $resolver);' . "\n";
+        $res .= "\n";
+        $res .= '        $first = $results->getNext();' . "\n";
+        $res .= "\n";
+        $res .= '        if ($first === null)' . "\n";
+        $res .= "        {\n";
+        $res .= '            throw new \Exception("Id not found in storage");' . "\n";
+        $res .= "        }\n";
+        $res .= "\n";
+        $res .= '        return $first;' . "\n";
         $res .= "    }\n";
         $res .= "    \n";
 
