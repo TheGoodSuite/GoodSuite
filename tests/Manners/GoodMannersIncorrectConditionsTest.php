@@ -671,8 +671,6 @@ class GoodMannersIncorrectConditionsTest extends \PHPUnit\Framework\TestCase
         $condition->myReference = new EqualTo(new SecondIncorrectType());
     }
 
-    ////////////////////////////////////////
-
     public function testSetDateTimeCollectionToRegularCondition()
     {
         $this->expectException("TypeError");
@@ -767,6 +765,22 @@ class GoodMannersIncorrectConditionsTest extends \PHPUnit\Framework\TestCase
 
         $condition = IncorrectConditionsType::condition();
         $condition->myReferenceCollection = new HasOnly(new EqualTo("a"));
+    }
+
+    public function testReferenceCollectionHasAConditionForWrongReferenceType()
+    {
+        $this->expectException("Exception");
+
+        $condition = IncorrectConditionsType::condition();
+        $condition->myReferenceCollection = new HasA(SecondIncorrectType::condition());
+    }
+
+    public function testReferenceCollectionHasOnlyConditionForWrongReferenceType()
+    {
+        $this->expectException("Exception");
+
+        $condition = IncorrectConditionsType::condition();
+        $condition->myReferenceCollection = new HasOnly(SecondIncorrectType::condition());
     }
 
     public function testSetTextCollectionToRegularCondition()
