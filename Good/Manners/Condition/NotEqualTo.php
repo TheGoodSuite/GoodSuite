@@ -29,9 +29,20 @@ class NotEqualTo implements Condition
         $processor->processNotEqualToCondition($this->value);
     }
 
-    public function getTargetType()
+    public function getTargetedReferenceType()
     {
-        return null;
+        if ($value === null)
+        {
+            return "*";
+        }
+        else if ($value instanceof Storable)
+        {
+            return $value->getType();
+        }
+        else
+        {
+            return null;
+        }
     }
 }
 

@@ -29,7 +29,7 @@ class GreaterThan implements Condition
         $processor->processGreaterThanCondition($this->value);
     }
 
-    public function getTargetType()
+    public function getTargetedReferenceType()
     {
         return null;
     }

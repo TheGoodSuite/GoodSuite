@@ -2,6 +2,7 @@
 
 namespace Good\Manners\Condition;
 
+use Good\Manners\Storable;
 use Good\Manners\Condition;
 use Good\Manners\Processors\ConditionProcessor;
 use Good\Service\Type;
@@ -29,9 +30,20 @@ class EqualTo implements Condition
         $processor->processEqualToCondition($this->value);
     }
 
-    public function getTargetType()
+    public function getTargetedReferenceType()
     {
-        return null;
+        if ($value === null)
+        {
+            return "*";
+        }
+        else if ($value instanceof Storable)
+        {
+            return $value->getType();
+        }
+        else
+        {
+            return null;
+        }
     }
 }
 

@@ -76,7 +76,7 @@ class CollectionEntryCondition implements ComplexCondition, TypeVisitor
         $this->conditionProcessor->processMember($type, "value", $this->condition);
     }
 
-    public function getTargetType()
+    public function getTargetedReferenceType()
     {
         return null;
     }

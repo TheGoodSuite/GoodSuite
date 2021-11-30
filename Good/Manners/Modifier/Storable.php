@@ -299,9 +299,9 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->condition .= "\n";
         $this->condition .= 'class ' . $typeDefinition->getName() . 'Condition implements ComplexCondition' . "\n";
         $this->condition .= "{\n";
-        $this->condition .= '    public function getTargetType()' . "\n";
+        $this->condition .= '    public function getTargetedReferenceType()' . "\n";
         $this->condition .= "    {\n";
-        $this->condition .= '        return"' . $typeDefinition->getName() . '";' . "\n";
+        $this->condition .= '        return "' . $typeDefinition->getName() . '";' . "\n";
         $this->condition .= "    }\n";
         $this->condition .= "\n";
         $this->condition .= '    private $id = null;' . "\n";

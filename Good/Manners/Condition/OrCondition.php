@@ -69,9 +69,27 @@ class OrCondition implements Condition, CollectionCondition
         $processor->processOrCollection($this->condition1, $this->condition2);
     }
 
-    public function getTargetType()
+    public function getTargetedReferenceType()
     {
-        return $this->condition1->getTargetType();
+        $reference1 = $this->condition1->getTargetedReferenceType();
+        $reference2 = $this->condition2->getTargetedReferenceType();
+
+        if (!(   $reference1 == $reference2
+              || ($reference1 == "*" && $reference2 !== null)
+              || ($reference1 !== null && $reference1 == "*")
+           ))
+        {
+            throw new \Exception("Incompatible types in OrCondition");
+        }
+
+        if ($reference1 == "*")
+        {
+            return $reference2;
+        }
+        else
+        {
+            return $reference1;
+        }
     }
 }
 

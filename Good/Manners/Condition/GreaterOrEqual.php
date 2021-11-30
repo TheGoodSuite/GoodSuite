@@ -29,7 +29,7 @@ class GreaterOrEqual implements Condition
         $processor->processGreaterOrEqualCondition($this->value);
     }
 
-    public function getTargetType()
+    public function getTargetedReferenceType()
     {
         return null;
     }

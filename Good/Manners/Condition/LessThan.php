@@ -29,7 +29,7 @@ class LessThan implements Condition
         $processor->processLessThanCondition($this->value);
     }
 
-    public function getTargetType()
+    public function getTargetedReferenceType()
     {
         return null;
     }

@@ -29,7 +29,7 @@ class LessOrEqual implements Condition
         $processor->processLessOrEqualCondition($this->value);
     }
 
-    public function getTargetType()
+    public function getTargetedReferenceType()
     {
         return null;
     }
