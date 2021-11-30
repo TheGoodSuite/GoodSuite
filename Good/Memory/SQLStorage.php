@@ -57,6 +57,16 @@ class SQLStorage extends Storage
             if ($conditionOrResolver instanceof Condition)
             {
                 $condition = $conditionOrResolver;
+
+                if ($condition->getTargetedReferenceType() === null)
+                {
+                    throw new \Exception("Condition for fetchAll must target a Storable type");
+                }
+                else if ($condition->getTargetedReferenceType() == "*")
+                {
+                    throw new \Exception("When only providing Condition to fetchAll, it cannot target an ambigious Storable type");
+                }
+
                 $resolver = $condition->getTargetedReferenceType()::resolver();
             }
             else if ($conditionOrResolver instanceof Resolver)
@@ -83,6 +93,11 @@ class SQLStorage extends Storage
                 throw new \InvalidArgumentException("When called with two arguments, "
                     . "the first argument to getCollection should be a Condition.");
             }
+        }
+
+        if ($condition->getTargetedReferenceType() === null)
+        {
+            throw new \Exception("Condition for fetchAll must target a Storable type");
         }
 
         $this->joins = array(0 => array());
