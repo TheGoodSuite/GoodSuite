@@ -38,6 +38,11 @@ class GoodMannersIncorrectConditionsTest extends \PHPUnit\Framework\TestCase
             "   int myInt;\n" .
             "   \"IncorrectConditionsType\" myReference;\n" .
             "   text myText;\n" .
+            "   datetime[] myDateTimeCollection;\n" .
+            "   float[] myFloatCollection;\n" .
+            "   int[] myIntCollection;\n" .
+            "   \"IncorrectConditionsType\"[] myReferenceCollection;\n" .
+            "   text[] myTextCollection;\n" .
             "}\n");
 
         file_put_contents(dirname(__FILE__) . '/../testInputFiles/SecondIncorrectType.datatype',
@@ -63,15 +68,15 @@ class GoodMannersIncorrectConditionsTest extends \PHPUnit\Framework\TestCase
 
     public static function _tearDownAfterClass()
     {
-        unlink(dirname(__FILE__) . '/../testInputFiles/IncorrectConditionsType.datatype');
-        unlink(dirname(__FILE__) . '/../generated/IncorrectConditionsType.datatype.php');
-        unlink(dirname(__FILE__) . '/../generated/IncorrectConditionsTypeResolver.php');
-        unlink(dirname(__FILE__) . '/../generated/IncorrectConditionsTypeCondition.php');
-        unlink(dirname(__FILE__) . '/../testInputFiles/SecondIncorrectType.datatype');
-        unlink(dirname(__FILE__) . '/../generated/SecondIncorrectType.datatype.php');
-        unlink(dirname(__FILE__) . '/../generated/SecondIncorrectTypeResolver.php');
-        unlink(dirname(__FILE__) . '/../generated/SecondIncorrectTypeCondition.php');
-        unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');
+        // unlink(dirname(__FILE__) . '/../testInputFiles/IncorrectConditionsType.datatype');
+        // unlink(dirname(__FILE__) . '/../generated/IncorrectConditionsType.datatype.php');
+        // unlink(dirname(__FILE__) . '/../generated/IncorrectConditionsTypeResolver.php');
+        // unlink(dirname(__FILE__) . '/../generated/IncorrectConditionsTypeCondition.php');
+        // unlink(dirname(__FILE__) . '/../testInputFiles/SecondIncorrectType.datatype');
+        // unlink(dirname(__FILE__) . '/../generated/SecondIncorrectType.datatype.php');
+        // unlink(dirname(__FILE__) . '/../generated/SecondIncorrectTypeResolver.php');
+        // unlink(dirname(__FILE__) . '/../generated/SecondIncorrectTypeCondition.php');
+        // unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');
     }
 
     public function setUp(): void
@@ -664,6 +669,128 @@ class GoodMannersIncorrectConditionsTest extends \PHPUnit\Framework\TestCase
 
         $condition = IncorrectConditionsType::condition();
         $condition->myReference = new EqualTo(new SecondIncorrectType());
+    }
+
+    ////////////////////////////////////////
+
+    public function testSetDateTimeCollectionToRegularCondition()
+    {
+        $this->expectException("TypeError");
+
+        $condition = IncorrectConditionsType::condition();
+        $condition->myDateTimeCollection = new EqualTo(new DateTimeImmutable());
+    }
+
+    public function testDateTimeCollectionHasAWrongCondition()
+    {
+        $this->expectException("Exception");
+
+        $condition = IncorrectConditionsType::condition();
+        $condition->myDateTimeCollection = new HasA(new EqualTo(5));
+    }
+
+    public function testDateTimeCollectionHasOnlyWrongCondition()
+    {
+        $this->expectException("Exception");
+
+        $condition = IncorrectConditionsType::condition();
+        $condition->myDateTimeCollection = new HasOnly(new EqualTo(5));
+    }
+
+    public function testSetFloatCollectionToRegularCondition()
+    {
+        $this->expectException("TypeError");
+
+        $condition = IncorrectConditionsType::condition();
+        $condition->myFloatCollection = new EqualTo(2.2);
+    }
+
+    public function testFloatCollectionHasAWrongCondition()
+    {
+        $this->expectException("Exception");
+
+        $condition = IncorrectConditionsType::condition();
+        $condition->myFloatCollection = new HasA(new EqualTo("a"));
+    }
+
+    public function testFloatCollectionHasOnlyWrongCondition()
+    {
+        $this->expectException("Exception");
+
+        $condition = IncorrectConditionsType::condition();
+        $condition->myFloatCollection = new HasOnly(new EqualTo("a"));
+    }
+
+    public function testSetIntCollectionToRegularCondition()
+    {
+        $this->expectException("TypeError");
+
+        $condition = IncorrectConditionsType::condition();
+        $condition->myIntCollection = new EqualTo(1);
+    }
+
+    public function testIntCollectionHasAWrongCondition()
+    {
+        $this->expectException("Exception");
+
+        $condition = IncorrectConditionsType::condition();
+        $condition->myIntCollection = new HasA(new EqualTo("a"));
+    }
+
+    public function testIntCollectionHasOnlyWrongCondition()
+    {
+        $this->expectException("Exception");
+
+        $condition = IncorrectConditionsType::condition();
+        $condition->myIntCollection = new HasOnly(new EqualTo("a"));
+    }
+
+    public function testSetReferenceCollectionToRegularCondition()
+    {
+        $this->expectException("TypeError");
+
+        $condition = IncorrectConditionsType::condition();
+        $condition->myReferenceCollection = IncorrectConditionsType::condition();
+    }
+
+    public function testReferenceCollectionHasAWrongCondition()
+    {
+        $this->expectException("Exception");
+
+        $condition = IncorrectConditionsType::condition();
+        $condition->myReferenceCollection = new HasA(new EqualTo("a"));
+    }
+
+    public function testReferenceCollectionHasOnlyWrongCondition()
+    {
+        $this->expectException("Exception");
+
+        $condition = IncorrectConditionsType::condition();
+        $condition->myReferenceCollection = new HasOnly(new EqualTo("a"));
+    }
+
+    public function testSetTextCollectionToRegularCondition()
+    {
+        $this->expectException("TypeError");
+
+        $condition = IncorrectConditionsType::condition();
+        $condition->myTextCollection = new EqualTo("abc");
+    }
+
+    public function testTextCollectionHasAWrongCondition()
+    {
+        $this->expectException("Exception");
+
+        $condition = IncorrectConditionsType::condition();
+        $condition->myReferenceCollection = new HasA(new EqualTo(1));
+    }
+
+    public function testTextCollectionHasOnlyWrongCondition()
+    {
+        $this->expectException("Exception");
+
+        $condition = IncorrectConditionsType::condition();
+        $condition->myReferenceCollection = new HasOnly(new EqualTo(1));
     }
 }
 
