@@ -222,18 +222,9 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $res .= '            throw new \Exception("Can only fetch unresolved Storables");' . "\n";
         $res .= "        }\n";
         $res .= "\n";
-        $res .= '        $condition = new \Good\Manners\Condition\EqualTo($this);' . "\n";
+        $res .= '        $this->storage->resolve($this, $resolver);' . "\n";
         $res .= "\n";
-        $res .= '        $results = $this->storage->fetchAll($condition, $resolver);' . "\n";
-        $res .= "\n";
-        $res .= '        $first = $results->getNext();' . "\n";
-        $res .= "\n";
-        $res .= '        if ($first === null)' . "\n";
-        $res .= "        {\n";
-        $res .= '            throw new \Exception("Id not found in storage");' . "\n";
-        $res .= "        }\n";
-        $res .= "\n";
-        $res .= '        return $first;' . "\n";
+        $res .= '        return $this;' . "\n";
         $res .= "    }\n";
         $res .= "    \n";
 

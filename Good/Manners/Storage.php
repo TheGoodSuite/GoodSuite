@@ -48,6 +48,8 @@ abstract class Storage
     abstract public function modifyAny(Condition $condition, Storable $modifications);
     abstract public function fetchAll($condition, Resolver $resolver = null);
 
+    abstract public function resolve(Storable $storable, Resolver $resolver = null);
+
     abstract public function flush();
 }
 

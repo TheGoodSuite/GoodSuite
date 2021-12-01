@@ -110,6 +110,30 @@ class SQLStorage extends Storage
         return new FetchedStorables($this, $resultset, $this->joins, $resolver->getType());
     }
 
+    public function resolve(Storable $storable, Resolver $resolver = null)
+    {
+        if ($resolver == null)
+        {
+            $storable::resolver();
+        }
+
+        if ($storable->id === null)
+        {
+            throw new \Exception("Can only resolve a storable that has an id");
+        }
+
+        $condition = new EqualTo($storable);
+
+        $results = $this->fetchAll($condition, $resolver);
+        $result = $results->resolveNext($storable);
+
+        if ($result == null) {
+            throw new \Exception("Storable to resolve was not found in storage");
+        }
+
+        return $result;
+    }
+
     public function isManagedStorable(Storable $storable)
     {
         return $this->managedStorables->contains($storable);
@@ -341,7 +365,19 @@ class SQLStorage extends Storage
         return $this->numberOfJoins;
     }
 
-    public function createStorable(array $allData, $joins, $type, $tableNumber = 0, $dataPreparsed = false, $offset = 0)
+    public function createStorable(array $allData, $joins, $type)
+    {
+        $storable = $this->storableFactory->createStorable($type);
+
+        return $this->writeStorable($allData, $joins, $storable, 0, false, 0);
+    }
+
+    public function resolveStorable(Storable $storable, array $allData, $joins)
+    {
+        return $this->writeStorable($allData, $joins, $storable, 0, false, 0);
+    }
+
+    public function writeStorable(array $allData, $joins, Storable $storable, $tableNumber, $dataPreparsed, $offset)
     {
         if (!$dataPreparsed)
         {
@@ -372,7 +408,7 @@ class SQLStorage extends Storage
         // for now, we just concoct something that will always evaluate to false
                                                             array()))
         {
-            return $this->created[$type][$data[$table]["id"]];
+            return $this->created[$storable->getType()][$data[$table]["id"]];
         }
 
         $storableData = array();
@@ -388,10 +424,8 @@ class SQLStorage extends Storage
                 0);
         }
 
-        $ret = $this->storableFactory->createStorable($type);
-
         $denamifier = new FieldDenamifier($this);
-        $storableData = $denamifier->denamifyFields($storableData, $ret);
+        $storableData = $denamifier->denamifyFields($storableData, $storable);
 
         foreach ($allData as $key => $row)
         {
@@ -413,19 +447,19 @@ class SQLStorage extends Storage
             }
         }
 
-        $ret->markCollectionsUnresolved();
+        $storable->markCollectionsUnresolved();
 
-        $ret->setFromArray($storableData);
-        $ret->setId(strval($data[$table]["id"]));
+        $storable->setFromArray($storableData);
+        $storable->setId(strval($data[$table]["id"]));
 
-        $ret->setNew(false);
-        $ret->clean();
-        $ret->setStorage($this);
+        $storable->setNew(false);
+        $storable->clean();
+        $storable->setStorage($this);
 
-        $this->created[$type][$data[$table]["id"]] = $ret;
-        $this->managedStorables->add($ret);
+        $this->created[$storable->getType()][$data[$table]["id"]] = $storable;
+        $this->managedStorables->add($storable);
 
-        return $ret;
+        return $storable;
     }
 
     private function getStorableOrValue($field, $value, $joins, $tableNumber, $allData, $dataRow)
@@ -439,12 +473,16 @@ class SQLStorage extends Storage
             && $joins[$tableNumber][$field]->fieldNameDestination == 'id')
         {
             // this is a resolved reference
-            return $this->createStorable($allData,
-                                         $joins,
-                                         $joins[$tableNumber][$field]->tableNameDestination,
-                                         $joins[$tableNumber][$field]->tableNumberDestination,
-                                         true,
-                                         $dataRow);
+            $type = $joins[$tableNumber][$field]->tableNameDestination;
+            $storable = $this->storableFactory->createStorable($type);
+
+            return $this->writeStorable(
+                $allData,
+                $joins,
+                $storable,
+                $joins[$tableNumber][$field]->tableNumberDestination,
+                true,
+                $dataRow);
         }
         else if (array_key_exists($field, $joins[$tableNumber])
             && $joins[$tableNumber][$field]->fieldNameDestination == 'owner')

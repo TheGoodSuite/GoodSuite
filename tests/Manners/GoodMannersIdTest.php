@@ -163,9 +163,9 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
         $resolver = IdType::resolver();
         $resolver->resolveReference();
 
-        $id = IdType::reference($this->storage, $idHolder->getId());
+        $result = IdType::reference($this->storage, $idHolder->getId());
 
-        $result = $id->fetch($resolver);
+        $result->fetch($resolver);
 
         $expected = new IdType();
         $expected->myText = 'b';
@@ -524,6 +524,24 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
         }
 
         $this->assertSame(array(), $expectedResults);
+    }
+
+    public function testIdFetchChaining()
+    {
+        // first we get a result from the database to find out what irs id is
+
+        // Get the object with text == 'a'
+        $condition = IdType::condition();
+        $condition->myText = 'a';
+
+        $results = $this->storage->fetchAll($condition, IdType::resolver());
+
+        $idHolder = $results->getNext();
+
+        $id = IdType::reference($this->storage, $idHolder->getId());
+        $result = $id->fetch();
+
+        $this->assertSame($id, $result);
     }
 }
 

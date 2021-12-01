@@ -2,6 +2,8 @@
 
 namespace Good\Memory;
 
+use Good\Manners\Storable;
+
 class FetchedStorables implements \Good\Manners\FetchedStorables
 {
     protected $storage;
@@ -42,7 +44,26 @@ class FetchedStorables implements \Good\Manners\FetchedStorables
         }
     }
 
+    public function resolveNext(Storable $storable)
+    {
+        $ret = $this->lastStorable;
+
+        if ($this->moveNextWithResolvableStorable($storable))
+        {
+            return $ret->value;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     public function moveNext()
+    {
+        return $this->moveNextWithResolvableStorable(null);
+    }
+
+    private function moveNextWithResolvableStorable(Storable $storable = null)
     {
         if ($this->reachedEnd)
         {
@@ -83,7 +104,15 @@ class FetchedStorables implements \Good\Manners\FetchedStorables
                 }
             }
 
-            $this->lastStorable->value = $this->storage->createStorable($rows, $this->joins, $this->type);
+            if ($storable == null)
+            {
+                $this->lastStorable->value = $this->storage->createStorable($rows, $this->joins, $this->type);
+            }
+            else
+            {
+                $this->lastStorable->value = $this->storage->resolveStorable($storable, $rows, $this->joins);
+            }
+
             $this->lastStorable->next = new LinkedListElement();
             $this->lastStorable = $this->lastStorable->next;
 
