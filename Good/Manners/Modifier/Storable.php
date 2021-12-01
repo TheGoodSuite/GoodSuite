@@ -215,11 +215,11 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $res .= '        return "' . $typeDefinition->getName() . '";' . "\n";
         $res .= "    }\n";
         $res .= "    \n";
-        $res .= '    public function fetch(' . $typeDefinition->getName() . 'Resolver $resolver = null)' . "\n";
+        $res .= '    public function resolve(' . $typeDefinition->getName() . 'Resolver $resolver = null)' . "\n";
         $res .= "    {\n";
         $res .= '        if (!$this->isUnresolved)' . "\n";
         $res .= "        {\n";
-        $res .= '            throw new \Exception("Can only fetch unresolved Storables");' . "\n";
+        $res .= '            throw new \Exception("Can only resolve unresolved Storables");' . "\n";
         $res .= "        }\n";
         $res .= "\n";
         $res .= '        $this->storage->resolve($this, $resolver);' . "\n";

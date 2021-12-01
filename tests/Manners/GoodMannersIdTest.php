@@ -165,7 +165,7 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
 
         $result = IdType::reference($this->storage, $idHolder->getId());
 
-        $result->fetch($resolver);
+        $result->resolve($resolver);
 
         $expected = new IdType();
         $expected->myText = 'b';
@@ -526,7 +526,7 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(array(), $expectedResults);
     }
 
-    public function testIdFetchChaining()
+    public function testIdResolveChaining()
     {
         // first we get a result from the database to find out what irs id is
 
@@ -539,7 +539,7 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
         $idHolder = $results->getNext();
 
         $id = IdType::reference($this->storage, $idHolder->getId());
-        $result = $id->fetch();
+        $result = $id->resolve();
 
         $this->assertSame($id, $result);
     }
