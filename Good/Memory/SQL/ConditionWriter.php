@@ -114,12 +114,32 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
 
     public function processEqualToCondition($value)
     {
-        throw new \Exception("Using equal to as a query condition has not yet been implemented");
+        if (!($value instanceof Storable) && $value->id != null)
+        {
+            throw new \Exception("EqualTo can only be used as a query condition when targeting an existing Storable");
+        }
+
+        $this->writeBracketOrAnd();
+
+        $field = '`t' . $this->currentTable . '`.`id`';
+        $fragmentWriter = new IntFragmentWriter($this->storage);
+
+        $this->sqlCondition .= $fragmentWriter->writeIdEquals($value->id, $field);
     }
 
     public function processNotEqualToCondition($value)
     {
-        throw new \Exception("Using not equal to as a query condition has not yet been implemented");
+        if (!($value instanceof Storable) && $value->id != null)
+        {
+            throw new \Exception("NotEqualTo can only be used as a query condition when targeting an existing Storable");
+        }
+
+        $this->writeBracketOrAnd();
+
+        $field = '`t' . $this->currentTable . '`.`id`';
+        $fragmentWriter = new IntFragmentWriter($this->storage);
+
+        $this->sqlCondition .= $fragmentWriter->writeIdNotEqual($value->id, $field);
     }
 
     public function processGreaterThanCondition($value)

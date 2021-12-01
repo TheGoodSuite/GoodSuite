@@ -58,13 +58,9 @@ class SQLStorage extends Storage
             {
                 $condition = $conditionOrResolver;
 
-                if ($condition->getTargetedReferenceType() === null)
+                if ($condition->getTargetedReferenceType() === null || $condition->getTargetedReferenceType() == "*")
                 {
-                    throw new \Exception("Condition for fetchAll must target a Storable type");
-                }
-                else if ($condition->getTargetedReferenceType() == "*")
-                {
-                    throw new \Exception("When only providing Condition to fetchAll, it cannot target an ambigious Storable type");
+                    throw new \Exception("Condition for fetchAll must target an unambigious Storable type");
                 }
 
                 $resolver = $condition->getTargetedReferenceType()::resolver();
@@ -95,9 +91,9 @@ class SQLStorage extends Storage
             }
         }
 
-        if ($condition->getTargetedReferenceType() === null)
+        if ($condition->getTargetedReferenceType() === null || $condition->getTargetedReferenceType() == "*")
         {
-            throw new \Exception("Condition for fetchAll must target a Storable type");
+            throw new \Exception("Condition for fetchAll must target an unambigious Storable type");
         }
 
         $this->joins = array(0 => array());

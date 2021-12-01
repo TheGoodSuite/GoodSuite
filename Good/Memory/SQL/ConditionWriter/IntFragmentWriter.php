@@ -17,6 +17,24 @@ class IntFragmentWriter extends ScalarFragmentWriter
     {
         return $this->storage->parseInt($value);
     }
+
+    public function writeIdEquals($value, $field)
+    {
+        $this->field = $field;
+
+        $this->processEqualToCondition($value);
+
+        return $this->fragment;
+    }
+
+    public function writeIdNotEqual($value, $field)
+    {
+        $this->field = $field;
+
+        $this->processNotEqualToCondition($value);
+
+        return $this->fragment;
+    }
 }
 
 ?>

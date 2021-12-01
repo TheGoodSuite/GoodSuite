@@ -2,6 +2,7 @@
 
 namespace Good\Manners\Condition;
 
+use Good\Manners\Storable;
 use Good\Manners\Condition;
 use Good\Manners\Processors\ConditionProcessor;
 use Good\Service\Type;
@@ -31,13 +32,13 @@ class NotEqualTo implements Condition
 
     public function getTargetedReferenceType()
     {
-        if ($value === null)
+        if ($this->value === null)
         {
             return "*";
         }
-        else if ($value instanceof Storable)
+        else if ($this->value instanceof Storable)
         {
-            return $value->getType();
+            return $this->value->getType();
         }
         else
         {

@@ -1,5 +1,12 @@
 <?php
 
+use Good\Manners\Condition\EqualTo;
+use Good\Manners\Condition\NotEqualTo;
+use Good\Manners\Condition\LessThan;
+use Good\Manners\Condition\GreaterThan;
+use Good\Manners\Condition\AndCondition;
+use Good\Manners\Condition\OrCondition;
+
 /**
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
@@ -357,6 +364,156 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
         $expected->myText = 'c';
         $expected->reference = new IdType();
         $expected->reference->myText = 'a';
+        $expectedResults[] = $expected;
+
+        foreach ($results as $type)
+        {
+            $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
+
+            array_splice($expectedResults, $pos, 1);
+        }
+
+        $this->assertSame(array(), $expectedResults);
+    }
+
+    public function testIdInEqualTo()
+    {
+        // first we get a result from the database to find out what irs id is
+
+        // Get the object with text == 'a'
+        $condition = IdType::condition();
+        $condition->myText = 'a';
+
+        $results = $this->storage->fetchAll($condition, IdType::resolver());
+
+        $idHolder = $results->getNext();
+
+        $id = IdType::id($this->storage, $idHolder->getId());
+        $condition = new EqualTo($id);
+
+        $resolver = IdType::resolver();
+        $results = $this->storage->fetchAll($condition, $resolver);
+
+        $expectedResults = array();
+
+        $expected = new IdType();
+        $expected->myText = 'a';
+        $expectedResults[] = $expected;
+
+        foreach ($results as $type)
+        {
+            $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
+
+            array_splice($expectedResults, $pos, 1);
+        }
+
+        $this->assertSame(array(), $expectedResults);
+    }
+
+    public function testIdInNotEqualTo()
+    {
+        // first we get a result from the database to find out what irs id is
+
+        // Get the object with text == 'a'
+        $condition = IdType::condition();
+        $condition->myText = 'a';
+
+        $results = $this->storage->fetchAll($condition, IdType::resolver());
+
+        $idHolder = $results->getNext();
+
+        $id = IdType::id($this->storage, $idHolder->getId());
+        $condition = new NotEqualTo($id);
+
+        $resolver = IdType::resolver();
+        $results = $this->storage->fetchAll($condition, $resolver);
+
+        $expectedResults = array();
+
+        $expected = new IdType();
+        $expected->myText = 'b';
+        $expectedResults[] = $expected;
+
+        $expected = new IdType();
+        $expected->myText = 'c';
+        $expectedResults[] = $expected;
+
+        foreach ($results as $type)
+        {
+            $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
+
+            array_splice($expectedResults, $pos, 1);
+        }
+
+        $this->assertSame(array(), $expectedResults);
+    }
+
+    public function testIdInAndNotEqualTo()
+    {
+        // first we get a result from the database to find out what irs id is
+
+        // Get the object with text == 'a'
+        $condition = IdType::condition();
+        $condition->myText = 'a';
+
+        $results = $this->storage->fetchAll($condition, IdType::resolver());
+
+        $idHolder = $results->getNext();
+
+        $id = IdType::id($this->storage, $idHolder->getId());
+        $belowC = IdType::condition();
+        $belowC->myText = new LessThan('c');
+
+        $condition = new AndCondition($belowC, new NotEqualTo($id));
+
+        $resolver = IdType::resolver();
+        $results = $this->storage->fetchAll($condition, $resolver);
+
+        $expectedResults = array();
+
+        $expected = new IdType();
+        $expected->myText = 'b';
+        $expectedResults[] = $expected;
+
+        foreach ($results as $type)
+        {
+            $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
+
+            array_splice($expectedResults, $pos, 1);
+        }
+
+        $this->assertSame(array(), $expectedResults);
+    }
+
+    public function testIdInOrEqualTo()
+    {
+        // first we get a result from the database to find out what irs id is
+
+        // Get the object with text == 'a'
+        $condition = IdType::condition();
+        $condition->myText = 'a';
+
+        $results = $this->storage->fetchAll($condition, IdType::resolver());
+
+        $idHolder = $results->getNext();
+
+        $id = IdType::id($this->storage, $idHolder->getId());
+        $aboveB = IdType::condition();
+        $aboveB->myText = new GreaterThan('b');
+
+        $condition = new OrCondition($aboveB, new EqualTo($id));
+
+        $resolver = IdType::resolver();
+        $results = $this->storage->fetchAll($condition, $resolver);
+
+        $expectedResults = array();
+
+        $expected = new IdType();
+        $expected->myText = 'a';
+        $expectedResults[] = $expected;
+
+        $expected = new IdType();
+        $expected->myText = 'c';
         $expectedResults[] = $expected;
 
         foreach ($results as $type)

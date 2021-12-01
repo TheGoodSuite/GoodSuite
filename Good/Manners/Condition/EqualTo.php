@@ -32,13 +32,13 @@ class EqualTo implements Condition
 
     public function getTargetedReferenceType()
     {
-        if ($value === null)
+        if ($this->value === null)
         {
             return "*";
         }
-        else if ($value instanceof Storable)
+        else if ($this->value instanceof Storable)
         {
-            return $value->getType();
+            return $this->value->getType();
         }
         else
         {

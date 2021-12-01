@@ -8,9 +8,9 @@ use Good\Manners\Processors\ConditionProcessor;
 
 abstract class ScalarFragmentWriter implements ConditionProcessor
 {
-    private $field;
+    protected $field;
 
-    private $fragment;
+    protected $fragment;
 
     protected abstract function parseScalar($value);
 
