@@ -163,7 +163,7 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
         $resolver = IdType::resolver();
         $resolver->resolveReference();
 
-        $id = IdType::id($this->storage, $idHolder->getId());
+        $id = IdType::reference($this->storage, $idHolder->getId());
 
         $result = $id->fetch($resolver);
 
@@ -187,7 +187,7 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
 
         $idHolder = $results->getNext();
 
-        $id = IdType::id($this->storage, $idHolder->getId());
+        $id = IdType::reference($this->storage, $idHolder->getId());
         $id->delete();
 
         $this->storage->flush();
@@ -231,7 +231,7 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
 
         $idHolder = $results->getNext();
 
-        $id = IdType::id($this->storage, $idHolder->getId());
+        $id = IdType::reference($this->storage, $idHolder->getId());
         $condition = IdType::condition();
         $condition->reference = $id;
 
@@ -279,7 +279,7 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
 
         $b = $results->getNext();
 
-        $id = IdType::id($this->storage, $b->getId());
+        $id = IdType::reference($this->storage, $b->getId());
 
         $a->reference = $id;
 
@@ -328,7 +328,7 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
 
         $idHolder = $results->getNext();
 
-        $id = IdType::id($this->storage, $idHolder->getId());
+        $id = IdType::reference($this->storage, $idHolder->getId());
 
         $a = IdType::condition();
         $a->myText = 'a';
@@ -388,7 +388,7 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
 
         $idHolder = $results->getNext();
 
-        $id = IdType::id($this->storage, $idHolder->getId());
+        $id = IdType::reference($this->storage, $idHolder->getId());
         $condition = new EqualTo($id);
 
         $resolver = IdType::resolver();
@@ -422,7 +422,7 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
 
         $idHolder = $results->getNext();
 
-        $id = IdType::id($this->storage, $idHolder->getId());
+        $id = IdType::reference($this->storage, $idHolder->getId());
         $condition = new NotEqualTo($id);
 
         $resolver = IdType::resolver();
@@ -460,7 +460,7 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
 
         $idHolder = $results->getNext();
 
-        $id = IdType::id($this->storage, $idHolder->getId());
+        $id = IdType::reference($this->storage, $idHolder->getId());
         $belowC = IdType::condition();
         $belowC->myText = new LessThan('c');
 
@@ -497,7 +497,7 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
 
         $idHolder = $results->getNext();
 
-        $id = IdType::id($this->storage, $idHolder->getId());
+        $id = IdType::reference($this->storage, $idHolder->getId());
         $aboveB = IdType::condition();
         $aboveB->myText = new GreaterThan('b');
 

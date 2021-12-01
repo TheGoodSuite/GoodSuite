@@ -197,7 +197,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $res .= '        return new ' . $typeDefinition->getName() . 'Condition();' . "\n";
         $res .= "    }\n";
         $res .= "    \n";
-        $res .= '    public static function id($storage, $id)' . "\n";
+        $res .= '    public static function reference($storage, $id)' . "\n";
         $res .= "    {\n";
         $res .= '        $result = new ' . $typeDefinition->getName() . '();' . "\n";
         $res .= "\n";
