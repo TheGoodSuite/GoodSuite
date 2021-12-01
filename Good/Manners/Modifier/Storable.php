@@ -222,8 +222,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $res .= '            throw new \Exception("Can only fetch unresolved Storables");' . "\n";
         $res .= "        }\n";
         $res .= "\n";
-        $res .= '        $condition = $this->getType()::condition();' . "\n";
-        $res .= '        $condition->id = $this->getId();' . "\n";
+        $res .= '        $condition = new \Good\Manners\Condition\EqualTo($this);' . "\n";
         $res .= "\n";
         $res .= '        $results = $this->storage->fetchAll($condition, $resolver);' . "\n";
         $res .= "\n";
@@ -304,13 +303,6 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->condition .= '        return "' . $typeDefinition->getName() . '";' . "\n";
         $this->condition .= "    }\n";
         $this->condition .= "\n";
-        $this->condition .= '    private $id = null;' . "\n";
-        $this->condition .= "\n";
-        $this->condition .= '    public function setId(Condition $condition)' . "\n";
-        $this->condition .= "    {\n";
-        $this->condition .= '        $this->id = $condition;' . "\n";
-        $this->condition .= "    }\n";
-        $this->condition .= "\n";
         $this->condition .= '    public function processCondition(ConditionProcessor $processor)' . "\n";
         $this->condition .= "    {\n";
         $this->condition .= '        $processor->processComplexCondition($this);' . "\n";
@@ -324,20 +316,12 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->conditionSetterSwitch  = '        switch($property)' . "\n";
         $this->conditionSetterSwitch .= "        {\n";
-        $this->conditionSetterSwitch .= '            case "id":' . "\n";
-        $this->conditionSetterSwitch .= '                $this->setId($value instanceof Condition ? $value : new EqualTo($value));' . "\n";
-        $this->conditionSetterSwitch .= '                break;' . "\n";
-        $this->conditionSetterSwitch .= "\n";
 
         $this->conditionGetterSwitch  = '        switch($property)' . "\n";
         $this->conditionGetterSwitch .= "        {\n";
 
         $this->conditionComplexProcess  = '    public function processComplexCondition(ComplexConditionProcessor $processor)' . "\n";
         $this->conditionComplexProcess .= "    {\n";
-        $this->conditionComplexProcess .= '        if ($this->id !== null)' . "\n";
-        $this->conditionComplexProcess .= "        {\n";
-        $this->conditionComplexProcess .= '            $processor->processId($this->id);' . "\n";
-        $this->conditionComplexProcess .= "        }\n";
 
         $this->resolverVisit  = '    public function acceptResolverVisitor' .
                                                 '(\\Good\\Manners\\ResolverVisitor $visitor)' . "\n";

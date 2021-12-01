@@ -167,16 +167,6 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
         $condition->processComplexCondition($this);
     }
 
-    public function processId(Condition $condition)
-    {
-        $this->writeBracketOrAnd();
-
-        $field = '`t' . $this->currentTable . '`.`id`';
-        $fragmentWriter = new IntFragmentWriter($this->storage);
-
-        $this->sqlCondition .= $fragmentWriter->writeFragment($condition, $field);
-    }
-
     public function processMember(Type $type, $name, Condition $condition)
     {
         $this->fieldName = $name;

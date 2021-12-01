@@ -11,7 +11,6 @@ use Good\Service\Type\ReferenceType;
 
 interface ComplexConditionProcessor
 {
-    public function processId(Condition $condition);
     public function processMember(Type $type, $propertyName, Condition $condition);
 
     public function processCollectionMember(CollectionType $type, $propertyName, CollectionCondition $condition);
