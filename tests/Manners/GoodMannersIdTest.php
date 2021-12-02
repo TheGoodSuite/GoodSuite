@@ -105,10 +105,7 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
 
     private function idTypeEquals($first, $second)
     {
-        return $first->myText == $second->myText &&
-               (($first->reference === null && $second->reference === null) ||
-                $first->reference !== null && $second->reference !== null &&
-                $first->reference->myText == $second->reference->myText);
+        return $first->myText == $second->myText;
     }
 
     private function array_search_specific($needle, $haystack)
@@ -542,6 +539,46 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
         $result = $id->resolve();
 
         $this->assertSame($id, $result);
+    }
+
+    public function testUnresolvedNullReferenceIsNull()
+    {
+        // first we get a result from the database to find out what irs id is
+
+        // Get the object with text == 'a'
+        $condition = IdType::condition();
+        $condition->myText = 'a';
+
+        $results = $this->storage->fetchAll($condition, IdType::resolver());
+
+        $idHolder = $results->getNext();
+
+        $id = IdType::reference($this->storage, $idHolder->getId());
+        $id->resolve();
+
+        $this->assertNull($id->reference);
+    }
+
+    public function testUnresolvedReferenceIsAStorableThatCanBeResolved()
+    {
+        // first we get a result from the database to find out what irs id is
+
+        // Get the object with text == 'b'
+        $condition = IdType::condition();
+        $condition->myText = 'b';
+
+        $results = $this->storage->fetchAll($condition, IdType::resolver());
+
+        $idHolder = $results->getNext();
+
+        $id = IdType::reference($this->storage, $idHolder->getId());
+        $id->resolve();
+
+        $this->assertInstanceOf('\Good\Manners\Storable', $id);
+
+        $id->reference->resolve();
+
+        $this->assertSame($id->reference->myText, "a");
     }
 }
 

@@ -476,6 +476,11 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
                                             '$this->' . $this->member->getName() . ');' . "\n";
 
         $this->setFromArray .= '                case "' . $this->member->getName() . '":' . "\n";
+        $this->setFromArray .= '                    if (\is_int($value))'. "\n";
+        $this->setFromArray .= "                    {\n";
+        $this->setFromArray .= '                        $value = ' . $type->getReferencedType() . '::reference($this->storage, $value);' . "\n";
+        $this->setFromArray .= "                    }\n";
+        $this->setFromArray .= "\n";
         $this->setFromArray .= '                    $this->set' . \ucfirst($this->member->getName()) . '($value);'. "\n";
         $this->setFromArray .= '                    break;' . "\n";
 

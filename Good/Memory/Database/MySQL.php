@@ -39,8 +39,10 @@ class MySQL implements Database
             $this->port = \ini_get("mysqli.default_port");
         }
 
+
         $this->db = new \MySQLi($this->host, $this->user, $this->pass,
                                                     $this->database, $this->port);
+        $this->db->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, 1);
     }
 
     public function query($query)

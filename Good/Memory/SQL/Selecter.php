@@ -214,6 +214,12 @@ class Selecter implements ResolverVisitor
     public function resolverVisitUnresolvedReferenceProperty($name)
     {
         $this->currentPropertyIsCollection = false;
+
+        $table = 't' . $this->currentTable;
+        $column = $this->storage->fieldNamify($name);
+        $as = $table . '_' . $column;
+
+        $this->columns[] = new SelectColumn($table, $column, $as);
     }
 
     public function resolverVisitUnresolvedCollectionProperty($name)
