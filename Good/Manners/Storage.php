@@ -38,6 +38,11 @@ abstract class Storage
         $this->defaultStorableFactory->registerType($parentType, $childType);
     }
 
+    public function createEmptyStorable($type)
+    {
+        return $this->storableFactory->createStorable($type);
+    }
+
     protected function invalidate()
     {
         $this->validationToken->invalidate();

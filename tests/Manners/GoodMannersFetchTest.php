@@ -173,13 +173,13 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
                 $hay->myText == $needle->myText &&
                 $hay->myDatetime == $needle->myDatetime &&
                 // they are both null
-                (($hay->myOtherType === null && $needle->myOtherType === null) ||
+                (($hay->myOtherType === null) ||
                 // or neither is null (so we won't be calling functions on null)
                 // and they are the same
                  ($hay->myOtherType !== null && $needle->myOtherType !== null &&
                   $hay->myOtherType->yourInt == $needle->myOtherType->yourInt)) &&
                 // they are both null
-                (($hay->myCircular === null && $needle->myCircular === null) ||
+                (($hay->myCircular === null) ||
                 // or neither is null (so we won't be calling functions on null)
                 // and they are the same
                  ($hay->myCircular !== null && $needle->myCircular !== null &&

@@ -367,7 +367,7 @@ class SQLStorage extends Storage
 
     public function createStorable(array $allData, $joins, $type)
     {
-        $storable = $this->storableFactory->createStorable($type);
+        $storable = $this->createEmptyStorable($type);
 
         return $this->writeStorable($allData, $joins, $storable, 0, false, 0);
     }
@@ -449,12 +449,12 @@ class SQLStorage extends Storage
 
         $storable->markCollectionsUnresolved();
 
+        $storable->setStorage($this);
         $storable->setFromArray($storableData);
         $storable->setId(strval($data[$table]["id"]));
 
         $storable->setNew(false);
         $storable->clean();
-        $storable->setStorage($this);
 
         $this->created[$storable->getType()][$data[$table]["id"]] = $storable;
         $this->managedStorables->add($storable);
@@ -470,11 +470,12 @@ class SQLStorage extends Storage
         }
 
         if (array_key_exists($field, $joins[$tableNumber])
-            && $joins[$tableNumber][$field]->fieldNameDestination == 'id')
+            && $joins[$tableNumber][$field]->fieldNameDestination == 'id'
+            && array_key_exists('t' . $joins[$tableNumber][$field]->tableNumberDestination, $allData[$dataRow]))
         {
             // this is a resolved reference
             $type = $joins[$tableNumber][$field]->tableNameDestination;
-            $storable = $this->storableFactory->createStorable($type);
+            $storable = $this->createEmptyStorable($type);
 
             return $this->writeStorable(
                 $allData,

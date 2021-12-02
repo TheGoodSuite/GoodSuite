@@ -199,7 +199,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $res .= "    \n";
         $res .= '    public static function reference($storage, $id)' . "\n";
         $res .= "    {\n";
-        $res .= '        $result = new ' . $typeDefinition->getName() . '();' . "\n";
+        $res .= '        $result = $storage->createEmptyStorable("' . $typeDefinition->getName() . '");' . "\n";
         $res .= "\n";
         $res .= '        $result->storage = $storage;' . "\n";
         $res .= '        $result->id = $id;' . "\n";
