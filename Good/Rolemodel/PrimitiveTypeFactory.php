@@ -18,7 +18,7 @@ class PrimitiveTypeFactory
                 return new Schema\Type\FloatType($typeModifiers, $memberName);
 
             case 'datetime';
-                return new Schema\Type\DatetimeType($typeModifiers, $memberName);
+                return new Schema\Type\DateTimeType($typeModifiers, $memberName);
 
             default:
                 // TODO: better error handling
