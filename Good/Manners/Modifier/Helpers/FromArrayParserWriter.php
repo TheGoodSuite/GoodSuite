@@ -31,12 +31,12 @@ class FromArrayParserWriter implements TypeVisitor
 
     public function visitIntType(IntType $type)
     {
-        $this->fromArrayParser = '\intval($value)';
+        $this->fromArrayParser = '$value === null ? null : \intval($value)';
     }
 
     public function visitFloatType(FloatType $type)
     {
-        $this->fromArrayParser = '\floatval($value)';
+        $this->fromArrayParser = '$value === null ? null : \floatval($value)';
     }
 
     public function visitReferenceType(ReferenceType $type)
@@ -46,7 +46,7 @@ class FromArrayParserWriter implements TypeVisitor
 
     public function visitTextType(TextType $type)
     {
-        $this->fromArrayParser = '\strval($value)';
+        $this->fromArrayParser = '$value === null ? null : \strval($value)';
     }
 
     public function visitCollectionType(CollectionType $type)
