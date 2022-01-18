@@ -682,6 +682,105 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
        $this->assertSame(array(), $expectedResults);
    }
 
+   /**
+    * @depends testFetchLessThan
+    * @depends testFetchGreaterThan
+    */
+   public function testFetchAndOnReferenceProperty()
+   {
+       $greater = OtherType::condition();
+       $greater->yourInt = new \Good\Manners\Condition\GreaterThan(75);
+
+       $less = OtherType::condition();
+       $less->yourInt = new \Good\Manners\Condition\LessThan(85);
+
+       $and = new \Good\Manners\Condition\AndCondition($less, $greater);
+
+       $condition = MyFetchType::condition();
+       $condition->myOtherType = $and;
+
+       $resolver = new MyFetchTypeResolver();
+       $resolver->resolveMyOtherType();
+       $results = $this->storage->fetchAll($condition, $resolver);
+
+       $expectedResults = array();
+
+       $ins = new MyFetchType();
+       $ins->myInt = 5;
+       $ins->myFloat = null;
+       $ins->myText = "Five";
+       $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
+       $ref = new OtherType();
+       $ref->yourInt = 80;
+       $ins->myOtherType = $ref;
+       $ins->myCircular = null;
+       $expectedResults[] = $ins;
+
+       foreach ($results as $type)
+       {
+           $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
+
+           array_splice($expectedResults, $pos, 1);
+       }
+
+       $this->assertSame(array(), $expectedResults);
+   }
+
+   /**
+    * @depends testFetchLessThan
+    * @depends testFetchGreaterThan
+    */
+   public function testFetchOrOnReferenceProperty()
+   {
+       $greater = OtherType::condition();
+       $greater->yourInt = new \Good\Manners\Condition\GreaterThan(85);
+
+       $less = OtherType::condition();
+       $less->yourInt = new \Good\Manners\Condition\LessThan(10);
+
+       $or = new \Good\Manners\Condition\OrCondition($less, $greater);
+
+       $condition = MyFetchType::condition();
+       $condition->myOtherType = $or;
+
+       $resolver = new MyFetchTypeResolver();
+       $resolver->resolveMyOtherType();
+       $results = $this->storage->fetchAll($condition, $resolver);
+
+       $expectedResults = array();
+
+       $ins = new MyFetchType();
+       $ins->myInt = null;
+       $ins->myFloat = 20.20;
+       $ins->myText = "Twenty";
+       $ins->myDatetime = null;
+       $ref = new OtherType();
+       $ref->yourInt = 5;
+       $ins->myOtherType = $ref;
+       $ins->myCircular = null;
+       $expectedResults[] = $ins;
+
+       $ins = new MyFetchType();
+       $ins->myInt = 4;
+       $ins->myFloat = 4.4;
+       $ins->myText = "Four";
+       $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
+       $ref = new OtherType();
+       $ref->yourInt = 90;
+       $ins->myOtherType = $ref;
+       $ins->myCircular = null;
+       $expectedResults[] = $ins;
+
+       foreach ($results as $type)
+       {
+           $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
+
+           array_splice($expectedResults, $pos, 1);
+       }
+
+       $this->assertSame(array(), $expectedResults);
+   }
+
     /**
      * @depends testFetchLessThan
      * @depends testFetchGreaterThan
