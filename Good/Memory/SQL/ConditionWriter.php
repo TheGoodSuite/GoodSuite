@@ -177,10 +177,18 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
 
     public function visitReferenceType(ReferenceType $type)
     {
-        $complexConditionDiscoverer = new ComplexConditionDiscoverer();
-        $complexCondition = $complexConditionDiscoverer->discoverComplexCondition($this->condition);
+        $field = '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($this->fieldName) . '`';
 
-        if ($complexCondition != null)
+        $fragmentWriter = new ReferenceFragmentWriter();
+        $maybeFragment = $fragmentWriter->tryWritingSimpleFragment($this->condition, $field);
+
+        if ($maybeFragment != null)
+        {
+            $this->writeBracketOrAnd();
+
+            $this->sqlCondition .= $maybeFragment;
+        }
+        else
         {
             $this->writeBracketOrAnd();
 
@@ -192,19 +200,10 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
             }
 
             $subWriter = new ConditionWriter($this->storage, $join, $type->getReferencedType());
-            $subWriter->writeCondition($complexCondition);
+            $subWriter->writeCondition($this->condition);
 
             $this->sqlCondition .= $subWriter->getCondition();
             $this->appendHaving($subWriter->getHaving());
-        }
-        else
-        {
-            $this->writeBracketOrAnd();
-
-            $field = '`t' . $this->currentTable . '`.`' . $this->storage->fieldNamify($this->fieldName) . '`';
-            $fragmentWriter = new ReferenceFragmentWriter();
-
-            $this->sqlCondition .= $fragmentWriter->writeFragment($this->condition, $field);
         }
     }
 

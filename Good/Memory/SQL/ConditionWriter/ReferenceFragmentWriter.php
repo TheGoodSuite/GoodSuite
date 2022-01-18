@@ -12,13 +12,13 @@ class ReferenceFragmentWriter implements ConditionProcessor
 
     private $fragment;
 
-    public function writeFragment($condition, $field)
+    public function tryWritingSimpleFragment($condition, $field)
     {
         $this->field = $field;
 
         $condition->processCondition($this);
 
-        return $this->fragment;
+        return $this->success ? $this->fragment : null;
     }
 
     public function processEqualToCondition($value)
@@ -31,6 +31,8 @@ class ReferenceFragmentWriter implements ConditionProcessor
         {
             $this->fragment = $this->field . ' = ' . \intval($value->getId());
         }
+
+        $this->success = true;
     }
 
     public function processNotEqualToCondition($value)
@@ -43,6 +45,8 @@ class ReferenceFragmentWriter implements ConditionProcessor
         {
             $this->fragment = $this->field . ' <> ' . \intval($value->getId());
         }
+
+        $this->success = true;
     }
 
     public function processGreaterThanCondition($value)
@@ -67,38 +71,17 @@ class ReferenceFragmentWriter implements ConditionProcessor
 
     public function processComplexCondition(ComplexCondition $condition)
     {
-        $this->writeBracketOrAnd();
-
-        $join = $this->storage->getJoin($this->currentTable, $this->fieldName);
-
-        if ($join == -1)
-        {
-            $join = $this->storage->createJoin($this->currentTable, $this->fieldName, $type->getReferencedType(), 'id');
-        }
-
-        $subWriter = new ConditionWriter($this->storage, $join, $type->getReferencedType());
-        $subWriter->writeCondition($this->condition);
-
-        $this->condition .= $subWriter->getCondition();
-        $this->appendHaving($subWriter->getHaving());
+        $this->success = false;
     }
 
     public function processAndCondition(Condition $condition1, Condition $condition2)
     {
-        $fragment = '(' . $this->writeFragment($condition1);
-        $fragment .= ' AND ';
-        $fragment .= $this->writeFragment($condition2) . ')';
-
-        $this->fragment = $fragment;
+        $this->success = false;
     }
 
     public function processOrCondition(Condition $condition1, Condition $condition2)
     {
-        $fragment = '(' . $this->writeFragment($condition1);
-        $fragment .= ' OR ';
-        $fragment .= $this->writeFragment($condition2) . ')';
-
-        $this->fragment = $fragment;
+        $this->success = false;
     }
 }
 
