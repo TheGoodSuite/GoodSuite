@@ -91,6 +91,11 @@ class OrCondition implements Condition, CollectionCondition
             return $reference1;
         }
     }
+
+    public function isSatisfiedBy($value)
+    {
+        return $this->condition1->isSatisfiedBy($value) || $this->condition2->isSatisfiedBy($value);
+    }
 }
 
 ?>

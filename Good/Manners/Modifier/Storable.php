@@ -314,6 +314,10 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->conditionComplexProcess  = '    public function processComplexCondition(ComplexConditionProcessor $processor)' . "\n";
         $this->conditionComplexProcess .= "    {\n";
 
+        $this->conditionSatisfied  = '    public function isSatisfiedBy($value)' . "\n";
+        $this->conditionSatisfied .= "    {\n";
+        $this->conditionSatisfied .= '        $result = true;' . "\n";
+
         $this->resolverVisit  = '    public function acceptResolverVisitor' .
                                                 '(\\Good\\Manners\\ResolverVisitor $visitor)' . "\n";
         $this->resolverVisit .= "    {\n";
@@ -340,6 +344,12 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
             $this->typeDefinition = $typeDefinition;
 
             $member->getType()->acceptTypeVisitor($this);
+
+            $this->conditionSatisfied .= '        if ($this->' . $member->getName() . ' != null)' . "\n";
+            $this->conditionSatisfied .= "        {\n";
+            $this->conditionSatisfied .= '            $result = $result && $this->' . $member->getName() . '->isSatisfiedBy($value->' . $member->getName() . ');' . "\n";
+            $this->conditionSatisfied .= "        }\n";
+            $this->conditionSatisfied .= "\n";
         }
 
         $this->markUnresolved .= "    }\n";
@@ -390,6 +400,10 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->conditionComplexProcess .= "    }\n";
         $this->conditionComplexProcess .= "\n";
 
+        $this->conditionSatisfied .= '        return $result;' . "\n";
+        $this->conditionSatisfied .= "    }\n";
+        $this->conditionSatisfied .= "\n";
+
         $this->condition .= $this->conditionComplexProcess;
         $this->condition .= '    public function __set($property, $value)' . "\n";
         $this->condition .= "    {\n";
@@ -400,6 +414,8 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->condition .= "    {\n";
         $this->condition .= $this->conditionGetterSwitch;
         $this->condition .= "    }\n";
+        $this->condition .= "\n";
+        $this->condition .= $this->conditionSatisfied;
         $this->condition .= "}\n";
         $this->condition .= "\n";
         $this->condition .= "?>";

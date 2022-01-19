@@ -32,6 +32,18 @@ class HasOnly implements CollectionCondition
     {
         $processor->processHasOnly($this->condition);
     }
+
+    public function isSatisfiedBy($value)
+    {
+        $result = true;
+
+        foreach ($value as $item)
+        {
+            $result = $result && $this->condition->isSatisfiedBy($item);
+        }
+
+        return $result;
+    }
 }
 
 ?>

@@ -9,6 +9,8 @@ interface CollectionCondition
 {
     public function processCollectionCondition(CollectionConditionProcessor $processor);
     public function appliesToCollectionType(CollectionType $type);
+
+    public function isSatisfiedBy($value);
 }
 
 ?>

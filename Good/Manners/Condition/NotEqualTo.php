@@ -45,6 +45,11 @@ class NotEqualTo implements Condition
             return null;
         }
     }
+
+    public function isSatisfiedBy($value)
+    {
+        return $value !== $this->value;
+    }
 }
 
 ?>

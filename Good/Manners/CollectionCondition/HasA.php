@@ -32,6 +32,18 @@ class HasA implements CollectionCondition
     {
         $processor->processHasA($this->condition);
     }
+
+    public function isSatisfiedBy($value)
+    {
+        $result = false;
+
+        foreach ($value as $item)
+        {
+            $result = $result || $this->condition->isSatisfiedBy($item);
+        }
+
+        return $result;
+    }
 }
 
 ?>

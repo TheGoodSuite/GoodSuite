@@ -33,6 +33,11 @@ class GreaterThan implements Condition
     {
         return null;
     }
+
+    public function isSatisfiedBy($value)
+    {
+        return $value !== null && $value > $this->value;
+    }
 }
 
 ?>
