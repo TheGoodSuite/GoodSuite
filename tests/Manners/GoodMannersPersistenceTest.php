@@ -68,13 +68,9 @@ abstract class GoodMannersPersistenceTest extends \PHPUnit\Framework\TestCase
         // (it has to ignore any additional fields, though)
         foreach ($haystack as $key => $hay)
         {
-            // I wanted to do strict checking here, but at the moment
-            // all the values from the database are strings, so that's
-            // not very useful.
-            // I hope one day this'll be fixed, though.
-            if ($hay->myInt == $needle->myInt &&
-                $hay->myFloat == $needle->myFloat &&
-                $hay->myText == $needle->myText &&
+            if ($hay->myInt === $needle->myInt &&
+                $hay->myFloat === $needle->myFloat &&
+                $hay->myText === $needle->myText &&
                 $hay->myDatetime == $needle->myDatetime)
             {
                 return $key;

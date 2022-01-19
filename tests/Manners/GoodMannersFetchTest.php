@@ -164,28 +164,24 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         // (it has to ignore any additional fields, though)
         foreach ($haystack as $key => $hay)
         {
-            // I wanted to do strict checking here, but at the moment
-            // all the values from the database are strings, so that's
-            // not very useful.
-            // I hope one day this'll be fixed, though.
-            if ($hay->myInt == $needle->myInt &&
-                $hay->myFloat == $needle->myFloat &&
-                $hay->myText == $needle->myText &&
+            if ($hay->myInt === $needle->myInt &&
+                $hay->myFloat === $needle->myFloat &&
+                $hay->myText === $needle->myText &&
                 $hay->myDatetime == $needle->myDatetime &&
                 // they are both null
                 (($hay->myOtherType === null) ||
                 // or neither is null (so we won't be calling functions on null)
                 // and they are the same
                  ($hay->myOtherType !== null && $needle->myOtherType !== null &&
-                  $hay->myOtherType->yourInt == $needle->myOtherType->yourInt)) &&
+                  $hay->myOtherType->yourInt === $needle->myOtherType->yourInt)) &&
                 // they are both null
                 (($hay->myCircular === null) ||
                 // or neither is null (so we won't be calling functions on null)
                 // and they are the same
                  ($hay->myCircular !== null && $needle->myCircular !== null &&
-                  $hay->myCircular->myInt == $needle->myCircular->myInt &&
-                  $hay->myCircular->myFloat == $needle->myCircular->myFloat &&
-                  $hay->myCircular->myText == $needle->myCircular->myText &&
+                  $hay->myCircular->myInt === $needle->myCircular->myInt &&
+                  $hay->myCircular->myFloat === $needle->myCircular->myFloat &&
+                  $hay->myCircular->myText === $needle->myCircular->myText &&
                   $hay->myCircular->myDatetime == $needle->myCircular->myDatetime)))
             {
                 return $key;

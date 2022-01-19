@@ -105,7 +105,7 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
 
     private function idTypeEquals($first, $second)
     {
-        return $first->myText == $second->myText;
+        return $first->myText === $second->myText;
     }
 
     private function array_search_specific($needle, $haystack)
