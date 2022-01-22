@@ -80,6 +80,11 @@ class CollectionEntryCondition implements ComplexCondition, TypeVisitor
     {
         return null;
     }
+
+    public function isSatisfiedBy($value)
+    {
+        return null;
+    }
 }
 
 ?>
