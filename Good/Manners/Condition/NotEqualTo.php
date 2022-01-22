@@ -48,6 +48,8 @@ class NotEqualTo implements Condition
 
     public function isSatisfiedBy($value)
     {
+        $this->validateComparisonValueForEquality($this->value, $value, 'NotEqualTo');
+
         return $value !== $this->value;
     }
 }

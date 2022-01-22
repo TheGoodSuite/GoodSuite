@@ -48,6 +48,8 @@ class EqualTo implements Condition
 
     public function isSatisfiedBy($value)
     {
+        $this->validateComparisonValueForEquality($this->value, $value, 'EqualTo');
+
         return $value === $this->value;
     }
 }

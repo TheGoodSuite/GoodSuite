@@ -11,6 +11,8 @@ use Good\Service\Type\CollectionType;
 
 class HasA implements CollectionCondition
 {
+    use TypeValidator;
+
     private $condition;
 
     public function __construct($condition)
@@ -35,6 +37,8 @@ class HasA implements CollectionCondition
 
     public function isSatisfiedBy($value)
     {
+        $this->validateComparisonCollectionValue($value, 'HasA');
+
         $result = false;
 
         foreach ($value as $item)

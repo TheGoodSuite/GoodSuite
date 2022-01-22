@@ -316,6 +316,12 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->conditionSatisfied  = '    public function isSatisfiedBy($value)' . "\n";
         $this->conditionSatisfied .= "    {\n";
+        $this->conditionSatisfied .= '        if (!($value instanceof ' . $typeDefinition->getName() . '))' . "\n";
+        $this->conditionSatisfied .= "        {\n";
+        $this->conditionSatisfied .= '            throw new Exception("Cannot test value of \'" . print_r($value, true) . "\' against ' . $typeDefinition->getName()
+                                        . ' Condition: not a ' . $typeDefinition->getName() . '");' . "\n";
+        $this->conditionSatisfied .= "        }\n";
+        $this->conditionSatisfied .= "\n";
         $this->conditionSatisfied .= '        $result = true;' . "\n";
 
         $this->resolverVisit  = '    public function acceptResolverVisitor' .
