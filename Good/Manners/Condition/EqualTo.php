@@ -50,7 +50,15 @@ class EqualTo implements Condition
     {
         $this->validateComparisonValueForEquality($this->value, $value, 'EqualTo');
 
-        return $value === $this->value;
+        if (($value instanceof \DateTimeImmutable) && ($value instanceof \DateTimeImmutable))
+        {
+            // non-strict checking: we want to know if the values match, not if it's the same object
+            return $value == $this->value;
+        }
+        else
+        {
+            return $value === $this->value;
+        }
     }
 }
 
