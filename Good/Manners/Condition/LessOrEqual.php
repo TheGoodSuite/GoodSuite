@@ -36,7 +36,7 @@ class LessOrEqual implements Condition
 
     public function isSatisfiedBy($value)
     {
-        $this->validateComparisonValueForAnyComparison($this->value, $value, 'LessOrEqual');
+        $this->validateComparisonValue($this->value, $value, 'LessOrEqual');
 
         return $value !== null && $value <= $this->value;
     }

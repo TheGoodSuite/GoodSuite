@@ -48,7 +48,7 @@ class NotEqualTo implements Condition
 
     public function isSatisfiedBy($value)
     {
-        $this->validateComparisonValueForEquality($this->value, $value, 'NotEqualTo');
+        $this->validateComparisonValue($this->value, $value, 'NotEqualTo');
 
 
         if (($value instanceof \DateTimeImmutable) && ($value instanceof \DateTimeImmutable))

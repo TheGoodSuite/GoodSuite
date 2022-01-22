@@ -48,7 +48,7 @@ class EqualTo implements Condition
 
     public function isSatisfiedBy($value)
     {
-        $this->validateComparisonValueForEquality($this->value, $value, 'EqualTo');
+        $this->validateComparisonValue($this->value, $value, 'EqualTo');
 
         if (($value instanceof \DateTimeImmutable) && ($value instanceof \DateTimeImmutable))
         {

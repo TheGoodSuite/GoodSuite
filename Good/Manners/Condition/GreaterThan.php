@@ -36,7 +36,7 @@ class GreaterThan implements Condition
 
     public function isSatisfiedBy($value)
     {
-        $this->validateComparisonValueForAnyComparison($this->value, $value, 'GreaterThan');
+        $this->validateComparisonValue($this->value, $value, 'GreaterThan');
 
         return $value !== null && $value > $this->value;
     }

@@ -36,7 +36,7 @@ class GreaterOrEqual implements Condition
 
     public function isSatisfiedBy($value)
     {
-        $this->validateComparisonValueForAnyComparison($this->value, $value, 'GreaterOrEqual');
+        $this->validateComparisonValue($this->value, $value, 'GreaterOrEqual');
 
         return $value !== null && $value >= $this->value;
     }

@@ -60,33 +60,15 @@ trait TypeValidator
         }
     }
 
-    private function validateComparisonValueForEquality($ownValue, $comparisonValue, $conditionName)
-    {
-        $this->validateComparisonValue($ownValue, $comparisonValue, $conditionName, true);
-    }
-
-    private function validateComparisonValueForAnyComparison($ownValue, $comparisonValue, $conditionName)
-    {
-        $this->validateComparisonValue($ownValue, $comparisonValue, $conditionName, false);
-    }
-
-    private function validateComparisonValue($ownValue, $comparisonValue, $conditionName, $isEqualityComparison)
+    private function validateComparisonValue($ownValue, $comparisonValue, $conditionName)
     {
         if (is_null($ownValue))
         {
-            if ($isEqualityComparison)
+            // Only EqualTo and NotEqualTo can have $ownValue == null, so we can
+            // just check if it is equatable without considering whether it's a primitive
+            if (!$this->isEquatable($comparisonValue))
             {
-                if (!$this->isEquatable($comparisonValue))
-                {
-                    throw new \Exception("Cannot test value of '" . print_r($comparisonValue, true) . "' against " . $conditionName . ": invalid type");
-                }
-            }
-            else
-            {
-                if (!$this->isPrimitive($comparisonValue))
-                {
-                    throw new \Exception("Cannot test value of '" . print_r($comparisonValue, true) . "' against " . $conditionName . ": invalid type");
-                }
+                throw new \Exception("Cannot test value of '" . print_r($comparisonValue, true) . "' against " . $conditionName . ": invalid type");
             }
         }
         else
@@ -107,7 +89,7 @@ trait TypeValidator
                     $sameType = false;
                 }
             }
-            else if ($ownValue !== null && $comparisonValue !== null)
+            else if ($comparisonValue !== null)
             {
                 $sameType = gettype($ownValue) === gettype($comparisonValue);
             }

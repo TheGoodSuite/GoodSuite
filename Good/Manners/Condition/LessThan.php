@@ -36,7 +36,7 @@ class LessThan implements Condition
 
     public function isSatisfiedBy($value)
     {
-        $this->validateComparisonValueForAnyComparison($this->value, $value, 'LessThan');
+        $this->validateComparisonValue($this->value, $value, 'LessThan');
 
         return $value !== null && $value < $this->value;
     }
