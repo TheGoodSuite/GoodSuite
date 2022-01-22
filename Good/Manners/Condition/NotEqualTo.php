@@ -51,7 +51,7 @@ class NotEqualTo implements Condition
         $this->validateComparisonValue($this->value, $value, 'NotEqualTo');
 
 
-        if (($value instanceof \DateTimeImmutable) && ($value instanceof \DateTimeImmutable))
+        if (($this->value instanceof \DateTimeImmutable) && ($value instanceof \DateTimeImmutable))
         {
             // non-strict checking: we want to know if the values match, not if it's the same object
             return $value != $this->value;
