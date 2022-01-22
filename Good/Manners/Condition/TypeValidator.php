@@ -14,6 +14,10 @@ trait TypeValidator
         {
             throw new \Exception("Invalid value for " . $conditionName);
         }
+        else if (($value instanceof Storable) && $value->id === null)
+        {
+            throw new \Exception("Invalid value for " . $conditionName . ": Can only use storables that have their id set");
+        }
     }
 
     private function validateForComparisons($conditionName, $value)
@@ -62,6 +66,14 @@ trait TypeValidator
 
     private function validateComparisonValue($ownValue, $comparisonValue, $conditionName)
     {
+        if (($ownValue instanceof Storable) || ($ownValue === null && ($comparisonValue instanceof Storable)))
+        {
+            if (($comparisonValue instanceof Storable) && $comparisonValue->id === null)
+            {
+                throw new \Exception("Cannot test value of '" . print_r($comparisonValue, true) . "' against " . $conditionName . "(" . print_r($ownValue, true) . "): Can only use storables that have their id set");
+            }
+        }
+
         if (is_null($ownValue))
         {
             // Only EqualTo and NotEqualTo can have $ownValue == null, so we can
@@ -84,7 +96,7 @@ trait TypeValidator
             }
             elseif ($ownValue instanceof Storable)
             {
-                if ($comparisonValue !== null && !($comparisonValue instanceof \Storable))
+                if ($comparisonValue !== null && !($comparisonValue instanceof Storable))
                 {
                     $sameType = false;
                 }

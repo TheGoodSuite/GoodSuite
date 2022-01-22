@@ -806,6 +806,20 @@ class GoodMannersIncorrectConditionsTest extends \PHPUnit\Framework\TestCase
         $condition = IncorrectConditionsType::condition();
         $condition->myReferenceCollection = new HasOnly(new EqualTo(1));
     }
+
+    public function testEqualToStorableWithoutId()
+    {
+        $this->expectException("Exception");
+
+        new EqualTo(new IncorrectConditionsType());
+    }
+
+    public function testNotEqualToStorableWithoutId()
+    {
+        $this->expectException("Exception");
+
+        new NotEqualTo(new IncorrectConditionsType());
+    }
 }
 
 ?>

@@ -936,6 +936,66 @@ class GoodMannersSatisfiedByConditionTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($result, true);
     }
 
+    public function testStorableEqualToSucceeds()
+    {
+        $reference = new SatisfiedByConditionType();
+        $reference->setId("-1");
+
+        $condition = new EqualTo($reference);
+
+        $storable = new SatisfiedByConditionType();
+        $storable->setId("-1");
+
+        $result = $condition->isSatisfiedBy($storable);
+
+        $this->assertEquals($result, true);
+    }
+
+    public function testStorableEqualToFails()
+    {
+        $reference = new SatisfiedByConditionType();
+        $reference->setId("-1");
+
+        $condition = new EqualTo($reference);
+
+        $storable = new SatisfiedByConditionType();
+        $storable->setId("-2");
+
+        $result = $condition->isSatisfiedBy($storable);
+
+        $this->assertEquals($result, false);
+    }
+
+    public function testStorableNotEqualToSucceeds()
+    {
+        $reference = new SatisfiedByConditionType();
+        $reference->setId("-1");
+
+        $condition = new NotEqualTo($reference);
+
+        $storable = new SatisfiedByConditionType();
+        $storable->setId("-2");
+
+        $result = $condition->isSatisfiedBy($storable);
+
+        $this->assertEquals($result, true);
+    }
+
+    public function testStorableNotEqualToFails()
+    {
+        $reference = new SatisfiedByConditionType();
+        $reference->setId("-1");
+
+        $condition = new NotEqualTo($reference);
+
+        $storable = new SatisfiedByConditionType();
+        $storable->setId("-1");
+
+        $result = $condition->isSatisfiedBy($storable);
+
+        $this->assertEquals($result, false);
+    }
+
     public function testNullEqualToNullCondition()
     {
         $condition = new EqualTo(null);
@@ -1289,7 +1349,10 @@ class GoodMannersSatisfiedByConditionTest extends \PHPUnit\Framework\TestCase
 
     public function testInvalidStorableEqualToInt()
     {
-        $condition = new EqualTo(new SatisfiedByConditionType());
+        $reference = new SatisfiedByConditionType();
+        $reference->setId("-1");
+
+        $condition = new EqualTo($reference);
 
         $this->expectException("Exception");
 
@@ -1298,11 +1361,64 @@ class GoodMannersSatisfiedByConditionTest extends \PHPUnit\Framework\TestCase
 
     public function testInvalidStorableNotEqualToInt()
     {
-        $condition = new NotEqualTo(new SatisfiedByConditionType());
+        $reference = new SatisfiedByConditionType();
+        $reference->setId("-1");
+
+        $condition = new NotEqualTo($reference);
 
         $this->expectException("Exception");
 
         $result = $condition->isSatisfiedBy(2);
+    }
+
+    public function testInvalidStorableEqualToStorableWithoutId()
+    {
+        $reference = new SatisfiedByConditionType();
+        $reference->setId("-1");
+
+        $condition = new EqualTo($reference);
+
+        $storable = new SatisfiedByConditionType();
+
+        $this->expectException("Exception");
+
+        $result = $condition->isSatisfiedBy($storable);
+    }
+
+    public function testInvalidStorableNotEqualToStorableWithoutId()
+    {
+        $reference = new SatisfiedByConditionType();
+        $reference->setId("-1");
+
+        $condition = new NotEqualTo($reference);
+
+        $storable = new SatisfiedByConditionType();
+
+        $this->expectException("Exception");
+
+        $result = $condition->isSatisfiedBy($storable);
+    }
+
+    public function testInvalidNullEqualToStorableWithoutId()
+    {
+        $condition = new EqualTo(null);
+
+        $storable = new SatisfiedByConditionType();
+
+        $this->expectException("Exception");
+
+        $result = $condition->isSatisfiedBy($storable);
+    }
+
+    public function testInvalidNullNotEqualToStorableWithoutId()
+    {
+        $condition = new NotEqualTo(null);
+
+        $storable = new SatisfiedByConditionType();
+
+        $this->expectException("Exception");
+
+        $result = $condition->isSatisfiedBy($storable);
     }
 
     public function testInvalidIntEqualToText()

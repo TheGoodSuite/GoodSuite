@@ -56,6 +56,10 @@ class NotEqualTo implements Condition
             // non-strict checking: we want to know if the values match, not if it's the same object
             return $value != $this->value;
         }
+        else if (($this->value instanceof Storable) && ($value instanceof Storable))
+        {
+            return $this->value->id !== $value->id;
+        }
         else
         {
             return $value !== $this->value;
