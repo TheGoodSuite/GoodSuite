@@ -6,34 +6,41 @@ use Good\Rolemodel\Rolemodel;
 
 class Service
 {
-    private $outputDir = null;
+    private $inputDir;
+    private $outputDir;
+    private $modifiers;
 
-    public function compile($modifiers, \Good\Rolemodel\Schema $model, $outputDir)
+    public function __construct($config)
     {
-        $this->outputDir = $outputDir;
+        $this->inputDir = $config['inputDir'];
+        $this->outputDir = $config['outputDir'];
+        $this->modifiers = array_key_exists('modifiers', $config) ? $config['modifiers'] : [];
+    }
 
+    public static function compile($modifiers, \Good\Rolemodel\Schema $model, $outputDir)
+    {
         $compiler = new Compiler($modifiers, $outputDir);
 
         $compiler->compile($model);
     }
 
-    public function autocompile($inputDir, $outputDir, $modifiers)
+    public function load()
     {
-        $inputTime = $this->lastModifiedRecursively($inputDir, 'datatype');
-        $outputTime = $this->lastModifiedRecursively($outputDir, 'datatype');
+        $inputTime = $this->lastModifiedRecursively($this->inputDir, 'datatype');
+        $outputTime = $this->lastModifiedRecursively($this->outputDir, 'datatype');
 
-        $files = $this->listFiles($inputDir, 'datatype');
+        $files = $this->listFiles($this->inputDir, 'datatype');
         $rolemodel = new Rolemodel();
         $schema = $rolemodel->createSchema($files);
 
         if ($outputTime === null || $outputTime < $inputTime)
         {
-            $this->compile($modifiers, $schema, $outputDir);
+            $this->compile($this->modifiers, $schema, $this->outputDir);
         }
 
         foreach ($schema->getTypeDefitions() as $type)
         {
-            require_once $outputDir . $type->getName() . '.datatype.php';
+            require_once $this->outputDir . $type->getName() . '.datatype.php';
         }
     }
 

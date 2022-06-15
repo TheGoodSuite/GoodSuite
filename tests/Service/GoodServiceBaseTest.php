@@ -48,8 +48,13 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
 
         $this->files = array_merge($this->files, $inputFiles);
 
-        $service = new \Good\Service\Service();
-        $service->autocompile(dirname(__FILE__) . '/../testInputFiles/', dirname(__FILE__) . '/../generated/', $modifiers);
+        $service = new \Good\Service\Service([
+            "modifiers" => $modifiers,
+            "inputDir" => dirname(__FILE__) . '/../testInputFiles/',
+            "outputDir" => dirname(__FILE__) . '/../generated/'
+        ]);
+
+        $service->load();
 
         $file = $this->outputDir . 'GeneratedBaseClass.php';
         $this->files[] = $file;
@@ -57,6 +62,7 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         foreach ($types as $type)
         {
             $file = $this->outputDir . $type . '.datatype.php';
+
             $this->files[] = $file;
 
             $file = $this->outputDir . $type . 'Resolver.php';

@@ -129,14 +129,13 @@ abstract class GoodMannersChildTypesTest extends \PHPUnit\Framework\TestCase
         file_put_contents(dirname(__FILE__) . '/../testInputFiles/ParentType2.datatype',
                                                                             "datatype ParentType2 { int yourInt; }");
 
-        $rolemodel = new \Good\Rolemodel\Rolemodel();
-        $schema = $rolemodel->createSchema(array(dirname(__FILE__) . '/../testInputFiles/ParentType1.datatype',
-                                                 dirname(__FILE__) . '/../testInputFiles/ParentType2.datatype'));
+        $service = new \Good\Service\Service([
+            "modifiers" => [new \Good\Manners\Modifier\Storable()],
+            "inputDir" => dirname(__FILE__) . '/../testInputFiles/',
+            "outputDir" => dirname(__FILE__) . '/../generated/'
+        ]);
 
-        $modifiers = [new \Good\Manners\Modifier\Storable()];
-
-        $service = new \Good\Service\Service();
-        $service->autocompile(dirname(__FILE__) . '/../testInputFiles/', dirname(__FILE__) . '/../generated/', $modifiers);
+        $service->load();
 
         require dirname(__FILE__) . '/GoodMannersChildTypes.php';
     }

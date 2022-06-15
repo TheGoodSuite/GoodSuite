@@ -43,10 +43,13 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         file_put_contents(dirname(__FILE__) . '/../testInputFiles/ThirdType.datatype',
                                                                             'datatype ThirdType {"YetAnotherType" ref; }');
 
-        $modifiers = [new \Good\Manners\Modifier\Storable()];
+        $service = new \Good\Service\Service([
+            "modifiers" => [new \Good\Manners\Modifier\Storable()],
+            "inputDir" => dirname(__FILE__) . '/../testInputFiles/',
+            "outputDir" => dirname(__FILE__) . '/../generated/'
+        ]);
 
-        $service = new \Good\Service\Service();
-        $service->autocompile(dirname(__FILE__) . '/../testInputFiles/', dirname(__FILE__) . '/../generated/', $modifiers);
+        $service->load();
     }
 
     public static function _tearDownAfterClass()

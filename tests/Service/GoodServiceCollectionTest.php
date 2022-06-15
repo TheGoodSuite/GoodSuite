@@ -46,10 +46,15 @@ class GoodServiceCollectionTest extends \PHPUnit\Framework\TestCase
             }
         }
 
-        $service = new \Good\Service\Service();
-        $service->autocompile(dirname(__FILE__) . '/../testInputFiles/', dirname(__FILE__) . '/../generated/', $modifiers);
-
         $this->files = array_merge($this->files, $inputFiles);
+
+        $service = new \Good\Service\Service([
+            "modifiers" => $modifiers,
+            "inputDir" => dirname(__FILE__) . '/../testInputFiles/',
+            "outputDir" => dirname(__FILE__) . '/../generated/'
+        ]);
+
+        $service->load();
 
         $file = $this->outputDir . 'GeneratedBaseClass.php';
         $this->files[] = $file;
@@ -57,9 +62,17 @@ class GoodServiceCollectionTest extends \PHPUnit\Framework\TestCase
         foreach ($types as $type)
         {
             $file = $this->outputDir . $type . '.datatype.php';
+
             $this->files[] = $file;
 
             $file = $this->outputDir . $type . 'Resolver.php';
+
+            if (file_exists($file))
+            {
+                $this->files[] = $file;
+            }
+
+            $file = $this->outputDir . $type . 'Condition.php';
 
             if (file_exists($file))
             {
