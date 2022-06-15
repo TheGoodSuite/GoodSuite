@@ -15,12 +15,20 @@ class Rolemodel
         }
 
         $dataTypes = array();
+        $dataTypeNames = [];
 
         foreach ($dataTypeArrays as $dataTypeArray)
         {
             foreach ($dataTypeArray as $dataType)
             {
                 $dataTypes[] = $dataType;
+
+                if (array_key_exists($dataType->getName(), $dataTypeNames))
+                {
+                    throw new \Exception('More than datatype found with name "' . $dataType->getName() . '"');
+                }
+
+                $dataTypeNames[$dataType->getName()] = true;
             }
         }
 

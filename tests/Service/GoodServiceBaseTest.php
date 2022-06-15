@@ -1110,6 +1110,16 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
 
         $this->assertNoExceptions();
     }
+
+    public function testDuplicateDatatype()
+    {
+        file_put_contents($this->inputDir . 'MyType.datatype',
+                            'datatype MyType { int myInt; } datatype MyType { int myInt; }');
+
+        $this->expectException("Exception");
+
+        $this->compile(array('MyType'));
+    }
 }
 
 ?>
