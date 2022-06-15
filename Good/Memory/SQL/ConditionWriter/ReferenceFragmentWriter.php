@@ -43,7 +43,8 @@ class ReferenceFragmentWriter implements ConditionProcessor
         }
         else
         {
-            $this->fragment = $this->field . ' <> ' . \intval($value->getId());
+            $this->fragment = '(' . $this->field . ' <> ' . \intval($value->getId());
+            $this->fragment .= ' OR ' . $this->field . ' IS NULL)';
         }
 
         $this->success = true;

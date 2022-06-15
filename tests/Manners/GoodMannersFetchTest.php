@@ -522,6 +522,17 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ins->myCircular = null;
         $expectedResults[] = $ins;
 
+        $ins = new MyFetchType();
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
+        $ref = new OtherType();
+        $ref->yourInt = 5;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
+        $expectedResults[] = $ins;
+
         foreach ($results as $type)
         {
             $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);

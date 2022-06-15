@@ -839,7 +839,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins = new AdvancedUpdateType();
         $ins->myInt = null;
         $ins->myFloat = 20.20;
-        $ins->myText = "Twenty";
+        $ins->myText = "Hello World!";
         $ins->myDatetime = null;
         $ref = new YetAnotherType();
         $ref->yourInt = 10;

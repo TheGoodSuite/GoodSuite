@@ -43,7 +43,8 @@ abstract class ScalarFragmentWriter implements ConditionProcessor
         }
         else
         {
-            $this->fragment = $this->field . ' <> ' . $this->parseScalar($value);
+            $this->fragment = '(' . $this->field . ' <> ' . $this->parseScalar($value);
+            $this->fragment .= ' OR ' . $this->field . ' IS NULL)';
         }
     }
 
