@@ -46,22 +46,17 @@ class GoodServiceCollectionTest extends \PHPUnit\Framework\TestCase
             }
         }
 
-        $schema = $rolemodel->createSchema($inputFiles);
-
         $service = new \Good\Service\Service();
-
-        $service->compile($modifiers, $schema, $this->outputDir);
+        $service->autocompile(dirname(__FILE__) . '/../testInputFiles/', dirname(__FILE__) . '/../generated/', $modifiers);
 
         $this->files = array_merge($this->files, $inputFiles);
 
         $file = $this->outputDir . 'GeneratedBaseClass.php';
-        require $file;
         $this->files[] = $file;
 
         foreach ($types as $type)
         {
             $file = $this->outputDir . $type . '.datatype.php';
-            require $file;
             $this->files[] = $file;
 
             $file = $this->outputDir . $type . 'Resolver.php';

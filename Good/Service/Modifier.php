@@ -19,6 +19,7 @@ interface Modifier
     public function varDefinitionAfter(Schema\Member $member);
     public function constructor();
     public function extraFiles();
+    public function beforeClass(Schema\TypeDefinition $typeDefinition);
 }
 
 ?>

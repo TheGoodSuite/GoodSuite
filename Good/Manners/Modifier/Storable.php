@@ -737,7 +737,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
             $this->resolver .= '    private $orderNumber' . \ucfirst($this->member->getName()) . ' = -1;' . "\n";
             $this->resolver .= '    private $orderDirection' . \ucfirst($this->member->getName()) . ' = -1;' . "\n";
             $this->resolver .= "    \n";
-            
+
             if ($isScalar)
             {
                 $this->resolver .= '    public function orderBy';
@@ -758,7 +758,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
             $this->resolver .= '        return $this;' . "\n";
             $this->resolver .= "    }\n";
             $this->resolver .= "    \n";
-            
+
             if ($isScalar)
             {
                 $this->resolver .= '    public function orderBy';
@@ -767,7 +767,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
             {
                 // Collection of non-references
                 $this->resolver .= '    public function order';
-            }            
+            }
             $this->resolver .= \ucfirst($this->member->getName()) . 'Desc()' . "\n";
 
             $this->resolver .= "    {\n";
@@ -862,6 +862,15 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         return $this->extraFiles;
 
         $this->extraFiles = array();
+    }
+
+    public function beforeClass(Schema\TypeDefinition $typeDefinition)
+    {
+        $result = 'require __dir__ . "/' . $typeDefinition->getName() . 'Resolver.php";' . "\n";
+        $result .= 'require __dir__ . "/' . $typeDefinition->getName() . 'Condition.php";' . "\n";
+        $result .= "\n";
+
+        return $result;
     }
 }
 

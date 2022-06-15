@@ -133,17 +133,10 @@ abstract class GoodMannersChildTypesTest extends \PHPUnit\Framework\TestCase
         $schema = $rolemodel->createSchema(array(dirname(__FILE__) . '/../testInputFiles/ParentType1.datatype',
                                                  dirname(__FILE__) . '/../testInputFiles/ParentType2.datatype'));
 
+        $modifiers = [new \Good\Manners\Modifier\Storable()];
+
         $service = new \Good\Service\Service();
-        $service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');
-
-        require dirname(__FILE__) . '/../generated/ParentType1.datatype.php';
-        require dirname(__FILE__) . '/../generated/ParentType2.datatype.php';
-
-        require dirname(__FILE__) . '/../generated/ParentType1Resolver.php';
-        require dirname(__FILE__) . '/../generated/ParentType2Resolver.php';
-
-        require dirname(__FILE__) . '/../generated/ParentType1Condition.php';
-        require dirname(__FILE__) . '/../generated/ParentType2Condition.php';
+        $service->autocompile(dirname(__FILE__) . '/../testInputFiles/', dirname(__FILE__) . '/../generated/', $modifiers);
 
         require dirname(__FILE__) . '/GoodMannersChildTypes.php';
     }

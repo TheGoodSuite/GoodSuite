@@ -344,6 +344,11 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
         $top .= "include_once 'GeneratedBaseClass.php';\n";
         $top .= "\n";
 
+        foreach ($this->modifiers as $modifier)
+        {
+            $top .= $modifier->beforeClass($typeDefinition);
+        }
+
         // Start class
         // This was moved here so the constructor could be on top
         $top .= 'class ' . $typeDefinition->getName() . " extends GeneratedBaseClass\n";

@@ -70,6 +70,7 @@ class Observable implements \Good\Service\Modifier
 
     public function constructor() { return ''; }
     public function extraFiles() {return array();}
+    public function beforeClass(Schema\TypeDefinition $typeDefinition) { return ''; }
 }
 
 ?>

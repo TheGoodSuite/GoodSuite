@@ -34,8 +34,6 @@ class Service
         foreach ($schema->getTypeDefitions() as $type)
         {
             require_once $outputDir . $type->getName() . '.datatype.php';
-            require_once $outputDir . $type->getName() . 'Resolver.php';
-            require_once $outputDir . $type->getName() . 'Condition.php';
         }
     }
 
