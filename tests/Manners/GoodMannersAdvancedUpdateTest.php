@@ -43,25 +43,10 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         file_put_contents(dirname(__FILE__) . '/../testInputFiles/ThirdType.datatype',
                                                                             'datatype ThirdType {"YetAnotherType" ref; }');
 
-        $rolemodel = new \Good\Rolemodel\Rolemodel();
-        $schema = $rolemodel->createSchema(array(dirname(__FILE__) . '/../testInputFiles/AdvancedUpdateType.datatype',
-                                                 dirname(__FILE__) . '/../testInputFiles/YetAnotherType.datatype',
-                                                 dirname(__FILE__) . '/../testInputFiles/ThirdType.datatype'));
+        $modifiers = [new \Good\Manners\Modifier\Storable()];
 
         $service = new \Good\Service\Service();
-        $service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');
-
-        require dirname(__FILE__) . '/../generated/AdvancedUpdateType.datatype.php';
-        require dirname(__FILE__) . '/../generated/YetAnotherType.datatype.php';
-        require dirname(__FILE__) . '/../generated/ThirdType.datatype.php';
-
-        require dirname(__FILE__) . '/../generated/AdvancedUpdateTypeResolver.php';
-        require dirname(__FILE__) . '/../generated/YetAnotherTypeResolver.php';
-        require dirname(__FILE__) . '/../generated/ThirdTypeResolver.php';
-
-        require dirname(__FILE__) . '/../generated/AdvancedUpdateTypeCondition.php';
-        require dirname(__FILE__) . '/../generated/YetAnotherTypeCondition.php';
-        require dirname(__FILE__) . '/../generated/ThirdTypeCondition.php';
+        $service->autocompile(dirname(__FILE__) . '/../testInputFiles/', dirname(__FILE__) . '/../generated/', $modifiers);
     }
 
     public static function _tearDownAfterClass()

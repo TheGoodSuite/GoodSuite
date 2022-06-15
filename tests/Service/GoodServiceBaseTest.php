@@ -46,13 +46,13 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
             }
         }
 
+        $this->files = array_merge($this->files, $inputFiles);
+
         $schema = $rolemodel->createSchema($inputFiles);
 
         $service = new \Good\Service\Service();
 
         $service->compile($modifiers, $schema, $this->outputDir);
-
-        $this->files = array_merge($this->files, $inputFiles);
 
         $file = $this->outputDir . 'GeneratedBaseClass.php';
         require $file;

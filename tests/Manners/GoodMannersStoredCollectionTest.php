@@ -42,15 +42,10 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
                                                                             "   text[] myTexts;\n" .
                                                                             "}\n");
 
-        $rolemodel = new \Good\Rolemodel\Rolemodel();
-        $schema = $rolemodel->createSchema(array(dirname(__FILE__) . '/../testInputFiles/CollectionType.datatype'));
+        $modifiers = [new \Good\Manners\Modifier\Storable()];
 
         $service = new \Good\Service\Service();
-        $service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');
-
-        require dirname(__FILE__) . '/../generated/CollectionType.datatype.php';
-        require dirname(__FILE__) . '/../generated/CollectionTypeResolver.php';
-        require dirname(__FILE__) . '/../generated/CollectionTypeCondition.php';
+        $service->autocompile(dirname(__FILE__) . '/../testInputFiles/', dirname(__FILE__) . '/../generated/', $modifiers);
     }
 
     public static function _tearDownAfterClass()

@@ -51,32 +51,23 @@ class GoodMannersIncorrectConditionsTest extends \PHPUnit\Framework\TestCase
             "   int someInt;\n" .
             "}\n");
 
-        $rolemodel = new \Good\Rolemodel\Rolemodel();
-        $schema = $rolemodel->createSchema(array(dirname(__FILE__) . '/../testInputFiles/IncorrectConditionsType.datatype',
-                                                 dirname(__FILE__) . '/../testInputFiles/SecondIncorrectType.datatype'));
+        $modifiers = [new \Good\Manners\Modifier\Storable()];
 
         $service = new \Good\Service\Service();
-        $service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');
-
-        require dirname(__FILE__) . '/../generated/IncorrectConditionsType.datatype.php';
-        require dirname(__FILE__) . '/../generated/IncorrectConditionsTypeResolver.php';
-        require dirname(__FILE__) . '/../generated/IncorrectConditionsTypeCondition.php';
-        require dirname(__FILE__) . '/../generated/SecondIncorrectType.datatype.php';
-        require dirname(__FILE__) . '/../generated/SecondIncorrectTypeResolver.php';
-        require dirname(__FILE__) . '/../generated/SecondIncorrectTypeCondition.php';
+        $service->autocompile(dirname(__FILE__) . '/../testInputFiles/', dirname(__FILE__) . '/../generated/', $modifiers);
     }
 
     public static function _tearDownAfterClass()
     {
-        // unlink(dirname(__FILE__) . '/../testInputFiles/IncorrectConditionsType.datatype');
-        // unlink(dirname(__FILE__) . '/../generated/IncorrectConditionsType.datatype.php');
-        // unlink(dirname(__FILE__) . '/../generated/IncorrectConditionsTypeResolver.php');
-        // unlink(dirname(__FILE__) . '/../generated/IncorrectConditionsTypeCondition.php');
-        // unlink(dirname(__FILE__) . '/../testInputFiles/SecondIncorrectType.datatype');
-        // unlink(dirname(__FILE__) . '/../generated/SecondIncorrectType.datatype.php');
-        // unlink(dirname(__FILE__) . '/../generated/SecondIncorrectTypeResolver.php');
-        // unlink(dirname(__FILE__) . '/../generated/SecondIncorrectTypeCondition.php');
-        // unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');
+        unlink(dirname(__FILE__) . '/../testInputFiles/IncorrectConditionsType.datatype');
+        unlink(dirname(__FILE__) . '/../generated/IncorrectConditionsType.datatype.php');
+        unlink(dirname(__FILE__) . '/../generated/IncorrectConditionsTypeResolver.php');
+        unlink(dirname(__FILE__) . '/../generated/IncorrectConditionsTypeCondition.php');
+        unlink(dirname(__FILE__) . '/../testInputFiles/SecondIncorrectType.datatype');
+        unlink(dirname(__FILE__) . '/../generated/SecondIncorrectType.datatype.php');
+        unlink(dirname(__FILE__) . '/../generated/SecondIncorrectTypeResolver.php');
+        unlink(dirname(__FILE__) . '/../generated/SecondIncorrectTypeCondition.php');
+        unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');
     }
 
     public function setUp(): void

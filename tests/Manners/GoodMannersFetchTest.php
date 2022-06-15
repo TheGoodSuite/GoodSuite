@@ -39,21 +39,10 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         file_put_contents(dirname(__FILE__) . '/../testInputFiles/OtherType.datatype',
                                                                             "datatype OtherType { int yourInt; }");
 
-        $rolemodel = new \Good\Rolemodel\Rolemodel();
-        $schema = $rolemodel->createSchema(array(dirname(__FILE__) . '/../testInputFiles/MyFetchType.datatype',
-                                                   dirname(__FILE__) . '/../testInputFiles/OtherType.datatype'));
+        $modifiers = [new \Good\Manners\Modifier\Storable()];
 
         $service = new \Good\Service\Service();
-        $service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');
-
-        require dirname(__FILE__) . '/../generated/MyFetchType.datatype.php';
-        require dirname(__FILE__) . '/../generated/OtherType.datatype.php';
-
-        require dirname(__FILE__) . '/../generated/MyFetchTypeResolver.php';
-        require dirname(__FILE__) . '/../generated/OtherTypeResolver.php';
-
-        require dirname(__FILE__) . '/../generated/MyFetchTypeCondition.php';
-        require dirname(__FILE__) . '/../generated/OtherTypeCondition.php';
+        $service->autocompile(dirname(__FILE__) . '/../testInputFiles/', dirname(__FILE__) . '/../generated/', $modifiers);
     }
 
     public static function _tearDownAfterClass()

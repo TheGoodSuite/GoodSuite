@@ -32,16 +32,10 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
                                                                             '   "IdType" reference;' . "\n" .
                                                                             "}\n");
 
-        $rolemodel = new \Good\Rolemodel\Rolemodel();
-        $schema = $rolemodel->createSchema(array(dirname(__FILE__) . '/../testInputFiles/IdType.datatype'));
+        $modifiers = [new \Good\Manners\Modifier\Storable()];
 
         $service = new \Good\Service\Service();
-        $service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');
-
-        require dirname(__FILE__) . '/../generated/IdType.datatype.php';
-
-        require dirname(__FILE__) . '/../generated/IdTypeResolver.php';
-        require dirname(__FILE__) . '/../generated/IdTypeCondition.php';
+        $service->autocompile(dirname(__FILE__) . '/../testInputFiles/', dirname(__FILE__) . '/../generated/', $modifiers);
     }
 
     public static function _tearDownAfterClass()

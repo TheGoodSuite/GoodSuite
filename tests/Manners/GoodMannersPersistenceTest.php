@@ -25,16 +25,10 @@ abstract class GoodMannersPersistenceTest extends \PHPUnit\Framework\TestCase
                                                                             "   datetime myDatetime;\n" .
                                                                             "}\n");
 
-        $rolemodel = new \Good\Rolemodel\Rolemodel();
-        $schema = $rolemodel->createSchema(array(dirname(__FILE__) . '/../testInputFiles/PersistenceType.datatype'));
+        $modifiers = [new \Good\Manners\Modifier\Storable()];
 
         $service = new \Good\Service\Service();
-        $service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');
-
-        require dirname(__FILE__) . '/../generated/PersistenceType.datatype.php';
-
-        require dirname(__FILE__) . '/../generated/PersistenceTypeResolver.php';
-        require dirname(__FILE__) . '/../generated/PersistenceTypeCondition.php';
+        $service->autocompile(dirname(__FILE__) . '/../testInputFiles/', dirname(__FILE__) . '/../generated/', $modifiers);
     }
 
 

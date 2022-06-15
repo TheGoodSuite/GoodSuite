@@ -39,20 +39,10 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
         file_put_contents(dirname(__FILE__) . '/../testInputFiles/AnotherType.datatype',
                                                                             "datatype AnotherType { int yourInt; }");
 
-        $rolemodel = new \Good\Rolemodel\Rolemodel();
-        $schema = $rolemodel->createSchema(array(dirname(__FILE__) . '/../testInputFiles/SimpleUpdateType.datatype',
-                                                 dirname(__FILE__) . '/../testInputFiles/AnotherType.datatype'));
+        $modifiers = [new \Good\Manners\Modifier\Storable()];
 
         $service = new \Good\Service\Service();
-        $service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');
-
-        require dirname(__FILE__) . '/../generated/SimpleUpdateType.datatype.php';
-        require dirname(__FILE__) . '/../generated/AnotherType.datatype.php';
-
-        require dirname(__FILE__) . '/../generated/SimpleUpdateTypeResolver.php';
-        require dirname(__FILE__) . '/../generated/SimpleUpdateTypeCondition.php';
-        require dirname(__FILE__) . '/../generated/AnotherTypeResolver.php';
-        require dirname(__FILE__) . '/../generated/AnotherTypeCondition.php';
+        $service->autocompile(dirname(__FILE__) . '/../testInputFiles/', dirname(__FILE__) . '/../generated/', $modifiers);
     }
 
     public static function _tearDownAfterClass()

@@ -36,16 +36,10 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
                                                                             '   "InsertType" myCircularReference;' . "\n" .
                                                                             "}\n");
 
-        $rolemodel = new \Good\Rolemodel\Rolemodel();
-        $schema = $rolemodel->createSchema(array(dirname(__FILE__) . '/../testInputFiles/InsertType.datatype'));
+        $modifiers = [new \Good\Manners\Modifier\Storable()];
 
         $service = new \Good\Service\Service();
-        $service->compile(array(new \Good\Manners\Modifier\Storable()), $schema, dirname(__FILE__) . '/../generated/');
-
-        require dirname(__FILE__) . '/../generated/InsertType.datatype.php';
-
-        require dirname(__FILE__) . '/../generated/InsertTypeResolver.php';
-        require dirname(__FILE__) . '/../generated/InsertTypeCondition.php';
+        $service->autocompile(dirname(__FILE__) . '/../testInputFiles/', dirname(__FILE__) . '/../generated/', $modifiers);
     }
 
     public static function _tearDownAfterClass()
