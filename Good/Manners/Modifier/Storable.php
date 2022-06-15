@@ -737,7 +737,18 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
             $this->resolver .= '    private $orderNumber' . \ucfirst($this->member->getName()) . ' = -1;' . "\n";
             $this->resolver .= '    private $orderDirection' . \ucfirst($this->member->getName()) . ' = -1;' . "\n";
             $this->resolver .= "    \n";
-            $this->resolver .= '    public function orderBy' . \ucfirst($this->member->getName()) . 'Asc()' . "\n";
+            
+            if ($isScalar)
+            {
+                $this->resolver .= '    public function orderBy';
+            }
+            else
+            {
+                // Collection of non-references
+                $this->resolver .= '    public function order';
+            }
+            $this->resolver .= \ucfirst($this->member->getName()) . 'Asc()' . "\n";
+
             $this->resolver .= "    {\n";
             $this->resolver .= $orderableCheck;
             $this->resolver .= '        $this->orderNumber' . \ucfirst($this->member->getName()) .
@@ -747,7 +758,18 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
             $this->resolver .= '        return $this;' . "\n";
             $this->resolver .= "    }\n";
             $this->resolver .= "    \n";
-            $this->resolver .= '    public function orderBy' . \ucfirst($this->member->getName()) . 'Desc()' . "\n";
+            
+            if ($isScalar)
+            {
+                $this->resolver .= '    public function orderBy';
+            }
+            else
+            {
+                // Collection of non-references
+                $this->resolver .= '    public function order';
+            }            
+            $this->resolver .= \ucfirst($this->member->getName()) . 'Desc()' . "\n";
+
             $this->resolver .= "    {\n";
             $this->resolver .= $orderableCheck;
             $this->resolver .= '        $this->orderNumber' . \ucfirst($this->member->getName()) .

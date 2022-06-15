@@ -339,7 +339,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->populateDatabase();
 
         $resolver = CollectionType::resolver()->resolveMyInts();
-        $resolver->orderByMyIntsAsc();
+        $resolver->orderMyIntsAsc();
 
         $condition = CollectionType::condition();
         $condition->someInt = new GreaterThan(2);
@@ -366,7 +366,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->populateDatabase();
 
         $resolver = CollectionType::resolver()->resolveMyInts();
-        $resolver->orderByMyIntsDesc();
+        $resolver->orderMyIntsDesc();
         $resolver->orderBySomeIntAsc();
 
         $condition = CollectionType::condition();
@@ -414,7 +414,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         $this->storage->flush();
 
-        $resolver->orderByMyIntsAsc();
+        $resolver->orderMyIntsAsc();
         $results = $this->getNewStorage()->fetchAll($condition, $resolver);
 
         $result = $results->getNext();
@@ -442,7 +442,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->storage->flush();
 
         $resolver = CollectionType::resolver()->resolveMyInts();
-        $resolver->orderByMyIntsAsc();
+        $resolver->orderMyIntsAsc();
         $results = $this->getNewStorage()->fetchAll($condition, $resolver);
 
         $result = $results->getNext();
@@ -471,7 +471,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         $this->storage->flush();
 
-        $resolver->orderByMyIntsAsc();
+        $resolver->orderMyIntsAsc();
         $results = $this->getNewStorage()->fetchAll($condition, $resolver);
 
         $result = $results->getNext();
@@ -497,7 +497,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->storage->flush();
 
         $resolver = CollectionType::resolver()->resolveMyInts();
-        $resolver->orderByMyIntsAsc();
+        $resolver->orderMyIntsAsc();
         $results = $this->getNewStorage()->fetchAll($condition, $resolver);
 
         $result = $results->getNext();
@@ -525,7 +525,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         $this->storage->flush();
 
-        $resolver->orderByMyIntsAsc();
+        $resolver->orderMyIntsAsc();
         $results = $this->getNewStorage()->fetchAll($condition, $resolver);
 
         $result = $results->getNext();
@@ -552,7 +552,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->storage->flush();
 
         $resolver = CollectionType::resolver()->resolveMyInts();
-        $resolver->orderByMyIntsAsc();
+        $resolver->orderMyIntsAsc();
         $results = $this->getNewStorage()->fetchAll($condition, $resolver);
 
         $result = $results->getNext();
