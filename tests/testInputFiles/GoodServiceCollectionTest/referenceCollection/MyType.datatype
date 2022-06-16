@@ -1,0 +1,5 @@
+
+datatype MyType
+{
+    "MyType"[] myArray;
+}

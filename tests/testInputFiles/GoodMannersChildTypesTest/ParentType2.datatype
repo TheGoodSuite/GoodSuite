@@ -1,0 +1,5 @@
+
+datatype ParentType2
+{
+    int yourInt;
+}

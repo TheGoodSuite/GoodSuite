@@ -1,0 +1,5 @@
+
+datatype ThirdType
+{
+    "YetAnotherType" ref;
+}

@@ -1,0 +1,10 @@
+
+datatype ParentType1
+{
+   int myInt;
+   float myFloat;
+   text myText;
+   datetime myDatetime;
+   "ParentType2" myOtherType;
+   "ParentType1" myCircular;
+}

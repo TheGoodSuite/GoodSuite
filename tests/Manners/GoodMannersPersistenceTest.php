@@ -16,18 +16,10 @@ abstract class GoodMannersPersistenceTest extends \PHPUnit\Framework\TestCase
         // Garbage collector causes segmentation fault, so we disable
         // for the duration of the test case
         gc_disable();
-        file_put_contents(dirname(__FILE__) . '/../testInputFiles/PersistenceType.datatype',
-                                                                            "datatype PersistenceType\n" .
-                                                                            "{" .
-                                                                            "   int myInt;\n" .
-                                                                            "   float myFloat;\n".
-                                                                            "   text myText;\n" .
-                                                                            "   datetime myDatetime;\n" .
-                                                                            "}\n");
 
         $service = new \Good\Service\Service([
             "modifiers" => [new \Good\Manners\Modifier\Storable()],
-            "inputDir" => dirname(__FILE__) . '/../testInputFiles/',
+            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodMannersPersistenceTest',
             "outputDir" => dirname(__FILE__) . '/../generated/'
         ]);
 
@@ -47,7 +39,6 @@ abstract class GoodMannersPersistenceTest extends \PHPUnit\Framework\TestCase
         // this should be handled through the GoodManners API once that is implemented
         $this->truncateTable('persistencetype');
 
-        unlink(dirname(__FILE__) . '/../testInputFiles/PersistenceType.datatype');
         unlink(dirname(__FILE__) . '/../generated/PersistenceType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/PersistenceTypeResolver.php');
         unlink(dirname(__FILE__) . '/../generated/PersistenceTypeCondition.php');

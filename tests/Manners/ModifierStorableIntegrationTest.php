@@ -9,22 +9,15 @@ require_once dirname(__FILE__) . '/ModifierStorableBaseTest.php';
 
 /**
  * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
+ * @preserveGlobalState enabled
  */
 class GoodMannersModifierStorableIntegrationTest extends GoodMannersModifierStorableBaseTest
 {
-    protected function compile($types, $modifiers = null, $inputFiles = null)
+    protected function getModifiers()
     {
         global $allModifiers;
 
-        if ($modifiers == null)
-        {
-            parent::compile($types, $allModifiers, $inputFiles);
-        }
-        else
-        {
-            parent::compile($types, $modifiers, $inputFiles);
-        }
+        return $allModifiers;
     }
 }
 

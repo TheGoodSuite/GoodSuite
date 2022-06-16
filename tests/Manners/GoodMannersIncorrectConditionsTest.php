@@ -30,30 +30,9 @@ class GoodMannersIncorrectConditionsTest extends \PHPUnit\Framework\TestCase
     // setUp instead of having PHPUnit do its magic.
     public static function _setUpBeforeClass()
     {
-        file_put_contents(dirname(__FILE__) . '/../testInputFiles/IncorrectConditionsType.datatype',
-            "datatype IncorrectConditionsType\n" .
-            "{" .
-            "   datetime myDateTime;\n" .
-            "   float myFloat;\n" .
-            "   int myInt;\n" .
-            "   \"IncorrectConditionsType\" myReference;\n" .
-            "   text myText;\n" .
-            "   datetime[] myDateTimeCollection;\n" .
-            "   float[] myFloatCollection;\n" .
-            "   int[] myIntCollection;\n" .
-            "   \"IncorrectConditionsType\"[] myReferenceCollection;\n" .
-            "   text[] myTextCollection;\n" .
-            "}\n");
-
-        file_put_contents(dirname(__FILE__) . '/../testInputFiles/SecondIncorrectType.datatype',
-            "datatype SecondIncorrectType\n" .
-            "{" .
-            "   int someInt;\n" .
-            "}\n");
-
         $service = new \Good\Service\Service([
             "modifiers" => [new \Good\Manners\Modifier\Storable()],
-            "inputDir" => dirname(__FILE__) . '/../testInputFiles/',
+            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodMannersIncorrectConditionsTest',
             "outputDir" => dirname(__FILE__) . '/../generated/'
         ]);
 
@@ -62,11 +41,9 @@ class GoodMannersIncorrectConditionsTest extends \PHPUnit\Framework\TestCase
 
     public static function _tearDownAfterClass()
     {
-        unlink(dirname(__FILE__) . '/../testInputFiles/IncorrectConditionsType.datatype');
         unlink(dirname(__FILE__) . '/../generated/IncorrectConditionsType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/IncorrectConditionsTypeResolver.php');
         unlink(dirname(__FILE__) . '/../generated/IncorrectConditionsTypeCondition.php');
-        unlink(dirname(__FILE__) . '/../testInputFiles/SecondIncorrectType.datatype');
         unlink(dirname(__FILE__) . '/../generated/SecondIncorrectType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/SecondIncorrectTypeResolver.php');
         unlink(dirname(__FILE__) . '/../generated/SecondIncorrectTypeCondition.php');

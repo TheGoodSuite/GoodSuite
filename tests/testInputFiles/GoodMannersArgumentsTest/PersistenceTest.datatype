@@ -1,0 +1,8 @@
+
+datatype PersistenceType
+{
+   int myInt;
+   float myFloat;
+   text myText;
+   datetime myDatetime;
+}

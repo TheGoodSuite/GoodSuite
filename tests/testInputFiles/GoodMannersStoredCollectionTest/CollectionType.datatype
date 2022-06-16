@@ -1,0 +1,10 @@
+
+datatype CollectionType
+{
+   int someInt;
+   datetime[] myDatetimes;
+   float[] myFloats;
+   int[] myInts;
+   "CollectionType"[] myReferences;
+   text[] myTexts;
+}

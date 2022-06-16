@@ -1,0 +1,5 @@
+
+datatype MyType
+{
+    int(minValue=-1, nonNegative) myInt;
+}

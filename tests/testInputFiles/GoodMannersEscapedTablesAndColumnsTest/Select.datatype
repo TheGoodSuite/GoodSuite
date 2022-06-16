@@ -1,0 +1,9 @@
+
+datatype Select
+{
+   int from;
+   float where;
+   text order;
+   datetime by;
+   "Create" group;
+}

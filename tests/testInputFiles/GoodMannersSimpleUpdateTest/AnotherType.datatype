@@ -1,0 +1,5 @@
+
+datatype AnotherType
+{
+    int yourInt;
+}

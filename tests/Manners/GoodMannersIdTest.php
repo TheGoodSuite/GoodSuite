@@ -25,16 +25,10 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
         // Garbage collector causes segmentation fault, so we disable
         // for the duration of the test case
         gc_disable();
-        file_put_contents(dirname(__FILE__) . '/../testInputFiles/IdType.datatype',
-                                                                            "datatype IdType\n" .
-                                                                            "{" .
-                                                                            "   text myText;\n" .
-                                                                            '   "IdType" reference;' . "\n" .
-                                                                            "}\n");
 
         $service = new \Good\Service\Service([
             "modifiers" => [new \Good\Manners\Modifier\Storable()],
-            "inputDir" => dirname(__FILE__) . '/../testInputFiles/',
+            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodMannersIdTest',
             "outputDir" => dirname(__FILE__) . '/../generated/'
         ]);
 
@@ -43,7 +37,6 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
 
     public static function _tearDownAfterClass()
     {
-        unlink(dirname(__FILE__) . '/../testInputFiles/IdType.datatype');
         unlink(dirname(__FILE__) . '/../generated/IdType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/IdTypeResolver.php');
         unlink(dirname(__FILE__) . '/../generated/IdTypeCondition.php');

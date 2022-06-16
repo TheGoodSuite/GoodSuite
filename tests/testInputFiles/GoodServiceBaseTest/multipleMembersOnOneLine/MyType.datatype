@@ -1,0 +1,1 @@
+datatype MyType{int myInt;[]float myFloat;int myInt2;}

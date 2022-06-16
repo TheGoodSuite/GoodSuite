@@ -1,0 +1,5 @@
+
+datatype MyType
+{
+    int(minValue=-200, maxValue=-43) myInt;
+}

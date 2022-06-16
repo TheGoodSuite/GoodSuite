@@ -18,19 +18,10 @@ class GoodMannersCollectionTest extends \PHPUnit\Framework\TestCase
         // Garbage collector causes segmentation fault, so we disable
         // for the duration of the test case
         gc_disable();
-        file_put_contents(dirname(__FILE__) . '/../testInputFiles/CollectionType.datatype',
-                                                                            "datatype CollectionType\n" .
-                                                                            "{" .
-                                                                            "   datetime[] myDatetimes;\n" .
-                                                                            "   float[] myFloats;\n" .
-                                                                            "   int[] myInts;\n" .
-                                                                            "   \"CollectionType\"[] myReferences;\n" .
-                                                                            "   text[] myTexts;\n" .
-                                                                            "}\n");
 
         $service = new \Good\Service\Service([
             "modifiers" => [new \Good\Manners\Modifier\Storable()],
-            "inputDir" => dirname(__FILE__) . '/../testInputFiles/',
+            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodMannersCollectionTest',
             "outputDir" => dirname(__FILE__) . '/../generated/'
         ]);
 
@@ -39,7 +30,6 @@ class GoodMannersCollectionTest extends \PHPUnit\Framework\TestCase
 
     public static function _tearDownAfterClass()
     {
-        unlink(dirname(__FILE__) . '/../testInputFiles/CollectionType.datatype');
         unlink(dirname(__FILE__) . '/../generated/CollectionType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/CollectionTypeResolver.php');
         unlink(dirname(__FILE__) . '/../generated/CollectionTypeCondition.php');

@@ -1,0 +1,8 @@
+
+datatype Create
+{
+   int table;
+   float view;
+   text values;
+   datetime as;
+}

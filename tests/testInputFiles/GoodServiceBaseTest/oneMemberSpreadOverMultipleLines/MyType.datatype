@@ -1,0 +1,10 @@
+datatype
+MyType
+{
+[
+public
+]
+int
+myInt
+;
+}

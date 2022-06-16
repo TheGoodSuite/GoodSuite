@@ -26,22 +26,10 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
         // Garbage collector causes segmentation fault, so we disable
         // for the duration of the test case
         gc_disable();
-        file_put_contents(dirname(__FILE__) . '/../testInputFiles/SimpleUpdateType.datatype',
-                                                                            "datatype SimpleUpdateType\n" .
-                                                                            "{" .
-                                                                            "   int myInt;\n" .
-                                                                            "   float myFloat;\n".
-                                                                            "   text myText;\n" .
-                                                                            "   datetime myDatetime;\n" .
-                                                                            '   "AnotherType" myReference;' . "\n" .
-                                                                            "}\n");
-
-        file_put_contents(dirname(__FILE__) . '/../testInputFiles/AnotherType.datatype',
-                                                                            "datatype AnotherType { int yourInt; }");
 
         $service = new \Good\Service\Service([
             "modifiers" => [new \Good\Manners\Modifier\Storable()],
-            "inputDir" => dirname(__FILE__) . '/../testInputFiles/',
+            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodMannersSimpleUpdateTest',
             "outputDir" => dirname(__FILE__) . '/../generated/'
         ]);
 
@@ -50,8 +38,6 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
 
     public static function _tearDownAfterClass()
     {
-        unlink(dirname(__FILE__) . '/../testInputFiles/SimpleUpdateType.datatype');
-        unlink(dirname(__FILE__) . '/../testInputFiles/AnotherType.datatype');
         unlink(dirname(__FILE__) . '/../generated/SimpleUpdateType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/AnotherType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/SimpleUpdateTypeResolver.php');

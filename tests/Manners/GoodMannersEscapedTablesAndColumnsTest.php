@@ -47,27 +47,10 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
         // Garbage collector causes segmentation fault, so we disable
         // for the duration of the test case
         gc_disable();
-        file_put_contents(dirname(__FILE__) . '/../testInputFiles/Select.datatype',
-                                                                            "datatype Select\n" .
-                                                                            "{" .
-                                                                            "   int from;\n" .
-                                                                            "   float where;\n" .
-                                                                            "   text order;\n" .
-                                                                            "   datetime by;\n" .
-                                                                            '   "Create" group;' . "\n" .
-                                                                            "}\n");
-        file_put_contents(dirname(__FILE__) . '/../testInputFiles/Create.datatype',
-                                                                            "datatype Create\n" .
-                                                                            "{" .
-                                                                            "   int table;\n" .
-                                                                            "   float view;\n" .
-                                                                            "   text values;\n" .
-                                                                            "   datetime as;\n" .
-                                                                            "}\n");
 
         $service = new \Good\Service\Service([
             "modifiers" => [new \Good\Manners\Modifier\Storable()],
-            "inputDir" => dirname(__FILE__) . '/../testInputFiles/',
+            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodMannersEscapedTablesAndColumnsTest',
             "outputDir" => dirname(__FILE__) . '/../generated/'
         ]);
 
@@ -76,8 +59,6 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
 
     public static function _tearDownAfterClass()
     {
-        unlink(dirname(__FILE__) . '/../testInputFiles/Select.datatype');
-        unlink(dirname(__FILE__) . '/../testInputFiles/Create.datatype');
         unlink(dirname(__FILE__) . '/../generated/Select.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/Create.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/SelectResolver.php');

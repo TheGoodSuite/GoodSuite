@@ -1,0 +1,14 @@
+
+datatype IncorrectConditionsType
+{
+   datetime myDateTime;
+   float myFloat;
+   int myInt;
+   "IncorrectConditionsType" myReference;
+   text myText;
+   datetime[] myDateTimeCollection;
+   float[] myFloatCollection;
+   int[] myIntCollection;
+   "IncorrectConditionsType"[] myReferenceCollection;
+   text[] myTextCollection;
+}

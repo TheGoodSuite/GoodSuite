@@ -1,0 +1,1 @@
+datatype MyType{[public]int myInt;}datatype MyOtherType{float myFloat;}

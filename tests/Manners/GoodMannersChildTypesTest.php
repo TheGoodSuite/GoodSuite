@@ -115,23 +115,10 @@ abstract class GoodMannersChildTypesTest extends \PHPUnit\Framework\TestCase
         // Garbage collector causes segmentation fault, so we disable
         // for the duration of the test case
         gc_disable();
-        file_put_contents(dirname(__FILE__) . '/../testInputFiles/ParentType1.datatype',
-                                                                            "datatype ParentType1\n" .
-                                                                            "{\n" .
-                                                                            "   int myInt;\n" .
-                                                                            "   float myFloat;\n".
-                                                                            "   text myText;\n" .
-                                                                            "   datetime myDatetime;\n" .
-                                                                            '   "ParentType2" myOtherType;' . "\n" .
-                                                                            '   "ParentType1" myCircular;' . "\n" .
-                                                                            "}\n");
-
-        file_put_contents(dirname(__FILE__) . '/../testInputFiles/ParentType2.datatype',
-                                                                            "datatype ParentType2 { int yourInt; }");
 
         $service = new \Good\Service\Service([
             "modifiers" => [new \Good\Manners\Modifier\Storable()],
-            "inputDir" => dirname(__FILE__) . '/../testInputFiles/',
+            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodMannersChildTypesTest',
             "outputDir" => dirname(__FILE__) . '/../generated/'
         ]);
 
@@ -142,8 +129,6 @@ abstract class GoodMannersChildTypesTest extends \PHPUnit\Framework\TestCase
 
     public static function _tearDownAfterClass()
     {
-        unlink(dirname(__FILE__) . '/../testInputFiles/ParentType1.datatype');
-        unlink(dirname(__FILE__) . '/../testInputFiles/ParentType2.datatype');
         unlink(dirname(__FILE__) . '/../generated/ParentType1.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/ParentType2.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/ParentType1Resolver.php');

@@ -1,0 +1,7 @@
+
+datatype SatisfiedByConditionType
+{
+   int myInt;
+   text myText;
+   int[] myInts;
+}

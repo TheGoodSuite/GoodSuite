@@ -14,23 +14,14 @@ require_once dirname(__FILE__) . '/GoodServiceBaseTest.php';
 abstract class GoodServiceModifierObservableBaseTest extends GoodServiceBaseTest
 {
 
-    protected function compile($types, $modifiers = null, $inputFiles = null)
+    protected function getModifiers()
     {
-        if ($modifiers == null)
-        {
-            parent::compile($types, array(new \Good\Service\Modifier\Observable()), $inputFiles);
-        }
-        else
-        {
-            parent::compile($types, $modifiers, $inputFiles);
-        }
+        return [new \Good\Service\Modifier\Observable()];
     }
 
     public function testObserverBasics()
     {
-        file_put_contents($this->inputDir . 'MyType.datatype',
-                            'datatype MyType { int myInt; }');
-        $this->compile(array('MyType'));
+        $this->compile('intProperty');
 
         $observable = new MyType();
 
@@ -51,9 +42,7 @@ abstract class GoodServiceModifierObservableBaseTest extends GoodServiceBaseTest
      */
     public function testTwoObservers()
     {
-        file_put_contents($this->inputDir . 'MyType.datatype',
-                            'datatype MyType { int myInt; }');
-        $this->compile(array('MyType'));
+        $this->compile('intProperty');
 
         $observable = new MyType();
 
@@ -87,9 +76,7 @@ abstract class GoodServiceModifierObservableBaseTest extends GoodServiceBaseTest
      */
     public function testTwoObservables()
     {
-        file_put_contents($this->inputDir . 'MyType.datatype',
-                            'datatype MyType { int myInt; }');
-        $this->compile(array('MyType'));
+        $this->compile('intProperty');
 
         $observable = new MyType();
         $observable2 = new MyType();
@@ -124,9 +111,7 @@ abstract class GoodServiceModifierObservableBaseTest extends GoodServiceBaseTest
      */
     public function testUnregisterObserver()
     {
-        file_put_contents($this->inputDir . 'MyType.datatype',
-                            'datatype MyType { int myInt; }');
-        $this->compile(array('MyType'));
+        $this->compile('intProperty');
 
         $observable = new MyType();
 

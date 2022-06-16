@@ -1,0 +1,6 @@
+
+datatype IdType
+{
+   text myText;
+   "IdType" reference;
+}

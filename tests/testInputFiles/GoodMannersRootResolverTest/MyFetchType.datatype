@@ -1,0 +1,10 @@
+
+datatype MyFetchType
+{
+   int myInt;
+   float myFloat;
+   text myText;
+   datetime myDatetime;
+   "OtherType" myOtherType;
+   "MyFetchType" myCircular;
+}

@@ -1,0 +1,5 @@
+
+datatype MyType
+{
+    int(maxValue=10)[] myArray;
+}

@@ -1,0 +1,8 @@
+
+datatype DeleteType
+{
+   int myInt;
+   float myFloat;
+   text myText;
+   datetime myDatetime;
+}

@@ -1,0 +1,5 @@
+
+datatype MyType
+{
+    int(unknown=3) myInt;
+}

@@ -1,0 +1,5 @@
+
+datatype MyType
+{
+    text(minLength=-1) myText;
+}

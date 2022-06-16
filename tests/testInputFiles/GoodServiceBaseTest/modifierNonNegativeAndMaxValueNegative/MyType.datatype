@@ -1,0 +1,5 @@
+
+datatype MyType
+{
+    int(maxValue=-1, nonNegative) myInt;
+}

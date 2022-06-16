@@ -1,0 +1,10 @@
+
+datatype MyType
+{
+    int myInt;
+}
+
+datatype MyType
+{
+    int myInt;
+}

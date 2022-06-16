@@ -25,23 +25,10 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         // Garbage collector causes segmentation fault, so we disable
         // for the duration of the test case
         gc_disable();
-        file_put_contents(dirname(__FILE__) . '/../testInputFiles/MyFetchType.datatype',
-                                                                            "datatype MyFetchType\n" .
-                                                                            "{" .
-                                                                            "   int myInt;\n" .
-                                                                            "   float myFloat;\n".
-                                                                            "   text myText;\n" .
-                                                                            "   datetime myDatetime;\n" .
-                                                                            '   "OtherType" myOtherType;' . "\n" .
-                                                                            '   "MyFetchType" myCircular;' . "\n" .
-                                                                            "}\n");
-
-        file_put_contents(dirname(__FILE__) . '/../testInputFiles/OtherType.datatype',
-                                                                            "datatype OtherType { int yourInt; }");
 
         $service = new \Good\Service\Service([
             "modifiers" => [new \Good\Manners\Modifier\Storable()],
-            "inputDir" => dirname(__FILE__) . '/../testInputFiles/',
+            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodMannersFetchTest',
             "outputDir" => dirname(__FILE__) . '/../generated/'
         ]);
 
@@ -50,8 +37,6 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
 
     public static function _tearDownAfterClass()
     {
-        unlink(dirname(__FILE__) . '/../testInputFiles/MyFetchType.datatype');
-        unlink(dirname(__FILE__) . '/../testInputFiles/OtherType.datatype');
         unlink(dirname(__FILE__) . '/../generated/MyFetchType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/OtherType.datatype.php');
         unlink(dirname(__FILE__) . '/../generated/MyFetchTypeResolver.php');

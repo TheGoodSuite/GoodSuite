@@ -1,0 +1,10 @@
+
+datatype AdvancedUpdateType
+{
+   int myInt;
+   float myFloat;
+   text myText;
+   datetime myDatetime;
+   "YetAnotherType" myReference;
+   "ThirdType" ref;
+}
