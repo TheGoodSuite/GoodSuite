@@ -28,7 +28,7 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
 
         $service = new \Good\Service\Service([
             "modifiers" => [new \Good\Manners\Modifier\Storable()],
-            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodMannersIdTest',
+            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodManners/GoodMannersIdTest',
             "outputDir" => dirname(__FILE__) . '/../generated/'
         ]);
 

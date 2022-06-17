@@ -21,7 +21,7 @@ class GoodMannersCollectionTest extends \PHPUnit\Framework\TestCase
 
         $service = new \Good\Service\Service([
             "modifiers" => [new \Good\Manners\Modifier\Storable()],
-            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodMannersCollectionTest',
+            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodManners/GoodMannersCollectionTest',
             "outputDir" => dirname(__FILE__) . '/../generated/'
         ]);
 

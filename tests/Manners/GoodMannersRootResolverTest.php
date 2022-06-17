@@ -31,7 +31,7 @@ abstract class GoodMannersRootResolverTest extends \PHPUnit\Framework\TestCase
 
         $service = new \Good\Service\Service([
             "modifiers" => [new \Good\Manners\Modifier\Storable()],
-            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodMannersRootResolverTest',
+            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodManners/GoodMannersRootResolverTest',
             "outputDir" => dirname(__FILE__) . '/../generated/'
         ]);
 

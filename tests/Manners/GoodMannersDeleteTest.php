@@ -29,7 +29,7 @@ abstract class GoodMannersDeleteTest extends \PHPUnit\Framework\TestCase
 
         $service = new \Good\Service\Service([
             "modifiers" => [new \Good\Manners\Modifier\Storable()],
-            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodMannersDeleteTest',
+            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodManners/GoodMannersDeleteTest',
             "outputDir" => dirname(__FILE__) . '/../generated/'
         ]);
 

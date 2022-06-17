@@ -32,7 +32,7 @@ class GoodMannersIncorrectConditionsTest extends \PHPUnit\Framework\TestCase
     {
         $service = new \Good\Service\Service([
             "modifiers" => [new \Good\Manners\Modifier\Storable()],
-            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodMannersIncorrectConditionsTest',
+            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodManners/GoodMannersIncorrectConditionsTest',
             "outputDir" => dirname(__FILE__) . '/../generated/'
         ]);
 

@@ -118,7 +118,7 @@ abstract class GoodMannersChildTypesTest extends \PHPUnit\Framework\TestCase
 
         $service = new \Good\Service\Service([
             "modifiers" => [new \Good\Manners\Modifier\Storable()],
-            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodMannersChildTypesTest',
+            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodManners/GoodMannersChildTypesTest',
             "outputDir" => dirname(__FILE__) . '/../generated/'
         ]);
 

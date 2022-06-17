@@ -26,7 +26,7 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
     {
         $service = new \Good\Service\Service([
             "modifiers" => $this->getModifiers(),
-            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodServiceBaseTest/' . $subDirectory,
+            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodService/GoodServiceBaseTest/' . $subDirectory,
             "outputDir" => dirname(__FILE__) . '/../generated/'
         ]);
 

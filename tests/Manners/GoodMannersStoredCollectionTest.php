@@ -34,7 +34,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         $service = new \Good\Service\Service([
             "modifiers" => [new \Good\Manners\Modifier\Storable()],
-            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodMannersStoredCollectionTest',
+            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodManners/GoodMannersStoredCollectionTest',
             "outputDir" => dirname(__FILE__) . '/../generated/'
         ]);
 

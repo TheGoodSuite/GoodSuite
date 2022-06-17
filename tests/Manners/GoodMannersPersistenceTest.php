@@ -19,7 +19,7 @@ abstract class GoodMannersPersistenceTest extends \PHPUnit\Framework\TestCase
 
         $service = new \Good\Service\Service([
             "modifiers" => [new \Good\Manners\Modifier\Storable()],
-            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodMannersPersistenceTest',
+            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodManners/GoodMannersPersistenceTest',
             "outputDir" => dirname(__FILE__) . '/../generated/'
         ]);
 

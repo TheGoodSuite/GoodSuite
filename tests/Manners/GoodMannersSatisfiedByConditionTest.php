@@ -32,7 +32,7 @@ class GoodMannersSatisfiedByConditionTest extends \PHPUnit\Framework\TestCase
 
         $service = new \Good\Service\Service([
             "modifiers" => [new \Good\Manners\Modifier\Storable()],
-            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodMannersSatisfiedByConditionTest',
+            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodManners/GoodMannersSatisfiedByConditionTest',
             "outputDir" => dirname(__FILE__) . '/../generated/'
         ]);
 

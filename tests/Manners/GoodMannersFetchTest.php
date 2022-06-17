@@ -28,7 +28,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
 
         $service = new \Good\Service\Service([
             "modifiers" => [new \Good\Manners\Modifier\Storable()],
-            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodMannersFetchTest',
+            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodManners/GoodMannersFetchTest',
             "outputDir" => dirname(__FILE__) . '/../generated/'
         ]);
 

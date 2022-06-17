@@ -29,7 +29,7 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
 
         $service = new \Good\Service\Service([
             "modifiers" => [new \Good\Manners\Modifier\Storable()],
-            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodMannersSimpleUpdateTest',
+            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodManners/GoodMannersSimpleUpdateTest',
             "outputDir" => dirname(__FILE__) . '/../generated/'
         ]);
 

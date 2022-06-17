@@ -25,7 +25,7 @@ class GoodServiceCollectionTest extends \PHPUnit\Framework\TestCase
     {
         $service = new \Good\Service\Service([
             "modifiers" => [],
-            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodServiceCollectionTest/' . $subDirectory,
+            "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodService/GoodServiceCollectionTest/' . $subDirectory,
             "outputDir" => dirname(__FILE__) . '/../generated/'
         ]);
 
