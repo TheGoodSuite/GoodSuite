@@ -1,0 +1,1 @@
+<: forrange(1 --> 3): if (true): "A"; endif; endforrange; :>

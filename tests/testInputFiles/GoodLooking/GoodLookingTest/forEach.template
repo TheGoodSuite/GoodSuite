@@ -1,0 +1,1 @@
+<: foreach ($words as $word)::><: $word :> <: endforeach :>

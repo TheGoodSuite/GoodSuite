@@ -1,0 +1,1 @@
+<: forrange (1 --> 2 as $i): $i; endforrange; forrange(1-->2 as $i): "a"; $i; endforrange :>

@@ -1,0 +1,4 @@
+<: IF (tRuE)    :;;; "A"; endIF :><: fOrRange (1 --> 2)
+::>B<:
+Endforrange
+:><: ForeacH($bla As $b)::>C<:eNdFoReAcH:>

@@ -1,0 +1,1 @@
+<: foreach ($arr as $a): $a; endforeach; forrange(1-->2 as $a): "q"; $a; endforrange :>

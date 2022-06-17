@@ -1,0 +1,1 @@
+<: if ("a" != "a"): :>YES<: endif :><: if ("a" != "b"): :>NO<: endif :><: if ("1" != 1): :>-YES<: endif :><: if ("1" != 2): :>-NO<: endif :>

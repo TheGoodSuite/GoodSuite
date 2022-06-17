@@ -1,28 +1,32 @@
 <?php
 
+use Good\Looking\Looking;
+
 class GoodLookingTest extends \PHPUnit\Framework\TestCase
 {
-    private $template = '';
-
-    public function setUp(): void
-    {
-        $this->template = dirname(__FILE__) . '/../testInputFiles/template';
-        file_put_contents($this->template, '');
-    }
+    private $baseInputFilesDir = __dir__ . '/../testInputFiles/GoodLooking/GoodLookingTest/';
 
     public function tearDown(): void
     {
-        unlink($this->template);
-        unlink($this->template . '.compiledTemplate');
+        $path = $this->baseInputFilesDir;
+        $iterator = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
+        $recursiveIterator = new \RecursiveIteratorIterator($iterator);
+
+        foreach ($recursiveIterator as $file)
+        {
+            if ($file->getExtension() === 'compiledTemplate')
+            {
+                unlink($file->getPathname());
+            }
+        }
     }
+
 
     public function testTextOnly()
     {
-        $this->expectOutputString('content');
+        $this->expectOutputString("content\n");
 
-        file_put_contents($this->template, 'content');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'textOnly.template');
         $goodLooking->display();
     }
 
@@ -30,9 +34,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('content');
 
-        file_put_contents($this->template, '<: $var :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'variable.template');
         $goodLooking->registerVar('var', 'content');
         $goodLooking->display();
     }
@@ -41,10 +43,9 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('12345');
 
-        file_put_contents($this->template, '<: $var :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'variable.template');
         $goodLooking->registerVar('var', 12345);
+
         $goodLooking->display();
     }
 
@@ -53,9 +54,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
         // issue #28
         $this->expectOutputString('123.456');
 
-        file_put_contents($this->template, '<: $var :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'variable.template');
         $goodLooking->registerVar('var', 123.456);
         $goodLooking->display();
     }
@@ -64,18 +63,15 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('content');
 
-        file_put_contents($this->template, '<: "content" :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'stringLiteral.template');
         $goodLooking->display();
     }
 
     public function testOutputIntLiteral()
     {
         $this->expectOutputString('12345');
-        file_put_contents($this->template, '<: 12345 :>');
 
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'intLiteral.template');
         $goodLooking->display();
     }
 
@@ -83,9 +79,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('123.456');
 
-        file_put_contents($this->template, '<: 123.456 :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'floatLiteral.template');
         $goodLooking->display();
     }
 
@@ -96,9 +90,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YES OR NO');
 
-        file_put_contents($this->template, '<: "YES"; " OR "; "NO" :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'multipleStatementsInBlock.template');
         $goodLooking->display();
     }
 
@@ -106,9 +98,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YES');
 
-        file_put_contents($this->template, '<: if (true): :>YES<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'ifTrue.template');
         $goodLooking->display();
     }
 
@@ -116,9 +106,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('');
 
-        file_put_contents($this->template, '<: if (false): :>YES<: endif:>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'ifFalse.template');
         $goodLooking->display();
     }
 
@@ -126,9 +114,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YES');
 
-        file_put_contents($this->template, '<: if ($var): :>YES<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'ifVariable.template');
         $goodLooking->registerVar('var', true);
         $goodLooking->display();
     }
@@ -137,9 +123,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('');
 
-        file_put_contents($this->template, '<: if ($var): :>YES<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'ifVariable.template');
         $goodLooking->registerVar('var', false);
         $goodLooking->display();
     }
@@ -148,9 +132,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YES');
 
-        file_put_contents($this->template, '<: if ($var): :>YES<: else: :>NO<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'ifElse.template');
         $goodLooking->registerVar('var', true);
         $goodLooking->display();
     }
@@ -165,9 +147,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
 
         $this->expectOutputString('YES');
 
-        file_put_contents($this->template, '<: if (true): :>YES<: endif:><: if (false)::>NO<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'doubleIfOneLine.template');
         $goodLooking->registerVar('var', true);
         $goodLooking->display();
     }
@@ -176,9 +156,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('NO');
 
-        file_put_contents($this->template, '<: if ($var): :>YES<: else::>NO<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'ifElse.template');
         $goodLooking->registerVar('var', false);
         $goodLooking->display();
     }
@@ -187,9 +165,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YES YES YES YES YES ');
 
-        file_put_contents($this->template, '<: forrange ($a --> $b): :>YES <: endforrange :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'forRange.template');
         $goodLooking->registerVar('a', 1);
         $goodLooking->registerVar('b', 5);
         $goodLooking->display();
@@ -199,9 +175,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YES YES YES YES YES ');
 
-        file_put_contents($this->template, '<: forrange ($a --> $b): :>YES <: endforrange :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'forRange.template');
         $goodLooking->registerVar('a', 5);
         $goodLooking->registerVar('b', 1);
         $goodLooking->display();
@@ -211,9 +185,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YES NO MAYBE ');
 
-        file_put_contents($this->template, '<: foreach ($words as $word)::><: $word :> <: endforeach :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'forEach.template');
         $goodLooking->registerVar('words', array('YES', 'NO', 'MAYBE'));
         $goodLooking->display();
     }
@@ -226,9 +198,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('');
 
-        file_put_contents($this->template, '<: ;;; :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'emptyStatement.template');
         $goodLooking->display();
     }
 
@@ -239,9 +209,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YES');
 
-        file_put_contents($this->template, '<: $arr["bla"] :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'arrayStringKeyAccess.template');
         $goodLooking->registerVar('arr', array('bla' => 'YES'));
         $goodLooking->display();
     }
@@ -253,9 +221,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YES');
 
-        file_put_contents($this->template, '<: $arr[0] :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'arrayIntKeyAccess.template');
         $goodLooking->registerVar('arr', array('YES'));
         $goodLooking->display();
     }
@@ -267,9 +233,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YES');
 
-        file_put_contents($this->template, '<: $arr[$key] :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'arrayVarKeyAccess.template');
         $goodLooking->registerVar('arr', array('blu' => 'NO',
                                                'bla' => 'YES'));
         $goodLooking->registerVar('key', 'bla');
@@ -283,51 +247,12 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YES');
 
-        file_put_contents($this->template, '<: $arr[$key] :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'arrayVarKeyAccess.template');
         $goodLooking->registerVar('arr', array('YES',
                                                'NO'));
         $goodLooking->registerVar('key', 0);
         $goodLooking->display();
     }
-
-    public function testUsingCache()
-    {
-        // Note: sometimes misbehaves on my local setup that has the file being
-        //       accessed over a sambe mounted file system (on a virtual network)
-        $this->expectOutputString('YES');
-
-        file_put_contents($this->template, 'NO');
-        // this cached value is newer than the template, so it should be
-        // what is served
-        file_put_contents($this->template . '.compiledTemplate', 'YES');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
-        $goodLooking->display();
-    }
-
-    public function testNotOverusingCache()
-    {
-        // Note: sometimes misbehaves on my local setup that has the file being
-        //       accessed over a sambe mounted file system (on a virtual network)
-        $this->expectOutputString('NO');
-
-        file_put_contents($this->template . '.compiledTemplate', 'YES');
-
-        // We need to wait a second before this actually workds (because filemtime
-        // only different after a second
-        // This is no problem, though, as this is something that should happen manually
-        // and thus never more than once per second.
-        sleep(1);
-
-        file_put_contents($this->template, 'NO');
-
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
-        $goodLooking->display();
-    }
-
 
     /**
      * @depends testOutputStringVariable
@@ -336,9 +261,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YESNO');
 
-        file_put_contents($this->template, '<: $a :><: $b :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'twoVars.template');
         $goodLooking->registerMultipleVars(array('a' => 'YES',
                                                  'b' => 'NO'));
         $goodLooking->display();
@@ -351,9 +274,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('2');
 
-        file_put_contents($this->template, '<: 1 + 1 :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/addition.template');
         $goodLooking->display();
     }
 
@@ -365,9 +286,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('0');
 
-        file_put_contents($this->template, '<: 1 - 1 :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/subtraction.template');
         $goodLooking->display();
     }
 
@@ -379,9 +298,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('2');
 
-        file_put_contents($this->template, '<: 4 / 2 :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/division.template');
         $goodLooking->display();
     }
 
@@ -393,9 +310,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('6');
 
-        file_put_contents($this->template, '<: 2 * 3 :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/multiplication.template');
         $goodLooking->display();
     }
 
@@ -407,9 +322,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YES');
 
-        file_put_contents($this->template, '<: "Y" . "E" . "S" :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/concatenation.template');
         $goodLooking->display();
     }
 
@@ -421,12 +334,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YES-YES');
 
-        file_put_contents($this->template, '<: if ("a" == "a"): :>YES<: endif :>' .
-                                           '<: if ("a" == "b"): :>NO<: endif :>' .
-                                           '<: if ("1" == 1): :>-YES<: endif :>' .
-                                           '<: if ("1" == 2): :>-NO<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/equality.template');
         $goodLooking->display();
     }
 
@@ -438,12 +346,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YES');
 
-        file_put_contents($this->template, '<: if ("a" === "a"): :>YES<: endif :>' .
-                                           '<: if ("a" === "b"): :>NO<: endif :>' .
-                                           '<: if ("1" === 1): :>-YES<: endif :>' .
-                                           '<: if ("1" === 2): :>-NO<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/strictEquality.template');
         $goodLooking->display();
     }
 
@@ -455,12 +358,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('NO-NO');
 
-        file_put_contents($this->template, '<: if ("a" != "a"): :>YES<: endif :>' .
-                                           '<: if ("a" != "b"): :>NO<: endif :>' .
-                                           '<: if ("1" != 1): :>-YES<: endif :>' .
-                                           '<: if ("1" != 2): :>-NO<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/inequality.template');
         $goodLooking->display();
     }
 
@@ -472,12 +370,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('NO-YES-NO');
 
-        file_put_contents($this->template, '<: if ("a" !== "a"): :>YES<: endif :>' .
-                                           '<: if ("a" !== "b"): :>NO<: endif :>' .
-                                           '<: if ("1" !== 1): :>-YES<: endif :>' .
-                                           '<: if ("1" !== 2): :>-NO<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/strictInequality.template');
         $goodLooking->display();
     }
 
@@ -489,9 +382,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('2');
 
-        file_put_contents($this->template, '<: 42 % 5 :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/modulus.template');
         $goodLooking->display();
     }
 
@@ -503,11 +394,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YES');
 
-        file_put_contents($this->template, '<: if (4 > 3): :>YES<: endif :>' .
-                                      '<: if (3 > 3): :>MAYBE<: endif :>' .
-                                      '<: if (2 > 3): :>NO<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/largerThan.template');
         $goodLooking->display();
     }
 
@@ -519,11 +406,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YES');
 
-        file_put_contents($this->template, '<: if (2 < 3): :>YES<: endif :>' .
-                                      '<: if (3 < 3): :>MAYBE<: endif :>' .
-                                      '<: if (4 < 3): :>NO<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/lessThan.template');
         $goodLooking->display();
     }
 
@@ -535,11 +418,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YESMAYBE');
 
-        file_put_contents($this->template, '<: if (4 >= 3): :>YES<: endif :>' .
-                                      '<: if (3 >= 3): :>MAYBE<: endif :>' .
-                                      '<: if (2 >= 3): :>NO<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/largerOrEqual.template');
         $goodLooking->display();
     }
 
@@ -551,11 +430,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YESMAYBE');
 
-        file_put_contents($this->template, '<: if (2 <= 3): :>YES<: endif :>' .
-                                      '<: if (3 <= 3): :>MAYBE<: endif :>' .
-                                      '<: if (4 <= 3): :>NO<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/lessOrEqual.template');
         $goodLooking->display();
     }
 
@@ -570,9 +445,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
         $this->expectOutputString('2');
         // would be 1 if prioritized purely according to order
 
-        file_put_contents($this->template, '<: 2 + 2 * 2 / 4 - 1 :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/operatorPriority.template');
         $goodLooking->display();
     }
 
@@ -586,9 +459,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('1');
 
-        file_put_contents($this->template, '<: (2 + 2) * 2 / 4 - 1 :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/operatorPriorityWithParentheses.template');
         $goodLooking->display();
     }
 
@@ -599,9 +470,9 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YES');
 
-        file_put_contents($this->template, '<: if (true && true): :>YES<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/and.template');
+        $goodLooking->registerVar('a', true);
+        $goodLooking->registerVar('b', true);
         $goodLooking->display();
     }
 
@@ -613,9 +484,9 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('');
 
-        file_put_contents($this->template, '<: if (true && false): :>YES<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/and.template');
+        $goodLooking->registerVar('a', true);
+        $goodLooking->registerVar('b', false);
         $goodLooking->display();
     }
 
@@ -627,9 +498,9 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('');
 
-        file_put_contents($this->template, '<: if (false && true): :>YES<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/and.template');
+        $goodLooking->registerVar('a', false);
+        $goodLooking->registerVar('b', true);
         $goodLooking->display();
     }
 
@@ -640,9 +511,9 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('');
 
-        file_put_contents($this->template, '<: if (false && false): :>YES<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/and.template');
+        $goodLooking->registerVar('a', false);
+        $goodLooking->registerVar('b', false);
         $goodLooking->display();
     }
 
@@ -653,9 +524,9 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YES');
 
-        file_put_contents($this->template, '<: if (true and true): :>YES<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/alternateAnd.template');
+        $goodLooking->registerVar('a', true);
+        $goodLooking->registerVar('b', true);
         $goodLooking->display();
     }
 
@@ -667,9 +538,9 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('');
 
-        file_put_contents($this->template, '<: if (true and false): :>YES<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/alternateAnd.template');
+        $goodLooking->registerVar('a', true);
+        $goodLooking->registerVar('b', false);
         $goodLooking->display();
     }
 
@@ -681,9 +552,9 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('');
 
-        file_put_contents($this->template, '<: if (false and true): :>YES<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/alternateAnd.template');
+        $goodLooking->registerVar('a', false);
+        $goodLooking->registerVar('b', true);
         $goodLooking->display();
     }
 
@@ -694,9 +565,9 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('');
 
-        file_put_contents($this->template, '<: if (false and false): :>YES<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/alternateAnd.template');
+        $goodLooking->registerVar('a', false);
+        $goodLooking->registerVar('b', false);
         $goodLooking->display();
     }
 
@@ -707,9 +578,9 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YES');
 
-        file_put_contents($this->template, '<: if (true || true): :>YES<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/or.template');
+        $goodLooking->registerVar('a', true);
+        $goodLooking->registerVar('b', true);
         $goodLooking->display();
     }
 
@@ -721,9 +592,9 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YES');
 
-        file_put_contents($this->template, '<: if (true || false): :>YES<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/or.template');
+        $goodLooking->registerVar('a', true);
+        $goodLooking->registerVar('b', false);
         $goodLooking->display();
     }
 
@@ -735,9 +606,9 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YES');
 
-        file_put_contents($this->template, '<: if (false || true): :>YES<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/or.template');
+        $goodLooking->registerVar('a', false);
+        $goodLooking->registerVar('b', true);
         $goodLooking->display();
     }
 
@@ -748,9 +619,9 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('');
 
-        file_put_contents($this->template, '<: if (false || false): :>YES<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/or.template');
+        $goodLooking->registerVar('a', false);
+        $goodLooking->registerVar('b', false);
         $goodLooking->display();
     }
 
@@ -761,9 +632,9 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YES');
 
-        file_put_contents($this->template, '<: if (true or true): :>YES<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/alternateOr.template');
+        $goodLooking->registerVar('a', true);
+        $goodLooking->registerVar('b', true);
         $goodLooking->display();
     }
 
@@ -775,9 +646,9 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YES');
 
-        file_put_contents($this->template, '<: if (true or false): :>YES<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/alternateOr.template');
+        $goodLooking->registerVar('a', true);
+        $goodLooking->registerVar('b', false);
         $goodLooking->display();
     }
 
@@ -789,9 +660,9 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YES');
 
-        file_put_contents($this->template, '<: if (false or true): :>YES<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/alternateOr.template');
+        $goodLooking->registerVar('a', false);
+        $goodLooking->registerVar('b', true);
         $goodLooking->display();
     }
 
@@ -802,9 +673,9 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('');
 
-        file_put_contents($this->template, '<: if (false or false): :>YES<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/alternateOr.template');
+        $goodLooking->registerVar('a', false);
+        $goodLooking->registerVar('b', false);
         $goodLooking->display();
     }
 
@@ -816,9 +687,9 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('');
 
-        file_put_contents($this->template, '<: if (true xor true): :>YES<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/xor.template');
+        $goodLooking->registerVar('a', true);
+        $goodLooking->registerVar('b', true);
         $goodLooking->display();
     }
 
@@ -830,9 +701,9 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YES');
 
-        file_put_contents($this->template, '<: if (true xor false): :>YES<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/xor.template');
+        $goodLooking->registerVar('a', true);
+        $goodLooking->registerVar('b', false);
         $goodLooking->display();
     }
 
@@ -844,9 +715,9 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YES');
 
-        file_put_contents($this->template, '<: if (false xor true): :>YES<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/xor.template');
+        $goodLooking->registerVar('a', false);
+        $goodLooking->registerVar('b', true);
         $goodLooking->display();
     }
 
@@ -857,9 +728,9 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('');
 
-        file_put_contents($this->template, '<: if (false xor false): :>YES<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'operator/xor.template');
+        $goodLooking->registerVar('a', false);
+        $goodLooking->registerVar('b', false);
         $goodLooking->display();
     }
 
@@ -868,11 +739,9 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
      */
      public function testComments()
     {
-        $this->expectOutputString('YES');
+        $this->expectOutputString("YES\n");
 
-        file_put_contents($this->template, 'Y<:- comment 1 -:>E<:- comment 2-:>S');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'comments.template');
         $goodLooking->display();
     }
 
@@ -883,9 +752,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('YES');
 
-        file_put_contents($this->template, '<: "Y<:- comment 1 -:>E<:- comment 2-:>S" :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'commentsInCode.template');
         $goodLooking->display();
     }
 
@@ -905,14 +772,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
 
         $this->expectOutputString('ABBCC');
 
-        file_put_contents($this->template, '<: IF (tRuE)    :;;; "A"; endIF :>' .
-                                            '<: fOrRange (1 --> 2)
-                                            ::>B<:
-                                            Endforrange
-                                            :>' .
-                                            '<: ForeacH($bla As $b)::>C<:eNdFoReAcH:>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'controlStructureQuirks.template');
 
         $goodLooking->registerVar('bla', array(0, 1));
 
@@ -926,9 +786,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('bla');
 
-        file_put_contents($this->template, '<: $var->prop :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'propertyAccess.template');
         $var = new stdClass();
         $var->prop = 'bla';
         $goodLooking->registerVar('var', $var);
@@ -942,9 +800,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('bla');
 
-        file_put_contents($this->template, '<: $var ->prop :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'propertyAccessWithWhitespace.template');
         $var = new stdClass();
         $var->prop = 'bla';
         $goodLooking->registerVar('var', $var);
@@ -958,9 +814,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('bla');
 
-        file_put_contents($this->template, '<: $var-> prop :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'propertyAccessWithOtherWhitespace.template');
         $var = new stdClass();
         $var->prop = 'bla';
         $goodLooking->registerVar('var', $var);
@@ -975,9 +829,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('bla');
 
-        file_put_contents($this->template, '<: $var -> prop :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'propertyAccessWithBothWhitespace.template');
         $var = new stdClass();
         $var->prop = 'bla';
         $goodLooking->registerVar('var', $var);
@@ -992,9 +844,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('bla');
 
-        file_put_contents($this->template, '<: $var[0]->prop[0]->prop :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'propertyArrayAccessMix.template');
         $var = new stdClass();
         $var->prop = 'bla';
         $var = array($var);
@@ -1010,9 +860,9 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('C');
 
-        file_put_contents($this->template, '<: if (false): :>A<: elseif (false): :>B<: else: :>C<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'elseIf.template');
+        $goodLooking->registerVar('a', false);
+        $goodLooking->registerVar('b', false);
         $goodLooking->display();
     }
 
@@ -1020,9 +870,9 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('B');
 
-        file_put_contents($this->template, '<: if (false): :>A<: elseif (true): :>B<: else: :>C<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'elseIf.template');
+        $goodLooking->registerVar('a', false);
+        $goodLooking->registerVar('b', true);
         $goodLooking->display();
     }
 
@@ -1030,9 +880,9 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('A');
 
-        file_put_contents($this->template, '<: if (true): :>A<: elseif (false): :>B<: else: :>C<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'elseIf.template');
+        $goodLooking->registerVar('a', true);
+        $goodLooking->registerVar('b', false);
         $goodLooking->display();
     }
 
@@ -1040,9 +890,9 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('A');
 
-        file_put_contents($this->template, '<: if (true): :>A<: elseif (true): :>B<: else: :>C<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'elseIf.template');
+        $goodLooking->registerVar('a', true);
+        $goodLooking->registerVar('b', true);
         $goodLooking->display();
     }
 
@@ -1050,18 +900,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('G');
 
-        file_put_contents($this->template, '<: if (false): :>A' .
-                                           '<: elseif (false): :>B' .
-                                           '<: elseif (false): :>C' .
-                                           '<: elseif (false): :>D' .
-                                           '<: elseif (false): :>E' .
-                                           '<: elseif (false): :>F' .
-                                           '<: elseif (true): :>G' .
-                                           '<: elseif (false): :>H' .
-                                           '<: elseif (true): :>I' .
-                                           '<: else: :>J<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'elseIfMany.template');
         $goodLooking->display();
     }
 
@@ -1069,12 +908,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('C');
 
-        file_put_contents($this->template, '<: if (false): :>A' .
-                                           '<: elseif (false): :>B' .
-                                           '<: elseif (true): :>C' .
-                                           '<: elseif (false): :>D<: endif :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'elseIfWithoutElse.template');
         $goodLooking->display();
     }
 
@@ -1084,9 +918,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
 
         $this->expectOutputString('AAA');
 
-        file_put_contents($this->template, '<: forrange(1 --> 3): if (true): "A"; endif; endforrange; :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'inlineControlStructures.template');
         $goodLooking->display();
     }
 
@@ -1094,9 +926,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('456');
 
-        file_put_contents($this->template, '<: forrange(4 --> 6 as $i): $i; endforrange; :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'forRangeAs.template');
         $goodLooking->display();
     }
 
@@ -1104,9 +934,9 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('7');
 
-        file_put_contents($this->template, '<: forrange(0 --> 6 as $i): endforrange; $i; :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'forRangeAsPostLoop.template');
+        $goodLooking->registerVar('a', 0);
+        $goodLooking->registerVar('b', 6);
         $goodLooking->display();
     }
 
@@ -1114,9 +944,9 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('7');
 
-        file_put_contents($this->template, '<: forrange(4 --> 6 as $i): endforrange; $i :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'forRangeAsPostLoop.template');
+        $goodLooking->registerVar('a', 4);
+        $goodLooking->registerVar('b', 6);
         $goodLooking->display();
     }
 
@@ -1127,9 +957,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('6');
 
-        file_put_contents($this->template, '<: $a = 6; $a :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'variableAssignment.template');
         $goodLooking->display();
     }
 
@@ -1140,9 +968,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('666');
 
-        file_put_contents($this->template, '<: $a = $b = $c = 6; $a; $b; $c :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'multipleVariableAssignment.template');
         $goodLooking->display();
     }
 
@@ -1153,9 +979,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('5610');
 
-        file_put_contents($this->template, '<: $a = 5; $b = 6; $c = $a + 5; $a; $b; $c :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'multipleSeparateVariableAssignment.template');
         $goodLooking->display();
     }
 
@@ -1167,9 +991,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('5');
 
-        file_put_contents($this->template, "<: \n\n\n \$variable = 5; \$variable :>");
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'newLinesBeforeAssignment.template');
         $goodLooking->display();
     }
 
@@ -1180,9 +1002,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('12a1a2');
 
-        file_put_contents($this->template, '<: forrange (1 --> 2 as $i): $i; endforrange; forrange(1-->2 as $i): "a"; $i; endforrange :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'forRangeReuse.template');
         $goodLooking->display();
     }
 
@@ -1194,10 +1014,8 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('abqaqb');
 
-        file_put_contents($this->template, '<: foreach ($arr as $a): $a; endforeach; foreach($arr as $a): "q"; $a; endforeach :>');
 
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'forEachReuse.template');
         $goodLooking->registerVar('arr', array('a', 'b'));
         $goodLooking->display();
     }
@@ -1211,10 +1029,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('abq1q2');
 
-        file_put_contents($this->template, '<: foreach ($arr as $a): $a; endforeach; forrange(1-->2 as $a): "q"; $a; endforrange :>');
-
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'forRangeForEachMixedReuse.template');
         $goodLooking->registerVar('arr', array('a', 'b'));
         $goodLooking->display();
     }
@@ -1225,9 +1040,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
 
         $this->expectOutputString('ABBA');
 
-        file_put_contents($this->template, '<: a(); b(); b(); a() :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'callFunction.template');
         $goodLooking->registerFunctionHandler('DummyFunctionHandler1');
         $goodLooking->display();
     }
@@ -1238,9 +1051,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
 
         $this->expectOutputString('6');
 
-        file_put_contents($this->template, '<: inc(inc(inc(3))) :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'callChainedFunction.template');
         $goodLooking->registerFunctionHandler('DummyFunctionHandler2');
         $goodLooking->display();
     }
@@ -1252,9 +1063,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
 
         $this->expectOutputString('Handler3Handler4');
 
-        file_put_contents($this->template, '<: a(); b(); :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'callMultipleFunctions.template');
         $goodLooking->registerFunctionHandler('DummyFunctionHandler3');
         $goodLooking->registerFunctionHandler('DummyFunctionHandler4');
         $goodLooking->display();
@@ -1266,9 +1075,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
 
         $this->expectOutputString('6');
 
-        file_put_contents($this->template, '<: add(2, 4) :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'callFunctionMultipleArguments.template');
         $goodLooking->registerFunctionHandler('DummyFunctionHandler5');
         $goodLooking->display();
     }
@@ -1279,9 +1086,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
 
         $this->expectOutputString('345');
 
-        file_put_contents($this->template, '<: set(4); set(3); get(); set(4); get(); set(99); set(5); get() :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'callFunctionsWithSharedState.template');
         $goodLooking->registerFunctionHandler('DummyFunctionHandler6');
         $goodLooking->display();
     }
@@ -1290,9 +1095,8 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('&lt;br&gt;');
 
-        file_put_contents($this->template, '<: "<br>" :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'variable.template');
+        $goodLooking->registerVar('var', "<br>");
         $goodLooking->display();
     }
 
@@ -1300,9 +1104,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString("RWG");
 
-        file_put_contents($this->template, '<: $arr = ["T", "W", "N", "G", "R"]; $arr[4]; $arr[1]; $arr[3] :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'arrayLiteral.template');
         $goodLooking->display();
     }
 
@@ -1310,9 +1112,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString("P8");
 
-        file_put_contents($this->template, '<: $g = 8; $arr = [[1, 2], $r, [3, $g]]; $arr[1]; $arr[2][1] :>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'arrayLiteralComplex.template');
         $goodLooking->registerVar('r', 'P');
         $goodLooking->display();
     }
@@ -1321,9 +1121,7 @@ class GoodLookingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString("YESNO");
 
-        file_put_contents($this->template, '<: if ($a == 5): :>YES<: else: :>NO<: endif; if ($b === "A"): :>YES<: else: :>NO<:endif:>');
-
-        $goodLooking = new \Good\Looking\Looking($this->template);
+        $goodLooking = new Looking($this->baseInputFilesDir . 'equalToVariable.template');
         $goodLooking->registerVar('a', 5);
         $goodLooking->registerVar('b', 'B');
         $goodLooking->display();

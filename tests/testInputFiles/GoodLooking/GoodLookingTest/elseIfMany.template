@@ -1,0 +1,4 @@
+<: if (false): :>A<: elseif (false): :>B<: elseif (false): :>C<:
+elseif (false): :>D<: elseif (false): :>E<: elseif (false): :>F<:
+elseif (true): :>G<: elseif (false): :>H<: elseif (true): :>I<:
+else: :>J<: endif :>

@@ -1,15 +1,28 @@
 <?php
 
+use Good\Looking\Looking;
+
 /**
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
  */
 class GoodLookingFunctionHandlerCachingTest extends \PHPUnit\Framework\TestCase
 {
+    private static $baseInputFilesDir = __dir__ . '/../testInputFiles/GoodLooking/GoodLookingFunctionHandlerCachingTest/';
+
     public static function _tearDownAfterClass()
     {
-        unlink(dirname(__FILE__) . '/../testInputFiles/template');
-        unlink(dirname(__FILE__) . '/../testInputFiles/template.compiledTemplate');
+        $path = self::$baseInputFilesDir;
+        $iterator = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
+        $recursiveIterator = new \RecursiveIteratorIterator($iterator);
+
+        foreach ($recursiveIterator as $file)
+        {
+            if ($file->getExtension() === 'compiledTemplate')
+            {
+                unlink($file->getPathname());
+            }
+        }
     }
 
     public function testCompileTemplate()
@@ -24,9 +37,8 @@ class GoodLookingFunctionHandlerCachingTest extends \PHPUnit\Framework\TestCase
 
         $this->expectOutputString('abc');
 
-        file_put_contents(dirname(__FILE__) . '/../testInputFiles/template', '<: a(); b(); c() :>');
+        $goodLooking = new Looking(self::$baseInputFilesDir . 'template.template');
 
-        $goodLooking = new \Good\Looking\Looking(dirname(__FILE__) . '/../testInputFiles/template');
         $goodLooking->registerFunctionHandler('DummyFunctionHandlerAZ');
         $goodLooking->registerFunctionHandler('DummyFunctionHandlerDE');
         $goodLooking->registerFunctionHandler('\\ns\\DummyFunctionHandlerFG');
@@ -38,7 +50,7 @@ class GoodLookingFunctionHandlerCachingTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString('abc');
 
-        $goodLooking = new \Good\Looking\Looking(dirname(__FILE__) . '/../testInputFiles/template');
+        $goodLooking = new Looking(self::$baseInputFilesDir . 'template.template');
         // Not showing registering any functions.
         // This works because I know the template is already compiledTemplate
         // and it is necessary because of the specific things I'm testing here
