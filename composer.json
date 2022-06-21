@@ -1,0 +1,6 @@
+{
+    "name": "good/goodsuite",
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    }
+}
