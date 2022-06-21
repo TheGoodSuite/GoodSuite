@@ -11,10 +11,6 @@
  */
 class GoodServiceCollectionTest extends \PHPUnit\Framework\TestCase
 {
-    private $files = array(); // so we know what to clean up
-    protected $inputDir = '';
-    private $outputDir = '';
-
     private function assertNoExceptions()
     {
         // Make assertion so test isn't marked as risky
@@ -49,8 +45,6 @@ class GoodServiceCollectionTest extends \PHPUnit\Framework\TestCase
 
     public function testDatetimeCollectionProperty()
     {
-        file_put_contents($this->inputDir . 'MyType.datatype',
-                            'datatype MyType { datetime[] myArray; }');
         $this->compile('datetimeCollection');
 
         $myType = new MyType();
@@ -60,8 +54,6 @@ class GoodServiceCollectionTest extends \PHPUnit\Framework\TestCase
 
     public function testFloatCollectionProperty()
     {
-        file_put_contents($this->inputDir . 'MyType.datatype',
-                            'datatype MyType { float[] myArray; }');
         $this->compile('floatCollection');
 
         $myType = new MyType();
@@ -71,8 +63,6 @@ class GoodServiceCollectionTest extends \PHPUnit\Framework\TestCase
 
     public function testIntCollectionProperty()
     {
-        file_put_contents($this->inputDir . 'MyType.datatype',
-                            'datatype MyType { int[] myArray; }');
         $this->compile('intCollection');
 
         $myType = new MyType();
@@ -82,8 +72,6 @@ class GoodServiceCollectionTest extends \PHPUnit\Framework\TestCase
 
     public function testTextCollectionProperty()
     {
-        file_put_contents($this->inputDir . 'MyType.datatype',
-                            'datatype MyType { text[] myArray; }');
         $this->compile('textCollection');
 
         $myType = new MyType();
@@ -93,8 +81,6 @@ class GoodServiceCollectionTest extends \PHPUnit\Framework\TestCase
 
     public function testReferenceCollectionProperty()
     {
-        file_put_contents($this->inputDir . 'MyType.datatype',
-                            'datatype MyType { "MyType"[] myArray; }');
         $this->compile('referenceCollection');
 
         $myType = new MyType();
@@ -104,8 +90,6 @@ class GoodServiceCollectionTest extends \PHPUnit\Framework\TestCase
 
     public function testDatetimeCollectionPropertyCorrectValue()
     {
-        file_put_contents($this->inputDir . 'MyType.datatype',
-                            'datatype MyType { datetime[] myArray; }');
         $this->compile('datetimeCollection');
 
         $myType = new MyType();
@@ -116,8 +100,6 @@ class GoodServiceCollectionTest extends \PHPUnit\Framework\TestCase
 
     public function testDatetimeCollectionPropertyIncorrectValue()
     {
-        file_put_contents($this->inputDir . 'MyType.datatype',
-                            'datatype MyType { datetime[] myArray; }');
         $this->compile('datetimeCollection');
 
         $this->expectException(\Good\Service\InvalidParameterException::class);
@@ -128,8 +110,6 @@ class GoodServiceCollectionTest extends \PHPUnit\Framework\TestCase
 
     public function testFloatCollectionPropertyCorrectValue()
     {
-        file_put_contents($this->inputDir . 'MyType.datatype',
-                            'datatype MyType { float[] myArray; }');
         $this->compile('floatCollection');
 
         $myType = new MyType();
@@ -140,8 +120,6 @@ class GoodServiceCollectionTest extends \PHPUnit\Framework\TestCase
 
     public function testFloatCollectionPropertyIncorrectValue()
     {
-        file_put_contents($this->inputDir . 'MyType.datatype',
-                            'datatype MyType { float[] myArray; }');
         $this->compile('floatCollection');
 
         $this->expectException(\Good\Service\InvalidParameterException::class);
@@ -152,8 +130,6 @@ class GoodServiceCollectionTest extends \PHPUnit\Framework\TestCase
 
     public function testIntCollectionPropertyCorrectValue()
     {
-        file_put_contents($this->inputDir . 'MyType.datatype',
-                            'datatype MyType { int[] myArray; }');
         $this->compile('intCollection');
 
         $myType = new MyType();
@@ -164,8 +140,6 @@ class GoodServiceCollectionTest extends \PHPUnit\Framework\TestCase
 
     public function testIntCollectionPropertyIncorrectValue()
     {
-        file_put_contents($this->inputDir . 'MyType.datatype',
-                            'datatype MyType { int[] myArray; }');
         $this->compile('intCollection');
 
         $this->expectException(\Good\Service\InvalidParameterException::class);
@@ -176,8 +150,6 @@ class GoodServiceCollectionTest extends \PHPUnit\Framework\TestCase
 
     public function testTextCollectionPropertyCorrectValue()
     {
-        file_put_contents($this->inputDir . 'MyType.datatype',
-                            'datatype MyType { text[] myArray; }');
         $this->compile('textCollection');
 
         $myType = new MyType();
@@ -188,8 +160,6 @@ class GoodServiceCollectionTest extends \PHPUnit\Framework\TestCase
 
     public function testTextCollectionPropertyIncorrectValue()
     {
-        file_put_contents($this->inputDir . 'MyType.datatype',
-                            'datatype MyType { text[] myArray; }');
         $this->compile('textCollection');
 
         $this->expectException(\Good\Service\InvalidParameterException::class);
@@ -200,8 +170,6 @@ class GoodServiceCollectionTest extends \PHPUnit\Framework\TestCase
 
     public function testIntCollectionPropertyTypeModifierCorrectValue()
     {
-        file_put_contents($this->inputDir . 'MyType.datatype',
-                            'datatype MyType { int(maxValue=10)[] myArray; }');
         $this->compile('intCollectionWithTypeModifier');
 
         $myType = new MyType();
@@ -212,8 +180,6 @@ class GoodServiceCollectionTest extends \PHPUnit\Framework\TestCase
 
     public function testIntCollectionPropertyTypeModifierIncorrectValue()
     {
-        file_put_contents($this->inputDir . 'MyType.datatype',
-                            'datatype MyType { int(maxValue=10)[] myArray; }');
         $this->compile('intCollectionWithTypeModifier');
 
         $this->expectException(\Good\Service\InvalidParameterException::class);
@@ -224,8 +190,6 @@ class GoodServiceCollectionTest extends \PHPUnit\Framework\TestCase
 
     public function testTextCollectionPropertyTypeModifierCorrectValue()
     {
-        file_put_contents($this->inputDir . 'MyType.datatype',
-                            'datatype MyType { text(maxLength=2)[] myArray; }');
         $this->compile('textCollectionWithTypeModifier');
 
         $myType = new MyType();
@@ -236,8 +200,6 @@ class GoodServiceCollectionTest extends \PHPUnit\Framework\TestCase
 
     public function testTextCollectionPropertyTypeModifierIncorrectValue()
     {
-        file_put_contents($this->inputDir . 'MyType.datatype',
-                            'datatype MyType { text(maxLength=2)[] myArray; }');
         $this->compile('textCollectionWithTypeModifier');
 
         $this->expectException(\Good\Service\InvalidParameterException::class);
@@ -248,8 +210,6 @@ class GoodServiceCollectionTest extends \PHPUnit\Framework\TestCase
 
     public function testTextCollectionForeach()
     {
-        file_put_contents($this->inputDir . 'MyType.datatype',
-                            'datatype MyType { int[] myArray; }');
         $this->compile('intCollection');
 
         $myType = new MyType();
