@@ -11,7 +11,7 @@ require_once dirname(__FILE__) . '/ModifierStorableBaseTest.php';
  * @runTestsInSeparateProcesses
  * @preserveGlobalState enabled
  */
-class GoodMannersModifierStorableIntegrationTest extends GoodMannersModifierStorableBaseTest
+class ModifierStorableIntegrationTest extends ModifierStorableBaseTest
 {
     protected function getModifiers()
     {

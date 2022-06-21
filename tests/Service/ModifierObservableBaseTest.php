@@ -11,7 +11,7 @@ require_once dirname(__FILE__) . '/GoodServiceBaseTest.php';
 /**
  * @runTestsInSeparateProcesses
  */
-abstract class GoodServiceModifierObservableBaseTest extends GoodServiceBaseTest
+abstract class ModifierObservableBaseTest extends GoodServiceBaseTest
 {
 
     protected function getModifiers()

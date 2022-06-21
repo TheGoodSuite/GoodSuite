@@ -8,7 +8,7 @@ require_once dirname(__FILE__) . '/ModifierObservableBaseTest.php';
 /**
  * @runTestsInSeparateProcesses
  */
-class GoodServiceModifierObservableTest extends GoodServiceModifierObservableBaseTest
+class ModifierObservableTest extends ModifierObservableBaseTest
 {
 }
 
