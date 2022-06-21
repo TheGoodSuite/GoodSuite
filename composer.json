@@ -1,5 +1,8 @@
 {
     "name": "good/goodsuite",
+    "autoload": {
+        "psr-4": {"Good\\": "Good"}
+    },
     "require-dev": {
         "phpunit/phpunit": "^9.5"
     }
