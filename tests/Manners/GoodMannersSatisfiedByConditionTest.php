@@ -926,6 +926,78 @@ class GoodMannersSatisfiedByConditionTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($result, true);
     }
 
+    public function testBooleanEqualToSucceedsCondition()
+    {
+        $condition = new EqualTo(true);
+
+        $result = $condition->isSatisfiedBy(true);
+
+        $this->assertEquals($result, true);
+    }
+
+    public function testBooleanEqualToFailsCondition()
+    {
+        $condition = new EqualTo(true);
+
+        $result = $condition->isSatisfiedBy(false);
+
+        $this->assertEquals($result, false);
+    }
+
+    public function testBooleanEqualToNullCondition()
+    {
+        $condition = new EqualTo(null);
+
+        $result = $condition->isSatisfiedBy(true);
+
+        $this->assertEquals($result, false);
+    }
+
+    public function testBooleanNullEqualToCondition()
+    {
+        $condition = new EqualTo(false);
+
+        $result = $condition->isSatisfiedBy(null);
+
+        $this->assertEquals($result, false);
+    }
+
+    public function testBooleanNotEqualToSucceedsCondition()
+    {
+        $condition = new NotEqualTo(true);
+
+        $result = $condition->isSatisfiedBy(false);
+
+        $this->assertEquals($result, true);
+    }
+
+    public function testBooleanNotEqualToFailsCondition()
+    {
+        $condition = new NotEqualTo(true);
+
+        $result = $condition->isSatisfiedBy(true);
+
+        $this->assertEquals($result, false);
+    }
+
+    public function testBooleanNotEqualToNullCondition()
+    {
+        $condition = new NotEqualTo(null);
+
+        $result = $condition->isSatisfiedBy(false);
+
+        $this->assertEquals($result, true);
+    }
+
+    public function testBooleanNullNotEqualToCondition()
+    {
+        $condition = new NotEqualTo(true);
+
+        $result = $condition->isSatisfiedBy(null);
+
+        $this->assertEquals($result, true);
+    }
+
     public function testStorableEqualToSucceeds()
     {
         $reference = new SatisfiedByConditionType();
@@ -1331,6 +1403,24 @@ class GoodMannersSatisfiedByConditionTest extends \PHPUnit\Framework\TestCase
     public function testInvalidDateTimeGreaterOrEqualToInt()
     {
         $condition = new GreaterOrEqual(new DateTimeImmutable());
+
+        $this->expectException("Exception");
+
+        $result = $condition->isSatisfiedBy(2);
+    }
+
+    public function testInvalidBooleanEqualToInt()
+    {
+        $condition = new EqualTo(false);
+
+        $this->expectException("Exception");
+
+        $result = $condition->isSatisfiedBy(2);
+    }
+
+    public function testInvalidBooleanNotEqualToInt()
+    {
+        $condition = new NotEqualTo(true);
 
         $this->expectException("Exception");
 

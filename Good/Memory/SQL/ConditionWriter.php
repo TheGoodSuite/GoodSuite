@@ -5,6 +5,7 @@ namespace Good\Memory\SQL;
 use Good\Memory\SQLStorage;
 use Good\Memory\CollectionEntryCondition;
 use Good\Memory\SQL\ConditionWriter\DateTimeFragmentWriter;
+use Good\Memory\SQL\ConditionWriter\BooleanFragmentWriter;
 use Good\Memory\SQL\ConditionWriter\FloatFragmentWriter;
 use Good\Memory\SQL\ConditionWriter\IntFragmentWriter;
 use Good\Memory\SQL\ConditionWriter\ReferenceFragmentWriter;
@@ -22,6 +23,7 @@ use Good\Rolemodel\Schema\Type\TextType;
 use Good\Rolemodel\Schema\Type\IntType;
 use Good\Rolemodel\Schema\Type\FloatType;
 use Good\Rolemodel\Schema\Type\DateTimeType;
+use Good\Rolemodel\Schema\Type\BooleanType;
 use Good\Rolemodel\Schema\Type\CollectionType;
 use Good\Service\Type;
 
@@ -231,6 +233,13 @@ class ConditionWriter implements ComplexConditionProcessor, ConditionProcessor, 
     public function visitDateTimeType(DateTimeType $type)
     {
         $fragmentWriter = new DateTimeFragmentWriter($this->storage);
+
+        $this->writeFragment($fragmentWriter);
+    }
+
+    public function visitBooleanType(BooleanType $type)
+    {
+        $fragmentWriter = new BooleanFragmentWriter($this->storage);
 
         $this->writeFragment($fragmentWriter);
     }

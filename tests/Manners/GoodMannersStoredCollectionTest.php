@@ -66,6 +66,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->truncateTable('collectiontype_mytexts');
         $this->truncateTable('collectiontype_mydatetimes');
         $this->truncateTable('collectiontype_myreferences');
+        $this->truncateTable('collectiontype_mybooleans');
 
         $this->storage = $this->getNewStorage();
     }
@@ -84,6 +85,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $this->truncateTable('collectiontype_mytexts');
         $this->truncateTable('collectiontype_mydatetimes');
         $this->truncateTable('collectiontype_myreferences');
+        $this->truncateTable('collectiontype_mybooleans');
 
         $this->_tearDownAfterClass();
     }
@@ -103,6 +105,9 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         $myCollectionType->myTexts->add("abc");
         $myCollectionType->myTexts->add("def");
+
+        $myCollectionType->myBooleans->add(true);
+        $myCollectionType->myBooleans->add(false);
 
         $now = new DateTimeImmutable();
 
@@ -143,6 +148,9 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         $myCollectionType->myTexts->add("abc");
         $myCollectionType->myTexts->add("def");
+
+        $myCollectionType->myBooleans->add(true);
+        $myCollectionType->myBooleans->add(false);
 
         $myCollectionType->myDatetimes->add(new DateTimeImmutable('2001-01-01'));
         $myCollectionType->myDatetimes->add(new DateTimeImmutable('2002-02-02'));
@@ -230,6 +238,31 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
             foreach ($result->myDatetimes as $myDatetime)
             {
                 $this->assertEquals($expected[$i]->format(DateTimeImmutable::ATOM), $myDatetime->format(DateTimeImmutable::ATOM));
+                $i++;
+            }
+        }
+    }
+
+    public function testFetchBooleanCollection()
+    {
+        $this->populateDatabase();
+
+        $resolver = CollectionType::resolver()->resolveMyBooleans();
+        $condition = CollectionType::condition();
+        $condition->someInt = 4;
+
+        $results = $this->storage->fetchAll($condition, $resolver);
+
+        foreach ($results as $result)
+        {
+            $expected = [false, true];
+            $i = 0;
+
+            $this->assertSame(2, $result->myBooleans->count());
+
+            foreach ($result->myBooleans as $myBoolean)
+            {
+                $this->assertSame($expected[$i], $myBoolean);
                 $i++;
             }
         }

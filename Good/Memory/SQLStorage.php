@@ -296,6 +296,11 @@ class SQLStorage extends Storage
         return "'" . $value->setTimeZone(new \DateTimeZone("UTC"))->format('Y-m-d H:i:s') . "'";
     }
 
+    public function parseBoolean($value)
+    {
+        return $value ? 'TRUE' : 'FALSE';
+    }
+
     public function parseText($value)
     {
         return "'" . $this->db->escapeText($value) . "'";

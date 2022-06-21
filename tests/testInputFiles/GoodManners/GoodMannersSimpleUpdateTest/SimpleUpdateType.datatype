@@ -6,4 +6,5 @@ datatype SimpleUpdateType
    text myText;
    datetime myDatetime;
    "AnotherType" myReference;
+   boolean myBoolean;
 }

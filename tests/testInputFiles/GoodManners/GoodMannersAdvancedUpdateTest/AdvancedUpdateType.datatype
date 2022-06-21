@@ -7,4 +7,5 @@ datatype AdvancedUpdateType
    datetime myDatetime;
    "YetAnotherType" myReference;
    "ThirdType" ref;
+   boolean myBoolean;
 }

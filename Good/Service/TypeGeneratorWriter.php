@@ -26,6 +26,12 @@ class TypeGeneratorWriter implements TypeVisitor
         $this->typeGenerator .= '[], "' . $this->memberName . '")';
     }
 
+    public function visitBooleanType(Schema\Type\BooleanType $type)
+    {
+        $this->typeGenerator = 'new \\Good\\Service\\Type\\BooleanType(';
+        $this->typeGenerator .= '[], "' . $this->memberName . '")';
+    }
+
     public function visitIntType(Schema\Type\IntType $type)
     {
         $typeModifiers = $type->getTypeModifiers();

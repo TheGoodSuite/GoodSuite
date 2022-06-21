@@ -71,6 +71,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $storage->insert($ins);
 
         $ins = new MyFetchType();
@@ -82,6 +83,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = false;
         $storage->insert($ins);
 
         $ins = new MyFetchType();
@@ -93,6 +95,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $storage->insert($ins);
 
         $ins = new MyFetchType();
@@ -102,6 +105,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $storage->insert($ins);
 
         $ins = new MyFetchType();
@@ -113,6 +117,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 5;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = null;
         $storage->insert($ins);
 
         $storage->flush();
@@ -145,6 +150,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
                 $hay->myFloat === $needle->myFloat &&
                 $hay->myText === $needle->myText &&
                 $hay->myDatetime == $needle->myDatetime &&
+                $hay->myBoolean === $needle->myBoolean &&
                 // they are both null
                 (($hay->myOtherType === null) ||
                 // or neither is null (so we won't be calling functions on null)
@@ -203,6 +209,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -214,6 +221,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -225,6 +233,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -234,6 +243,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -245,6 +255,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 5;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         foreach ($results as $type)
@@ -277,6 +288,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         foreach ($results as $type)
@@ -309,6 +321,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -320,6 +333,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         foreach ($results as $type)
@@ -352,6 +366,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -361,6 +376,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         foreach ($results as $type)
@@ -393,6 +409,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -404,6 +421,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -413,6 +431,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         foreach ($results as $type)
@@ -445,6 +464,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         foreach ($results as $type)
@@ -477,6 +497,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -488,6 +509,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -497,6 +519,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -508,6 +531,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 5;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         foreach ($results as $type)
@@ -555,6 +579,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         foreach ($results as $type)
@@ -596,6 +621,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -607,6 +633,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         foreach ($results as $type)
@@ -643,6 +670,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
        $ref->yourInt = 80;
        $ins->myOtherType = $ref;
        $ins->myCircular = null;
+       $ins->myBoolean = false;
        $expectedResults[] = $ins;
 
        $ins = new MyFetchType();
@@ -654,6 +682,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
        $ref->yourInt = 40;
        $ins->myOtherType = $ref;
        $ins->myCircular = null;
+       $ins->myBoolean = true;
        $expectedResults[] = $ins;
 
        foreach ($results as $type)
@@ -698,6 +727,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
        $ref->yourInt = 80;
        $ins->myOtherType = $ref;
        $ins->myCircular = null;
+       $ins->myBoolean = false;
        $expectedResults[] = $ins;
 
        foreach ($results as $type)
@@ -742,6 +772,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
        $ref->yourInt = 5;
        $ins->myOtherType = $ref;
        $ins->myCircular = null;
+       $ins->myBoolean = null;
        $expectedResults[] = $ins;
 
        $ins = new MyFetchType();
@@ -753,6 +784,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
        $ref->yourInt = 90;
        $ins->myOtherType = $ref;
        $ins->myCircular = null;
+       $ins->myBoolean = true;
        $expectedResults[] = $ins;
 
        foreach ($results as $type)
@@ -794,6 +826,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -803,6 +836,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         foreach ($results as $type)
@@ -839,6 +873,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
        $ref->yourInt = 90;
        $ins->myOtherType = $ref;
        $ins->myCircular = null;
+       $ins->myBoolean = true;
        $expectedResults[] = $ins;
 
        $ins = new MyFetchType();
@@ -848,6 +883,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
        $ins->myOtherType = null;
        $ins->myCircular = null;
+       $ins->myBoolean = true;
        $expectedResults[] = $ins;
 
        foreach ($results as $type)
@@ -878,6 +914,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         foreach ($results as $type)
@@ -910,6 +947,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -921,6 +959,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -932,6 +971,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -943,6 +983,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 5;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         foreach ($results as $type)
@@ -978,6 +1019,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -989,6 +1031,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -1000,6 +1043,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 5;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         foreach ($results as $type)
@@ -1037,6 +1081,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         foreach ($results as $type)
@@ -1072,6 +1117,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -1081,6 +1127,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -1092,6 +1139,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 5;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         foreach ($results as $type)
@@ -1127,6 +1175,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 5;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         foreach ($results as $type)
@@ -1162,6 +1211,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -1171,6 +1221,43 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
+        $expectedResults[] = $ins;
+
+        foreach ($results as $type)
+        {
+            $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
+
+            array_splice($expectedResults, $pos, 1);
+        }
+
+        $this->assertSame(array(), $expectedResults);
+    }
+
+    /**
+     * @depends testFetchGreaterThan
+     */
+    public function testFetchByBoolean()
+    {
+        $condition = MyFetchType::condition();
+        $condition->myBoolean = false;
+
+        $resolver = new MyFetchTypeResolver();
+        $resolver->resolveMyOtherType();
+        $results = $this->storage->fetchAll($condition, $resolver);
+
+        $expectedResults = array();
+
+        $ins = new MyFetchType();
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
+        $ref = new OtherType();
+        $ref->yourInt = 80;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         foreach ($results as $type)
@@ -1206,6 +1293,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 5;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         foreach ($results as $type)
@@ -1241,6 +1329,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         foreach ($results as $type)
@@ -1276,6 +1365,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         foreach ($results as $type)
@@ -1311,6 +1401,43 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 5;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = null;
+        $expectedResults[] = $ins;
+
+        foreach ($results as $type)
+        {
+            $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
+
+            array_splice($expectedResults, $pos, 1);
+        }
+
+        $this->assertSame(array(), $expectedResults);
+    }
+
+    /**
+     * @depends testFetchEqualTo
+     */
+    public function testFetchByBooleanIsNull()
+    {
+        $condition = MyFetchType::condition();
+        $condition->myBoolean = null;
+
+        $resolver = new MyFetchTypeResolver();
+        $resolver->resolveMyOtherType();
+        $results = $this->storage->fetchAll($condition, $resolver);
+
+        $expectedResults = array();
+
+        $ins = new MyFetchType();
+        $ins->myInt = null;
+        $ins->myFloat = 20.20;
+        $ins->myText = "Twenty";
+        $ins->myDatetime = null;
+        $ref = new OtherType();
+        $ref->yourInt = 5;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         foreach ($results as $type)
@@ -1346,6 +1473,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -1357,6 +1485,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -1368,6 +1497,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -1377,6 +1507,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         foreach ($results as $type)
@@ -1412,6 +1543,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -1423,6 +1555,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -1432,6 +1565,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -1443,6 +1577,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 5;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         foreach ($results as $type)
@@ -1478,6 +1613,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -1488,6 +1624,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref = new OtherType();
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -1497,6 +1634,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -1508,6 +1646,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 5;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         foreach ($results as $type)
@@ -1543,6 +1682,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -1554,6 +1694,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -1565,6 +1706,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -1574,6 +1716,77 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
+        $expectedResults[] = $ins;
+
+        foreach ($results as $type)
+        {
+            $pos = $this->assertContainsAndReturnIndex_specific($type, $expectedResults);
+
+            array_splice($expectedResults, $pos, 1);
+        }
+
+        $this->assertSame(array(), $expectedResults);
+    }
+
+    /**
+     * @depends testFetchNotEqualTo
+     */
+    public function testFetchByBooleanIsNotNull()
+    {
+        $condition = MyFetchType::condition();
+        $condition->myBoolean = new \Good\Manners\Condition\NotEqualTo(null);
+
+        $resolver = new MyFetchTypeResolver();
+        $resolver->resolveMyOtherType();
+        $results = $this->storage->fetchAll($condition, $resolver);
+
+        $expectedResults = array();
+
+        $ins = new MyFetchType();
+        $ins->myInt = 4;
+        $ins->myFloat = 4.4;
+        $ins->myText = "Four";
+        $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
+        $ref = new OtherType();
+        $ref->yourInt = 90;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
+        $ins->myBoolean = true;
+        $expectedResults[] = $ins;
+
+        $ins = new MyFetchType();
+        $ins->myInt = 5;
+        $ins->myFloat = null;
+        $ins->myText = "Five";
+        $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
+        $ref = new OtherType();
+        $ref->yourInt = 80;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
+        $ins->myBoolean = false;
+        $expectedResults[] = $ins;
+
+        $ins = new MyFetchType();
+        $ins->myInt = 8;
+        $ins->myFloat = 10.10;
+        $ins->myText = null;
+        $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
+        $ref = new OtherType();
+        $ref->yourInt = 40;
+        $ins->myOtherType = $ref;
+        $ins->myCircular = null;
+        $ins->myBoolean = true;
+        $expectedResults[] = $ins;
+
+        $ins = new MyFetchType();
+        $ins->myInt = 10;
+        $ins->myFloat = 10.10;
+        $ins->myText = "Ten";
+        $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
+        $ins->myOtherType = null;
+        $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         foreach ($results as $type)
@@ -1607,6 +1820,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 5;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $type = $results->getNext();
@@ -1623,6 +1837,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $type = $results->getNext();
@@ -1639,6 +1854,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $type = $results->getNext();
@@ -1655,6 +1871,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $type = $results->getNext();
@@ -1669,6 +1886,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $type = $results->getNext();
@@ -1696,6 +1914,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $type = $results->getNext();
@@ -1712,6 +1931,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $type = $results->getNext();
@@ -1728,6 +1948,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $type = $results->getNext();
@@ -1744,6 +1965,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $type = $results->getNext();
@@ -1760,6 +1982,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 5;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $type = $results->getNext();
@@ -1792,6 +2015,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $type = $results->getNext();
@@ -1808,6 +2032,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $type = $results->getNext();
@@ -1822,6 +2047,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $type = $results->getNext();
@@ -1837,6 +2063,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref = new OtherType();
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $type = $results->getNext();
@@ -1853,6 +2080,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 5;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $type = $results->getNext();
@@ -1880,6 +2108,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myOtherType = null;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -1889,6 +2118,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ins->myOtherType = null;
         $ins->myCircular = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -1898,6 +2128,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ins->myOtherType = null;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -1907,6 +2138,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -1916,6 +2148,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = null;
         $ins->myOtherType = null;
         $ins->myCircular = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         foreach ($results as $type)
@@ -1969,6 +2202,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myOtherType = null;
         $expectedResults[] = $ins;
+        $ins->myBoolean = true;
         $int4 = $ins;
 
         $ins = new MyFetchType();
@@ -1978,6 +2212,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $ins->myOtherType = null;
         $ins->myCircular = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -1987,6 +2222,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ins->myOtherType = null;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -1996,6 +2232,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = $int4;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
         $int4->myCircular = $ins;
 
@@ -2006,6 +2243,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = null;
         $ins->myOtherType = null;
         $ins->myCircular = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         foreach ($results as $type)
@@ -2041,6 +2279,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2010-10-10');
         $ins->myOtherType = null;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -2052,6 +2291,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -2063,6 +2303,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 80;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -2074,6 +2315,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 90;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new MyFetchType();
@@ -2085,6 +2327,7 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 5;
         $ins->myOtherType = $ref;
         $ins->myCircular = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $exp1 = $expectedResults;

@@ -86,6 +86,7 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
                 $hay->myFloat === $needle->myFloat &&
                 $hay->myText === $needle->myText &&
                 $hay->myDatetime == $needle->myDatetime &&
+                $hay->myBoolean === $needle->myBoolean &&
                 // they are both null
                 ($hay->myCircularReference === null && $needle->myCircularReference === null) ||
                 // or neither is null (so we won't be calling functions on null)
@@ -144,6 +145,7 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
         $ins->myText = "Four";
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myCircularReference = null;
+        $ins->myBoolean = true;
         $this->storage1->insert($ins);
 
         $expectedResults = array();
@@ -156,6 +158,7 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
         $ins->myText = "Four";
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myCircularReference = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $this->storage1->flush();
@@ -170,6 +173,7 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
+        $ins->myBoolean = true;
 
         $ins2 = new InsertType();
         $ins2->myInt = 7;
@@ -177,6 +181,7 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
         $ins2->myText = "Seven";
         $ins2->myDatetime = new \DateTimeImmutable('2007-07-07');
         $ins2->myCircularReference = $ins;
+        $ins2->myBoolean = false;
 
         $ins->myCircularReference = $ins2;
 
@@ -192,6 +197,7 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
+        $ins->myBoolean = true;
 
         $ins2 = new InsertType();
         $ins2->myInt = 7;
@@ -199,6 +205,7 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
         $ins2->myText = "Seven";
         $ins2->myDatetime = new \DateTimeImmutable('2007-07-07');
         $ins2->myCircularReference = $ins;
+        $ins2->myBoolean = false;
 
         $ins->myCircularReference = $ins2;
 
@@ -218,6 +225,7 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
         $ins->myText = null;
         $ins->myDatetime = null;
         $ins->myCircularReference = null;
+        $ins->myBoolean = null;
         $this->storage1->insert($ins);
 
         $expectedResults = array();
@@ -230,6 +238,7 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
         $ins->myText = null;
         $ins->myDatetime = null;
         $ins->myCircularReference = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $this->storage1->flush();
@@ -245,6 +254,7 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
         $ins->myText = "Four";
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myCircularReference = null;
+        $ins->myBoolean = true;
         $this->storage1->insert($ins);
 
         $this->storage1->flush();
@@ -260,6 +270,7 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
         $ins->myText = "Four";
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myCircularReference = null;
+        $ins->myBoolean = true;
         $this->storage1->insert($ins);
 
         $ins2 = new InsertType();
@@ -268,6 +279,7 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
         $ins2->myText = "Four";
         $ins2->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins2->myCircularReference = null;
+        $ins2->myBoolean = true;
         $this->storage1->insert($ins2);
 
         $this->storage1->flush();
@@ -285,6 +297,7 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
         $ins->myText = "Four";
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myCircularReference = null;
+        $ins->myBoolean = true;
         $this->storage1->insert($ins);
 
         $ins2 = new InsertType();
@@ -293,6 +306,7 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
         $ins2->myText = "Four";
         $ins2->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins2->myCircularReference = null;
+        $ins2->myBoolean = false;
         $this->storage1->insert($ins2);
 
         $ins3 = new InsertType();
@@ -301,6 +315,7 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
         $ins3->myText = "Four";
         $ins3->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins3->myCircularReference = null;
+        $ins3->myBoolean = true;
         $this->storage1->insert($ins3);
 
         $ins4 = new InsertType();
@@ -309,6 +324,7 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
         $ins4->myText = "Four";
         $ins4->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins4->myCircularReference = null;
+        $ins4->myBoolean = false;
         $this->storage1->insert($ins4);
 
         $this->storage1->flush();
@@ -348,6 +364,7 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
+        $ins->myBoolean = true;
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
 
         $ins2 = new InsertType();
@@ -355,6 +372,7 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
         $ins2->myFloat = 4.4;
         $ins2->myText = "Four";
         $ins2->myDatetime = new \DateTimeImmutable('2004-04-04');
+        $ins2->myBoolean = true;
         $ins->myCircularReference = $ins;
         $ins->myCircularReference = $ins2;
 
@@ -375,6 +393,7 @@ abstract class GoodMannersInsertTest extends \PHPUnit\Framework\TestCase
         $ins->myText = "Four";
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myCircularReference = null;
+        $ins->myBoolean = true;
         $this->storage1->insert($ins);
 
         $this->storage1->flush();

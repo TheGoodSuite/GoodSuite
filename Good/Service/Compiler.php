@@ -140,6 +140,11 @@ class Compiler implements \Good\Rolemodel\TypeVisitor
         $this->commitVariable($this->member, $type, true);
     }
 
+    public function visitBooleanType(Schema\Type\BooleanType $type)
+    {
+        $this->commitVariable($this->member, $type, true);
+    }
+
     public function visitIntType(Schema\Type\IntType $type)
     {
         $this->commitVariable($this->member, $type, true);

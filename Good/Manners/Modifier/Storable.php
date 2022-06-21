@@ -448,6 +448,27 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->visitNonReference(true, true);
     }
 
+    public function visitBooleanType(Schema\Type\BooleanType $type)
+    {
+        $fromArrayParserWriter = new FromArrayParserWriter();
+        $fromArrayParser = $fromArrayParserWriter->writeFromArrayParser($type);
+
+        $this->accept .= '        $visitor->visitBooleanProperty("' . $this->member->getName() . '", ' .
+                                            '$this->is' . \ucfirst($this->member->getName()) . 'Dirty, ' .
+                                            '$this->' . $this->member->getName() . ');' . "\n";
+
+        $this->setFromArray .= '                case "' . $this->member->getName() . '":' . "\n";
+        $this->setFromArray .= '                    $this->set' . \ucfirst($this->member->getName()) . '(' . $fromArrayParser . ');'. "\n";
+        $this->setFromArray .= '                    break;' . "\n";
+
+        $toArrayFormatterWriter = new ToArrayFormatterWriter();
+        $toArrayFormatter = $toArrayFormatterWriter->writeToArrayFormatter('$this->' . $this->member->getName(), $type);
+
+        $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
+
+        $this->visitNonReference(true, true);
+    }
+
     public function visitIntType(Schema\Type\IntType $type)
     {
         $fromArrayParserWriter = new FromArrayParserWriter();

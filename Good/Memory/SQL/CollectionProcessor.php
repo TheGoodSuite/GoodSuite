@@ -14,6 +14,7 @@ use Good\Rolemodel\Schema\Type\TextType;
 use Good\Rolemodel\Schema\Type\IntType;
 use Good\Rolemodel\Schema\Type\FloatType;
 use Good\Rolemodel\Schema\Type\DatetimeType;
+use Good\Rolemodel\Schema\Type\BooleanType;
 use Good\Rolemodel\Schema\Type\CollectionType;
 
 class CollectionProcessor implements StorableVisitor, TypeVisitor
@@ -116,6 +117,7 @@ class CollectionProcessor implements StorableVisitor, TypeVisitor
     public function visitIntProperty($name, $dirty, $value) {}
     public function visitFloatProperty($name, $dirty, $value) {}
     public function visitDatetimeProperty($name, $dirty, $value) {}
+    public function visitBooleanProperty($name, $dirty, $value) {}
 
     public function visitReferenceType(ReferenceType $type)
     {
@@ -154,6 +156,14 @@ class CollectionProcessor implements StorableVisitor, TypeVisitor
         foreach ($this->deletedCollectionValues as $value)
         {
             $this->deletedSQLValues[] = $this->storage->parseDatetime($value);
+        }
+    }
+
+    public function visitBooleanType(BooleanType $type)
+    {
+        foreach ($this->deletedCollectionValues as $value)
+        {
+            $this->deletedSQLValues[] = $this->storage->parseBoolean($value);
         }
     }
 

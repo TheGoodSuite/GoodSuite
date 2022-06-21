@@ -6,4 +6,5 @@ datatype InsertType
    text myText;
    datetime myDatetime;
    "InsertType" myCircularReference;
+   boolean myBoolean;
 }

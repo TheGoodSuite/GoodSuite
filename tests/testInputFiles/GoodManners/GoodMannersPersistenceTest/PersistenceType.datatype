@@ -5,4 +5,5 @@ datatype PersistenceType
    float myFloat;
    text myText;
    datetime myDatetime;
+   boolean myBoolean;
 }

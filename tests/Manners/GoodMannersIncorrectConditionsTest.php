@@ -594,6 +594,38 @@ class GoodMannersIncorrectConditionsTest extends \PHPUnit\Framework\TestCase
         $condition->myDateTime = new EqualTo("a");
     }
 
+    public function testSetBooleanConditionToObject()
+    {
+        $this->expectException("Exception");
+
+        $condition = IncorrectConditionsType::condition();
+        $condition->myBoolean = new SomeClass();
+    }
+
+    public function testSetBooleanConditionToArray()
+    {
+        $this->expectException("Exception");
+
+        $condition = IncorrectConditionsType::condition();
+        $condition->myBoolean = [];
+    }
+
+    public function testSetBooleanConditionToCollectionCondition()
+    {
+        $this->expectException("Exception");
+
+        $condition = IncorrectConditionsType::condition();
+        $condition->myBoolean = new HasA(new EqualTo(false));
+    }
+
+    public function testSetBooleanConditionToWrongCondition()
+    {
+        $this->expectException("Exception");
+
+        $condition = IncorrectConditionsType::condition();
+        $condition->myBoolean = new EqualTo("a");
+    }
+
     public function testSetReferenceConditionToObject()
     {
         $this->expectException("Exception");
@@ -664,6 +696,30 @@ class GoodMannersIncorrectConditionsTest extends \PHPUnit\Framework\TestCase
 
         $condition = IncorrectConditionsType::condition();
         $condition->myDateTimeCollection = new HasOnly(new EqualTo(5));
+    }
+
+    public function testSetBooleanCollectionToRegularCondition()
+    {
+        $this->expectException("TypeError");
+
+        $condition = IncorrectConditionsType::condition();
+        $condition->myBooleanCollection = new EqualTo(true);
+    }
+
+    public function testBooleanCollectionHasAWrongCondition()
+    {
+        $this->expectException("Exception");
+
+        $condition = IncorrectConditionsType::condition();
+        $condition->myBooleanCollection = new HasA(new EqualTo(5));
+    }
+
+    public function testBoolanCollectionHasOnlyWrongCondition()
+    {
+        $this->expectException("Exception");
+
+        $condition = IncorrectConditionsType::condition();
+        $condition->myBooleanCollection = new HasOnly(new EqualTo(5));
     }
 
     public function testSetFloatCollectionToRegularCondition()

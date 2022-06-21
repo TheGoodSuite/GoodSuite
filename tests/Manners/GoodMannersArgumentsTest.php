@@ -38,9 +38,9 @@ abstract class GoodMannersArgumentsTest extends \PHPUnit\Framework\TestCase
 
     public static function _tearDownAfterClass()
     {
-        unlink(dirname(__FILE__) . '/../generated/PersistenceType.datatype.php');
-        unlink(dirname(__FILE__) . '/../generated/PersistenceTypeResolver.php');
-        unlink(dirname(__FILE__) . '/../generated/PersistenceTypeCondition.php');
+        unlink(dirname(__FILE__) . '/../generated/ArgumentsType.datatype.php');
+        unlink(dirname(__FILE__) . '/../generated/ArgumentsTypeResolver.php');
+        unlink(dirname(__FILE__) . '/../generated/ArgumentsTypeCondition.php');
         unlink(dirname(__FILE__) . '/../generated/GeneratedBaseClass.php');
 
         if (ini_get('zend.enable_gc'))
@@ -55,7 +55,7 @@ abstract class GoodMannersArgumentsTest extends \PHPUnit\Framework\TestCase
 
         // just doubling this up (from tearDown) to be sure
         // this should be handled natively once that is implemented
-        $this->truncateTable('persistencetype');
+        $this->truncateTable('ArgumentsType');
 
         $this->storage = $this->getNewStorage();
     }
@@ -68,7 +68,7 @@ abstract class GoodMannersArgumentsTest extends \PHPUnit\Framework\TestCase
         $this->storage->flush();
 
         // this should be handled through the GoodManners API once that is implemented
-        $this->truncateTable('persistencetype');
+        $this->truncateTable('argumentstype');
 
         $this->_tearDownAfterClass();
     }
@@ -77,21 +77,21 @@ abstract class GoodMannersArgumentsTest extends \PHPUnit\Framework\TestCase
     {
         $storage = $this->getNewStorage();
 
-        $ins = new PersistenceType();
+        $ins = new ArgumentsType();
         $ins->myInt = 4;
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $storage->insert($ins);
 
-        $ins = new PersistenceType();
+        $ins = new ArgumentsType();
         $ins->myInt = 5;
         $ins->myFloat = 5.5;
         $ins->myText = "Five";
         $ins->myDatetime = new \DateTimeImmutable('2005-05-05');
         $storage->insert($ins);
 
-        $ins = new PersistenceType();
+        $ins = new ArgumentsType();
         $ins->myInt = 6;
         $ins->myFloat = 6.6;
         $ins->myText = "Six";
@@ -105,10 +105,10 @@ abstract class GoodMannersArgumentsTest extends \PHPUnit\Framework\TestCase
     {
         $this->populateDatabase();
 
-        $condition = PersistenceType::condition();
+        $condition = ArgumentsType::condition();
         $condition->myInt = new \Good\Manners\Condition\GreaterThan(4);
 
-        $resolver = PersistenceType::resolver();
+        $resolver = ArgumentsType::resolver();
         $resolver->orderByMyIntDesc();
 
         $results = $this->storage->fetchAll($condition, $resolver);
@@ -126,7 +126,7 @@ abstract class GoodMannersArgumentsTest extends \PHPUnit\Framework\TestCase
     {
         $this->populateDatabase();
 
-        $condition = PersistenceType::condition();
+        $condition = ArgumentsType::condition();
         $condition->myInt = new \Good\Manners\Condition\GreaterThan(4);
 
         $results = $this->storage->fetchAll($condition);
@@ -140,7 +140,7 @@ abstract class GoodMannersArgumentsTest extends \PHPUnit\Framework\TestCase
     {
         $this->populateDatabase();
 
-        $resolver = PersistenceType::resolver();
+        $resolver = ArgumentsType::resolver();
         $resolver->orderByMyIntDesc();
 
         $results = $this->storage->fetchAll($resolver);
@@ -168,7 +168,7 @@ abstract class GoodMannersArgumentsTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException("InvalidArgumentException");
 
-        $results = $this->storage->fetchAll(PersistenceType::resolver(), PersistenceType::resolver());
+        $results = $this->storage->fetchAll(ArgumentsType::resolver(), ArgumentsType::resolver());
     }
 }
 

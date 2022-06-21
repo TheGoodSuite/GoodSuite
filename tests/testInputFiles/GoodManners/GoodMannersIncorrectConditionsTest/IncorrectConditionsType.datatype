@@ -6,9 +6,11 @@ datatype IncorrectConditionsType
    int myInt;
    "IncorrectConditionsType" myReference;
    text myText;
+   boolean myBoolean;
    datetime[] myDateTimeCollection;
    float[] myFloatCollection;
    int[] myIntCollection;
    "IncorrectConditionsType"[] myReferenceCollection;
    text[] myTextCollection;
+   boolean[] myBooleanCollection;
 }

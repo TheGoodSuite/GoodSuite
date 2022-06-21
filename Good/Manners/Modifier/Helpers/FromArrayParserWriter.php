@@ -6,6 +6,7 @@ use Good\Rolemodel\TypeVisitor;
 use Good\Rolemodel\Schema\Type;
 use Good\Rolemodel\Schema\Type\CollectionType;
 use Good\Rolemodel\Schema\Type\DateTimeType;
+use Good\Rolemodel\Schema\Type\BooleanType;
 use Good\Rolemodel\Schema\Type\FloatType;
 use Good\Rolemodel\Schema\Type\IntType;
 use Good\Rolemodel\Schema\Type\ReferenceType;
@@ -27,6 +28,11 @@ class FromArrayParserWriter implements TypeVisitor
     {
         $this->fromArrayParser  = '$value === null || $value instanceof \DateTimeImmutable ? ';
         $this->fromArrayParser .= '$value : new DateTimeImmutable($value, new DateTimeZone("UTC"))';
+    }
+
+    public function visitBooleanType(BooleanType $type)
+    {
+        $this->fromArrayParser = '$value === null ? null : \boolval($value)';
     }
 
     public function visitIntType(IntType $type)

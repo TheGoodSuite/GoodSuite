@@ -59,7 +59,8 @@ abstract class GoodMannersPersistenceTest extends \PHPUnit\Framework\TestCase
             if ($hay->myInt === $needle->myInt &&
                 $hay->myFloat === $needle->myFloat &&
                 $hay->myText === $needle->myText &&
-                $hay->myDatetime == $needle->myDatetime)
+                $hay->myDatetime == $needle->myDatetime &&
+                $hay->myBoolean === $needle->myBoolean)
             {
                 return $key;
             }
@@ -98,6 +99,7 @@ abstract class GoodMannersPersistenceTest extends \PHPUnit\Framework\TestCase
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
+        $ins->myBoolean = true;
         $storage->insert($ins);
 
         $ins = new PersistenceType();
@@ -105,6 +107,7 @@ abstract class GoodMannersPersistenceTest extends \PHPUnit\Framework\TestCase
         $ins->myFloat = 8.8;
         $ins->myText = "Ten";
         $ins->myDatetime = new \DateTimeImmutable('2012-12-12');
+        $ins->myBoolean = false;
         $storage->insert($ins);
 
         $expectedResults = array();
@@ -133,6 +136,7 @@ abstract class GoodMannersPersistenceTest extends \PHPUnit\Framework\TestCase
         $ins->myFloat = 4.4;
         $ins->myText = "Four";
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new PersistenceType();
@@ -140,6 +144,7 @@ abstract class GoodMannersPersistenceTest extends \PHPUnit\Framework\TestCase
         $ins->myFloat = 8.8;
         $ins->myText = "Ten";
         $ins->myDatetime = new \DateTimeImmutable('2012-12-12');
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $resolver = new PersistenceTypeResolver();

@@ -7,4 +7,5 @@ datatype MyFetchType
    datetime myDatetime;
    "OtherType" myOtherType;
    "MyFetchType" myCircular;
+   boolean myBoolean;
 }

@@ -52,6 +52,15 @@ class GoodServiceCollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(\Good\Service\Collection::class, $myType->myArray);
     }
 
+    public function testBooleanCollectionProperty()
+    {
+        $this->compile('booleanCollection');
+
+        $myType = new MyType();
+
+        $this->assertInstanceOf(\Good\Service\Collection::class, $myType->myArray);
+    }
+
     public function testFloatCollectionProperty()
     {
         $this->compile('floatCollection');
@@ -101,6 +110,26 @@ class GoodServiceCollectionTest extends \PHPUnit\Framework\TestCase
     public function testDatetimeCollectionPropertyIncorrectValue()
     {
         $this->compile('datetimeCollection');
+
+        $this->expectException(\Good\Service\InvalidParameterException::class);
+
+        $myType = new MyType();
+        $myType->myArray->add(4);
+    }
+
+    public function testBooleanCollectionPropertyCorrectValue()
+    {
+        $this->compile('booleanCollection');
+
+        $myType = new MyType();
+        $myType->myArray->add(false);
+
+        $this->assertNoExceptions();
+    }
+
+    public function testBooleanCollectionPropertyIncorrectValue()
+    {
+        $this->compile('booleanCollection');
 
         $this->expectException(\Good\Service\InvalidParameterException::class);
 

@@ -17,6 +17,7 @@ interface TypeVisitor
     public function visitIntType(Schema\Type\IntType $type);
     public function visitFloatType(Schema\Type\FloatType $type);
     public function visitDateTimeType(Schema\Type\DatetimeType $type);
+    public function visitBooleanType(Schema\Type\BooleanType $type);
     public function visitCollectionType(Schema\Type\CollectionType $type);
 }
 

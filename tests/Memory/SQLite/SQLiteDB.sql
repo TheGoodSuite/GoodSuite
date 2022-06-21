@@ -16,9 +16,19 @@ CREATE TABLE `simpleupdatetype` (
 	`mytext`	TEXT,
 	`mydatetime`	TEXT,
 	`myreference`	INTEGER,
+	`myboolean`		BOOLEAN,
 	PRIMARY KEY(id)
 );
 CREATE TABLE `persistencetype` (
+	`id`	INTEGER,
+	`myint`	INTEGER,
+	`myfloat`	REAL,
+	`mytext`	TEXT,
+	`mydatetime`	TEXT,
+	`myboolean`		BOOLEAN,
+	PRIMARY KEY(id)
+);
+CREATE TABLE `argumentstype` (
 	`id`	INTEGER,
 	`myint`	INTEGER,
 	`myfloat`	REAL,
@@ -53,6 +63,7 @@ CREATE TABLE `inserttype` (
 	`mytext`	TEXT,
 	`mydatetime`	TEXT,
 	`mycircularreference`	INTEGER,
+	`myboolean`	BOOLEAN,
 	PRIMARY KEY(id)
 );
 CREATE TABLE `idtype` (
@@ -69,6 +80,7 @@ CREATE TABLE `myfetchtype` (
 	`mydatetime`	TEXT,
 	`myothertype`	INTEGER,
 	`mycircular`	INTEGER,
+	`myboolean`	BOOLEAN,
 	PRIMARY KEY(id)
 );
 CREATE TABLE `deletetype` (
@@ -92,6 +104,7 @@ CREATE TABLE "advancedupdatetype" (
 	`mydatetime`	TEXT,
 	`myreference`	INTEGER,
 	`ref`	INTEGER,
+	`myBoolean`	BOOLEAN,
 	PRIMARY KEY(id)
 );
 CREATE TABLE `select` (
@@ -101,6 +114,7 @@ CREATE TABLE `select` (
 	`order` TEXT,
 	`by` DATETIME,
 	`group` INTEGER,
+	`drop` BOOLEAN,
 	PRIMARY KEY(id)
 );
 CREATE TABLE `create` (
@@ -138,6 +152,11 @@ CREATE TABLE `collectiontype_mydatetimes` (
 CREATE TABLE `collectiontype_myreferences` (
 	`owner`	INTEGER,
 	`value` INTEGER,
+	PRIMARY KEY(owner, value)
+);
+CREATE TABLE `collectiontype_mybooleans` (
+	`owner`	INTEGER,
+	`value` BOOLEAN,
 	PRIMARY KEY(owner, value)
 );
 COMMIT;

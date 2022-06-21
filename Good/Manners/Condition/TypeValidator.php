@@ -40,6 +40,7 @@ trait TypeValidator
     {
         return $this->isPrimitive($value)
             || is_null($value)
+            || is_bool($value)
             || ($value instanceof Storable);
     }
 

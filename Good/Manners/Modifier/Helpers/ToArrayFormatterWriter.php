@@ -7,6 +7,7 @@ use Good\Rolemodel\Schema\Member;
 use Good\Rolemodel\Schema\Type;
 use Good\Rolemodel\Schema\Type\CollectionType;
 use Good\Rolemodel\Schema\Type\DateTimeType;
+use Good\Rolemodel\Schema\Type\BooleanType;
 use Good\Rolemodel\Schema\Type\FloatType;
 use Good\Rolemodel\Schema\Type\IntType;
 use Good\Rolemodel\Schema\Type\ReferenceType;
@@ -31,6 +32,11 @@ class ToArrayFormatterWriter implements TypeVisitor
     {
         $this->toArrayFormatter  = '$datesToIso && ' . $this->formattable . ' != null ? ';
         $this->toArrayFormatter .= $this->formattable . '->format(\DateTimeImmutable::ATOM) : ' . $this->formattable;
+    }
+
+    public function visitBooleanType(BooleanType $type)
+    {
+        $this->toArrayFormatter = $this->formattable;
     }
 
     public function visitIntType(IntType $type)

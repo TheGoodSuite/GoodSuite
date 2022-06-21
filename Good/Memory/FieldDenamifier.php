@@ -76,6 +76,11 @@ class FieldDenamifier implements StorableVisitor
         $this->visitProperty($name, false);
     }
 
+    public function visitBooleanProperty($name, $dirty, $value)
+    {
+        $this->visitProperty($name, false);
+    }
+
     public function visitCollectionProperty($name, $value, $modifier)
     {
         $this->visitProperty($name, true);

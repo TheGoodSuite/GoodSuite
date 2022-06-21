@@ -863,6 +863,76 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
 
         $this->compile('duplicateDatatype');
     }
+
+    public function testBooleanProperty()
+    {
+        $this->compile('booleanProperty');
+
+        $myType = new MyType();
+        $myType->myBoolean = true;
+        $myType2 = new MyType();
+        $myType2->myBoolean = false;
+
+        $this->assertEquals($myType->myBoolean, true);
+        $this->assertIsBool($myType->myBoolean, true);
+        $this->assertEquals($myType2->myBoolean, false);
+        $this->assertIsBool($myType2->myBoolean, false);
+    }
+
+    /**
+     * @depends testIntProperty
+     */
+    public function testBooleanGetter()
+    {
+        $this->compile('booleanProperty');
+
+        $myType = new MyType();
+        $myType->myBoolean = true;
+
+        $myType2 = new MyType();
+        $myType2->myBoolean = false;
+
+        $this->assertEquals($myType->getMyBoolean(), true);
+        $this->assertIsBool($myType->myBoolean);
+        $this->assertEquals($myType2->getMyBoolean(), false);
+        $this->assertIsBool($myType2->myBoolean);
+    }
+
+    public function testBooleanPropertyNonBooleanValue()
+    {
+        $this->compile('booleanProperty');
+
+        $this->expectException("Good\Service\InvalidParameterException");
+
+        $myType = new MyType();
+        $myType->myBoolean = 5;
+    }
+
+    public function testBooleanPropertyObjectValue()
+    {
+        $this->compile('booleanProperty');
+
+        $this->expectException("Good\Service\InvalidParameterException");
+
+        $myType = new MyType();
+        $myType->myBoolean = new MyType();
+    }
+
+    public function testBooleanSetter()
+    {
+        $this->compile('booleanProperty');
+
+        $myType = new MyType();
+        $myType->setMyBoolean(true);
+
+        $myType2 = new MyType();
+        $myType2->setMyBoolean(false);
+
+        $this->assertEquals($myType->myBoolean, true);
+        $this->assertIsBool($myType->myBoolean);
+        $this->assertEquals($myType2->myBoolean, false);
+        $this->assertIsBool($myType2->myBoolean);
+    }
 }
 
 ?>

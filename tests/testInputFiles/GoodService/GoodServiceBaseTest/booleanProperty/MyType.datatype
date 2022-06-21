@@ -1,0 +1,5 @@
+
+datatype MyType
+{
+    boolean myBoolean;
+}

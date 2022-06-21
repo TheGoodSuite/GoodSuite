@@ -6,4 +6,5 @@ datatype CollectionType
    int[] myInts;
    "CollectionType"[] myReferences;
    text[] myTexts;
+   boolean[] myBooleans;
 }

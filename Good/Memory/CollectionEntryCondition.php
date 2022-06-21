@@ -9,6 +9,7 @@ use Good\Manners\Processors\ComplexConditionProcessor;
 use Good\Rolemodel\Schema\Type;
 use Good\Rolemodel\Schema\Type\CollectionType;
 use Good\Rolemodel\Schema\Type\DateTimeType;
+use Good\Rolemodel\Schema\Type\BooleanType;
 use Good\Rolemodel\Schema\Type\FloatType;
 use Good\Rolemodel\Schema\Type\IntType;
 use Good\Rolemodel\Schema\Type\ReferenceType;
@@ -52,6 +53,11 @@ class CollectionEntryCondition implements ComplexCondition, TypeVisitor
     }
 
     public function  visitDateTimeType(DateTimeType $type)
+    {
+        $this->conditionProcessor->processMember($type, "value", $this->condition);
+    }
+
+    public function  visitBooleanType(BooleanType $type)
     {
         $this->conditionProcessor->processMember($type, "value", $this->condition);
     }

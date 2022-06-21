@@ -74,6 +74,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $storage->insert($ins);
 
         $ins = new AdvancedUpdateType();
@@ -85,6 +86,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = false;
         $storage->insert($ins);
 
         $ins = new AdvancedUpdateType();
@@ -96,6 +98,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 30;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $storage->insert($ins);
 
         $ins = new AdvancedUpdateType();
@@ -107,6 +110,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 20;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $storage->insert($ins);
 
         $ins = new AdvancedUpdateType();
@@ -118,6 +122,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 10;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = null;
         $storage->insert($ins);
 
         $storage->flush();
@@ -153,6 +158,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
                 $hay->myFloat === $needle->myFloat &&
                 $hay->myText === $needle->myText &&
                 $hay->myDatetime == $needle->myDatetime &&
+                $hay->myBoolean === $needle->myBoolean &&
                 // they are both null
                 (($hay->myReference === null && $needle->myReference === null) ||
                 // or neither is null (so we won't be calling functions on null)
@@ -187,7 +193,9 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
             echo "myText: ";
             var_dump($needle->myText);
             echo "myDatetime: ";
-            var_dump($needle->myDatetime);
+            var_dump($needle->myText);
+            echo "myBoolean: ";
+            var_dump($needle->myBoolean);
             echo "myReference->yourInt: ";
             if ($needle->ref === null)
             {
@@ -208,6 +216,8 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
                 var_dump($needle->ref->ref->yourInt);
             }
             $out = ob_get_clean();
+
+            var_dump($haystack);
 
             throw new Exception("Failed asserting that an array contained an object with these properties: $out");
 
@@ -257,6 +267,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $modifications->myFloat = 55.55;
         $modifications->myText = "Fifty-five";
         $modifications->myDatetime = new DateTimeImmutable("2055-05-05");
+        $modifications->myBoolean = false;
 
         $this->storage1->modifyAny($any, $modifications);
 
@@ -269,6 +280,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new DateTimeImmutable("2055-05-05");
         $ins->myReference = null;
         $ins->ref = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -280,6 +292,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -291,6 +304,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 30;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -302,6 +316,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 20;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -313,6 +328,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 10;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $this->checkResults($expectedResults);
@@ -333,6 +349,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $modifications->myFloat = null;
         $modifications->myText = null;
         $modifications->myDatetime = null;
+        $modifications->myBoolean = null;
 
         $this->storage1->modifyAny($and, $modifications);
 
@@ -345,6 +362,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -356,6 +374,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -367,6 +386,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 30;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -378,6 +398,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 20;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -389,6 +410,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 10;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $this->checkResults($expectedResults);
@@ -413,6 +435,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -424,6 +447,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -433,6 +457,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ins->myReference = null;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -444,6 +469,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 20;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -455,6 +481,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 10;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $this->checkResults($expectedResults);
@@ -491,6 +518,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 20;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -502,6 +530,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 20;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -513,6 +542,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 30;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -524,6 +554,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 20;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -535,6 +566,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 10;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $this->checkResults($expectedResults);
@@ -573,6 +605,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -584,6 +617,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -595,6 +629,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 144;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -606,6 +641,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 20;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -617,6 +653,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 10;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $this->checkResults($expectedResults);
@@ -642,6 +679,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -653,6 +691,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 42;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -664,6 +703,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 42;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -675,6 +715,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 42;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -686,6 +727,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 42;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $this->checkResults($expectedResults);
@@ -771,6 +813,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -782,6 +825,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -793,6 +837,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 30;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -803,6 +848,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref = new YetAnotherType();
         $ref->yourInt = 20;
         $ins->myReference = $ref;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -814,6 +860,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 10;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $this->checkResults($expectedResults);
@@ -856,6 +903,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -867,6 +915,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -878,6 +927,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 30;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -889,6 +939,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 20;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -900,6 +951,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 10;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $this->checkResults($expectedResults);
@@ -938,6 +990,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -949,6 +1002,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -960,6 +1014,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 30;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -971,6 +1026,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 20;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -982,6 +1038,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 10;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $this->checkResults($expectedResults);
@@ -1007,6 +1064,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1018,6 +1076,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1029,6 +1088,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 30;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1040,6 +1100,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 20;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1051,6 +1112,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 10;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $this->checkResults($expectedResults);
@@ -1075,6 +1137,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1086,6 +1149,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1097,6 +1161,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 30;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1108,6 +1173,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 20;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1119,6 +1185,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 10;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $this->checkResults($expectedResults);
@@ -1143,6 +1210,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1154,6 +1222,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1165,6 +1234,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 30;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1176,6 +1246,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 20;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1187,6 +1258,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 10;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $this->checkResults($expectedResults);
@@ -1243,6 +1315,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1254,6 +1327,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1265,6 +1339,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 30;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1276,6 +1351,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 20;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1287,6 +1363,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 10;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $this->checkResults($expectedResults);
@@ -1319,6 +1396,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2066-06-06');
         $ins->myReference = null;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1330,6 +1408,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1341,6 +1420,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 30;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1352,6 +1432,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 20;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1363,6 +1444,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 10;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $this->checkResults($expectedResults);
@@ -1395,6 +1477,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1406,6 +1489,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1417,6 +1501,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 30;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1428,6 +1513,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 20;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1439,6 +1525,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 10;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $this->checkResults($expectedResults);
@@ -1463,6 +1550,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1474,6 +1562,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1485,6 +1574,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 30;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1496,6 +1586,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 20;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1507,6 +1598,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 10;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $this->checkResults($expectedResults);
@@ -1560,6 +1652,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1571,6 +1664,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 42;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1582,6 +1676,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 42;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1593,6 +1688,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 42;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1604,6 +1700,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 42;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $this->checkResults($expectedResults);
@@ -1631,6 +1728,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1642,6 +1740,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1653,6 +1752,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 100;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1664,6 +1764,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 100;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1675,6 +1776,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 10;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $this->checkResults($expectedResults);
@@ -1745,6 +1847,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->ref = new ThirdType();
         $ins->ref->ref = new YetAnotherType();
         $ins->ref->ref->yourInt = 500;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1758,6 +1861,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->ref = new ThirdType();
         $ins->ref->ref = new YetAnotherType();
         $ins->ref->ref->yourInt = 300;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1771,6 +1875,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->ref = new ThirdType();
         $ins->ref->ref = new YetAnotherType();
         $ins->ref->ref->yourInt = 400;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1784,6 +1889,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->ref = new ThirdType();
         $ins->ref->ref = new YetAnotherType();
         $ins->ref->ref->yourInt = 200;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1795,6 +1901,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 10;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $this->checkResults($expectedResults);
@@ -1867,6 +1974,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->ref = new ThirdType();
         $ins->ref->ref = new YetAnotherType();
         $ins->ref->ref->yourInt = 500;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1880,6 +1988,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->ref = new ThirdType();
         $ins->ref->ref = new YetAnotherType();
         $ins->ref->ref->yourInt = 300;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1893,6 +2002,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->ref = new ThirdType();
         $ins->ref->ref = new YetAnotherType();
         $ins->ref->ref->yourInt = 666;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1906,6 +2016,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->ref = new ThirdType();
         $ins->ref->ref = new YetAnotherType();
         $ins->ref->ref->yourInt = 666;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1917,6 +2028,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 10;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $this->checkResults($expectedResults);
@@ -1945,6 +2057,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new \DateTimeImmutable('2004-04-04');
         $ins->myReference = null;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1956,6 +2069,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 40;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1967,6 +2081,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 1;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1978,6 +2093,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 1;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new AdvancedUpdateType();
@@ -1989,6 +2105,7 @@ abstract class GoodMannersAdvancedUpdateTest extends \PHPUnit\Framework\TestCase
         $ref->yourInt = 10;
         $ins->myReference = $ref;
         $ins->ref = null;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $this->checkResults($expectedResults);

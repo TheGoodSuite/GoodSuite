@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS `advancedupdatetype` (
   `mydatetime` datetime DEFAULT NULL,
   `myreference` int(11) DEFAULT NULL,
   `ref` int(11) DEFAULT NULL,
+  `myBoolean` BOOLEAN DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
@@ -80,6 +81,7 @@ CREATE TABLE IF NOT EXISTS `myfetchtype` (
   `mydatetime` datetime DEFAULT NULL,
   `myothertype` int(11) DEFAULT NULL,
   `mycircular` int(11) DEFAULT NULL,
+  `myboolean` BOOLEAN DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
@@ -109,6 +111,7 @@ CREATE TABLE IF NOT EXISTS `inserttype` (
   `mytext` text,
   `mydatetime` datetime DEFAULT NULL,
   `mycircularreference` int(11) DEFAULT NULL,
+  `myboolean` boolean DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
@@ -165,6 +168,22 @@ CREATE TABLE IF NOT EXISTS `persistencetype` (
   `myfloat` float NOT NULL,
   `mytext` text NOT NULL,
   `mydatetime` datetime NOT NULL,
+  `myboolean` boolean NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `argumentstype`
+--
+
+CREATE TABLE IF NOT EXISTS `argumentstype` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `myint` int(11) NOT NULL,
+  `myfloat` float NOT NULL,
+  `mytext` text NOT NULL,
+  `mydatetime` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
@@ -181,6 +200,7 @@ CREATE TABLE IF NOT EXISTS `simpleupdatetype` (
   `mytext` text,
   `mydatetime` datetime DEFAULT NULL,
   `myreference` int(11) DEFAULT NULL,
+  `myboolean` boolean DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
@@ -214,6 +234,7 @@ CREATE TABLE IF NOT EXISTS `select` (
   `where` float,
   `order` text,
   `by` datetime,
+  `drop` boolean,
   `group` int(11),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
@@ -248,7 +269,7 @@ CREATE TABLE `collectiontype_myfloats` (
 CREATE TABLE `collectiontype_mytexts` (
 	`owner`	int(11),
 	`value` TEXT,
-	PRIMARY KEY(owner, value)
+	PRIMARY KEY(owner, value(100))
 );
 
 CREATE TABLE `collectiontype_mydatetimes` (
@@ -260,6 +281,12 @@ CREATE TABLE `collectiontype_mydatetimes` (
 CREATE TABLE `collectiontype_myreferences` (
 	`owner`	int(11),
 	`value` INTEGER,
+	PRIMARY KEY(owner, value)
+);
+
+CREATE TABLE `collectiontype_mybooleans` (
+	`owner`	int(11),
+	`value` BOOLEAN,
 	PRIMARY KEY(owner, value)
 );
 

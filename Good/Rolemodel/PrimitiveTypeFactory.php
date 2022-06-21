@@ -20,6 +20,9 @@ class PrimitiveTypeFactory
             case 'datetime';
                 return new Schema\Type\DateTimeType($typeModifiers, $memberName);
 
+            case 'boolean';
+                return new Schema\Type\BooleanType($typeModifiers, $memberName);
+
             default:
                 // TODO: better error handling
                 throw new \Exception("Unrecognized type.");

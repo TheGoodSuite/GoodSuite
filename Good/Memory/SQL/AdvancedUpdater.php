@@ -191,6 +191,26 @@ class AdvancedUpdater implements StorableVisitor
         }
     }
 
+    public function visitBooleanProperty($name, $dirty, $value)
+    {
+        if ($dirty)
+        {
+            $this->comma();
+
+            $this->sql .= '`' . $this->storage->fieldNamify($name) . '`';
+            $this->sql .= ' = ';
+
+            if ($value === null)
+            {
+                $this->sql .= 'NULL';
+            }
+            else
+            {
+                $this->sql .= $this->storage->parseBoolean($value);
+            }
+        }
+    }
+
     public function visitCollectionProperty($name, $value, $modifier)
     {
         if ($modifier->isDirty())

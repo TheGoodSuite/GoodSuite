@@ -71,6 +71,7 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
         $ref = new AnotherType();
         $ref->yourInt = 50;
         $ins->myReference = $ref;
+        $ins->myBoolean = true;
         $storage->insert($ins);
 
         $ins = new SimpleUpdateType();
@@ -81,6 +82,7 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
         $ref = new AnotherType();
         $ref->yourInt = 40;
         $ins->myReference = $ref;
+        $ins->myBoolean = false;
         $storage->insert($ins);
 
         $ins = new SimpleUpdateType();
@@ -91,6 +93,7 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
         $ref = new AnotherType();
         $ref->yourInt = 30;
         $ins->myReference = $ref;
+        $ins->myBoolean = true;
         $storage->insert($ins);
 
         $ins = new SimpleUpdateType();
@@ -101,6 +104,7 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
         $ref = new AnotherType();
         $ref->yourInt = 20;
         $ins->myReference = $ref;
+        $ins->myBoolean = true;
         $storage->insert($ins);
 
         $ins = new SimpleUpdateType();
@@ -111,6 +115,7 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
         $ref = new AnotherType();
         $ref->yourInt = 10;
         $ins->myReference = $ref;
+        $ins->myBoolean = null;
         $storage->insert($ins);
 
         $storage->flush();
@@ -145,6 +150,7 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
                 $hay->myFloat === $needle->myFloat &&
                 $hay->myText === $needle->myText &&
                 $hay->myDatetime == $needle->myDatetime &&
+                $hay->myBoolean === $needle->myBoolean &&
                 // they are both null
                 (($hay->myReference === null && $needle->myReference === null) ||
                 // or neither is null (so we won't be calling functions on null)
@@ -204,6 +210,7 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
             $type->myFloat = 1.1;
             $type->myText = "Zero";
             $type->myDatetime = new DateTimeImmutable('1999-12-31');
+            $type->myBoolean = false;
         }
 
         $this->storage1->flush();
@@ -217,6 +224,7 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new DateTimeImmutable('1999-12-31');
         $ins->myReference = new AnotherType();
         $ins->myReference->yourInt = 50;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new SimpleUpdateType();
@@ -226,6 +234,7 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new DateTimeImmutable('1999-12-31');
         $ins->myReference = new AnotherType();
         $ins->myReference->yourInt = 40;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new SimpleUpdateType();
@@ -235,6 +244,7 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new DateTimeImmutable('1999-12-31');
         $ins->myReference = new AnotherType();
         $ins->myReference->yourInt = 30;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new SimpleUpdateType();
@@ -244,6 +254,7 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new DateTimeImmutable('1999-12-31');
         $ins->myReference = new AnotherType();
         $ins->myReference->yourInt = 20;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new SimpleUpdateType();
@@ -253,6 +264,7 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myDatetime = new DateTimeImmutable('1999-12-31');
         $ins->myReference = new AnotherType();
         $ins->myReference->yourInt = 10;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $this->checkResults($expectedResults);
@@ -270,12 +282,14 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
             {
                 $type->myInt = null;
                 $type->myText = null;
+                $type->myBoolean = null;
             }
 
             if ($type->myInt == 10)
             {
                 $type->myFloat = null;
                 $type->myDatetime = null;
+                $type->myBoolean = null;
             }
         }
 
@@ -291,6 +305,7 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
         $ref = new AnotherType();
         $ref->yourInt = 50;
         $ins->myReference = $ref;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new SimpleUpdateType();
@@ -301,6 +316,7 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
         $ref = new AnotherType();
         $ref->yourInt = 40;
         $ins->myReference = $ref;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $ins = new SimpleUpdateType();
@@ -311,6 +327,7 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
         $ref = new AnotherType();
         $ref->yourInt = 30;
         $ins->myReference = $ref;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new SimpleUpdateType();
@@ -321,6 +338,7 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
         $ref = new AnotherType();
         $ref->yourInt = 20;
         $ins->myReference = $ref;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $ins = new SimpleUpdateType();
@@ -331,6 +349,7 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
         $ref = new AnotherType();
         $ref->yourInt = 10;
         $ins->myReference = $ref;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $this->checkResults($expectedResults);
@@ -378,6 +397,7 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
         $ref = new AnotherType();
         $ref->yourInt = 50;
         $ins->myReference = $ref;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new SimpleUpdateType();
@@ -388,6 +408,7 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
         $ref = new AnotherType();
         $ref->yourInt = 40;
         $ins->myReference = $ref;
+        $ins->myBoolean = false;
         $expectedResults[] = $ins;
 
         $ins = new SimpleUpdateType();
@@ -396,6 +417,7 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
         $ins->myText = null;
         $ins->myDatetime = new \DateTimeImmutable('2008-08-08');
         $ins->myReference = null;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new SimpleUpdateType();
@@ -406,6 +428,7 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
         $ref = new AnotherType();
         $ref->yourInt = 30;
         $ins->myReference = $ref;
+        $ins->myBoolean = true;
         $expectedResults[] = $ins;
 
         $ins = new SimpleUpdateType();
@@ -416,6 +439,7 @@ abstract class GoodMannersSimpleUpdateTest extends \PHPUnit\Framework\TestCase
         $ref = new AnotherType();
         $ref->yourInt = 144;
         $ins->myReference = $ref;
+        $ins->myBoolean = null;
         $expectedResults[] = $ins;
 
         $this->checkResults($expectedResults);

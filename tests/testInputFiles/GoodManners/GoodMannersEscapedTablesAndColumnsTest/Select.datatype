@@ -6,4 +6,5 @@ datatype Select
    text order;
    datetime by;
    "Create" group;
+   boolean drop;
 }

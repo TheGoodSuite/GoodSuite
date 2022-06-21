@@ -19,11 +19,12 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
         $this->assertTrue(true);
     }
 
-    private function assertSelectObject($result, $from, $where, $order, $by)
+    private function assertSelectObject($result, $from, $where, $order, $by, $drop)
     {
         $this->assertSame($from, $result->from);
         $this->assertSame($where, $result->where);
         $this->assertSame($order, $result->order);
+        $this->assertSame($drop, $result->drop);
         $this->assertEquals($by, $result->by);
     }
 
@@ -80,12 +81,14 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
         // just doubling this up (from tearDown) to be sure
         // this should be handled natively once that is implemented
         $this->truncateTable('select');
+        $this->truncateTable('create');
 
         $this->storage = $this->getNewStorage();
     }
 
     public function tearDown(): void
     {
+        return;
         // Just doing this already to make sure the deconstructor will hasve
         // side-effects at an unspecified moment...
         // (at which point the database will probably be in a wrong state for this)
@@ -93,6 +96,7 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
 
         // this should be handled through the GoodManners API once that is implemented
         $this->truncateTable('select');
+        $this->truncateTable('create');
 
         $this->_tearDownAfterClass();
     }
@@ -106,6 +110,7 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
         $ins->where = 1.0;
         $ins->order = "One";
         $ins->by = new DateTimeImmutable("2001-01-01");
+        $ins->drop = true;
         $ins->group = new Create();
         $ins->group->table = 1000;
         $ins->group->view = 1.0;
@@ -118,6 +123,7 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
         $ins->where = 2.0;
         $ins->order = "Two";
         $ins->by = new DateTimeImmutable("2002-02-02");
+        $ins->drop = false;
         $ins->group = new Create();
         $ins->group->table = 2000;
         $ins->group->view = 2.0;
@@ -145,6 +151,7 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
         $select->where = 3.14159;
         $select->order = "Text";
         $select->by = new DateTimeImmutable("2020-01-01");
+        $select->drop = true;
 
         $this->storage->insert($select);
 
@@ -165,11 +172,11 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
         $results = $this->storage->fetchAll($resolver);
 
         $result = $results->getNext();
-        $this->assertSelectObject($result, 1000, 1.0, "One", new DateTimeImmutable("2001-01-01"));
+        $this->assertSelectObject($result, 1000, 1.0, "One", new DateTimeImmutable("2001-01-01"), true);
         $this->assertCreateObject($result->group, 1000, 1.0, "One", new DateTimeImmutable("2001-01-01"));
 
         $result = $results->getNext();
-        $this->assertSelectObject($result, 2000, 2.0, "Two", new DateTimeImmutable("2002-02-02"));
+        $this->assertSelectObject($result, 2000, 2.0, "Two", new DateTimeImmutable("2002-02-02"), false);
         $this->assertCreateObject($result->group, 2000, 2.0, "Two", new DateTimeImmutable("2002-02-02"));
     }
 
@@ -205,6 +212,7 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
             $select->where += 3;
             $select->order .= "Three";
             $select->by = $select->by->modify("+3 days");
+            $select->drop = null;
         }
 
         $this->storage->flush();
@@ -212,10 +220,10 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
         $results = $this->getAllSelects();
 
         $result = $results->getNext();
-        $this->assertSelectObject($result, 4000, 4.0, "OneThree", new DateTimeImmutable("2001-01-04"));
+        $this->assertSelectObject($result, 4000, 4.0, "OneThree", new DateTimeImmutable("2001-01-04"), null);
 
         $result = $results->getNext();
-        $this->assertSelectObject($result, 5000, 5.0, "TwoThree", new DateTimeImmutable("2002-02-05"));
+        $this->assertSelectObject($result, 5000, 5.0, "TwoThree", new DateTimeImmutable("2002-02-05"), null);
     }
 
     public function testModifyAny()
@@ -233,16 +241,17 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
         $change->where = 9.9;
         $change->order = "Nine";
         $change->by = new DateTimeImmutable("2009-09-09");
+        $change->drop = null;
 
         $this->storage->modifyAny($condition, $change);
 
         $results = $this->getAllSelects();
 
         $result = $results->getNext();
-        $this->assertSelectObject($result, 2000, 2.0, "Two", new DateTimeImmutable("2002-02-02"));
+        $this->assertSelectObject($result, 2000, 2.0, "Two", new DateTimeImmutable("2002-02-02"), false);
 
         $result = $results->getNext();
-        $this->assertSelectObject($result, 9999, 9.9, "Nine", new DateTimeImmutable("2009-09-09"));
+        $this->assertSelectObject($result, 9999, 9.9, "Nine", new DateTimeImmutable("2009-09-09"), null);
     }
 
     public function testEqualTo()
@@ -254,11 +263,12 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
         $condition->where = 1.0;
         $condition->order = "One";
         $condition->by = new DateTimeImmutable("2001-01-01");
+        $condition->drop = true;
 
         $results = $this->storage->fetchAll($condition);
 
         $result = $results->getNext();
-        $this->assertSelectObject($result, 1000, 1.0, "One", new DateTimeImmutable("2001-01-01"));
+        $this->assertSelectObject($result, 1000, 1.0, "One", new DateTimeImmutable("2001-01-01"), true);
 
         $this->assertSame(null, $results->getNext());
     }
@@ -272,11 +282,12 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
         $condition->where = new \Good\Manners\Condition\NotEqualTo(1.0);
         $condition->order = new \Good\Manners\Condition\NotEqualTo("One");
         $condition->by = new \Good\Manners\Condition\NotEqualTo(new DateTimeImmutable("2001-01-01"));
+        $condition->drop = new \Good\Manners\Condition\NotEqualTo(true);
 
         $results = $this->storage->fetchAll($condition);
 
         $result = $results->getNext();
-        $this->assertSelectObject($result, 2000, 2.0, "Two", new DateTimeImmutable("2002-02-02"));
+        $this->assertSelectObject($result, 2000, 2.0, "Two", new DateTimeImmutable("2002-02-02"), false);
 
         $this->assertSame(null, $results->getNext());
     }
@@ -294,7 +305,7 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
         $results = $this->storage->fetchAll($condition);
 
         $result = $results->getNext();
-        $this->assertSelectObject($result, 1000, 1.0, "One", new DateTimeImmutable("2001-01-01"));
+        $this->assertSelectObject($result, 1000, 1.0, "One", new DateTimeImmutable("2001-01-01"), true);
 
         $this->assertSame(null, $results->getNext());
     }
@@ -312,7 +323,7 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
         $results = $this->storage->fetchAll($condition);
 
         $result = $results->getNext();
-        $this->assertSelectObject($result, 1000, 1.0, "One", new DateTimeImmutable("2001-01-01"));
+        $this->assertSelectObject($result, 1000, 1.0, "One", new DateTimeImmutable("2001-01-01"), true);
 
         $this->assertSame(null, $results->getNext());
     }
@@ -330,7 +341,7 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
         $results = $this->storage->fetchAll($condition);
 
         $result = $results->getNext();
-        $this->assertSelectObject($result, 2000, 2.0, "Two", new DateTimeImmutable("2002-02-02"));
+        $this->assertSelectObject($result, 2000, 2.0, "Two", new DateTimeImmutable("2002-02-02"), false);
 
         $this->assertSame(null, $results->getNext());
     }
@@ -351,10 +362,10 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
         $results = $this->storage->fetchAll($condition, $resolver);
 
         $result = $results->getNext();
-        $this->assertSelectObject($result, 1000, 1.0, "One", new DateTimeImmutable("2001-01-01"));
+        $this->assertSelectObject($result, 1000, 1.0, "One", new DateTimeImmutable("2001-01-01"), true);
 
         $result = $results->getNext();
-        $this->assertSelectObject($result, 2000, 2.0, "Two", new DateTimeImmutable("2002-02-02"));
+        $this->assertSelectObject($result, 2000, 2.0, "Two", new DateTimeImmutable("2002-02-02"), false);
     }
 
     public function testOrderByAsc()
@@ -370,10 +381,10 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
         $results = $this->storage->fetchAll($resolver);
 
         $result = $results->getNext();
-        $this->assertSelectObject($result, 1000, 1.0, "One", new DateTimeImmutable("2001-01-01"));
+        $this->assertSelectObject($result, 1000, 1.0, "One", new DateTimeImmutable("2001-01-01"), true);
 
         $result = $results->getNext();
-        $this->assertSelectObject($result, 2000, 2.0, "Two", new DateTimeImmutable("2002-02-02"));
+        $this->assertSelectObject($result, 2000, 2.0, "Two", new DateTimeImmutable("2002-02-02"), false);
     }
 
     public function testOrderByDesc()
@@ -389,10 +400,10 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
         $results = $this->storage->fetchAll($resolver);
 
         $result = $results->getNext();
-        $this->assertSelectObject($result, 2000, 2.0, "Two", new DateTimeImmutable("2002-02-02"));
+        $this->assertSelectObject($result, 2000, 2.0, "Two", new DateTimeImmutable("2002-02-02"), false);
 
         $result = $results->getNext();
-        $this->assertSelectObject($result, 1000, 1.0, "One", new DateTimeImmutable("2001-01-01"));
+        $this->assertSelectObject($result, 1000, 1.0, "One", new DateTimeImmutable("2001-01-01"), true);
     }
 
     public function testReferenceCondition()
@@ -423,7 +434,7 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
         $results = $this->storage->fetchAll($condition, $resolver);
 
         $result = $results->getNext();
-        $this->assertSelectObject($result, 1000, 1.0, "One", new DateTimeImmutable("2001-01-01"));
+        $this->assertSelectObject($result, 1000, 1.0, "One", new DateTimeImmutable("2001-01-01"), true);
     }
 
     public function testUnresolvedReferencePropertiesCondition()
@@ -439,7 +450,7 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
         $results = $this->storage->fetchAll($condition);
 
         $result = $results->getNext();
-        $this->assertSelectObject($result, 1000, 1.0, "One", new DateTimeImmutable("2001-01-01"));
+        $this->assertSelectObject($result, 1000, 1.0, "One", new DateTimeImmutable("2001-01-01"), true);
     }
 
     public function testModifyAnyWithReferencePropertiesInCondition()

@@ -185,6 +185,62 @@ class GoodMannersCollectionTest extends \PHPUnit\Framework\TestCase
         }
     }
 
+    public function testBooleanCollectionSetFromArray()
+    {
+        $myCollectionType = new CollectionType();
+
+        $myCollectionType->setFromArray(["myBooleans" => [true]]);
+
+        foreach ($myCollectionType->myBooleans as $myBoolean)
+        {
+            $this->assertSame(true, $myBoolean);
+        }
+
+        $myCollectionType = new CollectionType();
+
+        $myCollectionType->setFromArray(["myBooleans" => [false]]);
+
+        foreach ($myCollectionType->myBooleans as $myBoolean)
+        {
+            $this->assertSame(false, $myBoolean);
+        }
+    }
+
+    public function testBooleanCollectionSetFromArrayTypeCasting()
+    {
+        $myCollectionType = new CollectionType();
+
+        $myCollectionType->setFromArray(["myBooleans" => [1]]);
+
+        foreach ($myCollectionType->myBooleans as $myBoolean)
+        {
+            $this->assertIsBool($myBoolean);
+            $this->assertSame(true, $myBoolean);
+        }
+
+        $myCollectionType = new CollectionType();
+
+        $myCollectionType->setFromArray(["myBooleans" => [0]]);
+
+        foreach ($myCollectionType->myBooleans as $myBoolean)
+        {
+            $this->assertIsBool($myBoolean);
+            $this->assertSame(false, $myBoolean);
+        }
+    }
+
+    public function testBooleanCollectionToArray()
+    {
+        $myCollectionType = new CollectionType();
+
+        $myCollectionType->myBooleans->add(true);
+
+        foreach ($myCollectionType->toArray(true)['myBooleans'] as $myBoolean)
+        {
+            $this->assertEquals(true, $myBoolean);
+        }
+    }
+
     public function testReferenceCollectionSetFromArray()
     {
         $myCollectionType = new CollectionType();

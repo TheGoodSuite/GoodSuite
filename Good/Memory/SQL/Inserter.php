@@ -191,6 +191,26 @@ class Inserter implements StorableVisitor
         }
     }
 
+    public function visitBooleanProperty($name, $dirty, $value)
+    {
+        // If not dirty, do not include field and use default value
+        if ($dirty)
+        {
+            $this->comma();
+
+            $this->sql .= '`' . $this->storage->fieldNamify($name) . '`';
+
+            if ($value === null)
+            {
+                $this->values .= 'NULL';
+            }
+            else
+            {
+                $this->values .= $this->storage->parseBoolean($value);
+            }
+        }
+    }
+
     public function visitCollectionProperty($name, $collection, $modifier)
     {
         // The CollectionProcessor has already made CollectionEntries for

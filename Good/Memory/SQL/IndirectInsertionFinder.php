@@ -11,6 +11,7 @@ use Good\Rolemodel\Schema\Type\TextType;
 use Good\Rolemodel\Schema\Type\IntType;
 use Good\Rolemodel\Schema\Type\FloatType;
 use Good\Rolemodel\Schema\Type\DatetimeType;
+use Good\Rolemodel\Schema\Type\BooleanType;
 use Good\Rolemodel\Schema\Type\CollectionType;
 
 class IndirectInsertionFinder implements StorableVisitor, TypeVisitor
@@ -38,6 +39,7 @@ class IndirectInsertionFinder implements StorableVisitor, TypeVisitor
     public function visitIntProperty($name, $dirty, $value) {}
     public function visitFloatProperty($name, $dirty, $value) {}
     public function visitDatetimeProperty($name, $dirty, $value) {}
+    public function visitBooleanProperty($name, $dirty, $value) {}
 
     public function visitCollectionProperty($name, $value, $modifier)
     {
@@ -82,6 +84,7 @@ class IndirectInsertionFinder implements StorableVisitor, TypeVisitor
     public function visitIntType(IntType $type) {}
     public function visitFloatType(FloatType $type) {}
     public function visitDateTimeType(DatetimeType $type) {}
+    public function visitBooleanType(BooleanType $type) {}
     public function visitCollectionType(CollectionType $type) {}
 
 }

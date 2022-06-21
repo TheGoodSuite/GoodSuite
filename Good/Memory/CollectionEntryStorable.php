@@ -9,6 +9,7 @@ use Good\Manners\ValidationToken;
 use Good\Rolemodel\Schema\Type;
 use Good\Rolemodel\Schema\Type\CollectionType;
 use Good\Rolemodel\Schema\Type\DateTimeType;
+use Good\Rolemodel\Schema\Type\BooleanType;
 use Good\Rolemodel\Schema\Type\FloatType;
 use Good\Rolemodel\Schema\Type\IntType;
 use Good\Rolemodel\Schema\Type\ReferenceType;
@@ -51,6 +52,11 @@ class CollectionEntryStorable implements Storable, TypeVisitor
     public function  visitDateTimeType(DateTimeType $type)
     {
         $this->storableVisitor->visitDateTimeProperty("value", true, $this->value);
+    }
+
+    public function  visitBooleanType(BooleanType $type)
+    {
+        $this->storableVisitor->visitBooleanProperty("value", true, $this->value);
     }
 
     public function visitFloatType(FloatType $type)

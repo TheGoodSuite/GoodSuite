@@ -1,5 +1,5 @@
 
-datatype PersistenceType
+datatype ArgumentsType
 {
    int myInt;
    float myFloat;
