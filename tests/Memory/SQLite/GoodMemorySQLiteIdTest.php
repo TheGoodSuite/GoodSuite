@@ -26,6 +26,11 @@ class GoodMemorySQLiteIdTest extends GoodMannersIdTest
         $db = $this->getNewDb();
         $db->query("DELETE FROM " . $table);
     }
+
+    protected function referencesAreUnresolvedUnlessExplicitlyResolved()
+    {
+        return true;
+    }
 }
 
 ?>

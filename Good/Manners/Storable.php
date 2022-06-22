@@ -25,6 +25,7 @@ interface Storable
     public function getType();
     public function acceptStorableVisitor(StorableVisitor $visitor);
     public function markCollectionsUnresolved();
+    public function isResolved();
 }
 
 

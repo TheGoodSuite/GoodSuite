@@ -151,6 +151,11 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $res  = '    private $validationToken = null;' . "\n";
         $res .= '    protected $isUnresolved = false;' . "\n";
         $res .= "    \n";
+        $res .= '    public function isResolved()' . "\n";
+        $res .= "    {\n";
+        $res .= '        return !$this->isUnresolved;' . "\n";
+        $res .= "    }\n";
+        $res .= "    \n";
         $res .= '    private function GMMStorable_checkValidationToken()' . "\n";
         $res .= "    {\n";
         $res .= '        if ($this->validationToken != null && !$this->validationToken->value())' . "\n";
@@ -227,6 +232,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $res .= "        }\n";
         $res .= "\n";
         $res .= '        $this->storage->resolve($this, $resolver);' . "\n";
+        $res .= '        $this->isUnresolved = false;' . "\n";
         $res .= "\n";
         $res .= '        return $this;' . "\n";
         $res .= "    }\n";

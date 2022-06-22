@@ -20,6 +20,9 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
     abstract public function getNewDb();
     abstract public function truncateTable($table);
 
+    // Implementations are allowed to deviate from that (in which case resolving them should just do nothing)
+    abstract protected function referencesAreUnresolvedUnlessExplicitlyResolved();
+
     public static function _setUpBeforeClass()
     {
         // Garbage collector causes segmentation fault, so we disable
@@ -566,9 +569,38 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
 
         $this->assertInstanceOf('\Good\Manners\Storable', $id);
 
+        if ($this->referencesAreUnresolvedUnlessExplicitlyResolved())
+        {
+            $this->assertFalse($id->reference->isResolved());
+        }
+
         $id->reference->resolve();
 
+        $this->assertTrue($id->reference->isResolved());
+
         $this->assertSame($id->reference->myText, "a");
+    }
+
+    public function testIdGoesFromUnresolvedToResolvedWhenResolving()
+    {
+
+        // first we get a result from the database to find out what irs id is
+
+        // Get the object with text == 'a'
+        $condition = IdType::condition();
+        $condition->myText = 'a';
+
+        $results = $this->storage->fetchAll($condition, IdType::resolver());
+
+        $idHolder = $results->getNext();
+
+        $id = IdType::reference($this->storage, $idHolder->getId());
+
+        $this->assertFalse($id->isResolved());
+
+        $id->resolve();
+
+        $this->assertTrue($id->isResolved());
     }
 }
 

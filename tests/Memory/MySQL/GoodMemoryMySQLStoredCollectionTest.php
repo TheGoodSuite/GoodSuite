@@ -27,6 +27,11 @@ class GoodMemoryMySQLStoredCollectionTest extends GoodMannersStoredCollectionTes
         $db = $this->getNewDb();
         $db->query("TRUNCATE " . $table);
     }
+
+    protected function collectionsAreUnresolvedUnlessExplicitlyResolved()
+    {
+        return true;
+    }
 }
 
 ?>

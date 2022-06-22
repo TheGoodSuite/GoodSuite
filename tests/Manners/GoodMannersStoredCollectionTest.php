@@ -14,6 +14,9 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
     // this function should be removed, but is used for clearing the database at the moment
     abstract public function truncateTable($table);
 
+    // Implementations are allowed to deviate from that (in which case resolving them should just do nothing)
+    abstract protected function collectionsAreUnresolvedUnlessExplicitlyResolved();
+
     private function assertNoExceptions()
     {
         $this->assertTrue(true);
@@ -1502,7 +1505,14 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
             $expected = [2, 4];
             $i = 0;
 
+            if ($this->collectionsAreUnresolvedUnlessExplicitlyResolved())
+            {
+                $this->assertFalse($result->myInts->isResolved());
+            }
+
             $result->myInts->resolve();
+
+            $this->assertTrue($result->myInts->isResolved());
 
             $this->assertSame(2, $result->myInts->count());
 
@@ -1525,6 +1535,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         foreach ($results as $result)
         {
+
             $result->myReferences->resolve();
 
             $references = $result->myReferences->toArray();

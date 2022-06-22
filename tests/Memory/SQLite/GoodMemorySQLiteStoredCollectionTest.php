@@ -26,6 +26,11 @@ class GoodMemorySQLiteStoredCollectionTest extends GoodMannersStoredCollectionTe
         $db = $this->getNewDb();
         $db->query("DELETE FROM " . $table);
     }
+
+    protected function collectionsAreUnresolvedUnlessExplicitlyResolved()
+    {
+        return true;
+    }
 }
 
 ?>

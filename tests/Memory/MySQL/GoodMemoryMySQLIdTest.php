@@ -27,6 +27,11 @@ class GoodMemoryMySQLIdTest extends GoodMannersIdTest
         $db = $this->getNewDb();
         $db->query("TRUNCATE " . $table);
     }
+
+    protected function referencesAreUnresolvedUnlessExplicitlyResolved()
+    {
+        return true;
+    }
 }
 
 ?>
