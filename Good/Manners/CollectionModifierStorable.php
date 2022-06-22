@@ -74,10 +74,16 @@ class CollectionModifierStorable implements CollectionBehaviorModifier
         $this->cleared = false;
     }
 
+    public function markResolved()
+    {
+        $this->resolved = true;
+    }
+
     public function markUnresolved()
     {
         $this->resolved = false;
     }
+
 
     public function isDirty()
     {

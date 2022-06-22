@@ -21,6 +21,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
     private $clean;
     private $markUnresolved;
     private $isDirty;
+    private $setStorageOnCollections;
 
     private $condition;
     private $conditionSetterSwitch;
@@ -145,6 +146,8 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
     public function classBody(Schema\TypeDefinition $typeDefinition)
     {
+        $this->generateIncludableFragments($typeDefinition);
+
         $res  = '    private $validationToken = null;' . "\n";
         $res .= '    protected $isUnresolved = false;' . "\n";
         $res .= "    \n";
@@ -168,6 +171,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $res .= '    public function setStorage(\\Good\\Manners\\Storage $storage)' . "\n";
         $res .= "    {\n";
         $res .= '        $this->storage = $storage;' . "\n";
+        $res .= $this->setStorageOnCollections;
         $res .= "    }\n";
         $res .= "    \n";
         $res .= '    private $deleted = false;' . "\n";
@@ -227,8 +231,6 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $res .= '        return $this;' . "\n";
         $res .= "    }\n";
         $res .= "    \n";
-
-        $this->generateIncludableFragments($typeDefinition);
 
         $this->extraFiles[$typeDefinition->getName() . 'Resolver.php'] = $this->resolver;
         $this->extraFiles[$typeDefinition->getName() . 'Condition.php'] = $this->condition;
@@ -341,6 +343,8 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->markUnresolved  = '    public function markCollectionsUnresolved()' . "\n";
         $this->markUnresolved .= "    {\n";
         $this->markUnresolved .= "        \n";
+
+        $this->setStorageOnCollections = '';
 
         foreach ($typeDefinition->getMembers() as $member)
         {
@@ -668,6 +672,11 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->constructor .= '        $this->' . $this->member->getName() . 'Modifier = ';
         $this->constructor .= 'new \Good\Manners\CollectionModifierStorable();' . "\n";
+        $this->constructor .= '        $this->' . $this->member->getName()
+                                . ' = new \Good\Manners\ResolvableCollection('
+                                . 'self::$' . $this->member->getName() . 'Type->getCollectedType(), '
+                                . '$this->' . $this->member->getName() . 'Modifier, '
+                                . '$this, "' . $this->member->getName() . '");' . "\n";
         $this->constructor .= '        $this->' . $this->member->getName() . '->registerBehaviorModifier(';
         $this->constructor .= '$this->' . $this->member->getName() . 'Modifier);' . "\n";
 
@@ -712,6 +721,8 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->conditionComplexProcess .= '            $processor->processCollectionMember(' . $this->typeDefinition->getName();
         $this->conditionComplexProcess .= '::$' . $this->member->getName() . 'Type, "' . $this->member->getName() . '", $this->' . $this->member->getName() . ');' . "\n";
         $this->conditionComplexProcess .= "        }\n";
+
+        $this->setStorageOnCollections .= '       $this->' . $this->member->getName() . '->setStorage($storage);' . "\n";
 
         // A bit of a misuse of getReferencedTypeIfAny: if I ever want to remove it, I shouldn't let this get in the way!
         $this->visitNonReference(false, $type->getCollectedType()->getReferencedTypeIfAny() == null, $orderableCheck);

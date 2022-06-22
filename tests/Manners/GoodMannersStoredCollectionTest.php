@@ -1487,6 +1487,56 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         $this->assertSame($count, 3);
     }
+
+    public function testDelayedResolvePrimitiveCollection()
+    {
+        $this->populateDatabase();
+
+        $condition = CollectionType::condition();
+        $condition->someInt = 4;
+
+        $results = $this->storage->fetchAll($condition);
+
+        foreach ($results as $result)
+        {
+            $expected = [2, 4];
+            $i = 0;
+
+            $result->myInts->resolve();
+
+            $this->assertSame(2, $result->myInts->count());
+
+            foreach ($result->myInts as $myInt)
+            {
+                $this->assertSame($expected[$i], $myInt);
+                $i++;
+            }
+        }
+    }
+
+    public function testDelayedResolveReferenceCollection()
+    {
+        $this->populateDatabase();
+
+        $condition = CollectionType::condition();
+        $condition->someInt = 4;
+
+        $results = $this->storage->fetchAll($condition);
+
+        foreach ($results as $result)
+        {
+            $result->myReferences->resolve();
+
+            $references = $result->myReferences->toArray();
+
+            $this->assertSame(2, count($references));
+            $this->assertSame($result->id, $references[0]->id);
+            $this->assertSame(4, $references[0]->someInt);
+            $this->assertNotSame($result, $references[1]);
+            $this->assertNotSame($result->id, $references[1]->id);
+            $this->assertSame(1, $references[1]->someInt);
+        }
+    }
 }
 
 ?>

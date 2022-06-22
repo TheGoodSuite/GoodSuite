@@ -9,6 +9,7 @@ use Good\Manners\Storable;
 use Good\Manners\Condition;
 use Good\Manners\Condition\EqualTo;
 use Good\Manners\Resolver;
+use Good\Manners\ResolvableCollection;
 use Good\Memory\SQL\IndirectInsertionFinder;
 use Good\Memory\SQL\CollectionProcessor;
 
@@ -132,6 +133,34 @@ class SQLStorage extends Storage
         }
 
         return $result;
+    }
+
+    public function resolveCollection(ResolvableCollection $collection, Resolver $resolver = null)
+    {
+        if ($collection->getStorable()->id === null)
+        {
+            throw new \Exception("Can only resolve a collection on a storable that has an id");
+        }
+
+        $storable = $collection->getStorable();
+
+        $condition = new EqualTo($storable);
+
+        $collectionColumn = $collection->getFieldName();
+        $resolveCollectionColumn = 'resolve' . \ucfirst($collectionColumn);
+        $resolver = $storable::resolver();
+        $resolver->$resolveCollectionColumn();
+
+        $results = $this->fetchAll($condition, $resolver);
+        $storableWithCollection = $results->getNext();
+
+        if ($storableWithCollection == null) {
+            throw new \Exception("The collection was not found in storage");
+        }
+
+        $collection->resolveWithData($storableWithCollection->$collectionColumn);
+
+        return $collection;
     }
 
     public function isManagedStorable(Storable $storable)
