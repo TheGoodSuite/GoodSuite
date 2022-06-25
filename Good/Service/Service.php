@@ -27,7 +27,7 @@ class Service
     public function load()
     {
         $inputTime = $this->lastModifiedRecursively($this->inputDir, 'datatype');
-        $outputTime = $this->lastModifiedRecursively($this->outputDir, 'datatype');
+        $outputTime = $this->lastModifiedRecursively($this->outputDir, 'php');
 
         $files = $this->listFiles($this->inputDir, 'datatype');
         $rolemodel = new Rolemodel();
