@@ -573,12 +573,12 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
         {
             $this->assertFalse($id->reference->isResolved());
         }
-        $this->assertFalse($id->reference->isExplicitlyResolved());
+        $this->assertFalse($id->isReferenceExplicitlyResolved());
 
         $id->reference->resolve();
 
         $this->assertTrue($id->reference->isResolved());
-        $this->assertTrue($id->reference->isExplicitlyResolved());
+        $this->assertTrue($id->isReferenceExplicitlyResolved());
 
         $this->assertSame($id->reference->myText, "a");
     }
@@ -599,12 +599,10 @@ abstract class GoodMannersIdTest extends \PHPUnit\Framework\TestCase
         $id = IdType::reference($this->storage, $idHolder->getId());
 
         $this->assertFalse($id->isResolved());
-        $this->assertFalse($id->isExplicitlyResolved());
 
         $id->resolve();
 
         $this->assertTrue($id->isResolved());
-        $this->assertTrue($id->isExplicitlyResolved());
     }
 }
 

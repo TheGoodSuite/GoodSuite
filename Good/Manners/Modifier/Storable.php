@@ -22,6 +22,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
     private $markUnresolved;
     private $isDirty;
     private $setStorageOnCollections;
+    private $isExplicitlyResolved;
 
     private $condition;
     private $conditionSetterSwitch;
@@ -156,11 +157,6 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $res .= '        return !$this->isUnresolved;' . "\n";
         $res .= "    }\n";
         $res .= "    \n";
-        $res .= '    public function isExplicitlyResolved()' . "\n";
-        $res .= "    {\n";
-        $res .= '        return $this->isResolved();' . "\n";
-        $res .= "    }\n";
-        $res .= "    \n";
         $res .= '    private function GMMStorable_checkValidationToken()' . "\n";
         $res .= "    {\n";
         $res .= '        if ($this->validationToken != null && !$this->validationToken->value())' . "\n";
@@ -241,6 +237,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $res .= "\n";
         $res .= '        return $this;' . "\n";
         $res .= "    }\n";
+        $res .= $this->isExplicitlyResolved;
         $res .= "    \n";
 
         $this->extraFiles[$typeDefinition->getName() . 'Resolver.php'] = $this->resolver;
@@ -356,6 +353,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->markUnresolved .= "        \n";
 
         $this->setStorageOnCollections = '';
+        $this->isExplicitlyResolved = '';
 
         foreach ($typeDefinition->getMembers() as $member)
         {
@@ -371,6 +369,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
             $this->conditionSatisfied .= '            $result = $result && $this->' . $member->getName() . '->isSatisfiedBy($value->' . $member->getName() . ');' . "\n";
             $this->conditionSatisfied .= "        }\n";
             $this->conditionSatisfied .= "\n";
+
         }
 
         $this->markUnresolved .= "    }\n";
@@ -528,6 +527,12 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
     public function visitReferenceType(Schema\Type\ReferenceType $type)
     {
+        $this->isExplicitlyResolved .= "    \n";
+        $this->isExplicitlyResolved .= '    public function is' . \ucfirst($this->member->getName()) . 'ExplicitlyResolved()' . "\n";
+        $this->isExplicitlyResolved .= "    {\n";
+        $this->isExplicitlyResolved .= '        return $this->' . $this->member->getName() . ' !== null && $this->' . $this->member->getName() . '->isResolved();' . "\n";
+        $this->isExplicitlyResolved .= "    }\n";
+
         $this->accept .= '        $visitor->visitReferenceProperty("' . $this->member->getName() . '", ' .
                                             '"' . $type->getReferencedType() . '", ' .
                                             '$this->is' . \ucfirst($this->member->getName()) . 'Dirty, ' .
@@ -545,7 +550,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $toArrayFormatterWriter = new ToArrayFormatterWriter();
         $toArrayFormatter = $toArrayFormatterWriter->writeToArrayFormatter('$this->' . $this->member->getName(), $type);
 
-        $this->toArray .= '        if($this->' . $this->member->getName() . ' !== null && $this->' . $this->member->getName() . '->isExplicitlyResolved())' . "\n";
+        $this->toArray .= '        if($this->is' . \ucfirst($this->member->getName()) . 'ExplicitlyResolved())' . "\n";
         $this->toArray .= "        {\n";
         $this->toArray .= '            $arr["' . $this->member->getName() . '"] = ' . $toArrayFormatter . ";\n";
         $this->toArray .= "        }\n";
@@ -644,6 +649,12 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
     public function visitCollectionType(Schema\Type\CollectionType $type)
     {
+        $this->isExplicitlyResolved .= "    \n";
+        $this->isExplicitlyResolved .= '    public function is' . \ucfirst($this->member->getName()) . 'ExplicitlyResolved()' . "\n";
+        $this->isExplicitlyResolved .= "    {\n";
+        $this->isExplicitlyResolved .= '        return $this->' . $this->member->getName() . '->isResolved();' . "\n";
+        $this->isExplicitlyResolved .= "    }\n";
+
         $this->accept .= '        $visitor->visitCollectionProperty("' . $this->member->getName() . '", ' .
                                             '$this->' . $this->member->getName() . ', ' .
                                             '$this->' . $this->member->getName() . 'Modifier);' . "\n";
@@ -662,7 +673,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $toArrayFormatterWriter = new ToArrayFormatterWriter();
         $toArrayFormatter = $toArrayFormatterWriter->writeToArrayFormatter('$this->' . $this->member->getName(), $type);
 
-        $this->toArray .= '        if($this->' . $this->member->getName() . '->isExplicitlyResolved())' . "\n";
+        $this->toArray .= '        if($this->is' . \ucfirst($this->member->getName()) . 'ExplicitlyResolved())' . "\n";
         $this->toArray .= "        {\n";
         $this->toArray .= '            $arr["' . $this->member->getName() . '"] = ' . $toArrayFormatter . ";\n";
         $this->toArray .= "        }\n";
