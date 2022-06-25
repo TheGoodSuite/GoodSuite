@@ -449,13 +449,18 @@ class SQLStorage extends Storage
 
         foreach ($data[$table] as $field => $value)
         {
-            $storableData[$field] = $this->getStorableOrValue(
+            $valueOrStorable = $this->getStorableOrValue(
                 $field,
                 $value,
                 $joins,
                 $tableNumber,
                 $allData,
                 0);
+
+            if ($valueOrStorable !== null || array_key_exists($field, $joins[$tableNumber]))
+            {
+                $storableData[$field] = $valueOrStorable;
+            }
         }
 
         $denamifier = new FieldDenamifier($this);
