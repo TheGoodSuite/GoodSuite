@@ -1509,10 +1509,12 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
             {
                 $this->assertFalse($result->myInts->isResolved());
             }
+            $this->assertFalse($result->myInts->isExplicitlyResolved());
 
             $result->myInts->resolve();
 
             $this->assertTrue($result->myInts->isResolved());
+            $this->assertTrue($result->myInts->isExplicitlyResolved());
 
             $this->assertSame(2, $result->myInts->count());
 

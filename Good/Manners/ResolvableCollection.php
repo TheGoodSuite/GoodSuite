@@ -31,6 +31,11 @@ class ResolvableCollection extends Collection
         return $this->modifier->isResolved();
     }
 
+    public function isExplicitlyResolved()
+    {
+        return $this->isResolved();
+    }
+
     public function resolve(Resolver $resolver = null)
     {
         if ($this->modifier->isResolved())

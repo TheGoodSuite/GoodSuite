@@ -29,6 +29,7 @@ class CollectionEntryStorable implements Storable, TypeVisitor
     public function markCollectionsUnresolved() {}
     public function delete() {}
     public function isResolved() { return true; }
+    public function isExplicitlyResolved() { return true; }
 
     private $storableVisitor;
 
