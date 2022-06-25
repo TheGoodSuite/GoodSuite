@@ -1550,6 +1550,24 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
             $this->assertSame(1, $references[1]->someInt);
         }
     }
+
+    public function testUnresolvedCollectionShouldNotBeIncludedInToArray()
+    {
+        $this->populateDatabase();
+
+        $condition = CollectionType::condition();
+        $condition->someInt = 4;
+
+        $results = $this->storage->fetchAll($condition, CollectionType::resolver()->resolveMyFloats());
+
+        foreach ($results as $result)
+        {
+            $arr = $result->toArray(true);
+
+            $this->assertFalse(array_key_exists('myInts', $arr));
+            $this->assertTrue(array_key_exists('myFloats', $arr));
+        }
+    }
 }
 
 ?>

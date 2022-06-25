@@ -312,7 +312,7 @@ class GoodMannersCollectionTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function testDReferenceCollectionToArrayFormatting()
+    public function testReferenceCollectionToArrayFormatting()
     {
         $myReference = new CollectionType();
         $myReference->setId('22');

@@ -2352,6 +2352,57 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(array(), $exp1);
     }
+
+    public function testUnresolvedReferencesShouldBeSkippedByToArray()
+    {
+        $resolver = MyFetchType::resolver();
+        $resolver->resolveMyOtherType();
+
+        $condition = MyFetchType::condition();
+        $condition->myInt = 10;
+
+        $results = $this->storage->fetchAll($condition, $resolver);
+
+        foreach ($results as $type)
+        {
+            $arr = $type->toArray(true);
+
+            $this->assertTrue(array_key_exists('myOtherType', $arr));
+            $this->assertFalse(array_key_exists('myCircular', $arr));
+        }
+    }
+
+    public function testUnresolvedReferencesShouldBeSkippedByToArrayEvenWhenTheyAreNull()
+    {
+        $resolver = MyFetchType::resolver();
+        $resolver->resolveMyOtherType();
+
+        $condition = MyFetchType::condition();
+        $condition->myInt = 4;
+
+        $results = $this->storage->fetchAll($condition, $resolver);
+
+        foreach ($results as $type)
+        {
+            $arr = $type->toArray(true);
+
+            $this->assertTrue(array_key_exists('myOtherType', $arr));
+        }
+
+        $resolver = MyFetchType::resolver();
+
+        $condition = MyFetchType::condition();
+        $condition->myInt = 4;
+
+        $results = $this->storage->fetchAll($condition, $resolver);
+
+        foreach ($results as $type)
+        {
+            $arr = $type->toArray(true);
+
+            $this->assertFalse(array_key_exists('myOtherType', $arr));
+        }
+    }
 }
 
 ?>

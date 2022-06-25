@@ -458,7 +458,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $toArrayFormatterWriter = new ToArrayFormatterWriter();
         $toArrayFormatter = $toArrayFormatterWriter->writeToArrayFormatter('$this->' . $this->member->getName(), $type);
 
-        $this->toArray .= '        $arr["' . $this->member->getName() . '"] = ' . $toArrayFormatter . ";";
+        $this->toArray .= '        $arr["' . $this->member->getName() . '"] = ' . $toArrayFormatter . ";\n";
 
         $this->visitNonReference(true, true);
     }
@@ -545,7 +545,10 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $toArrayFormatterWriter = new ToArrayFormatterWriter();
         $toArrayFormatter = $toArrayFormatterWriter->writeToArrayFormatter('$this->' . $this->member->getName(), $type);
 
-        $this->toArray .= '        $arr["' . $this->member->getName() . '"] = ' . $toArrayFormatter . ";\n";
+        $this->toArray .= '        if($this->' . $this->member->getName() . ' !== null && $this->' . $this->member->getName() . '->isExplicitlyResolved())' . "\n";
+        $this->toArray .= "        {\n";
+        $this->toArray .= '            $arr["' . $this->member->getName() . '"] = ' . $toArrayFormatter . ";\n";
+        $this->toArray .= "        }\n";
 
         $this->resolverVisit .= '        if ($this->resolved' . \ucfirst($this->member->getName()) . ' != null)' . "\n";
         $this->resolverVisit .= "        {\n";
@@ -659,7 +662,10 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $toArrayFormatterWriter = new ToArrayFormatterWriter();
         $toArrayFormatter = $toArrayFormatterWriter->writeToArrayFormatter('$this->' . $this->member->getName(), $type);
 
-        $this->toArray .= '        $arr["' . $this->member->getName() . '"] = ' . $toArrayFormatter . ";\n";
+        $this->toArray .= '        if($this->' . $this->member->getName() . '->isExplicitlyResolved())' . "\n";
+        $this->toArray .= "        {\n";
+        $this->toArray .= '            $arr["' . $this->member->getName() . '"] = ' . $toArrayFormatter . ";\n";
+        $this->toArray .= "        }\n";
 
         $this->resolverVisit .= '        if ($this->resolved' . \ucfirst($this->member->getName()) . ' !== null && $this->resolved' . \ucfirst($this->member->getName()) . ' !== false )' . "\n";
         $this->resolverVisit .= "        {\n";
