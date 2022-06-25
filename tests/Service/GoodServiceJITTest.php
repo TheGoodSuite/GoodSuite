@@ -25,13 +25,13 @@ class GoodServiceJITTest extends \PHPUnit\Framework\TestCase
 
     public function testUsingCompilingWithJIT()
     {
-        \touch(__dir__ . '/../generated/MyType.datatype.php');
+        \file_put_contents(__dir__ . '/../generated/MyType.datatype.php', '');
         \sleep(1);
         \file_put_contents(__dir__ . '/../generated/MyType.datatype', 'datatype MyType { int n; }');
 
         $service = new \Good\Service\Service([
-            "modifiers" => [],
             "inputDir" => __dir__ . '/../generated/',
+            "modifiers" => [],
             "outputDir" => __dir__ . '/../generated/'
         ]);
 
@@ -44,7 +44,7 @@ class GoodServiceJITTest extends \PHPUnit\Framework\TestCase
     {
         \file_put_contents(__dir__ . '/../generated/MyType.datatype', 'datatype MyType { int n; }');
         \sleep(1);
-        \touch(__dir__ . '/../generated/MyType.datatype.php');
+        \file_put_contents(__dir__ . '/../generated/MyType.datatype.php', '');
 
         $service = new \Good\Service\Service([
             "modifiers" => [],
