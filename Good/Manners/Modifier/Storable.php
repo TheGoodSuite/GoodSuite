@@ -105,10 +105,10 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
     {
         $res  = '        if ($this->isUnresolved)' . "\n";
         $res .= "        {\n";
-        $res  = '            throw new \Exception("Cannot set or get properties of an unresolved storable");' . "\n";
+        $res .= '            throw new \Exception("Cannot set or get properties of an unresolved storable");' . "\n";
         $res .= "        }\n";
         $res .= "        \n";
-        $res  = '        $this->GMMStorable_checkValidationToken();' . "\n";
+        $res .= '        $this->GMMStorable_checkValidationToken();' . "\n";
         $res .= "        \n";
 
         return $res;
@@ -118,10 +118,10 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
     {
         $res  = '        if ($this->isUnresolved)' . "\n";
         $res .= "        {\n";
-        $res  = '            throw new \Exception("Cannot set or get properties of an unresolved storable");' . "\n";
+        $res .= '            throw new \Exception("Cannot set or get properties of an unresolved storable");' . "\n";
         $res .= "        }\n";
         $res .= "        \n";
-        $res  = '        $this->GMMStorable_checkValidationToken();' . "\n";
+        $res .= '        $this->GMMStorable_checkValidationToken();' . "\n";
         $res .= "        \n";
 
         return $res;
@@ -232,8 +232,8 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $res .= '            throw new \Exception("Can only resolve unresolved Storables");' . "\n";
         $res .= "        }\n";
         $res .= "\n";
-        $res .= '        $this->storage->resolve($this, $resolver);' . "\n";
         $res .= '        $this->isUnresolved = false;' . "\n";
+        $res .= '        $this->storage->resolve($this, $resolver);' . "\n";
         $res .= "\n";
         $res .= '        return $this;' . "\n";
         $res .= "    }\n";
