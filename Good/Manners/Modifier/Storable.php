@@ -272,8 +272,8 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
 
         $this->toArray  = '    public function toArray($datesToIso)' . "\n";
         $this->toArray .= "    {\n";
-        $this->toArray .= "        return [\n";
-        $this->toArray .= '            "id" => $this->id,' . "\n";
+        $this->toArray .= '        $arr = [];' . "\n";
+        $this->toArray .= '        $arr["id"] = $this->id;' . "\n";
 
         $this->debugInfo  = '    public function __debugInfo()' . "\n";
         $this->debugInfo .= "    {\n";
@@ -393,7 +393,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $this->setFromArray .= "        }\n";
         $this->setFromArray .= "    }\n";
 
-        $this->toArray .= "        ];\n";
+        $this->toArray .= '        return $arr;' . "\n";
         $this->toArray .= "    }\n";
         $this->toArray .= "\n";
 
@@ -458,7 +458,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $toArrayFormatterWriter = new ToArrayFormatterWriter();
         $toArrayFormatter = $toArrayFormatterWriter->writeToArrayFormatter('$this->' . $this->member->getName(), $type);
 
-        $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
+        $this->toArray .= '        $arr["' . $this->member->getName() . '"] = ' . $toArrayFormatter . ";";
 
         $this->visitNonReference(true, true);
     }
@@ -479,7 +479,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $toArrayFormatterWriter = new ToArrayFormatterWriter();
         $toArrayFormatter = $toArrayFormatterWriter->writeToArrayFormatter('$this->' . $this->member->getName(), $type);
 
-        $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
+        $this->toArray .= '        $arr["' . $this->member->getName() . '"] = ' . $toArrayFormatter . ";\n";
 
         $this->visitNonReference(true, true);
     }
@@ -500,7 +500,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $toArrayFormatterWriter = new ToArrayFormatterWriter();
         $toArrayFormatter = $toArrayFormatterWriter->writeToArrayFormatter('$this->' . $this->member->getName(), $type);
 
-        $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
+        $this->toArray .= '        $arr["' . $this->member->getName() . '"] = ' . $toArrayFormatter . ";\n";
 
         $this->visitNonReference(true, true);
     }
@@ -521,7 +521,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $toArrayFormatterWriter = new ToArrayFormatterWriter();
         $toArrayFormatter = $toArrayFormatterWriter->writeToArrayFormatter('$this->' . $this->member->getName(), $type);
 
-        $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
+        $this->toArray .= '        $arr["' . $this->member->getName() . '"] = ' . $toArrayFormatter . ";\n";
 
         $this->visitNonReference(true, true);
     }
@@ -545,7 +545,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $toArrayFormatterWriter = new ToArrayFormatterWriter();
         $toArrayFormatter = $toArrayFormatterWriter->writeToArrayFormatter('$this->' . $this->member->getName(), $type);
 
-        $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
+        $this->toArray .= '        $arr["' . $this->member->getName() . '"] = ' . $toArrayFormatter . ";\n";
 
         $this->resolverVisit .= '        if ($this->resolved' . \ucfirst($this->member->getName()) . ' != null)' . "\n";
         $this->resolverVisit .= "        {\n";
@@ -634,7 +634,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $toArrayFormatterWriter = new ToArrayFormatterWriter();
         $toArrayFormatter = $toArrayFormatterWriter->writeToArrayFormatter('$this->' . $this->member->getName(), $type);
 
-        $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
+        $this->toArray .= '        $arr["' . $this->member->getName() . '"] = ' . $toArrayFormatter . ";\n";
 
         $this->visitNonReference(true, true);
     }
@@ -659,7 +659,7 @@ class Storable implements \Good\Service\Modifier, \Good\Rolemodel\TypeVisitor
         $toArrayFormatterWriter = new ToArrayFormatterWriter();
         $toArrayFormatter = $toArrayFormatterWriter->writeToArrayFormatter('$this->' . $this->member->getName(), $type);
 
-        $this->toArray .= '                "' . $this->member->getName() . '" => ' . $toArrayFormatter . ",\n";
+        $this->toArray .= '        $arr["' . $this->member->getName() . '"] = ' . $toArrayFormatter . ";\n";
 
         $this->resolverVisit .= '        if ($this->resolved' . \ucfirst($this->member->getName()) . ' !== null && $this->resolved' . \ucfirst($this->member->getName()) . ' !== false )' . "\n";
         $this->resolverVisit .= "        {\n";
