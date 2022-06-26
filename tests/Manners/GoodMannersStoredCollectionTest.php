@@ -1551,6 +1551,33 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         }
     }
 
+    public function testDelayedResolveReferenceCollectionWithResolver()
+    {
+        $this->populateDatabase();
+
+        $condition = CollectionType::condition();
+        $condition->someInt = 4;
+
+        $results = $this->storage->fetchAll($condition);
+
+        foreach ($results as $result)
+        {
+            $resolver = CollectionType::resolver();
+            $resolver->resolveMyInts();
+            $resolver->orderBySomeIntDesc();
+            $resolver->orderMyIntsAsc();
+            $result->myReferences->resolve($resolver);
+
+            $results = $result->toArray(true);
+
+            $this->assertSame(count($results['myReferences']), 2);
+            $this->assertSame(count($results['myReferences'][0]['myInts']), 2);
+            $this->assertSame($results['myReferences'][0]['myInts'][0], 2);
+            $this->assertSame($results['myReferences'][0]['myInts'][1], 4);
+            $this->assertSame(count($results['myReferences'][1]['myInts']), 0);
+        }
+    }
+
     public function testUnresolvedCollectionShouldNotBeIncludedInToArray()
     {
         $this->populateDatabase();

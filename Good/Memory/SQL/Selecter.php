@@ -32,13 +32,27 @@ class Selecter implements ResolverVisitor
 
     public function select($datatypeName, Condition $condition, Resolver $resolver)
     {
+        $columns = [];
+        $columns[] = new SelectColumn("t0", "id", "t0_id");
         $orderRootLayer = new OrderLayer(0);
+
+        return $this->selectWithBaseColumns($columns, $orderRootLayer, $datatypeName, $condition, $resolver);
+    }
+
+    public function selectWithoutId($datatypeName, Condition $condition, Resolver $resolver)
+    {
+        $columns = [];
+        $orderRootLayer = new OrderLayer(1);
+
+        return $this->selectWithBaseColumns($columns, $orderRootLayer, $datatypeName, $condition, $resolver);
+    }
+
+    private function selectWithBaseColumns($columns, $orderRootLayer, $datatypeName, Condition $condition, Resolver $resolver)
+    {
+        $this->columns = $columns;
+
         $this->orderLayer = $orderRootLayer;
         $this->currentPropertyIsCollection = false;
-
-
-        $this->columns = [];
-        $this->columns[] = new SelectColumn("t0", "id", "t0_id");
 
         $this->currentTableName = $this->storage->tableNamify($datatypeName);
 

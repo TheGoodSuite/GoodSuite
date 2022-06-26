@@ -97,18 +97,26 @@ class SQLStorage extends Storage
             throw new \Exception("Condition for fetchAll must target an unambigious Storable type");
         }
 
+        $resultset = $this->select($condition, $resolver);
+
+        return new FetchedStorables($this, $resultset, $this->joins, $resolver->getType());
+    }
+
+    private function select($condition, $resolver, $withId = true)
+    {
         $this->joins = array(0 => array());
         $this->numberOfJoins = 0;
 
         $selecter = new SQL\Selecter($this, $this->db, 0);
 
-        // I can't really do this on the next line, where I create the collection, since
-        // I also use something that as a side effect of this function call.
-        // (I don't know if php guarantees the order in which arguments are calculated,
-        //  but even if it does, it makes for confusing code to rely on it)
-        $resultset = $selecter->select($resolver->getType(), $condition, $resolver);
-
-        return new FetchedStorables($this, $resultset, $this->joins, $resolver->getType());
+        if ($withId)
+        {
+            return $selecter->select($resolver->getType(), $condition, $resolver);
+        }
+        else
+        {
+            return $selecter->selectWithoutId($resolver->getType(), $condition, $resolver);
+        }
     }
 
     public function resolve(Storable $storable, Resolver $resolver = null)
@@ -142,23 +150,56 @@ class SQLStorage extends Storage
             throw new \Exception("Can only resolve a collection on a storable that has an id");
         }
 
-        $storable = $collection->getStorable();
+        $collectedReferenceType = $collection->getCollectedType()->getReferencedTypeIfAny();
 
-        $condition = new EqualTo($storable);
-
-        $collectionColumn = $collection->getFieldName();
-        $resolveCollectionColumn = 'resolve' . \ucfirst($collectionColumn);
-        $resolver = $storable::resolver();
-        $resolver->$resolveCollectionColumn();
-
-        $results = $this->fetchAll($condition, $resolver);
-        $storableWithCollection = $results->getNext();
-
-        if ($storableWithCollection == null) {
-            throw new \Exception("The collection was not found in storage");
+        if ($resolver === null && $collectedReferenceType !== null)
+        {
+            $resolver = $collectedReferenceType::resolver();
         }
 
-        $collection->resolveWithData($storableWithCollection->$collectionColumn);
+        $storable = $collection->getStorable();
+
+        $condition = new CollectionOwnerCondition($storable);
+        $resolver = new CollectionEntryResolver($storable->getType(), $collection->getFieldName(), $resolver);
+
+        $resultset = $this->select($condition, $resolver, false);
+
+        $data = [];
+        $rows = [];
+        $lastValue = null;
+
+        while ($row = $resultset->fetch())
+        {
+            if ($lastValue === null || $lastValue === $row['t0_value'])
+            {
+                $lastValue = $row['t0_value'];
+            }
+            else
+            {
+                $allData = $this->preparseSQLData($rows);
+
+                $data[] = $this->getStorableOrValue('value', $rows[0]['t0_value'], $this->joins, 0, $allData, 0);
+                $rows = [];
+            }
+
+            $rows[] = $row;
+
+            //private function getStorableOrValue($field, $value, $joins, $tableNumber, $allData, $dataRow)
+        }
+
+        $allData = $this->preparseSQLData($rows);
+
+        $data[] = $this->getStorableOrValue('value', $rows[0]['t0_value'], $this->joins, 0, $allData, 0);
+
+        $collection->resolveWithData($data);
+
+        // $storableWithCollection = $results->getNext();
+        //
+        // if ($storableWithCollection == null) {
+        //     throw new \Exception("The collection was not found in storage");
+        // }
+        //
+        // $collection->resolveWithData($storableWithCollection->$collectionColumn);
 
         return $collection;
     }
@@ -415,19 +456,7 @@ class SQLStorage extends Storage
     {
         if (!$dataPreparsed)
         {
-            $parsed = array();
-
-            foreach ($allData as $index => $dataRow)
-            {
-                $parsed[$index] = [];
-
-                foreach ($dataRow as $field => $value)
-                {
-                    $parsed[$index][strstr($field, '_', true)][substr($field, strpos($field, '_') + 1)] = $value;
-                }
-            }
-
-            $allData = $parsed;
+            $allData = $this->preparseSQLData($allData);
         }
 
         $data = $allData[$offset];
@@ -499,6 +528,23 @@ class SQLStorage extends Storage
         $this->managedStorables->add($storable);
 
         return $storable;
+    }
+
+    private function preparseSQLData($allData)
+    {
+        $parsed = array();
+
+        foreach ($allData as $index => $dataRow)
+        {
+            $parsed[$index] = [];
+
+            foreach ($dataRow as $field => $value)
+            {
+                $parsed[$index][strstr($field, '_', true)][substr($field, strpos($field, '_') + 1)] = $value;
+            }
+        }
+
+        return $parsed;
     }
 
     private function getStorableOrValue($field, $value, $joins, $tableNumber, $allData, $dataRow)

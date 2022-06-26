@@ -54,6 +54,11 @@ class ResolvableCollection extends Collection
                 " (non-storable collections can be resolved, just without a resolver).");
         }
 
+        if ($collectedReference !== null && $resolver === null)
+        {
+            $resolver = $collectedReference::resolver();
+        }
+
         if ($collectedReference != null
             && $resolver != null
             && $resolver->getRoot()->getType() !== $collectedReference)
@@ -76,7 +81,7 @@ class ResolvableCollection extends Collection
         return $this->fieldNameInOwner;
     }
 
-    public function resolveWithData(Collection $data)
+    public function resolveWithData($data)
     {
         $this->clear();
 
