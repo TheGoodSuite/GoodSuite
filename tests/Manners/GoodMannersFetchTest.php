@@ -2372,6 +2372,9 @@ abstract class GoodMannersFetchTest extends \PHPUnit\Framework\TestCase
         }
     }
 
+    /**
+     * @ticket #168
+     */
     public function testUnresolvedReferencesShouldBeSkippedByToArrayEvenWhenTheyAreNull()
     {
         $resolver = MyFetchType::resolver();

@@ -163,10 +163,23 @@ class Selecter implements ResolverVisitor
         $this->currentPropertyIsCollection = true;
 
         $table = $this->writeSelectJoinedFields($this->currentTable, $this->currentTableName . '_' . $name, null, 'id', 'owner', $name, false);
+
+        if ($resolver !== null)
+        {
+            $orderLayer = $this->orderLayer;
+            $this->orderLayer = new OrderLayer($table);
+            $orderLayer->childLayers[] = $this->orderLayer;
+        }
+
         $this->writeSelectJoinedFields($table, $typeName, $resolver, 'value', 'id', null, false);
+
+        if ($resolver !== null)
+        {
+            $this->orderLayer = $orderLayer;
+        }
     }
 
-    public function writeSelectJoinedFields($leftTableNumber, $joinTable, ?Resolver $resolver,
+    private function writeSelectJoinedFields($leftTableNumber, $joinTable, ?Resolver $resolver,
         $currentTableJoinField, $otherTableJoinField, $collectionField, $selectJoinField)
     {
         if ($selectJoinField)
@@ -197,6 +210,9 @@ class Selecter implements ResolverVisitor
             $this->columns[] = new SelectColumn($table, $column, $as);
         }
 
+        // var_dump($collectionField);
+        // var_dump($resolver == null);
+
         if ($resolver != null)
         {
             $currentTable = $this->currentTable;
@@ -204,19 +220,7 @@ class Selecter implements ResolverVisitor
             $this->currentTable = $join;
             $this->currentTableName = $joinTable;
 
-            if ($collectionField !== null)
-            {
-                $orderLayer = $this->orderLayer;
-                $this->orderLayer = new OrderLayer($join);
-                $orderLayer->childLayers[] = $this->orderLayer;
-            }
-
             $resolver->acceptResolverVisitor($this);
-
-            if ($collectionField !== null)
-            {
-                $this->orderLayer = $orderLayer;
-            }
 
             $this->currentTable = $currentTable;
             $this->currentTableName = $currentTableName;

@@ -1595,6 +1595,54 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
             $this->assertTrue(array_key_exists('myFloats', $arr));
         }
     }
+
+    public function testOrderingCollectionOfReferences()
+    {
+        $ins = new CollectionType();
+        $ins->someInt = 100;
+        $reference = new CollectionType();
+        $reference->someInt = 2;
+        $ins->myReferences->add($reference);
+        $reference = new CollectionType();
+        $reference->someInt = 4;
+        $ins->myReferences->add($reference);
+
+        $this->storage->insert($ins);
+
+        $ins = new CollectionType();
+        $ins->someInt = 100;
+        $reference = new CollectionType();
+        $reference->someInt = 1;
+        $ins->myReferences->add($reference);
+        $reference = new CollectionType();
+        $reference->someInt = 3;
+        $ins->myReferences->add($reference);
+
+        $condition = CollectionType::condition();
+        $condition->someInt = 100;
+
+        $this->storage->insert($ins);
+
+        $this->storage->flush();
+
+        $resolver = CollectionType::resolver();
+        $resolver->resolveMyReferences();
+        $resolver->getMyReferences()->orderBySomeIntDesc();
+
+        $results = $this->storage->fetchAll($condition, $resolver);
+
+        $i = 0;
+        foreach ($results as $result)
+        {
+            $arr = $result->myReferences->toArray();
+
+            $this->assertSame(2, count($arr));
+
+            $i++;
+        }
+
+        $this->assertSame(2, $i);
+    }
 }
 
 ?>
