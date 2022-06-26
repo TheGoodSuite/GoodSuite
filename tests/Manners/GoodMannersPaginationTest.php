@@ -326,6 +326,64 @@ abstract class GoodMannersPaginationTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame($i, 2);
     }
+
+    public function testResolverAndPageArgumentsForFetchAll()
+    {
+        $this->populateDatabase();
+
+        $resolver = PaginationType::resolver();
+
+        $page = new Page(2, 1);
+
+        $results = $this->storage->fetchAll($resolver, $page);
+
+        $i = 0;
+        foreach($results as $result)
+        {
+            $i++;
+        }
+
+        $this->assertSame($i, 2);
+    }
+
+    public function testConditionAndPageArgumentsForFetchAll()
+    {
+        $this->populateDatabase();
+
+        $condition = PaginationType::condition();
+
+        $page = new Page(2, 1);
+
+        $results = $this->storage->fetchAll($condition, $page);
+
+        $i = 0;
+        foreach($results as $result)
+        {
+            $i++;
+        }
+
+        $this->assertSame($i, 2);
+    }
+
+    public function testConditionResolverAndPageArgumentsForFetchAll()
+    {
+        $this->populateDatabase();
+
+        $condition = PaginationType::condition();
+        $resolver = PaginationType::resolver();
+
+        $page = new Page(2, 1);
+
+        $results = $this->storage->fetchAll($condition, $resolver, $page);
+
+        $i = 0;
+        foreach($results as $result)
+        {
+            $i++;
+        }
+
+        $this->assertSame($i, 2);
+    }
 }
 
 ?>
