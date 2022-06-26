@@ -98,6 +98,11 @@ class Collection implements \IteratorAggregate
 
         return $this->items->count();
     }
+
+    public function __debugInfo()
+    {
+        return $this->items->toArray();
+    }
 }
 
 ?>

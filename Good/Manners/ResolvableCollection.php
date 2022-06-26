@@ -88,6 +88,18 @@ class ResolvableCollection extends Collection
         $this->modifier->clean();
         $this->modifier->markResolved();
     }
+
+    public function __debugInfo()
+    {
+        if ($this->isResolved())
+        {
+            return array_merge(["isResolved" => true], parent::__debugInfo());
+        }
+        else
+        {
+            return ["isResolved" => false];
+        }
+    }
 }
 
 ?>
