@@ -1,5 +1,7 @@
 <?php
 
+require_once dirname(__FILE__) . '/../TestHelper.php';
+
 use Good\Manners\Condition\EqualTo;
 use Good\Manners\Condition\NotEqualTo;
 use Good\Manners\Condition\LessThan;
@@ -30,6 +32,8 @@ class GoodMannersIncorrectConditionsTest extends \PHPUnit\Framework\TestCase
     // setUp instead of having PHPUnit do its magic.
     public static function _setUpBeforeClass()
     {
+        TestHelper::cleanGeneratedFiles();
+
         $service = new \Good\Service\Service([
             "modifiers" => [new \Good\Manners\Modifier\Storable()],
             "inputDir" => dirname(__FILE__) . '/../testInputFiles/GoodManners/GoodMannersIncorrectConditionsTest',

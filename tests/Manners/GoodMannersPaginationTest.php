@@ -1,5 +1,7 @@
 <?php
 
+require_once dirname(__FILE__) . '/../TestHelper.php';
+
 use Good\Manners\Page;
 
 /**
@@ -30,6 +32,8 @@ abstract class GoodMannersPaginationTest extends \PHPUnit\Framework\TestCase
         // Garbage collector causes segmentation fault, so we disable
         // for the duration of the test case
         gc_disable();
+
+        TestHelper::cleanGeneratedFiles();
 
         $service = new \Good\Service\Service([
             "modifiers" => [new \Good\Manners\Modifier\Storable()],

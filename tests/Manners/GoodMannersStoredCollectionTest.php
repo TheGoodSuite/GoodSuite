@@ -1,5 +1,7 @@
 <?php
 
+require_once dirname(__FILE__) . '/../TestHelper.php';
+
 use Good\Manners\Condition\EqualTo;
 use Good\Manners\Condition\GreaterThan;
 
@@ -34,6 +36,8 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         // Garbage collector causes segmentation fault, so we disable
         // for the duration of the test case
         gc_disable();
+
+        TestHelper::cleanGeneratedFiles();
 
         $service = new \Good\Service\Service([
             "modifiers" => [new \Good\Manners\Modifier\Storable()],

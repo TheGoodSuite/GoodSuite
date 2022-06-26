@@ -1,5 +1,7 @@
 <?php
 
+require_once dirname(__FILE__) . '/../TestHelper.php';
+
 /**
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
@@ -48,6 +50,8 @@ abstract class GoodMannersEscapedTablesAndColumnsTest extends \PHPUnit\Framework
         // Garbage collector causes segmentation fault, so we disable
         // for the duration of the test case
         gc_disable();
+
+        TestHelper::cleanGeneratedFiles();
 
         $service = new \Good\Service\Service([
             "modifiers" => [new \Good\Manners\Modifier\Storable()],
