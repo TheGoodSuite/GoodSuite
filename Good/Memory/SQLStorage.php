@@ -10,6 +10,7 @@ use Good\Manners\Condition;
 use Good\Manners\Condition\EqualTo;
 use Good\Manners\Resolver;
 use Good\Manners\ResolvableCollection;
+use Good\Manners\Page;
 use Good\Memory\SQL\IndirectInsertionFinder;
 use Good\Memory\SQL\CollectionProcessor;
 
@@ -51,7 +52,7 @@ class SQLStorage extends Storage
         $updater->update($modifications->getType(), $condition, $modifications);
     }
 
-    public function fetchAll($conditionOrResolver, Resolver $resolver = null)
+    public function fetchAll($conditionOrResolver, Resolver $resolver = null, Page $page = null)
     {
         if ($resolver == null)
         {
@@ -97,12 +98,12 @@ class SQLStorage extends Storage
             throw new \Exception("Condition for fetchAll must target an unambigious Storable type");
         }
 
-        $resultset = $this->select($condition, $resolver);
+        $resultset = $this->select($condition, $resolver, $page);
 
         return new FetchedStorables($this, $resultset, $this->joins, $resolver->getType());
     }
 
-    private function select($condition, $resolver, $withId = true)
+    private function select($condition, $resolver, ?Page $page, $withId = true)
     {
         $this->joins = array(0 => array());
         $this->numberOfJoins = 0;
@@ -111,11 +112,11 @@ class SQLStorage extends Storage
 
         if ($withId)
         {
-            return $selecter->select($resolver->getType(), $condition, $resolver);
+            return $selecter->select($resolver->getType(), $condition, $resolver, $page);
         }
         else
         {
-            return $selecter->selectWithoutId($resolver->getType(), $condition, $resolver);
+            return $selecter->selectWithoutId($resolver->getType(), $condition, $resolver, $page);
         }
     }
 
@@ -162,7 +163,7 @@ class SQLStorage extends Storage
         $condition = new CollectionOwnerCondition($storable);
         $resolver = new CollectionEntryResolver($storable->getType(), $collection->getFieldName(), $resolver);
 
-        $resultset = $this->select($condition, $resolver, false);
+        $resultset = $this->select($condition, $resolver, null, false);
 
         $data = [];
         $rows = [];

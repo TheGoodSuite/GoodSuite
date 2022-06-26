@@ -33,7 +33,7 @@ class UpdateConditionWriter
         $columns = [new SelectColumn('t' . $updatingTableNumber, 'id', 'id')];
         $order = [];
 
-        $select = ' ' . $selecter->writeQueryForColumns($rootTableName, $condition, $columns, $order);
+        $select = ' ' . $selecter->writeQueryForColumns($rootTableName, $condition, $columns, $order, null);
 
         $this->condition = '`id` IN (' . $select . ')';
     }

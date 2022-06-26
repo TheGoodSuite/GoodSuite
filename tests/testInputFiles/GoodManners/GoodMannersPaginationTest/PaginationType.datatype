@@ -1,0 +1,8 @@
+
+datatype PaginationType
+{
+    int myInt;
+    int[] collectionOfInts;
+    "ReferencedByPagination" myReference;
+    "ReferencedByPagination"[] collectionOfReferences;
+}

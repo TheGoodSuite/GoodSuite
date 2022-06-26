@@ -4,10 +4,12 @@ namespace Good\Memory\SQL;
 
 use Good\Memory\Database as Database;
 
+use Ds\Set;
 use Good\Memory\SQLStorage;
 use Good\Manners\Condition;
 use Good\Manners\Resolver;
 use Good\Manners\ResolverVisitor;
+use Good\Manners\Page;
 
 class Selecter implements ResolverVisitor
 {
@@ -23,6 +25,11 @@ class Selecter implements ResolverVisitor
 
     private $currentPropertyIsCollection;
 
+    private $columns;
+
+    private $includeJoinsForPagination;
+    private $paginationJoins;
+
     public function __construct(SQLStorage $storage, Database\Database $db, $currentTable)
     {
         $this->db = $db;
@@ -30,36 +37,38 @@ class Selecter implements ResolverVisitor
         $this->currentTable = $currentTable;
     }
 
-    public function select($datatypeName, Condition $condition, Resolver $resolver)
+    public function select($datatypeName, Condition $condition, Resolver $resolver, ?Page $page)
     {
         $columns = [];
         $columns[] = new SelectColumn("t0", "id", "t0_id");
-        $orderRootLayer = new OrderLayer(0);
+        $this->orderRootLayer = new OrderLayer(0);
 
-        return $this->selectWithBaseColumns($columns, $orderRootLayer, $datatypeName, $condition, $resolver);
+        return $this->selectWithBaseColumns($columns, $datatypeName, $condition, $resolver, $page);
     }
 
     public function selectWithoutId($datatypeName, Condition $condition, Resolver $resolver)
     {
         $columns = [];
-        $orderRootLayer = new OrderLayer(1);
+        $this->orderRootLayer = new OrderLayer(1);
 
-        return $this->selectWithBaseColumns($columns, $orderRootLayer, $datatypeName, $condition, $resolver);
+        return $this->selectWithBaseColumns($columns, $datatypeName, $condition, $resolver, null);
     }
 
-    private function selectWithBaseColumns($columns, $orderRootLayer, $datatypeName, Condition $condition, Resolver $resolver)
+    private function selectWithBaseColumns($columns, $datatypeName, Condition $condition, Resolver $resolver, ?Page $page)
     {
         $this->columns = $columns;
 
-        $this->orderLayer = $orderRootLayer;
+        $this->orderLayer = $this->orderRootLayer;
         $this->currentPropertyIsCollection = false;
+        $this->includeJoinsForPagination = true;
+        $this->paginationJoins = [];
 
         $this->currentTableName = $this->storage->tableNamify($datatypeName);
 
         $resolver->acceptResolverVisitor($this);
-        $order = $this->gatherOrderClauses($orderRootLayer);
+        $order = $this->gatherOrderClauses($this->orderRootLayer);
 
-        $sql = $this->writeQueryForColumns($datatypeName, $condition, $this->columns, $order);
+        $sql = $this->writeQueryForColumns($datatypeName, $condition, $this->columns, $order, $page);
 
         $this->db->query($sql);
 
@@ -75,14 +84,15 @@ class Selecter implements ResolverVisitor
         return $clause;
     }
 
-    public function writeQueryForColumns($datatypeName, Condition $condition, $columns, $order)
+    public function writeQueryForColumns($datatypeName, Condition $condition, $columns, $order, ?Page $page)
     {
         $sql = "SELECT DISTINCT ";
 
         $columnsSQL = array_map([$this, 'columnToSelectClause'], $columns);
         $sql .= \implode(', ', $columnsSQL);
 
-        $sql .= " FROM `" . $this->storage->tableNamify($datatypeName) . "` AS t0";
+        $tableName = $this->storage->tableNamify($datatypeName);
+        $sql .= " FROM `" . $tableName . "` AS t0";
 
         $conditionWriter = new ConditionWriter($this->storage, 0, $datatypeName);
         $conditionWriter->writeCondition($condition);
@@ -99,7 +109,57 @@ class Selecter implements ResolverVisitor
             }
         }
 
+        if ($page !== null)
+        {
+            $regex = '/^`t([0-9]+)_/';
+
+            $orderOnRootTable = $this->orderRootLayer->orderClauses;
+            \ksort($orderOnRootTable);
+
+            $orderOnRootTable = array_map(function($orderBy) use ($regex)
+            {
+                return \preg_replace($regex, '`t$1`.`', $orderBy);
+            }, $orderOnRootTable);
+
+            $over = '';
+            if (\count($orderOnRootTable) > 0)
+            {
+                $over .= 'ORDER BY ';
+                $over .= \implode(', ', $orderOnRootTable);
+            }
+
+            $sql .= ' LEFT JOIN (SELECT `t0`.`id`, ROW_NUMBER() OVER (' . $over . ') as `row` FROM `' . $tableName;
+            $sql .= '` as `t0` ';
+
+            foreach ($this->paginationJoins as $join)
+            {
+                $sql .= ' LEFT JOIN `' . $this->storage->tableNamify($join->tableNameDestination) .
+                                                    '` AS `t' . $join->tableNumberDestination . '`';
+                $sql .= ' ON `t' . $join->tableNumberOrigin . '`.`' .
+                                            $this->storage->fieldNamify($join->fieldNameOrigin) . '`';
+                $sql .= ' = `t' . $join->tableNumberDestination . '`.`' . $join->fieldNameDestination . '`';
+            }
+
+            $sql .= ') as `pagination`';
+            $sql .= ' ON `t0`.`id` = `pagination`.`id`';
+        }
+
         $sql .= ' WHERE ' . $conditionWriter->getCondition();
+
+        if ($page !== null)
+        {
+            if ($page->getStartAt() === null)
+            {
+                $endAt = $page->getSize();
+            }
+            else
+            {
+                $sql .= ' AND `pagination`.`row` >= ' . ($page->getStartAt() + 1);
+                $endAt = $page->getSize() + $page->getStartAt();
+            }
+
+            $sql .= ' AND `pagination`.`row` <= ' . $endAt;
+        }
 
         if ($conditionWriter->getHaving() != null)
         {
@@ -169,6 +229,8 @@ class Selecter implements ResolverVisitor
             $orderLayer = $this->orderLayer;
             $this->orderLayer = new OrderLayer($table);
             $orderLayer->childLayers[] = $this->orderLayer;
+            $includeJoinsForPagination = $this->includeJoinsForPagination;
+            $this->includeJoinsForPagination = false;
         }
 
         $this->writeSelectJoinedFields($table, $typeName, $resolver, 'value', 'id', null, false);
@@ -176,6 +238,7 @@ class Selecter implements ResolverVisitor
         if ($resolver !== null)
         {
             $this->orderLayer = $orderLayer;
+            $this->includeJoinsForPagination = $includeJoinsForPagination;
         }
     }
 
@@ -200,6 +263,17 @@ class Selecter implements ResolverVisitor
         if ($collectionField === null)
         {
             $this->columns[] = new SelectColumn('t' . $join, 'id', 't' . $join . '_id');
+
+            if ($this->includeJoinsForPagination)
+            {
+                $paginationJoin = new Join($leftTableNumber,
+                $currentTableJoinField,
+                $joinTable,
+                $join,
+                $otherTableJoinField);
+
+                $this->paginationJoins[] = $paginationJoin;
+            }
         }
         else
         {

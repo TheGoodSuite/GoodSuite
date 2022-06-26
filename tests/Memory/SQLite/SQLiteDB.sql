@@ -159,4 +159,25 @@ CREATE TABLE `collectiontype_mybooleans` (
 	`value` BOOLEAN,
 	PRIMARY KEY(owner, value)
 );
+CREATE TABLE `paginationtype` (
+	`id`	INTEGER,
+	`myint` INTEGER,
+	`myreference` INTEGER,
+	PRIMARY KEY(id)
+);
+CREATE TABLE `paginationtype_collectionofints` (
+	`owner`	INTEGER,
+	`value` INTEGER,
+	PRIMARY KEY(owner, value)
+);
+CREATE TABLE `paginationtype_collectionofreferences` (
+	`owner`	INTEGER,
+	`value` INTEGER,
+	PRIMARY KEY(owner, value)
+);
+CREATE TABLE `referencedbypagination` (
+	`id`	INTEGER,
+	`mytext` TEXT,
+	PRIMARY KEY(id)
+);
 COMMIT;

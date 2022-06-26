@@ -290,6 +290,31 @@ CREATE TABLE `collectiontype_mybooleans` (
 	PRIMARY KEY(owner, value)
 );
 
+CREATE TABLE `paginationtype` (
+	`id`	int(11) NOT NULL AUTO_INCREMENT,
+	`myint` int(11),
+	`myreference` int(11),
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE `paginationtype_collectionofints` (
+	`owner`	int(11),
+	`value` int(11),
+	PRIMARY KEY(owner, value)
+);
+
+CREATE TABLE `paginationtype_collectionofreferences` (
+	`owner`	int(11),
+	`value` int(11),
+	PRIMARY KEY(owner, value)
+);
+
+CREATE TABLE `referencedbypagination` (
+	`id`	int(11) NOT NULL AUTO_INCREMENT,
+	`mytext` TEXT,
+	PRIMARY KEY(id)
+);
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
