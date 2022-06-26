@@ -172,7 +172,7 @@ abstract class GoodMannersPaginationTest extends \PHPUnit\Framework\TestCase
 
         $page = new Page(2);
 
-        $results = $this->storage->fetchAll($resolver, null, $page);
+        $results = $this->storage->fetchAll($resolver, $page);
 
         $i = 0;
         foreach($results as $result)
@@ -203,7 +203,7 @@ abstract class GoodMannersPaginationTest extends \PHPUnit\Framework\TestCase
 
         $page = new Page(2, 1);
 
-        $results = $this->storage->fetchAll($resolver, null, $page);
+        $results = $this->storage->fetchAll($resolver, $page);
 
         $i = 0;
         foreach($results as $result)
@@ -235,7 +235,7 @@ abstract class GoodMannersPaginationTest extends \PHPUnit\Framework\TestCase
 
         $page = new Page(2, 1);
 
-        $results = $this->storage->fetchAll($resolver, null, $page);
+        $results = $this->storage->fetchAll($resolver, $page);
 
         $i = 0;
         foreach($results as $result)
@@ -268,7 +268,7 @@ abstract class GoodMannersPaginationTest extends \PHPUnit\Framework\TestCase
 
         $page = new Page(2, 1);
 
-        $results = $this->storage->fetchAll($resolver, null, $page);
+        $results = $this->storage->fetchAll($resolver, $page);
 
         $i = 0;
         foreach($results as $result)
@@ -303,7 +303,7 @@ abstract class GoodMannersPaginationTest extends \PHPUnit\Framework\TestCase
 
         $page = new Page(2, 1);
 
-        $results = $this->storage->fetchAll($resolver, null, $page);
+        $results = $this->storage->fetchAll($resolver, $page);
 
         $i = 0;
         foreach($results as $result)

@@ -52,9 +52,9 @@ class SQLStorage extends Storage
         $updater->update($modifications->getType(), $condition, $modifications);
     }
 
-    public function fetchAll($conditionOrResolver, Resolver $resolver = null, Page $page = null)
+    public function fetchAll($conditionOrResolver, $resolverOrPage = null, Page $page = null)
     {
-        if ($resolver == null)
+        if ($resolverOrPage == null || ($resolverOrPage instanceof Page))
         {
             if ($conditionOrResolver instanceof Condition)
             {
@@ -83,7 +83,7 @@ class SQLStorage extends Storage
         {
             if ($conditionOrResolver instanceof Condition)
             {
-                $resolver = $resolver->getRoot();
+                $resolver = $resolverOrPage->getRoot();
                 $condition = $conditionOrResolver;
             }
             else
@@ -91,6 +91,22 @@ class SQLStorage extends Storage
                 throw new \InvalidArgumentException("When called with two arguments, "
                     . "the first argument to getCollection should be a Condition.");
             }
+        }
+
+        if ($page === null && ($resolverOrPage instanceof Page))
+        {
+            $page = $resolverOrPage;
+        }
+        else if ($page !== null && ($resolverOrPage instanceof Page))
+        {
+            throw new \InvalidArgumentException("Only one Page object may be passed to fetchAll.");
+        }
+
+        if ($resolverOrPage !== null
+            && !($resolverOrPage instanceof Resolver)
+            && !($resolverOrPage instanceof Page))
+        {
+            throw new \InvalidArgumentException("Argument 2 for fetchAll must be either a Page or a Resolver.");
         }
 
         if ($condition->getTargetedReferenceType() === null || $condition->getTargetedReferenceType() == "*")
