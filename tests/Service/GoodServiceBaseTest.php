@@ -864,6 +864,13 @@ abstract class GoodServiceBaseTest extends \PHPUnit\Framework\TestCase
         $this->compile('duplicateDatatype');
     }
 
+    public function duplicateDatatypeInSeparateFiles()
+    {
+        $this->expectException("Exception");
+
+        $this->compile('duplicateDatatypeInSeparateFiles');
+    }
+
     public function testBooleanProperty()
     {
         $this->compile('booleanProperty');
