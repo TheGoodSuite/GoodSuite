@@ -384,6 +384,24 @@ abstract class GoodMannersPaginationTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame($i, 2);
     }
+
+    public function testNextPageWithoutStartAt()
+    {
+        $page = new Page(5);
+        $nextPage = $page->next();
+
+        $this->assertSame(5, $nextPage->getStartAt());
+        $this->assertSame(5, $nextPage->getSize());
+    }
+
+    public function testNextPageWithStartAt()
+    {
+        $page = new Page(5, 2);
+        $nextPage = $page->next();
+
+        $this->assertSame(7, $nextPage->getStartAt());
+        $this->assertSame(5, $nextPage->getSize());
+    }
 }
 
 ?>
