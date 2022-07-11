@@ -1647,6 +1647,39 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         $this->assertSame(2, $i);
     }
+
+    /**
+     * @ticket #170
+     */
+    public function testEmptyCollectionDoesNotContainNull()
+    {
+        $ins = new CollectionType();
+        $ins->someInt = 100;
+        $ins->myInts->add(100);
+        $ins->myInts->add(200);
+
+        $this->storage->insert($ins);
+
+        $this->storage->flush();
+
+        $resolver = CollectionType::resolver();
+        $resolver->resolveMyReferences();
+        $resolver->resolveMyInts();
+
+        $results = $this->storage->fetchAll($resolver);
+
+        foreach ($results as $result)
+        {
+            $i = 0;
+
+            foreach ($result->myReferences as $reference)
+            {
+                $i++;
+            }
+
+            $this->assertSame(0, $i);
+        }
+    }
 }
 
 ?>
