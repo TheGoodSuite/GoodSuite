@@ -519,7 +519,7 @@ class SQLStorage extends Storage
             {
                 foreach ($storableData as $fieldName => $value)
                 {
-                    if (is_array($value) && $row[$table][$this->fieldNamify($fieldName) . '_thisrow'])
+                    if (is_array($value) && $row[$table][$this->fieldNamify($fieldName) . ' thisrow'])
                     {
                         $storableData[$fieldName][] = $this->getStorableOrValue(
                             $this->tableNamify($fieldName),

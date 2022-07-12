@@ -128,7 +128,7 @@ class Selecter implements ResolverVisitor
                         }
                     }
 
-                    $extraSelects .= ', `t' . $join->tableNumberDestination . '`.`owner` IS NOT NULL AS `t' . $join->tableNumberOrigin . '_' . $join->selectedFieldName  . '_thisrow`';
+                    $extraSelects .= ', `t' . $join->tableNumberDestination . '`.`owner` IS NOT NULL AS `t' . $join->tableNumberOrigin . '_' . $join->selectedFieldName  . ' thisrow`';
 
                     $previousCollectionTableNumbers[] = $join->tableNumberDestination;
                 }
