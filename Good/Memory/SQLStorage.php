@@ -436,7 +436,8 @@ class SQLStorage extends Storage
                              $fieldNameOrigin,
                              $tableNameDestination,
                              $this->numberOfJoins,
-                             $fieldNameDestination);
+                             $fieldNameDestination,
+                             $this->fieldNamify($selectedFieldName));
 
         if ($reusable)
         {
@@ -518,7 +519,7 @@ class SQLStorage extends Storage
             {
                 foreach ($storableData as $fieldName => $value)
                 {
-                    if (is_array($value) && count($value) > 0)
+                    if (is_array($value) && $row[$table][$this->fieldNamify($fieldName) . '_thisrow'])
                     {
                         $storableData[$fieldName][] = $this->getStorableOrValue(
                             $this->tableNamify($fieldName),

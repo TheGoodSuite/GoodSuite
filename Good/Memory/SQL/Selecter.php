@@ -88,26 +88,60 @@ class Selecter implements ResolverVisitor
     {
         $sql = "SELECT DISTINCT ";
 
-        $columnsSQL = array_map([$this, 'columnToSelectClause'], $columns);
-        $sql .= \implode(', ', $columnsSQL);
-
         $tableName = $this->storage->tableNamify($datatypeName);
-        $sql .= " FROM `" . $tableName . "` AS t0";
+        $fromSql = " FROM `" . $tableName . "` AS t0";
 
         $conditionWriter = new ConditionWriter($this->storage, 0, $datatypeName);
         $conditionWriter->writeCondition($condition);
+
+        $previousCollectionTableNumbers = [];
+        $extraSelects = '';
 
         foreach ($this->storage->getJoins() as $somejoins)
         {
             foreach ($somejoins as $join)
             {
-                $sql .= ' LEFT JOIN `' . $this->storage->tableNamify($join->tableNameDestination) .
-                                                    '` AS `t' . $join->tableNumberDestination . '`';
-                $sql .= ' ON `t' . $join->tableNumberOrigin . '`.`' .
-                                            $this->storage->fieldNamify($join->fieldNameOrigin) . '`';
-                $sql .= ' = `t' . $join->tableNumberDestination . '`.`' . $join->fieldNameDestination . '`';
+                $table = '`' . $this->storage->tableNamify($join->tableNameDestination) . '`';
+                $on = '`t' . $join->tableNumberOrigin . '`.`' . $this->storage->fieldNamify($join->fieldNameOrigin) . '`';
+                $on .= ' = `t' . $join->tableNumberDestination . '`.`' . $join->fieldNameDestination . '`';
+
+                if ($join->fieldNameDestination === 'owner')
+                {
+                    $table = '(SELECT * from ' . $table . ' UNION SELECT NULL, NULL)';
+
+                    $on = '(' . $on . ' OR `t' . $join->tableNumberDestination  . '`.`owner` IS NULL)';
+
+                    $ancestorJoin = $join;
+                    $ancestorCollections = [];
+                    while ($ancestorJoin !== null)
+                    {
+                        $ancestorCollections[$ancestorJoin->tableNumberDestination] = true;
+
+                        $ancestorJoin = $this->storage->getReverseJoin($ancestorJoin->tableNumberOrigin);
+                    }
+
+                    foreach ($previousCollectionTableNumbers as $tableNumber)
+                    {
+                        if (!\array_key_exists($tableNumber, $ancestorCollections))
+                        {
+                            $on .= ' AND `t' . $tableNumber . '`.`owner` IS NULL';
+                        }
+                    }
+
+                    $extraSelects .= ', `t' . $join->tableNumberDestination . '`.`owner` IS NOT NULL AS `t' . $join->tableNumberOrigin . '_' . $join->selectedFieldName  . '_thisrow`';
+
+                    $previousCollectionTableNumbers[] = $join->tableNumberDestination;
+                }
+
+                $fromSql .= ' LEFT JOIN ' . $table . ' AS `t' . $join->tableNumberDestination . '`';
+                $fromSql .= ' ON ' . $on;
             }
         }
+
+        $columnsSQL = array_map([$this, 'columnToSelectClause'], $columns);
+        $sql .= \implode(', ', $columnsSQL);
+        $sql .= $extraSelects;
+        $sql .= $fromSql;
 
         if ($page !== null)
         {
@@ -267,10 +301,11 @@ class Selecter implements ResolverVisitor
             if ($this->includeJoinsForPagination)
             {
                 $paginationJoin = new Join($leftTableNumber,
-                $currentTableJoinField,
-                $joinTable,
-                $join,
-                $otherTableJoinField);
+                    $currentTableJoinField,
+                    $joinTable,
+                    $join,
+                    $otherTableJoinField,
+                    null);
 
                 $this->paginationJoins[] = $paginationJoin;
             }
@@ -283,9 +318,6 @@ class Selecter implements ResolverVisitor
 
             $this->columns[] = new SelectColumn($table, $column, $as);
         }
-
-        // var_dump($collectionField);
-        // var_dump($resolver == null);
 
         if ($resolver != null)
         {
