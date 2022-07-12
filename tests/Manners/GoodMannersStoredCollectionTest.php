@@ -1722,6 +1722,55 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
             $this->assertSame(2, $i);
         }
     }
+
+    /**
+     * @ticket 171
+     */
+    public function testCollectionOfReferencesWithCollection()
+    {
+        $now = new DateTimeImmutable();
+
+        $ins = new CollectionType();
+        $ins->someInt = 100;
+        $ref = new CollectionType();
+        $ref->someInt = 1;
+        $ref->myDatetimes->add($now);
+        $ref->myDatetimes->add($now->modify('-1 day'));
+        $ins->myReferences->add($ref);
+        $ref = new CollectionType();
+        $ref->someInt = 2;
+        $ins->myReferences->add($ref);
+
+        $this->storage->insert($ins);
+
+        $this->storage->flush();
+
+        $condition = CollectionType::condition();
+        $condition->someInt = 100;
+
+        $resolver = CollectionType::resolver();
+        $resolver->resolveMyReferences();
+        $resolver->getMyReferences()->resolveMyDatetimes();
+
+        $results = $this->storage->fetchAll($condition, $resolver);
+
+        foreach ($results as $result)
+        {
+            $datetimes = 0;
+
+            $this->assertSame(2, count($result->myReferences->toArray(true)));
+
+            foreach ($result->myReferences as $reference)
+            {
+                foreach ($reference->myDatetimes as $datetime)
+                {
+                    $datetimes++;
+                }
+
+                $this->assertSame(2, $datetimes);
+            }
+        }
+    }
 }
 
 ?>
