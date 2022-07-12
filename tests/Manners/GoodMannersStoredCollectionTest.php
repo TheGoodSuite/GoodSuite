@@ -1680,6 +1680,48 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
             $this->assertSame(0, $i);
         }
     }
+
+    /**
+     * @ticket #170
+     */
+    public function testSiblingCollectionDoesNotInfluenceReferenceCollection()
+    {
+        $ins = new CollectionType();
+        $ins->someInt = 100;
+        $ins->myInts->add(100);
+        $ins->myInts->add(200);
+        $ref = new CollectionType();
+        $ref->someInt = 1;
+        $ins->myReferences->add($ref);
+        $ref = new CollectionType();
+        $ref->someInt = 2;
+        $ins->myReferences->add($ref);
+
+        $this->storage->insert($ins);
+
+        $this->storage->flush();
+
+        $condition = CollectionType::condition();
+        $condition->someInt = 100;
+
+        $resolver = CollectionType::resolver();
+        $resolver->resolveMyReferences();
+        $resolver->resolveMyInts();
+
+        $results = $this->storage->fetchAll($condition, $resolver);
+
+        foreach ($results as $result)
+        {
+            $i = 0;
+
+            foreach ($result->myReferences as $reference)
+            {
+                $i++;
+            }
+
+            $this->assertSame(2, $i);
+        }
+    }
 }
 
 ?>
