@@ -439,7 +439,7 @@ class SQLStorage extends Storage
         }
         else
         {
-            $this->joins[-1 * $tableNumberOrigin][] = $join;
+            $this->joins[-1 * $tableNumberOrigin - 1][] = $join;
         }
 
         $this->joins[$this->numberOfJoins] = array();

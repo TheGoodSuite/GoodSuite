@@ -97,7 +97,7 @@ class Selecter implements ResolverVisitor
         $previousCollectionTableNumbers = [];
         $extraSelects = '';
 
-        foreach ($this->storage->getJoins() as $somejoins)
+        foreach ($this->storage->getJoins() as $key => $somejoins)
         {
             foreach ($somejoins as $join)
             {
@@ -105,7 +105,7 @@ class Selecter implements ResolverVisitor
                 $on = '`t' . $join->tableNumberOrigin . '`.`' . $this->storage->fieldNamify($join->fieldNameOrigin) . '`';
                 $on .= ' = `t' . $join->tableNumberDestination . '`.`' . $join->fieldNameDestination . '`';
 
-                if ($join->fieldNameDestination === 'owner')
+                if ($join->fieldNameDestination === 'owner' && $key >= 0)
                 {
                     $table = '(SELECT * from ' . $table . ' UNION SELECT NULL, NULL)';
 
