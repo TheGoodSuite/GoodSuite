@@ -1726,7 +1726,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
     }
 
     /**
-     * @ticket 171
+     * @ticket #171
      */
     public function testCollectionOfReferencesWithCollection()
     {
@@ -1775,7 +1775,7 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
     }
 
     /**
-     * @ticket 172
+     * @ticket #172
      * @doesNotPerformAssertions
      */
     public function testOrderingCollectionFails()
@@ -1785,6 +1785,20 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
         $resolver->getMyReferences()->resolveMyReferences();
 
         $results = $this->storage->fetchAll($resolver);
+    }
+
+    /**
+     * @ticket #173
+     * @doesNotPerformAssertions
+     */
+    public function testSetFromArrayOnCollectionThenInsert()
+    {
+        $ins = new CollectionType();
+        $ins->someInt = 100;
+
+        $ins->setFromArray(['myInts' => [1, 2, 3]]);
+
+        $this->storage->insert($ins);
     }
 }
 

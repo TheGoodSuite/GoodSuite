@@ -47,7 +47,7 @@ class CollectionProcessor implements StorableVisitor, TypeVisitor
 
     public function visitCollectionProperty($name, $value, $modifier)
     {
-        if ($modifier->wasCleared() || $this->currentOwner->isDeleted())
+        if (!$this->currentOwner->isNew() && ($modifier->wasCleared() || $this->currentOwner->isDeleted()))
         {
             $this->clearCollectionQuery($this->currentOwner, $name);
         }
@@ -61,20 +61,23 @@ class CollectionProcessor implements StorableVisitor, TypeVisitor
                 $this->storables[] = $entry;
             }
 
-            $deletedCollectionValues = [];
-
-            $this->deletedCollectionValues = $modifier->getRemovedItems();
-
-            if (count($this->deletedCollectionValues) > 0)
+            if (!$this->currentOwner->isNew())
             {
-                $this->deletedSQLValues = [];
+                $deletedCollectionValues = [];
 
-                $value->getCollectedType()->acceptTypeVisitor($this);
+                $this->deletedCollectionValues = $modifier->getRemovedItems();
 
-                $sql = $this->getDeleteFromCollectionStatement($this->currentOwner, $name);
-                $sql .= '  AND `value` IN (' . \implode(', ', $this->deletedSQLValues) . ')';
+                if (count($this->deletedCollectionValues) > 0)
+                {
+                    $this->deletedSQLValues = [];
 
-                $this->db->query($sql);
+                    $value->getCollectedType()->acceptTypeVisitor($this);
+
+                    $sql = $this->getDeleteFromCollectionStatement($this->currentOwner, $name);
+                    $sql .= '  AND `value` IN (' . \implode(', ', $this->deletedSQLValues) . ')';
+
+                    $this->db->query($sql);
+                }
             }
         }
 
