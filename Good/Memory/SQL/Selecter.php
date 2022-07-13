@@ -97,6 +97,9 @@ class Selecter implements ResolverVisitor
         $previousCollectionTableNumbers = [];
         $extraSelects = '';
 
+        $unions = 0;
+        $extraWhere = '';
+
         foreach ($this->storage->getJoins() as $key => $somejoins)
         {
             foreach ($somejoins as $join)
@@ -107,9 +110,11 @@ class Selecter implements ResolverVisitor
 
                 if ($join->fieldNameDestination === 'owner' && $key >= 0)
                 {
-                    $table = '(SELECT * from ' . $table . ' UNION SELECT NULL, NULL)';
+                    $unions++;
 
-                    $on = '(' . $on . ' OR `t' . $join->tableNumberDestination  . '`.`owner` IS NULL)';
+                    $fromSql .= ' LEFT JOIN (SELECT 1 AS thisrow UNION SELECT 0) AS `u' . $unions . '` ON TRUE';
+
+                    $on .= ' AND `u' . $unions . '`.`thisrow` = 1';
 
                     $ancestorJoin = $join;
                     $ancestorCollections = [];
@@ -128,7 +133,11 @@ class Selecter implements ResolverVisitor
                         }
                     }
 
-                    $extraSelects .= ', `t' . $join->tableNumberDestination . '`.`owner` IS NOT NULL AS `t' . $join->tableNumberOrigin . '_' . $join->selectedFieldName  . ' thisrow`';
+                    $extraSelects .= ', `u' . $unions . '`.`thisrow` AS `t' . $join->tableNumberOrigin . '_' . $join->selectedFieldName  . ' thisrow`';
+
+                    $whereClause = '`t' . $join->tableNumberDestination . '`.`value` IS NOT NULL';
+                    $whereClause .= ' OR `u' . $unions . '`.`thisrow` <> 1';
+                    $extraWhere .= ' AND (' . $whereClause . ')';
 
                     $previousCollectionTableNumbers[] = $join->tableNumberDestination;
                 }
@@ -178,7 +187,7 @@ class Selecter implements ResolverVisitor
             $sql .= ' ON `t0`.`id` = `pagination`.`id`';
         }
 
-        $sql .= ' WHERE ' . $conditionWriter->getCondition();
+        $sql .= ' WHERE ' . $conditionWriter->getCondition() . $extraWhere;
 
         if ($page !== null)
         {
