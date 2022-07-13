@@ -249,6 +249,11 @@ class Selecter implements ResolverVisitor
     {
         $this->currentPropertyIsCollection = true;
 
+        $orderLayer = new OrderLayer(null);
+        $orderLayer->orderClauses[-1] = '`t' . $this->currentTable . '_' . $this->storage->tableNamify($name) . ' thisrow` ASC';
+
+        $this->orderLayer->childLayers[] = $orderLayer;
+
         $this->writeSelectJoinedFields($this->currentTable, $this->currentTableName . '_' . $name, null, 'id', 'owner', $name, false);
     }
 
@@ -265,12 +270,15 @@ class Selecter implements ResolverVisitor
             $orderLayer->childLayers[] = $this->orderLayer;
             $includeJoinsForPagination = $this->includeJoinsForPagination;
             $this->includeJoinsForPagination = false;
+
+            $this->orderLayer->orderClauses[-1] = '`t' . $this->currentTable . '_' . $this->storage->tableNamify($name) . ' thisrow` ASC';
         }
 
-        $this->writeSelectJoinedFields($table, $typeName, $resolver, 'value', 'id', null, false);
+        $table = $this->writeSelectJoinedFields($table, $typeName, $resolver, 'value', 'id', null, false);
 
         if ($resolver !== null)
         {
+            $this->orderLayer->rootTableNumber = $table;
             $this->orderLayer = $orderLayer;
             $this->includeJoinsForPagination = $includeJoinsForPagination;
         }

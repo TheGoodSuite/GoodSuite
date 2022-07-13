@@ -500,28 +500,75 @@ class SQLStorage extends Storage
             }
         }
 
-        $denamifier = new FieldDenamifier($this);
-        $storableData = $denamifier->denamifyFields($storableData, $storable);
-
-        foreach ($allData as $key => $row)
+        foreach ($data[$table] as $fieldName => $fieldValue)
         {
-            if ($key != 0 && $row[$table]['id'] === $data[$table]['id'])
+            if (\substr($fieldName, -8) === ' thisrow')
             {
-                foreach ($storableData as $fieldName => $value)
+                $field = \str_replace(' thisrow', '', $fieldName);
+
+                if ($storableData[$field] === null)
                 {
-                    if (is_array($value) && $row[$table][$this->fieldNamify($fieldName) . ' thisrow'])
+                    $storableData[$field] = [];
+                }
+                else
+                {
+                    $storableData[$field] = [$storableData[$field]];
+                }
+            }
+        }
+
+        $iterator = (new \ArrayObject(array_keys($allData)))->getIterator();
+        $key = $iterator->current();
+        $row = $allData[$key];
+        do {
+            $collectionField = $this->findFirstCollectionField($row[$table]);
+
+            if ($collectionField === null)
+            {
+                $iterator->next();
+                if ($iterator->valid())
+                {
+                    $key = $iterator->current();
+                    $row = $allData[$key];
+                }
+            }
+            else
+            {
+                $lastValue = null;
+                while ($iterator->valid() && $row[$table][$collectionField . ' thisrow'])
+                {
+                    $currentValue = $row[$table][$this->tableNamify($collectionField)];
+
+                    if ($lastValue === null || $lastValue !== $currentValue)
                     {
-                        $storableData[$fieldName][] = $this->getStorableOrValue(
-                            $this->tableNamify($fieldName),
-                            $row[$table][$this->tableNamify($fieldName)],
+                        if (!is_array($storableData[$collectionField]))
+                        {
+                            $storableData[$collectionField] = [];
+                        }
+
+                        $storableData[$collectionField][] = $this->getStorableOrValue(
+                            $this->tableNamify($collectionField),
+                            $currentValue,
                             $joins,
                             $tableNumber,
                             $allData,
                             $key);
+
+                        $lastValue = $currentValue;
+                    }
+
+                    $iterator->next();
+                    if ($iterator->valid())
+                    {
+                        $key = $iterator->current();
+                        $row = $allData[$key];
                     }
                 }
             }
-        }
+        } while ($iterator->valid() && $row[$table]["id"] == $data[$table]["id"]);
+
+        $denamifier = new FieldDenamifier($this);
+        $storableData = $denamifier->denamifyFields($storableData, $storable);
 
         $storable->markCollectionsUnresolved();
 
@@ -536,6 +583,19 @@ class SQLStorage extends Storage
         $this->managedStorables->add($storable);
 
         return $storable;
+    }
+
+    private function findFirstCollectionField($row)
+    {
+        foreach ($row as $fieldName => $fieldValue)
+        {
+            if (\substr($fieldName, -8) === ' thisrow' && $fieldValue)
+            {
+                return \str_replace(' thisrow', '', $fieldName);
+            }
+        }
+
+        return null;
     }
 
     private function preparseSQLData($allData)

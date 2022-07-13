@@ -26,25 +26,13 @@ class FieldDenamifier implements StorableVisitor
         return $this->out;
     }
 
-    private function visitProperty($name, $makeArray)
+    private function visitProperty($name)
     {
         $fieldNamified = $this->storage->fieldNamify($name);
 
         if (array_key_exists($fieldNamified, $this->data))
         {
             $value = $this->data[$fieldNamified];
-
-            if ($makeArray)
-            {
-                if ($value === null)
-                {
-                    $value = [];
-                }
-                else
-                {
-                    $value = [$value];
-                }
-            }
 
             $this->out[$name] = $value;
         }
@@ -53,36 +41,36 @@ class FieldDenamifier implements StorableVisitor
     public function visitReferenceProperty($name, $datatypeName, $dirty,
                                                     Storable $value = null)
     {
-        $this->visitProperty($name, false);
+        $this->visitProperty($name);
     }
 
     public function visitTextProperty($name, $dirty, $value)
     {
-        $this->visitProperty($name, false);
+        $this->visitProperty($name);
     }
 
     public function visitIntProperty($name, $dirty, $value)
     {
-        $this->visitProperty($name, false);
+        $this->visitProperty($name);
     }
 
     public function visitFloatProperty($name, $dirty, $value)
     {
-        $this->visitProperty($name, false);
+        $this->visitProperty($name);
     }
 
     public function visitDatetimeProperty($name, $dirty, $value)
     {
-        $this->visitProperty($name, false);
+        $this->visitProperty($name);
     }
 
     public function visitBooleanProperty($name, $dirty, $value)
     {
-        $this->visitProperty($name, false);
+        $this->visitProperty($name);
     }
 
     public function visitCollectionProperty($name, $value, $modifier)
     {
-        $this->visitProperty($name, true);
+        $this->visitProperty($name);
     }
 }
