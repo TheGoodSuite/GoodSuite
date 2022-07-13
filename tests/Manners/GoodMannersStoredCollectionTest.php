@@ -1773,6 +1773,19 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
             }
         }
     }
+
+    /**
+     * @ticket 172
+     * @doesNotPerformAssertions
+     */
+    public function testOrderingCollectionFails()
+    {
+        $resolver = CollectionType::resolver();
+        $resolver->resolveMyReferences();
+        $resolver->getMyReferences()->resolveMyReferences();
+
+        $results = $this->storage->fetchAll($resolver);
+    }
 }
 
 ?>
