@@ -306,7 +306,9 @@ abstract class GoodMannersStoredCollectionTest extends \PHPUnit\Framework\TestCa
 
         $resolver = CollectionType::resolver();
         $resolver->resolveMyInts();
+        $resolver->orderMyIntsAsc();
         $resolver->resolveMyFloats();
+        $resolver->orderMyFloatsAsc();
         $condition = CollectionType::condition();
         $condition->someInt = 4;
 
