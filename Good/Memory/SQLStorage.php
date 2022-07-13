@@ -200,8 +200,6 @@ class SQLStorage extends Storage
             }
 
             $rows[] = $row;
-
-            //private function getStorableOrValue($field, $value, $joins, $tableNumber, $allData, $dataRow)
         }
 
         $allData = $this->preparseSQLData($rows);
@@ -209,14 +207,6 @@ class SQLStorage extends Storage
         $data[] = $this->getStorableOrValue('value', $rows[0]['t0_value'], $this->joins, 0, $allData, 0);
 
         $collection->resolveWithData($data);
-
-        // $storableWithCollection = $results->getNext();
-        //
-        // if ($storableWithCollection == null) {
-        //     throw new \Exception("The collection was not found in storage");
-        // }
-        //
-        // $collection->resolveWithData($storableWithCollection->$collectionColumn);
 
         return $collection;
     }
