@@ -58,10 +58,7 @@ class Collection implements \IteratorAggregate
             $modifier->clear();
         }
 
-        foreach ($this->items as $item)
-        {
-            $this->items->remove($item);
-        }
+        $this->items->clear();
     }
 
     public function toArray()
