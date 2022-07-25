@@ -258,6 +258,25 @@ class GoodServiceCollectionTest extends \PHPUnit\Framework\TestCase
             $i++;
         }
     }
+
+    /**
+     * @ticket #176
+     */
+    public function testCollectionClear()
+    {
+        $this->compile('intCollection');
+
+        $myType = new MyType();
+
+        $myType->myArray->add(1);
+        $myType->myArray->add(2);
+        $myType->myArray->add(3);
+        $myType->myArray->add(4);
+
+        $myType->myArray->clear();
+
+        $this->assertSame(0, $myType->myArray->count());
+    }
 }
 
 ?>
