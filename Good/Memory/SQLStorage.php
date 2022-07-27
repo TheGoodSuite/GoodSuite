@@ -45,6 +45,7 @@ class SQLStorage extends Storage
         $this->flush();
 
         $this->joins = array(0 => array());
+        $this->joinsReverse = [];
         $this->numberOfJoins = 0;
 
         $updater = new SQL\AdvancedUpdater($this, $this->db, 0);
@@ -122,6 +123,7 @@ class SQLStorage extends Storage
     private function select($condition, $resolver, ?Page $page, $withId = true)
     {
         $this->joins = array(0 => array());
+        $this->joinsReverse = [];
         $this->numberOfJoins = 0;
 
         $selecter = new SQL\Selecter($this, $this->db, 0);
