@@ -93,12 +93,101 @@ class Selecter implements ResolverVisitor
 
         $conditionWriter = new ConditionWriter($this->storage, 0, $datatypeName);
         $conditionWriter->writeCondition($condition);
+        $conditionSql = $conditionWriter->getCondition();
 
-        $previousCollectionTableNumbers = [];
-        $extraSelects = '';
+        $joinsSql = $this->joinsToSql();
 
+        if ($page !== null)
+        {
+            $regex = '/^`t([0-9]+)_/';
+
+            $orderOnRootTable = $this->orderRootLayer->orderClauses;
+            \ksort($orderOnRootTable);
+
+            $orderOnRootTable = array_map(function($orderBy) use ($regex)
+            {
+                return \preg_replace($regex, '`t$1`.`', $orderBy);
+            }, $orderOnRootTable);
+
+            $over = '';
+            if (\count($orderOnRootTable) > 0)
+            {
+                $over .= 'ORDER BY ';
+                $over .= \implode(', ', $orderOnRootTable);
+            }
+
+            if ($page->getStartAt() === null)
+            {
+                $endAt = $page->getSize();
+                $startAtSql = '';
+            }
+            else
+            {
+                $startAtSql = ' AND `row` >= ' . ($page->getStartAt() + 1);
+                $endAt = $page->getSize() + $page->getStartAt();
+            }
+
+            $conditionQuery  = 'SELECT `t0`.`id`, ROW_NUMBER() OVER( ' . $over . ') as `row`';
+            $conditionQuery .= $fromSql;
+            $conditionQuery .= $joinsSql['joins'];
+            $conditionQuery .= ' WHERE ' . $conditionSql . $joinsSql['where'];
+            $conditionQuery .= ' GROUP BY `t0`.`id`';
+
+            if ($conditionWriter->getHaving() != null)
+            {
+                //$groupBySQL = array_map([$this, 'getEscapedAs'], $columns);
+
+                //$conditionQuery .= ' GROUP BY ' . \implode(', ', $groupBySQL);
+
+                $conditionQuery .= ' HAVING ' . $conditionWriter->getHaving();
+            }
+
+            $paginationQuery  = 'SELECT id FROM (' . $conditionQuery . ')';
+            $paginationQuery .= ' WHERE `row` <= ' . $endAt;
+            $paginationQuery .= $startAtSql;
+
+            $conditionSql = '`t0_id` IN (' . $paginationQuery . ')';
+        }
+
+
+        $columnsSQL = array_map([$this, 'columnToSelectClause'], $columns);
+        $sql .= \implode(', ', $columnsSQL);
+        $sql .= $joinsSql['select'];
+        $sql .= $fromSql;
+        $sql .= $joinsSql['joins'];
+        $sql .= ' WHERE ' . $conditionSql . $joinsSql['where'];
+
+        if ($page === null && $conditionWriter->getHaving() != null)
+        {
+            $groupBySQL = array_map([$this, 'getEscapedAs'], $columns);
+
+            $sql .= ' GROUP BY ' . \implode(', ', $groupBySQL);
+
+            $sql .= ' HAVING ' . $conditionWriter->getHaving();
+        }
+
+        if (\count($order) > 0)
+        {
+            $sql .= ' ORDER BY ';
+            $sql .= \implode(', ', $order);
+        }
+
+        return $sql;
+    }
+
+    private function getEscapedAs($column)
+    {
+        return '`' . $column->as . '`';
+    }
+
+    private function joinsToSql()
+    {
         $unions = 0;
+        $previousCollectionTableNumbers = [];
+
+        $extraSelects = '';
         $extraWhere = '';
+        $sql = '';
 
         foreach ($this->storage->getJoins() as $key => $somejoins)
         {
@@ -112,7 +201,7 @@ class Selecter implements ResolverVisitor
                 {
                     $unions++;
 
-                    $fromSql .= ' LEFT JOIN (SELECT 1 AS thisrow UNION SELECT 0) AS `u' . $unions . '` ON TRUE';
+                    $sql .= ' LEFT JOIN (SELECT 1 AS thisrow UNION SELECT 0) AS `u' . $unions . '` ON TRUE';
 
                     $on .= ' AND `u' . $unions . '`.`thisrow` = 1';
 
@@ -142,89 +231,16 @@ class Selecter implements ResolverVisitor
                     $previousCollectionTableNumbers[] = $join->tableNumberDestination;
                 }
 
-                $fromSql .= ' LEFT JOIN ' . $table . ' AS `t' . $join->tableNumberDestination . '`';
-                $fromSql .= ' ON ' . $on;
+                $sql .= ' LEFT JOIN ' . $table . ' AS `t' . $join->tableNumberDestination . '`';
+                $sql .= ' ON ' . $on;
             }
         }
 
-        $columnsSQL = array_map([$this, 'columnToSelectClause'], $columns);
-        $sql .= \implode(', ', $columnsSQL);
-        $sql .= $extraSelects;
-        $sql .= $fromSql;
-
-        if ($page !== null)
-        {
-            $regex = '/^`t([0-9]+)_/';
-
-            $orderOnRootTable = $this->orderRootLayer->orderClauses;
-            \ksort($orderOnRootTable);
-
-            $orderOnRootTable = array_map(function($orderBy) use ($regex)
-            {
-                return \preg_replace($regex, '`t$1`.`', $orderBy);
-            }, $orderOnRootTable);
-
-            $over = '';
-            if (\count($orderOnRootTable) > 0)
-            {
-                $over .= 'ORDER BY ';
-                $over .= \implode(', ', $orderOnRootTable);
-            }
-
-            $sql .= ' LEFT JOIN (SELECT `t0`.`id`, ROW_NUMBER() OVER (' . $over . ') as `row` FROM `' . $tableName;
-            $sql .= '` as `t0` ';
-
-            foreach ($this->paginationJoins as $join)
-            {
-                $sql .= ' LEFT JOIN `' . $this->storage->tableNamify($join->tableNameDestination) .
-                                                    '` AS `t' . $join->tableNumberDestination . '`';
-                $sql .= ' ON `t' . $join->tableNumberOrigin . '`.`' .
-                                            $this->storage->fieldNamify($join->fieldNameOrigin) . '`';
-                $sql .= ' = `t' . $join->tableNumberDestination . '`.`' . $join->fieldNameDestination . '`';
-            }
-
-            $sql .= ') as `pagination`';
-            $sql .= ' ON `t0`.`id` = `pagination`.`id`';
-        }
-
-        $sql .= ' WHERE ' . $conditionWriter->getCondition() . $extraWhere;
-
-        if ($page !== null)
-        {
-            if ($page->getStartAt() === null)
-            {
-                $endAt = $page->getSize();
-            }
-            else
-            {
-                $sql .= ' AND `pagination`.`row` >= ' . ($page->getStartAt() + 1);
-                $endAt = $page->getSize() + $page->getStartAt();
-            }
-
-            $sql .= ' AND `pagination`.`row` <= ' . $endAt;
-        }
-
-        if ($conditionWriter->getHaving() != null)
-        {
-            $groupBySQL = array_map([$this, 'getEscapedAs'], $columns);
-
-            $sql .= ' GROUP BY ' . \implode(', ', $groupBySQL);
-
-            $sql .= ' HAVING ' . $conditionWriter->getHaving();
-        }
-
-        if (\count($order) > 0)
-        {
-            $sql .= ' ORDER BY ';
-            $sql .= \implode(', ', $order);
-        }
-
-        return $sql;
-    }
-
-    private function getEscapedAs($column)
-    {
-        return '`' . $column->as . '`';
+        return [
+            "joins" => $sql,
+            "select" => $extraSelects,
+            "where" => $extraWhere
+        ];
     }
 
     private function gatherOrderClauses($orderLayer)
