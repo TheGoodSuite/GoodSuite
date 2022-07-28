@@ -180,4 +180,9 @@ CREATE TABLE `referencedbypagination` (
 	`mytext` TEXT,
 	PRIMARY KEY(id)
 );
+CREATE TABLE `referencedbypagination_myints` (
+	`owner`	INTEGER,
+	`value` INTEGER,
+	PRIMARY KEY(owner, value)
+);
 COMMIT;

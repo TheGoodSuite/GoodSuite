@@ -3,6 +3,9 @@
 require_once dirname(__FILE__) . '/../TestHelper.php';
 
 use Good\Manners\Page;
+use Good\Manners\Condition\GreaterThan;
+use Good\Manners\CollectionCondition\HasA;
+use Good\Manners\CollectionCondition\HasOnly;
 
 /**
  * @runTestsInSeparateProcesses
@@ -70,6 +73,7 @@ abstract class GoodMannersPaginationTest extends \PHPUnit\Framework\TestCase
         $this->truncateTable('paginationtype_collectionofints');
         $this->truncateTable('paginationtype_collectionofreferences');
         $this->truncateTable('referencedbypagination');
+        $this->truncateTable('referencedbypagination_myints');
 
         $this->storage = $this->getNewStorage();
     }
@@ -86,6 +90,7 @@ abstract class GoodMannersPaginationTest extends \PHPUnit\Framework\TestCase
         $this->truncateTable('paginationtype_collectionofints');
         $this->truncateTable('paginationtype_collectionofreferences');
         $this->truncateTable('referencedbypagination');
+        $this->truncateTable('referencedbypagination_myints');
 
         $this->_tearDownAfterClass();
     }
@@ -98,14 +103,20 @@ abstract class GoodMannersPaginationTest extends \PHPUnit\Framework\TestCase
         $paginationType->myInt = 6;
         $referenced = new ReferencedByPagination();
         $referenced->myText = 'b';
+        $referenced->myInts->add(12);
+        $referenced->myInts->add(18);
         $paginationType->myReference = $referenced;
         $paginationType->collectionOfInts->add(12);
         $paginationType->collectionOfInts->add(18);
         $referenced = new ReferencedByPagination();
         $referenced->myText = 'six';
+        $referenced->myInts->add(6);
+        $referenced->myInts->add(12);
         $paginationType->collectionOfReferences->add($referenced);
         $referenced = new ReferencedByPagination();
         $referenced->myText = 'six+';
+        $referenced->myInts->add(12);
+        $referenced->myInts->add(18);
         $paginationType->collectionOfReferences->add($referenced);
 
         $storage->insert($paginationType);
@@ -114,14 +125,20 @@ abstract class GoodMannersPaginationTest extends \PHPUnit\Framework\TestCase
         $paginationType->myInt = 2;
         $referenced = new ReferencedByPagination();
         $referenced->myText = 'a';
+        $referenced->myInts->add(4);
+        $referenced->myInts->add(6);
         $paginationType->myReference = $referenced;
         $paginationType->collectionOfInts->add(4);
         $paginationType->collectionOfInts->add(6);
         $referenced = new ReferencedByPagination();
         $referenced->myText = 'two';
+        $referenced->myInts->add(2);
+        $referenced->myInts->add(4);
         $paginationType->collectionOfReferences->add($referenced);
         $referenced = new ReferencedByPagination();
         $referenced->myText = 'two+';
+        $referenced->myInts->add(4);
+        $referenced->myInts->add(6);
         $paginationType->collectionOfReferences->add($referenced);
 
         $storage->insert($paginationType);
@@ -130,14 +147,20 @@ abstract class GoodMannersPaginationTest extends \PHPUnit\Framework\TestCase
         $paginationType->myInt = 4;
         $referenced = new ReferencedByPagination();
         $referenced->myText = 'c';
+        $referenced->myInts->add(8);
+        $referenced->myInts->add(12);
         $paginationType->myReference = $referenced;
         $paginationType->collectionOfInts->add(8);
         $paginationType->collectionOfInts->add(12);
         $referenced = new ReferencedByPagination();
         $referenced->myText = 'four';
+        $referenced->myInts->add(4);
+        $referenced->myInts->add(8);
         $paginationType->collectionOfReferences->add($referenced);
         $referenced = new ReferencedByPagination();
         $referenced->myText = 'four+';
+        $referenced->myInts->add(8);
+        $referenced->myInts->add(12);
         $paginationType->collectionOfReferences->add($referenced);
 
         $storage->insert($paginationType);
@@ -146,14 +169,20 @@ abstract class GoodMannersPaginationTest extends \PHPUnit\Framework\TestCase
         $paginationType->myInt = 8;
         $referenced = new ReferencedByPagination();
         $referenced->myText = 'd';
+        $referenced->myInts->add(16);
+        $referenced->myInts->add(24);
         $paginationType->myReference = $referenced;
         $paginationType->collectionOfInts->add(16);
         $paginationType->collectionOfInts->add(24);
         $referenced = new ReferencedByPagination();
         $referenced->myText = 'eight';
+        $referenced->myInts->add(8);
+        $referenced->myInts->add(16);
         $paginationType->collectionOfReferences->add($referenced);
         $referenced = new ReferencedByPagination();
         $referenced->myText = 'eight+';
+        $referenced->myInts->add(16);
+        $referenced->myInts->add(24);
         $paginationType->collectionOfReferences->add($referenced);
 
         $storage->insert($paginationType);
@@ -401,6 +430,123 @@ abstract class GoodMannersPaginationTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(7, $nextPage->getStartAt());
         $this->assertSame(5, $nextPage->getSize());
+    }
+
+    public function testPageWithCondition()
+    {
+        $this->populateDatabase();
+
+        $condition = null;
+
+        $resolver = PaginationType::resolver();
+        $resolver->orderByMyIntAsc();
+
+        $condition = PaginationType::condition();
+        $condition->myInt = new GreaterThan(3);
+
+        $page = new Page(1, 1);
+
+        $results = $this->storage->fetchAll($condition, $resolver, $page);
+
+        $i = 0;
+        foreach($results as $result)
+        {
+            $this->assertSame(6, $result->myInt);
+
+            $i++;
+        }
+
+        $this->assertSame($i, 1);
+    }
+
+    /**
+     * @ticket #175
+     */
+    public function testPageWithHasACollectionCondition()
+    {
+        $this->populateDatabase();
+
+        $condition = null;
+
+        $resolver = PaginationType::resolver();
+        $resolver->orderByMyIntAsc();
+
+        $condition = PaginationType::condition();
+        $condition->collectionOfInts = new HasA(new GreaterThan(12));
+
+        $page = new Page(1, 1);
+
+        $results = $this->storage->fetchAll($condition, $resolver, $page);
+
+        $i = 0;
+        foreach($results as $result)
+        {
+            $this->assertSame(8, $result->myInt);
+
+            $i++;
+        }
+
+        $this->assertSame($i, 1);
+    }
+
+    /**
+     * @ticket #175
+     */
+    public function testPageWithHasOnlyCollectionCondition()
+    {
+        $this->populateDatabase();
+
+        $condition = null;
+
+        $resolver = PaginationType::resolver();
+        $resolver->orderByMyIntAsc();
+
+        $condition = PaginationType::condition();
+        $condition->collectionOfInts = new HasOnly(new GreaterThan(11));
+
+        $page = new Page(1, 1);
+
+        $results = $this->storage->fetchAll($condition, $resolver, $page);
+
+        $i = 0;
+        foreach($results as $result)
+        {
+            $this->assertSame(8, $result->myInt);
+
+            $i++;
+        }
+
+        $this->assertSame($i, 1);
+    }
+
+    /**
+     * @ticket #175
+     */
+    public function testPageWithHasOnlyCollectionConditionOnReference()
+    {
+        $this->populateDatabase();
+
+        $condition = null;
+
+        $resolver = PaginationType::resolver();
+        $resolver->orderByMyIntAsc();
+
+        $condition = PaginationType::condition();
+        $condition->myReference->myInts = new HasOnly(new GreaterThan(11));
+
+        $page = new Page(1, 1);
+
+        $results = $this->storage->fetchAll($condition, $resolver, $page);
+
+        $i = 0;
+        foreach($results as $result)
+        {
+            $this->assertSame(8, $result->myInt);
+
+            $i++;
+        }
+
+        $this->assertSame($i, 1);
     }
 }
 

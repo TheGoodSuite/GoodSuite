@@ -315,6 +315,12 @@ CREATE TABLE `referencedbypagination` (
 	PRIMARY KEY(id)
 );
 
+CREATE TABLE `referencedbypagination_myints` (
+	`owner`	int(11),
+	`value` int(11),
+	PRIMARY KEY(owner, value)
+);
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

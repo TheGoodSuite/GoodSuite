@@ -2,4 +2,5 @@
 datatype ReferencedByPagination
 {
     text myText;
+    int[] myInts;
 }
