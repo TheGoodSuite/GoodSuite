@@ -123,7 +123,7 @@ class Selecter implements ResolverVisitor
             }
             else
             {
-                $startAtSql = ' AND `row` >= ' . ($page->getStartAt() + 1);
+                $startAtSql = ' AND `pagination`.`row` >= ' . ($page->getStartAt() + 1);
                 $endAt = $page->getSize() + $page->getStartAt();
             }
 
@@ -142,11 +142,11 @@ class Selecter implements ResolverVisitor
                 $conditionQuery .= ' HAVING ' . $conditionWriter->getHaving();
             }
 
-            $paginationQuery  = 'SELECT id FROM (' . $conditionQuery . ')';
-            $paginationQuery .= ' WHERE `row` <= ' . $endAt;
+            $paginationQuery  = 'SELECT id FROM (' . $conditionQuery . ') AS `pagination`';
+            $paginationQuery .= ' WHERE `pagination`.`row` <= ' . $endAt;
             $paginationQuery .= $startAtSql;
 
-            $conditionSql = '`t0_id` IN (' . $paginationQuery . ')';
+            $conditionSql = '`t0`.`id` IN (' . $paginationQuery . ')';
         }
 
 
